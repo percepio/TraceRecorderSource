@@ -1796,6 +1796,12 @@ void prvTraceSaveObjectData(const void *address, uint32_t data);
 /* Removes an object data entry (task base priority) from object data table */
 void prvTraceDeleteObjectData(void *address);
 
+/* Gets the most recent tcb address */
+uint32_t prvTraceGetCurrentTask(void);
+
+/* Sets the most recent tcb address */
+void prvTraceSetCurrentTask(uint32_t tcb);
+
 /* Begins an event with defined specified payload size. Must call prvTraceEndStoreEvent() to finalize event creation. */
 uint32_t prvTraceBeginStoreEvent(uint32_t uiEventCode, uint32_t uiTotalPayloadSize);
 
