@@ -1,5 +1,5 @@
 /*
- * Trace Recorder for Tracealyzer v4.5.0b
+ * Trace Recorder for Tracealyzer v989.878.767
  * Copyright 2021 Percepio AB
  * www.percepio.com
  *
@@ -2295,9 +2295,6 @@ void prvPagedEventBufferInit(char* buffer)
 
 void prvAddTaskToStackMonitor(void* task)
 {
-#if (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_SNAPSHOT)
-	TaskStackMonitorEntry_t *tasksInStackMonitor = RecorderDataPtr->tasksInStackMonitor;
-#endif (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_SNAPSHOT)
 	int i;
 	int foundEmptySlot = 0;
 
