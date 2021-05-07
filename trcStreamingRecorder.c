@@ -207,7 +207,7 @@ uint32_t trcHeapCounter TRC_CFG_RECORDER_DATA_ATTRIBUTE;
 uint32_t trcHeapMax TRC_CFG_RECORDER_DATA_ATTRIBUTE;
 
 /* Temporary event data storage */
-static largestEventType xEventDataDummy = { 0, { 0 } };
+static largestEventType xEventDataDummy = { { 0, 0, 0 }, { 0 } };
 
 /* The current event */
 static largestEventType *pvCurrentEvent = 0;
@@ -220,6 +220,9 @@ static uint32_t uiCurrentEventSize = 0;
 
 /* The current event's payload pointer */
 static uint32_t uiCurrentEventPayloadOffset = 0;
+
+/* The most recent tcb address */
+static uint32_t xCurrentTask = 0;
 
 /* Remembers if an earlier ISR in a sequence of adjacent ISRs has triggered a task switch.
 In that case, vTraceStoreISREnd does not store a return to the previously executing task. */
@@ -1264,6 +1267,18 @@ static const char* prvTraceGetError(int errCode)
 	}
 
 	return NULL;
+}
+
+/* Gets the most recent tcb address */
+uint32_t prvTraceGetCurrentTask(void)
+{
+	return xCurrentTask;
+}
+
+/* Sets the most recent tcb address */
+void prvTraceSetCurrentTask(uint32_t tcb)
+{
+	xCurrentTask = tcb;
 }
 
 /* Begins an event with defined specified payload size. Must call prvTraceEndStoreEvent() to finalize event creation. */
