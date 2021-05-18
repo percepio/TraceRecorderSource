@@ -1349,6 +1349,11 @@ traceResult prvTraceStoreEventPayload(void *pvData, uint32_t uiSize)
 {
 	uint32_t i;
 
+	if (pvCurrentEvent == 0)
+	{
+		return TRACE_FAIL;
+	}
+
 	if (uiCurrentEventPayloadOffset + uiSize >  uiCurrentEventPayloadSize)
 	{
 		return TRACE_FAIL;
@@ -1366,6 +1371,11 @@ traceResult prvTraceStoreEventPayload(void *pvData, uint32_t uiSize)
 /* Adds an uint32_t as event payload */
 traceResult prvTraceStoreEventPayload32(uint32_t value)
 {
+	if (pvCurrentEvent == 0)
+	{
+		return TRACE_FAIL;
+	}
+	
 	if (uiCurrentEventPayloadOffset + sizeof(uint32_t) >  uiCurrentEventPayloadSize)
 	{
 		return TRACE_FAIL;
@@ -1386,6 +1396,11 @@ traceResult prvTraceStoreEventPayload32(uint32_t value)
 /* Adds an uint16_t as event payload */
 traceResult prvTraceStoreEventPayload16(uint16_t value)
 {
+	if (pvCurrentEvent == 0)
+	{
+		return TRACE_FAIL;
+	}
+	
 	if (uiCurrentEventPayloadOffset + sizeof(uint16_t) >  uiCurrentEventPayloadSize)
 	{
 		return TRACE_FAIL;
@@ -1406,6 +1421,11 @@ traceResult prvTraceStoreEventPayload16(uint16_t value)
 /* Adds an uint8_t as event payload */
 traceResult prvTraceStoreEventPayload8(uint8_t value)
 {
+	if (pvCurrentEvent == 0)
+	{
+		return TRACE_FAIL;
+	}
+
 	if (uiCurrentEventPayloadOffset + sizeof(uint8_t) >  uiCurrentEventPayloadSize)
 	{
 		return TRACE_FAIL;

@@ -837,10 +837,12 @@ void sys_trace_k_sem_reset(struct k_sem *sem) {
 
 /* Mutex trace function definitions */
 void sys_trace_k_mutex_init(struct k_mutex *mutex, int ret) {
+#if defined(CONFIG_PERCEPIO_RECORDER_TRC_RECORDER_STREAM_PORT_RTT) && !defined(PERCEPIO_RECORDER_TRC_STREAM_PORT_USE_INTERNAL_BUFFER)
 	/* If we use Zephyr RTT we have to ignore tracing of their locking
 	 * mutex or we will end up in a recursive trace loop
 	 */
-	//if (mutex == &rtt_term_mutex) return;
+	if (mutex == &rtt_term_mutex) return;
+#endif
 	
 	xTraceSDKEventBegin(PSF_EVENT_MUTEX_CREATE, 8);
 	xTraceSDKEventAddObject((void*)mutex);
@@ -852,10 +854,12 @@ void sys_trace_k_mutex_lock_enter(struct k_mutex *mutex, k_timeout_t timeout) {
 }
 
 void sys_trace_k_mutex_lock_blocking(struct k_mutex *mutex, k_timeout_t timeout) {
+#if defined(CONFIG_PERCEPIO_RECORDER_TRC_RECORDER_STREAM_PORT_RTT) && !defined(PERCEPIO_RECORDER_TRC_STREAM_PORT_USE_INTERNAL_BUFFER)
 	/* If we use Zephyr RTT we have to ignore tracing of their locking
 	 * mutex or we will end up in a recursive trace loop
 	 */
-	//if (mutex == &rtt_term_mutex) return;
+	if (mutex == &rtt_term_mutex) return;
+#endif
 
 	xTraceSDKEventBegin(PSF_EVENT_MUTEX_TAKE_BLOCK, 8);
 	xTraceSDKEventAddObject((void*)mutex);
@@ -864,10 +868,12 @@ void sys_trace_k_mutex_lock_blocking(struct k_mutex *mutex, k_timeout_t timeout)
 }
 
 void sys_trace_k_mutex_lock_exit(struct k_mutex *mutex, k_timeout_t timeout, int ret) {
+#if defined(CONFIG_PERCEPIO_RECORDER_TRC_RECORDER_STREAM_PORT_RTT) && !defined(PERCEPIO_RECORDER_TRC_STREAM_PORT_USE_INTERNAL_BUFFER)
 	/* If we use Zephyr RTT we have to ignore tracing of their locking
 	 * mutex or we will end up in a recursive trace loop
 	 */
-	//if (mutex == &rtt_term_mutex) return;
+	if (mutex == &rtt_term_mutex) return;
+#endif
 
 	if (ret == 0) {
 		xTraceSDKEventBegin(PSF_EVENT_MUTEX_TAKE, 12);
@@ -885,10 +891,12 @@ void sys_trace_k_mutex_unlock_enter(struct k_mutex *mutex) {
 }
 
 void sys_trace_k_mutex_unlock_exit(struct k_mutex *mutex, int ret) {
+#if defined(CONFIG_PERCEPIO_RECORDER_TRC_RECORDER_STREAM_PORT_RTT) && !defined(PERCEPIO_RECORDER_TRC_STREAM_PORT_USE_INTERNAL_BUFFER)
 	/* If we use Zephyr RTT we have to ignore tracing of their locking
 	 * mutex or we will end up in a recursive trace loop
 	 */
-	//if (mutex == &rtt_term_mutex) return;
+	if (mutex == &rtt_term_mutex) return;
+#endif
 
 	if (ret == 0) {
 		xTraceSDKEventBegin(PSF_EVENT_MUTEX_GIVE, 8);
@@ -2123,10 +2131,10 @@ void sys_trace_isr_exit(void) {
 void sys_trace_isr_exit_to_scheduler(void) {
 }
 
-void sys_trace_void(unsigned int id) {
+void sys_trace_idle(void) {
 }
 
-void sys_trace_idle() {
+void sys_trace_void(unsigned int id) {
 }
 
 #endif /*TRC_RECORDER_MODE_STREAMING == 1*/
