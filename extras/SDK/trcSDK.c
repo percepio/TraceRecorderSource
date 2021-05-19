@@ -29,15 +29,27 @@ void vTraceSDKSetObjectFilter();
 ******************************************************************************/
 traceResult xTraceSDKRegisterObject(uint32_t uiEventCode, void* pxObject, uint32_t uiData)
 {
+	traceResult xResult = TRACE_FAIL;
+
 #if (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING)
 	prvTraceSaveObjectData(pxObject, uiData); \
-	prvTraceStoreEvent2((uint16_t)uiEventCode, (uint32_t)pxObject, uiData);
+	if (prvTraceBeginStoreEvent(uiEventCode, sizeof(uint32_t)) == TRACE_SUCCESS)
+	{
+		prvTraceStoreEventPayload32((uint32_t)pxObject);
+		prvTraceStoreEventPayload32(uiData);
+		prvTraceEndStoreEvent();
+		xResult = TRACE_SUCCESS;
+	}
 #endif /* (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING) */
 
 #if (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_SNAPSHOT)
+	(void)uiEventCode;
+	(void)pxObject;
+	(void)uiData;
+	xResult = TRACE_SUCCESS;
 #endif /* (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING) */
 
-	return 0;
+	return xResult;
 }
 
 /*******************************************************************************
@@ -52,16 +64,28 @@ traceResult xTraceSDKRegisterObject(uint32_t uiEventCode, void* pxObject, uint32
 ******************************************************************************/
 traceResult xTraceSDKUnregisterObject(uint32_t uiEventCode, void* pxObject, uint32_t uiData)
 {
+	traceResult xResult = TRACE_FAIL;
+
 #if (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING)
-	prvTraceStoreEvent2((uint16_t)uiEventCode, (uint32_t)pxObject, uiData);
+	if (prvTraceBeginStoreEvent(uiEventCode, sizeof(uint32_t)) == TRACE_SUCCESS)
+	{
+		prvTraceStoreEventPayload32((uint32_t)pxObject);
+		prvTraceStoreEventPayload32(uiData);
+		prvTraceEndStoreEvent();
+		xResult = TRACE_SUCCESS;
+	}
 	/* Only remove the symbol entry */
 	prvTraceDeleteSymbol(pxObject);
 #endif /* (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING) */
 
 #if (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_SNAPSHOT)
+	(void)uiEventCode;
+	(void)pxObject;
+	(void)uiData;
+	xResult = TRACE_SUCCESS;
 #endif /* (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING) */
 
-	return 0;
+	return xResult;
 }
 
 /*******************************************************************************
@@ -75,15 +99,21 @@ traceResult xTraceSDKUnregisterObject(uint32_t uiEventCode, void* pxObject, uint
 ******************************************************************************/
 traceResult xTraceSDKSetObjectName(void* pxObject, const char* pszName)
 {
+	traceResult xResult = TRACE_FAIL;
+
 #if (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING)
 	prvTraceSaveObjectSymbol(pxObject, (const char*)pszName);
 	prvTraceStoreStringEvent(1, PSF_EVENT_OBJ_NAME, (const char*)pszName, (uint32_t)pxObject);
+	xResult = TRACE_SUCCESS;
 #endif /* (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING) */
 
 #if (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_SNAPSHOT)
+	(void)pxObject;
+	(void)pszName;
+	xResult = TRACE_SUCCESS;
 #endif /* (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING) */
 
-	return 0;
+	return xResult;
 }
 
 /*******************************************************************************
@@ -97,14 +127,20 @@ traceResult xTraceSDKSetObjectName(void* pxObject, const char* pszName)
 ******************************************************************************/
 traceResult xTraceSDKSetObjectData(void* pxObject, uint32_t uiData)
 {
+	traceResult xResult = TRACE_FAIL;
+
 #if (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING)
 	prvTraceSaveObjectData(pxObject, uiData);
+	xResult = TRACE_SUCCESS;
 #endif /* (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING) */
 
 #if (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_SNAPSHOT)
+	(void)pxObject;
+	(void)uiData;
+	xResult = TRACE_SUCCESS;
 #endif /* (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING) */
 
-	return 0;
+	return xResult;
 }
 
 /*******************************************************************************
@@ -118,21 +154,32 @@ traceResult xTraceSDKSetObjectData(void* pxObject, uint32_t uiData)
 ******************************************************************************/
 traceResult xTraceSDKTaskSwitch(void* pxTCB, uint32_t uiPriority)
 {
+	traceResult xResult = TRACE_FAIL;
+
 #if (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING)
 	extern volatile uint32_t uiTraceSystemState;
 	uiTraceSystemState = TRC_STATE_IN_TASKSWITCH;
 	if (prvTraceGetCurrentTask() != (uint32_t)pxTCB)
 	{
 		prvTraceSetCurrentTask((uint32_t)pxTCB);
-		prvTraceStoreEvent2(PSF_EVENT_TASK_ACTIVATE, (uint32_t)pxTCB, uiPriority);
+		if (prvTraceBeginStoreEvent(PSF_EVENT_TASK_ACTIVATE, sizeof(uint32_t)) == TRACE_SUCCESS)
+		{
+			prvTraceStoreEventPayload32((uint32_t)pxTCB);
+			prvTraceStoreEventPayload32(uiPriority);
+			prvTraceEndStoreEvent();
+			xResult = TRACE_SUCCESS;
+		}
 	}
 	uiTraceSystemState = TRC_STATE_IN_APPLICATION;
 #endif /* (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING) */
 
 #if (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_SNAPSHOT)
+	(void)pxTCB;
+	(void)uiPriority;
+	xResult = TRACE_SUCCESS;
 #endif /* (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING) */
 
-	return 0;
+	return xResult;
 }
 
 /*******************************************************************************
@@ -145,14 +192,23 @@ traceResult xTraceSDKTaskSwitch(void* pxTCB, uint32_t uiPriority)
 ******************************************************************************/
 traceResult xTraceSDKTaskReady(void* pxTCB)
 {
+	traceResult xResult = TRACE_FAIL;
+	
 #if (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING)
-	prvTraceStoreEvent1(PSF_EVENT_TASK_READY, (uint32_t)pxTCB);
+	if (prvTraceBeginStoreEvent(PSF_EVENT_TASK_READY, sizeof(uint32_t)) == TRACE_SUCCESS)
+	{
+		prvTraceStoreEventPayload32((uint32_t)pxTCB);
+		prvTraceEndStoreEvent();
+		xResult = TRACE_SUCCESS;
+	}
 #endif /* (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING) */
 
 #if (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_SNAPSHOT)
+	(void)pxTCB;
+	xResult = TRACE_SUCCESS;
 #endif /* (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING) */
 
-	return 0;
+	return xResult;
 }
 
 /*******************************************************************************
@@ -167,12 +223,19 @@ traceResult xTraceSDKTaskReady(void* pxTCB)
 ******************************************************************************/
 traceResult xTraceSDKEventBegin(uint32_t uiEventCode, uint32_t uiPayloadSize)
 {
+	traceResult xResult = TRACE_FAIL;
+	
 #if (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING)
-	return prvTraceBeginStoreEvent(uiEventCode, uiPayloadSize);
+	xResult = prvTraceBeginStoreEvent(uiEventCode, uiPayloadSize);
 #endif /* (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING) */
 
 #if (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_SNAPSHOT)
+	(void)uiEventCode;
+	(void)uiPayloadSize;
+	xResult = TRACE_SUCCESS;
 #endif /* (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING) */
+
+	return xResult;
 }
 
 /*******************************************************************************
@@ -184,12 +247,17 @@ traceResult xTraceSDKEventBegin(uint32_t uiEventCode, uint32_t uiPayloadSize)
 ******************************************************************************/
 traceResult xTraceSDKEventEnd()
 {
+	traceResult xResult = TRACE_FAIL;
+
 #if (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING)
-	return prvTraceEndStoreEvent();
+	xResult = prvTraceEndStoreEvent();
 #endif /* (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING) */
 
 #if (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_SNAPSHOT)
+	xResult = TRACE_SUCCESS;
 #endif /* (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING) */
+
+	return xResult;
 }
 
 /*******************************************************************************
@@ -203,12 +271,19 @@ traceResult xTraceSDKEventEnd()
 ******************************************************************************/
 traceResult xTraceSDKEventAddData(void* pvData, uint32_t uiSize)
 {
+	traceResult xResult = TRACE_FAIL;
+
 #if (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING)
-	return prvTraceStoreEventPayload(pvData, uiSize);
+	xResult = prvTraceStoreEventPayload(pvData, uiSize);
 #endif /* (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING) */
 
 #if (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_SNAPSHOT)
+	(void)pvData;
+	(void)uiSize;
+	xResult = TRACE_SUCCESS;
 #endif /* (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING) */
+
+	return xResult;
 }
 
 /*******************************************************************************
@@ -221,12 +296,18 @@ traceResult xTraceSDKEventAddData(void* pvData, uint32_t uiSize)
 ******************************************************************************/
 traceResult xTraceSDKEventAddObject(void* pxObject)
 {
+	traceResult xResult = TRACE_FAIL;
+
 #if (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING)
-	return xTraceSDKEventAdd32((uint32_t)pxObject);
+	xResult = xTraceSDKEventAdd32((uint32_t)pxObject);
 #endif /* (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING) */
 
 #if (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_SNAPSHOT)
+	(void)pxObject;
+	xResult = TRACE_SUCCESS;
 #endif /* (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING) */
+
+	return xResult;
 }
 
 /*******************************************************************************
@@ -239,12 +320,18 @@ traceResult xTraceSDKEventAddObject(void* pxObject)
 ******************************************************************************/
 traceResult xTraceSDKEventAdd32(uint32_t value)
 {
+	traceResult xResult = TRACE_FAIL;
+
 #if (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING)
-	return prvTraceStoreEventPayload32(value);
+	xResult = prvTraceStoreEventPayload32(value);
 #endif /* (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING) */
 
 #if (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_SNAPSHOT)
+	(void)value;
+	xResult = TRACE_SUCCESS;
 #endif /* (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING) */
+
+	return xResult;
 }
 
 /*******************************************************************************
@@ -257,12 +344,18 @@ traceResult xTraceSDKEventAdd32(uint32_t value)
 ******************************************************************************/
 traceResult xTraceSDKEventAdd16(uint16_t value)
 {
+	traceResult xResult = TRACE_FAIL;
+
 #if (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING)
-	return prvTraceStoreEventPayload16(value);
+	xResult = prvTraceStoreEventPayload16(value);
 #endif /* (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING) */
 
 #if (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_SNAPSHOT)
+	(void)value;
+	xResult = TRACE_SUCCESS;
 #endif /* (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING) */
+
+	return xResult;
 }
 
 /*******************************************************************************
@@ -275,10 +368,16 @@ traceResult xTraceSDKEventAdd16(uint16_t value)
 ******************************************************************************/
 traceResult xTraceSDKEventAdd8(uint8_t value)
 {
+	traceResult xResult = TRACE_FAIL;
+
 #if (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING)
-	return prvTraceStoreEventPayload8(value);
+	xResult = prvTraceStoreEventPayload8(value);
 #endif /* (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING) */
 
 #if (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_SNAPSHOT)
+	(void)value;
+	xResult = TRACE_SUCCESS;
 #endif /* (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING) */
+
+	return xResult;
 }

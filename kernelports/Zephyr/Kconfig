@@ -31,7 +31,7 @@ menu "Percepio Trace Recorder"
 
 	choice PERCEPIO_RECORDER_CFG_START_MODE
 		prompt "Recorder Start Mode"
-		default PERCEPIO_RECORDER_CFG_START_MODE_START
+		default PERCEPIO_RECORDER_CFG_START_MODE_START_AWAIT_HOST
 		help
 			TRC_START: Starts the tracing directly. In snapshot mode this allows for 
 			starting the trace at any point in your code, assuming vTraceEnable(TRC_INIT)
@@ -127,48 +127,47 @@ menu "Percepio Trace Recorder"
 				However, note that the stack analysis runs in a separate task (TzCtrl) that
 				can be executed on low priority. This way, you can avoid that the stack
 				analysis disturbs any time-sensitive tasks.
-		
-		config PERCEPIO_RECORDER_CFG_CTRL_TASK_PRIORITY
-			int "Stack Monitor Task Priority"
-			depends on TRACING_STACK && !PERCEPIO_RECORDER_CFG_SCHEDULING_ONLY
-			range 1 32
-			default 1
-			help
-				In streaming mode, TzCtrl is used to receive start/stop commands from
-				Tracealyzer and in some cases also to transmit the trace data (for stream
-				ports that uses the internal buffer, like TCP/IP). For such stream ports,
-				make sure the TzCtrl priority is high enough to ensure reliable periodic
-				execution and transfer of the data, but low enough to avoid disturbing any 
-				time-sensitive functions.
-				
-				In Snapshot mode, TzCtrl is only used for the stack usage monitoring and is
-				not created if stack monitoring is disabled. TRC_CFG_CTRL_TASK_PRIORITY should
-				be low, to avoid disturbing any time-sensitive tasks.
-			
-		config PERCEPIO_RECORDER_CFG_CTRL_TASK_DELAY
-			int "Stack Monitor Delay"
-			depends on TRACING_STACK && !PERCEPIO_RECORDER_CFG_SCHEDULING_ONLY
-			range 1 1000000000
-			default 10
-			help
-				The delay between loops of the TzCtrl task (see TRC_CFG_CTRL_TASK_PRIORITY), 
-				which affects the frequency of the stack monitoring.
-				
-				In streaming mode, this also affects the trace data transfer if you are using
-				a stream port leveraging the internal buffer (like TCP/IP). A shorter delay
-				increases the CPU load of TzCtrl somewhat, but may improve the performance of
-				of the trace streaming, especially if the trace buffer is small.
-			
-		config PERCEPIO_RECORDER_CFG_CTRL_TASK_STACK_SIZE
-			int "Stack Monitor Stack Size"
-			depends on TRACING_STACK && !PERCEPIO_RECORDER_CFG_SCHEDULING_ONLY
-			range 1 1048576
-			default 2048
-			help
-				The stack size of the Tracealyzer Control (TzCtrl) task.
-				See TRC_CFG_CTRL_TASK_PRIORITY for further information about TzCtrl.
-		
 		endif # PERCEPIO_RECORDER_CFG_STACK_MONITOR
+
+	config PERCEPIO_RECORDER_CFG_CTRL_TASK_PRIORITY
+		int "Control Task Priority"
+		depends on TRACING_STACK && !PERCEPIO_RECORDER_CFG_SCHEDULING_ONLY
+		range 1 32
+		default 1
+		help
+			In streaming mode, TzCtrl is used to receive start/stop commands from
+			Tracealyzer and in some cases also to transmit the trace data (for stream
+			ports that uses the internal buffer, like TCP/IP). For such stream ports,
+			make sure the TzCtrl priority is high enough to ensure reliable periodic
+			execution and transfer of the data, but low enough to avoid disturbing any 
+			time-sensitive functions.
+			
+			In Snapshot mode, TzCtrl is only used for the stack usage monitoring and is
+			not created if stack monitoring is disabled. TRC_CFG_CTRL_TASK_PRIORITY should
+			be low, to avoid disturbing any time-sensitive tasks.
+
+	config PERCEPIO_RECORDER_CFG_CTRL_TASK_DELAY
+		int "Control Task Delay"
+		depends on TRACING_STACK && !PERCEPIO_RECORDER_CFG_SCHEDULING_ONLY
+		range 1 1000000000
+		default 10
+		help
+			The delay between loops of the TzCtrl task (see TRC_CFG_CTRL_TASK_PRIORITY), 
+			which affects the frequency of the stack monitoring.
+			
+			In streaming mode, this also affects the trace data transfer if you are using
+			a stream port leveraging the internal buffer (like TCP/IP). A shorter delay
+			increases the CPU load of TzCtrl somewhat, but may improve the performance of
+			of the trace streaming, especially if the trace buffer is small.
+		
+	config PERCEPIO_RECORDER_CFG_CTRL_TASK_STACK_SIZE
+		int "Control Task Stack Size"
+		depends on TRACING_STACK && !PERCEPIO_RECORDER_CFG_SCHEDULING_ONLY
+		range 1 1048576
+		default 2048
+		help
+			The stack size of the Tracealyzer Control (TzCtrl) task.
+			See TRC_CFG_CTRL_TASK_PRIORITY for further information about TzCtrl.
 
 	config PERCEPIO_RECORDER_CFG_MAX_ISR_NESTING
 		int "Max ISR Nesting"
@@ -194,12 +193,16 @@ menu "Percepio Trace Recorder"
 			config PERCEPIO_RECORDER_TRC_RECORDER_STREAM_PORT_RTT
 				depends on ARM
 				bool "RTT Streaming"
+				select USE_SEGGER_RTT
 
 			config PERCEPIO_RECORDER_TRC_RECORDER_STREAM_PORT_ITM
 				depends on ARM
 				bool "ITM Streaming"
 		endchoice
 
+		if PERCEPIO_RECORDER_TRC_RECORDER_STREAM_PORT_RTT
+		rsource "streamports/Jlink_RTT/Kconfig"
+		endif # PERCEPIO_RECORDER_TRC_RECORDER_STREAM_PORT_RTT
 
     	config PERCEPIO_RECORDER_TRC_CFG_SYMBOL_TABLE_SLOTS
 	        int "Symbol Table Slots"
@@ -242,7 +245,14 @@ menu "Percepio Trace Recorder"
 	            The maximum number of object data entries (used for task priorities) that can
 				be stored at the same time. Must be sufficient for all tasks, otherwise there
 				will be warnings (as User Events) from TzCtrl task, that monitors this.
-				
+		
+		config PERCEPIO_RECORDER_TRC_STREAM_PORT_USE_INTERNAL_BUFFER
+			bool "Use Internal Paged Event Buffer"
+			default n
+			help
+				Important for the J-Link port, in most other ports this can be skipped.
+
+		if PERCEPIO_RECORDER_TRC_STREAM_PORT_USE_INTERNAL_BUFFER
 		config PERCEPIO_RECORDER_TRC_CFG_PAGED_EVENT_BUFFER_PAGE_COUNT
 	        int "Paged Event Buffer Page Count"
 	        depends on PERCEPIO_TRC_RECORDER_MODE_STREAMING
@@ -263,6 +273,7 @@ menu "Percepio Trace Recorder"
 				the Ethernet MTU (Maximum Transmission Unit). However, since the currently
 				active page can't be transfered, having more but smaller pages is more
 				efficient with respect memory usage, than having a few large pages.
+		endif # PERCEPIO_RECORDER_TRC_STREAM_PORT_USE_INTERNAL_BUFFER
 				
 		config PERCEPIO_RECORDER_TRC_CFG_ISR_TAILCHAINING_THRESHOLD_STREAMING
 	        int "ISR Tailchaining Threshold"
@@ -819,4 +830,4 @@ menu "Percepio Trace Recorder"
 
 endmenu
 
-endif
+endif # PERCEPIO_TRACERECORDER
