@@ -95,7 +95,7 @@ extern "C" {
  * Tracealyzer will report lost events if the transfer is not
  * fast enough. In that case, try increasing the size of the "up buffer".
  ******************************************************************************/
-#ifdef PERCEPIO_RECORDER_SEGGER_RTT_MODE_NO_BLOCK_SKIP
+#ifdef CONFIG_PERCEPIO_RECORDER_SEGGER_RTT_MODE_NO_BLOCK_SKIP
 #define TRC_CFG_RTT_MODE SEGGER_RTT_MODE_NO_BLOCK_SKIP
 #else
 #define TRC_CFG_RTT_MODE SEGGER_RTT_MODE_BLOCK_IF_FIFO_FULL
@@ -153,7 +153,12 @@ int32_t writeToRTT(void* ptrData, uint32_t size, int32_t* ptrBytesWritten);
 	SEGGER_RTT_ConfigDownBuffer(TRC_CFG_RTT_DOWN_BUFFER_INDEX, "TzCtrl", _TzCtrlData, TRC_CFG_RTT_BUFFER_SIZE_DOWN, TRC_CFG_RTT_MODE);
 
 /* Important for the J-Link port, in most other ports this can be skipped (default is 1) */
-#define TRC_STREAM_PORT_USE_INTERNAL_BUFFER PERCEPIO_RECORDER_TRC_STREAM_PORT_USE_INTERNAL_BUFFER
+#define TRC_STREAM_PORT_USE_INTERNAL_BUFFER CONFIG_PERCEPIO_RECORDER_TRC_STREAM_PORT_USE_INTERNAL_BUFFER
+
+#if (TRC_STREAM_PORT_USE_INTERNAL_BUFFER)
+extern uint8_t _TzIntBuf[(TRC_CFG_PAGED_EVENT_BUFFER_PAGE_COUNT) * (TRC_CFG_PAGED_EVENT_BUFFER_PAGE_SIZE)] __attribute__((aligned (4)));
+#define TRC_STREAM_PORT_INTERNAL_BUFFER_INIT() prvPagedEventBufferInit(_TzIntBuf)
+#endif
   
 #define TRC_STREAM_PORT_WRITE_DATA(_ptrData, _size, _ptrBytesWritten) writeToRTT(_ptrData, _size, _ptrBytesWritten)
 

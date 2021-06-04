@@ -445,6 +445,47 @@
 
 	#define TRC_PORT_SPECIFIC_INIT()
 
+#elif ((TRC_CFG_HARDWARE_PORT == TRC_HARDWARE_PORT_XTensa_LX6) || (TRC_CFG_HARDWARE_PORT == TRC_HARDWARE_PORT_XTensa_LX7))
+	/**
+	 * @note	When running with SMP FreeRTOS we cannot use the CCOUNT register for timestamping,
+	 * 			instead we use the external 40MHz timer for synchronized timestamping between the cores.
+	 */
+	#if CONFIG_FREERTOS_UNICORE == 1
+		#define TRC_HWTC_TYPE TRC_FREE_RUNNING_32BIT_INCR
+		#define TRC_HWTC_COUNT ({ unsigned int __ccount; 			\
+			__asm__ __volatile__("rsr.ccount %0" : "=a"(__ccount)); \
+			__ccount; })
+#ifdef CONFIG_IDF_TARGET_ESP32
+		#define TRC_HWTC_FREQ_HZ (CONFIG_ESP32_DEFAULT_CPU_FREQ_MHZ * 1000000)
+#elif defined(CONFIG_IDF_TARGET_ESP32S2)
+		#define TRC_HWTC_FREQ_HZ (CONFIG_ESP32S2_DEFAULT_CPU_FREQ_MHZ * 1000000)
+#else
+		#error "Invalid IDF target, check your sdkconfig."
+#endif
+		#define TRC_HWTC_PERIOD 0
+		#define TRC_HWTC_DIVISOR 4
+		#define TRC_IRQ_PRIORITY_ORDER 0
+	#else
+		/**
+		 * @brief 	Fetch core agnostic timestamp using the external 40MHz timer. This is used by tracerecorder
+		 * 			when running with both cores.
+		 *
+		 * @return 	Ticks since the timer started
+		 */
+		uint32_t prvGetSMPTimestamp();
+
+		#define TRC_HWTC_TYPE TRC_FREE_RUNNING_32BIT_INCR
+		#define TRC_HWTC_COUNT prvGetSMPTimestamp()
+		#define TRC_HWTC_FREQ_HZ 40000000
+		#define TRC_HWTC_PERIOD 0
+		#define TRC_HWTC_DIVISOR 4
+		#define TRC_IRQ_PRIORITY_ORDER 0
+	#endif
+
+	#if !defined(TRC_HWTC_FREQ_HZ)
+		#error "The XTensa LX6/LX7 trace hardware clock frequency is not defined."
+	#endif
+
 
 #elif (TRC_CFG_HARDWARE_PORT == TRC_HARDWARE_PORT_POWERPC_Z4)
 

@@ -11,6 +11,7 @@
 #define KERNEL_SOURCE_FILE
 
 #include "SafeRTOS_API.h"
+#include "trcInternalBuffer.h"
 
 #if (configUSE_TRACE_FACILITY == 1 && !defined(TRC_USE_TRACEALYZER_RECORDER))
 #error Trace Recorder: You need to include trcRecorder.h at the end of your SafeRTOSConfig.h!

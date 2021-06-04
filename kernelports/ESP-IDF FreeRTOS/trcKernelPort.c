@@ -5,10 +5,13 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  *
- * The FreeRTOS specific parts of the trace recorder
+ * The ESP-IDF FreeRTOS specific parts of the trace recorder
  */
 
-#include "FreeRTOS.h"
+#include "freertos/FreeRTOS.h"
+#include "trcRecorder.h"
+#include "trcInternalBuffer.h"
+#include "esp_log.h"
 #include "trcInternalBuffer.h"
 
 #if (!defined(TRC_USE_TRACEALYZER_RECORDER) && configUSE_TRACE_FACILITY == 1)
@@ -16,6 +19,16 @@
 #endif
 
 #if (defined(TRC_USE_TRACEALYZER_RECORDER) && TRC_USE_TRACEALYZER_RECORDER == 1)
+
+
+#if !CONFIG_FREERTOS_UNICORE
+/**
+ * @note	In multicore mode we require a portMUX to prevent threads on the separate cores from interfering
+ * 			with critical sections.
+ */
+portMUX_TYPE tz_mutex = portMUX_INITIALIZER_UNLOCKED;
+#endif
+
 
 #ifndef TRC_CFG_INCLUDE_EVENT_GROUP_EVENTS
  /* TRC_CFG_INCLUDE_EVENT_GROUP_EVENTS is missing in trcConfig.h. */
@@ -66,16 +79,16 @@
 	#endif
 #endif /* (configUSE_TICKLESS_IDLE != 0 && (TRC_HWTC_TYPE == TRC_OS_TIMER_INCR || TRC_HWTC_TYPE == TRC_OS_TIMER_DECR)) */
 	
-#include "task.h"
-#include "queue.h"
+#include "freertos/task.h"
+#include "freertos/queue.h"
 
 #if (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING) || (defined(TRC_CFG_ENABLE_STACK_MONITOR) && (TRC_CFG_ENABLE_STACK_MONITOR == 1) && (TRC_CFG_SCHEDULING_ONLY == 0))
 
-static TaskType HandleTzCtrl = 0;       /* TzCtrl task TCB */
+static TaskType HandleTzCtrl = NULL;       /* TzCtrl task TCB */
 
 #if defined(configSUPPORT_STATIC_ALLOCATION) && (configSUPPORT_STATIC_ALLOCATION == 1)
 
-#if (TRC_CFG_FREERTOS_VERSION >= TRC_FREERTOS_VERSION_9_0_0)
+#if (TRC_CFG_ESP_IDF_VERSION >= TRC_ESP_IDF_VERSION_4_0_0)
 static StackType_t stackTzCtrl[TRC_CFG_CTRL_TASK_STACK_SIZE];
 static StaticTask_t tcbTzCtrl;
 #else
@@ -88,30 +101,36 @@ static StaticTask_t tcbTzCtrl;
 /* The TzCtrl task - receives commands from Tracealyzer (start/stop) */
 static portTASK_FUNCTION(TzCtrl, pvParameters);
 
+#if defined(TRC_CFG_ENABLE_STACK_MONITOR) && (TRC_CFG_ENABLE_STACK_MONITOR == 1) && (TRC_CFG_SCHEDULING_ONLY == 0)
+void prvReportStackUsage(void);
+#else /* defined(TRC_CFG_ENABLE_STACK_MONITOR) && (TRC_CFG_ENABLE_STACK_MONITOR == 1) && (TRC_CFG_SCHEDULING_ONLY == 0) */
+#define prvReportStackUsage()
+#endif /* defined(TRC_CFG_ENABLE_STACK_MONITOR) && (TRC_CFG_ENABLE_STACK_MONITOR == 1) && (TRC_CFG_SCHEDULING_ONLY == 0) */
+
 #endif /* (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING) || (defined(TRC_CFG_ENABLE_STACK_MONITOR) && (TRC_CFG_ENABLE_STACK_MONITOR == 1) && (TRC_CFG_SCHEDULING_ONLY == 0)) */
 
-#if (TRC_CFG_INCLUDE_TIMER_EVENTS == 1 && TRC_CFG_FREERTOS_VERSION >= TRC_FREERTOS_VERSION_8_X_X)
+#if (TRC_CFG_INCLUDE_TIMER_EVENTS == 1 && TRC_CFG_ESP_IDF_VERSION >= TRC_ESP_IDF_VERSION_4_3_0)
 /* If the project does not include the FreeRTOS timers, TRC_CFG_INCLUDE_TIMER_EVENTS must be set to 0 */
-#include "timers.h"
-#endif /* (TRC_CFG_INCLUDE_TIMER_EVENTS == 1 && TRC_CFG_FREERTOS_VERSION >= TRC_FREERTOS_VERSION_8_X_X) */
+#include "freertos/timers.h"
+#endif /* (TRC_CFG_INCLUDE_TIMER_EVENTS == 1 && TRC_CFG_ESP_IDF_VERSION >= TRC_ESP_IDF_VERSION_4_3_0) */
 
-#if (TRC_CFG_INCLUDE_EVENT_GROUP_EVENTS == 1 && TRC_CFG_FREERTOS_VERSION >= TRC_FREERTOS_VERSION_8_X_X)
+#if (TRC_CFG_INCLUDE_EVENT_GROUP_EVENTS == 1 && TRC_CFG_ESP_IDF_VERSION >= TRC_ESP_IDF_VERSION_4_3_0)
 /* If the project does not include the FreeRTOS event groups, TRC_CFG_INCLUDE_TIMER_EVENTS must be set to 0 */
-#include "event_groups.h"
-#endif /* (TRC_CFG_INCLUDE_EVENT_GROUP_EVENTS == 1 && TRC_CFG_FREERTOS_VERSION >= TRC_FREERTOS_VERSION_8_X_X) */
+#include "freertos/event_groups.h"
+#endif /* (TRC_CFG_INCLUDE_EVENT_GROUP_EVENTS == 1 && TRC_CFG_ESP_IDF_VERSION >= TRC_ESP_IDF_VERSION_4_3_0) */
 
-#if (TRC_CFG_INCLUDE_STREAM_BUFFER_EVENTS == 1 && TRC_CFG_FREERTOS_VERSION >= TRC_FREERTOS_VERSION_10_0_0)
+#if (TRC_CFG_INCLUDE_STREAM_BUFFER_EVENTS == 1 && TRC_CFG_ESP_IDF_VERSION >= TRC_ESP_IDF_VERSION_4_3_0)
 /* If the project does not include the FreeRTOS stream buffers, TRC_CFG_INCLUDE_STREAM_BUFFER_EVENTS must be set to 0 */
-#include "stream_buffer.h"
-#endif /* (TRC_CFG_INCLUDE_STREAM_BUFFER_EVENTS == 1 && TRC_CFG_FREERTOS_VERSION >= TRC_FREERTOS_VERSION_10_0_0) */
+#include "freertos/stream_buffer.h"
+#endif /* (TRC_CFG_INCLUDE_STREAM_BUFFER_EVENTS == 1 && TRC_CFG_ESP_IDF_VERSION >= TRC_ESP_IDF_VERSION_4_3_0) */
 
-#if (TRC_CFG_ACKNOWLEDGE_QUEUE_SET_SEND != TRC_ACKNOWLEDGED) && (TRC_CFG_FREERTOS_VERSION == TRC_FREERTOS_VERSION_10_3_0 || TRC_CFG_FREERTOS_VERSION == TRC_FREERTOS_VERSION_10_3_1) && (configUSE_QUEUE_SETS == 1)
-#error "When using FreeRTOS v10.3.0 or v10.3.1, please make sure that the trace point in prvNotifyQueueSetContainer() in queue.c is renamed from traceQUEUE_SEND to traceQUEUE_SET_SEND in order to tell them apart from other traceQUEUE_SEND trace points. Then set TRC_CFG_ACKNOWLEDGE_QUEUE_SET_SEND in trcConfig.h to TRC_ACKNOWLEDGED to get rid of this error."
-#endif /* (TRC_CFG_ACKNOWLEDGE_QUEUE_SET_SEND != TRC_ACKNOWLEDGED) && (TRC_CFG_FREERTOS_VERSION == TRC_FREERTOS_VERSION_10_3_0 || TRC_CFG_FREERTOS_VERSION == TRC_FREERTOS_VERSION_10_3_1) && (configUSE_QUEUE_SETS == 1) */
+//#if (TRC_CFG_ACKNOWLEDGE_QUEUE_SET_SEND != TRC_ACKNOWLEDGED) && (TRC_CFG_XTENSA_FREERTOS_VERSION == TRC_FREERTOS_VERSION_10_3_0 || TRC_CFG_XTENSA_FREERTOS_VERSION == TRC_FREERTOS_VERSION_10_3_1) && (configUSE_QUEUE_SETS == 1)
+//#error "When using FreeRTOS v10.3.0 or v10.3.1, please make sure that the trace point in prvNotifyQueueSetContainer() in queue.c is renamed from traceQUEUE_SEND to traceQUEUE_SET_SEND in order to tell them apart from other traceQUEUE_SEND trace points. Then set TRC_CFG_ACKNOWLEDGE_QUEUE_SET_SEND in trcConfig.h to TRC_ACKNOWLEDGED to get rid of this error."
+//#endif /* (TRC_CFG_ACKNOWLEDGE_QUEUE_SET_SEND != TRC_ACKNOWLEDGED) && (TRC_CFG_XTENSA_FREERTOS_VERSION == TRC_FREERTOS_VERSION_10_3_0 || TRC_CFG_XTENSA_FREERTOS_VERSION == TRC_FREERTOS_VERSION_10_3_1) && (configUSE_QUEUE_SETS == 1) */
 
 uint32_t prvTraceGetQueueNumber(void* handle);
 
-#if (TRC_CFG_FREERTOS_VERSION < TRC_FREERTOS_VERSION_8_X_X)
+#if (TRC_CFG_ESP_IDF_VERSION < TRC_ESP_IDF_VERSION_4_2_0)
 
 extern unsigned char ucQueueGetQueueNumber( xQueueHandle pxQueue );
 extern void vQueueSetQueueNumber( xQueueHandle pxQueue, unsigned char ucQueueNumber );
@@ -126,7 +145,7 @@ uint32_t prvTraceGetQueueNumber(void* handle)
 {
 	return (uint32_t)uxQueueGetQueueNumber(handle);
 }
-#endif /* (TRC_CFG_FREERTOS_VERSION < TRC_FREERTOS_VERSION_8_X_X) */
+#endif /* (TRC_CFG_ESP_IDF_VERSION < TRC_ESP_IDF_VERSION_4_2_0) */
 
 uint8_t prvTraceGetQueueType(void* handle)
 {
@@ -175,7 +194,7 @@ void prvTraceSetQueueNumberHigh16(void* handle, uint16_t value)
 	vQueueSetQueueNumber(handle, TRACE_SET_HIGH16(prvTraceGetQueueNumber(handle), value));
 }
 
-#if (TRC_CFG_INCLUDE_TIMER_EVENTS == 1 && TRC_CFG_FREERTOS_VERSION >= TRC_FREERTOS_VERSION_10_0_0)
+#if (TRC_CFG_INCLUDE_TIMER_EVENTS == 1 && TRC_CFG_ESP_IDF_VERSION >= TRC_ESP_IDF_VERSION_4_3_0)
 
 uint16_t prvTraceGetTimerNumberLow16(void* handle)
 {
@@ -196,9 +215,9 @@ void prvTraceSetTimerNumberHigh16(void* handle, uint16_t value)
 {
 	vTimerSetTimerNumber(handle, TRACE_SET_HIGH16(uxTimerGetTimerNumber(handle), value));
 }
-#endif /* (TRC_CFG_INCLUDE_TIMER_EVENTS == 1 && TRC_CFG_FREERTOS_VERSION >= TRC_FREERTOS_VERSION_10_0_0) */
+#endif /* (TRC_CFG_INCLUDE_TIMER_EVENTS == 1 && TRC_CFG_ESP_IDF_VERSION >= TRC_ESP_IDF_VERSION_4_3_0) */
 
-#if (TRC_CFG_INCLUDE_EVENT_GROUP_EVENTS == 1 && TRC_CFG_FREERTOS_VERSION >= TRC_FREERTOS_VERSION_10_0_0)
+#if (TRC_CFG_INCLUDE_EVENT_GROUP_EVENTS == 1 && TRC_CFG_ESP_IDF_VERSION >= TRC_ESP_IDF_VERSION_4_3_0)
 
 uint16_t prvTraceGetEventGroupNumberLow16(void* handle)
 {
@@ -219,9 +238,9 @@ void prvTraceSetEventGroupNumberHigh16(void* handle, uint16_t value)
 {
 	vEventGroupSetNumber(handle, TRACE_SET_HIGH16(uxEventGroupGetNumber(handle), value));
 }
-#endif /* (TRC_CFG_INCLUDE_EVENT_GROUP_EVENTS == 1 && TRC_CFG_FREERTOS_VERSION >= TRC_FREERTOS_VERSION_10_0_0) */
+#endif /* (TRC_CFG_INCLUDE_EVENT_GROUP_EVENTS == 1 && TRC_CFG_ESP_IDF_VERSION >= TRC_ESP_IDF_VERSION_4_3_0) */
 
-#if (TRC_CFG_INCLUDE_STREAM_BUFFER_EVENTS == 1 && TRC_CFG_FREERTOS_VERSION >= TRC_FREERTOS_VERSION_10_0_0)
+#if (TRC_CFG_INCLUDE_STREAM_BUFFER_EVENTS == 1 && TRC_CFG_ESP_IDF_VERSION >= TRC_ESP_IDF_VERSION_4_3_0)
 
 uint16_t prvTraceGetStreamBufferNumberLow16(void* handle)
 {
@@ -242,7 +261,7 @@ void prvTraceSetStreamBufferNumberHigh16(void* handle, uint16_t value)
 {
 	vStreamBufferSetStreamBufferNumber(handle, TRACE_SET_HIGH16(uxStreamBufferGetStreamBufferNumber(handle), value));
 }
-#endif /* (TRC_CFG_INCLUDE_STREAM_BUFFER_EVENTS == 1 && TRC_CFG_FREERTOS_VERSION >= TRC_FREERTOS_VERSION_10_0_0) */
+#endif /* (TRC_CFG_INCLUDE_STREAM_BUFFER_EVENTS == 1 && TRC_CFG_ESP_IDF_VERSION >= TRC_ESP_IDF_VERSION_4_3_0) */
 
 
 #if (TRC_CFG_HARDWARE_PORT == TRC_HARDWARE_PORT_ARM_CORTEX_A9)
@@ -317,7 +336,19 @@ uint32_t prvTraceGetStackHighWaterMark(void* task)
 #endif /* defined(TRC_CFG_ENABLE_STACK_MONITOR) && (TRC_CFG_ENABLE_STACK_MONITOR == 1) && (TRC_CFG_SCHEDULING_ONLY == 0) */
 
 #if (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING)
-	
+
+
+#include "driver/timer.h"
+#include "esp_app_trace.h"
+
+
+uint32_t prvGetSMPTimestamp() {
+	uint64_t ts = 0;
+	timer_get_counter_value(1, 1, &ts);
+	return (uint32_t)ts;
+}
+
+
 static void* pCurrentTCB = NULL;
 
 /* Monitored by TzCtrl task, that give warnings as User Events */
@@ -330,7 +361,7 @@ extern volatile uint32_t TaskStacksNotIncluded;
 #endif /* defined(TRC_CFG_ENABLE_STACK_MONITOR) && (TRC_CFG_ENABLE_STACK_MONITOR == 1) && (TRC_CFG_SCHEDULING_ONLY == 0) */
 
 /* User Event Channel for giving warnings regarding NoRoomForSymbol etc. */
-traceString trcWarningChannel = 0;
+traceString trcWarningChannel;
 
 #define TRC_PORT_MALLOC(size) pvPortMalloc(size)
 
@@ -340,6 +371,20 @@ TRC_STREAM_PORT_ALLOCATE_FIELDS()
 static void prvCheckRecorderStatus(void);
 
 extern void prvTraceWarning(int errCode);
+
+__attribute__((constructor)) void vTraceInit() {
+	/* Creates the TzCtrl task - receives trace commands (start, stop, ...) */
+#if defined(configSUPPORT_STATIC_ALLOCATION) && (configSUPPORT_STATIC_ALLOCATION == 1)
+	HandleTzCtrl = xTaskCreateStatic(TzCtrl, STRING_CAST("TzCtrl"), TRC_CFG_CTRL_TASK_STACK_SIZE, NULL, TRC_CFG_CTRL_TASK_PRIORITY, stackTzCtrl, &tcbTzCtrl);
+#else
+	xTaskCreate( TzCtrl, STRING_CAST("TzCtrl"), TRC_CFG_CTRL_TASK_STACK_SIZE, NULL, TRC_CFG_CTRL_TASK_PRIORITY, &HandleTzCtrl );
+#endif
+
+	if (HandleTzCtrl == NULL)
+	{
+		prvTraceError(PSF_ERROR_TZCTRLTASK_NOT_CREATED);
+	}
+}
 
 /*******************************************************************************
  * vTraceEnable
@@ -352,41 +397,68 @@ void vTraceEnable(int startOption)
 {
 	int32_t bytes = 0;
 	int32_t status;
-	TracealyzerCommandType msg;
 	extern uint32_t RecorderEnabled;
+	TracealyzerCommandType msg;
 
 	/* Make sure recorder data is initialized */
 	vTraceInitialize();
 
-	if (HandleTzCtrl == 0)
+	/**
+	 * @note	When using dual-core we cannot use CCOUNT so we use the 40MHz external timer
+	 */
+#if !CONFIG_FREERTOS_UNICORE
+	// Configure timer
+	timer_config_t config = {
+		.alarm_en = 0,
+		.auto_reload = 0,
+		.counter_dir = TIMER_COUNT_UP,
+		.divider = 2,
+		.counter_en = 0
+	};
+	timer_init(1, 1, &config);
+
+	// Load counter value
+	timer_set_counter_value(1, 1, 0x00000000ULL);
+
+	// Start counting
+	timer_start(1, 1);
+#endif
+
+	/* Only do this first time...*/
+	if (HandleTzCtrl == NULL)
 	{
 		TRC_STREAM_PORT_INIT();
 
-		/* The #WFR channel means "Warnings from Recorder" and
+	   /* The #WFR channel means "Warnings from Recorder" and
 		* is used to store warnings and errors from the recorder.
 		* The abbreviation #WFR is used instead of the longer full name,
-		* to avoid truncation by small slots in the symbol table.
+		* to avoid truncation by small slots in the symbol table. 
 		* This is translated in Tracealyzer and shown as the full name,
 		* "Warnings from Recorder".
 		*
 		* Note: Requires that TRC_CFG_INCLUDE_USER_EVENTS is 1. */
-		trcWarningChannel = xTraceRegisterString("#WFR");
-
-		/* Creates the TzCtrl task - receives trace commands (start, stop, ...) */
-#if defined(configSUPPORT_STATIC_ALLOCATION) && (configSUPPORT_STATIC_ALLOCATION == 1)
-		HandleTzCtrl = xTaskCreateStatic(TzCtrl, STRING_CAST("TzCtrl"), TRC_CFG_CTRL_TASK_STACK_SIZE, NULL, TRC_CFG_CTRL_TASK_PRIORITY, stackTzCtrl, &tcbTzCtrl);
-#else
-		xTaskCreate(TzCtrl, STRING_CAST("TzCtrl"), TRC_CFG_CTRL_TASK_STACK_SIZE, NULL, TRC_CFG_CTRL_TASK_PRIORITY, &HandleTzCtrl);
-#endif
-
-		if (HandleTzCtrl == NULL)
-		{
-			prvTraceError(PSF_ERROR_TZCTRLTASK_NOT_CREATED);
-		}
+		
+		trcWarningChannel = xTraceRegisterString("#WFR"); 
 	}
 
 	if (startOption == TRC_START_AWAIT_HOST)
 	{
+		#if !CONFIG_FREERTOS_UNICORE
+			// While we want timekeeping for the sections above, we want to disable it when running with the
+			// external timer so we avoid a massive timeblock during the period the connection is finalized.
+			timer_pause(1, 1);
+		#endif
+
+			// We have to ensure that apptrace is connected before streaming any data, otherwise
+			// we will have problems with junk data and many cases were we end up in a failure state
+			// where no bytes are received by the host.
+			while (!esp_apptrace_host_is_connected(ESP_APPTRACE_DEST_TRAX))  {}
+
+		#if !CONFIG_FREERTOS_UNICORE
+			// Now that we have a connection with apptrace, enable the timer again.
+			timer_start(1,1);
+		#endif
+		
 		/* We keep trying to read commands until the recorder has been started */
 		do
 		{
@@ -417,6 +489,11 @@ void vTraceEnable(int startOption)
 	}
 	else if (startOption == TRC_START)
 	{
+		// We have to ensure that apptrace is connected before streaming any data, otherwise
+		// we will have problems with junk data and many cases were we end up in a failure state
+		// where no bytes are received by the host.
+		while (!esp_apptrace_host_is_connected(ESP_APPTRACE_DEST_TRAX))  {}
+
 		/* We start streaming directly - this assumes that the interface is ready! */
 		TRC_PORT_SPECIFIC_INIT();
 		
@@ -424,7 +501,7 @@ void vTraceEnable(int startOption)
 		msg.param1 = 1;
 		prvProcessCommand(&msg);
 	}
-	else if (startOption == TRC_INIT)
+	else
 	{
 		/* On TRC_INIT */
 		TRC_PORT_SPECIFIC_INIT();
@@ -471,7 +548,7 @@ void vTraceSetMutexName(void* object, const char* name)
 	vTraceStoreKernelObjectName(object, name);
 }
 
-#if (TRC_CFG_INCLUDE_EVENT_GROUP_EVENTS == 1 && TRC_CFG_FREERTOS_VERSION >= TRC_FREERTOS_VERSION_8_X_X)
+#if (TRC_CFG_INCLUDE_EVENT_GROUP_EVENTS == 1 && TRC_CFG_ESP_IDF_VERSION >= TRC_ESP_IDF_VERSION_4_0_0)
 /*******************************************************************************
 * vTraceSetEventGroupName(void* object, const char* name)
 *
@@ -484,9 +561,9 @@ void vTraceSetEventGroupName(void* object, const char* name)
 {
 	vTraceStoreKernelObjectName(object, name);
 }
-#endif /* (TRC_CFG_INCLUDE_EVENT_GROUP_EVENTS == 1 && TRC_CFG_FREERTOS_VERSION >= TRC_FREERTOS_VERSION_8_X_X) */
+#endif /* (TRC_CFG_INCLUDE_EVENT_GROUP_EVENTS == 1 && TRC_CFG_ESP_IDF_VERSION >= TRC_ESP_IDF_VERSION_4_0_0) */
 
-#if (TRC_CFG_INCLUDE_STREAM_BUFFER_EVENTS == 1 && TRC_CFG_FREERTOS_VERSION >= TRC_FREERTOS_VERSION_10_0_0)
+#if (TRC_CFG_INCLUDE_STREAM_BUFFER_EVENTS == 1 && TRC_CFG_ESP_IDF_VERSION >= TRC_ESP_IDF_VERSION_4_3_0)
 /*******************************************************************************
 * vTraceSetStreamBufferName(void* object, const char* name)
 *
@@ -512,7 +589,7 @@ void vTraceSetMessageBufferName(void* object, const char* name)
 {
 	vTraceStoreKernelObjectName(object, name);
 }
-#endif /* (TRC_CFG_INCLUDE_STREAM_BUFFER_EVENTS == 1 && TRC_CFG_FREERTOS_VERSION >= TRC_FREERTOS_VERSION_10_0_0) */
+#endif /* (TRC_CFG_INCLUDE_STREAM_BUFFER_EVENTS == 1 && TRC_CFG_ESP_IDF_VERSION >= TRC_ESP_IDF_VERSION_4_3_0) */
 
 #endif /* (TRC_CFG_SCHEDULING_ONLY == 0) */
 
@@ -525,6 +602,22 @@ void vTraceSetMessageBufferName(void* object, const char* name)
 void* prvTraceGetCurrentTaskHandle(void)
 {
 	return xTaskGetCurrentTaskHandle();
+}
+
+/*******************************************************************************
+ * prvIsNewTCB
+ *
+ * Tells if this task is already executing, or if there has been a task-switch.
+ * Assumed to be called within a trace hook in kernel context.
+ ******************************************************************************/
+uint32_t prvIsNewTCB(void* pNewTCB)
+{
+	if (pCurrentTCB != pNewTCB)
+	{
+		pCurrentTCB = pNewTCB;
+		return 1;
+	}
+	return 0;
 }
 
 /*******************************************************************************
@@ -638,7 +731,7 @@ static portTASK_FUNCTION( TzCtrl, pvParameters )
 			prvReportStackUsage();
 		}
 
-		vTaskDelay(TRC_CFG_CTRL_TASK_DELAY);
+		vTaskDelay(TRC_CFG_CTRL_TASK_DELAY / portTICK_PERIOD_MS);
 	}
 }
 
@@ -703,7 +796,7 @@ void vTraceSetMutexName(void* object, const char* name)
 	prvTraceSetObjectName(TRACE_CLASS_MUTEX, TRACE_GET_OBJECT_NUMBER(QUEUE, object), name);
 }
 
-#if (TRC_CFG_INCLUDE_EVENT_GROUP_EVENTS == 1 && TRC_CFG_FREERTOS_VERSION >= TRC_FREERTOS_VERSION_8_X_X)
+#if (TRC_CFG_INCLUDE_EVENT_GROUP_EVENTS == 1 && TRC_CFG_ESP_IDF_VERSION >= TRC_ESP_IDF_VERSION_4_0_0)
 /*******************************************************************************
 * vTraceSetEventGroupName(void* object, const char* name)
 *
@@ -716,9 +809,9 @@ void vTraceSetEventGroupName(void* object, const char* name)
 {
 	prvTraceSetObjectName(TRACE_CLASS_EVENTGROUP, TRACE_GET_OBJECT_NUMBER(EVENTGROUP, object), name);
 }
-#endif /* (TRC_CFG_INCLUDE_EVENT_GROUP_EVENTS == 1 && TRC_CFG_FREERTOS_VERSION >= TRC_FREERTOS_VERSION_8_X_X) */
+#endif /* (TRC_CFG_INCLUDE_EVENT_GROUP_EVENTS == 1 && TRC_CFG_ESP_IDF_VERSION >= TRC_ESP_IDF_VERSION_4_0_0) */
 
-#if (TRC_CFG_INCLUDE_STREAM_BUFFER_EVENTS == 1 && TRC_CFG_FREERTOS_VERSION >= TRC_FREERTOS_VERSION_10_0_0)
+#if (TRC_CFG_INCLUDE_STREAM_BUFFER_EVENTS == 1 && TRC_CFG_ESP_IDF_VERSION >= TRC_ESP_IDF_VERSION_4_3_0)
 /*******************************************************************************
 * vTraceSetStreamBufferName(void* object, const char* name)
 *
@@ -744,13 +837,27 @@ void vTraceSetMessageBufferName(void* object, const char* name)
 {
 	prvTraceSetObjectName(TRACE_CLASS_MESSAGEBUFFER, TRACE_GET_OBJECT_NUMBER(STREAMBUFFER, object), name);
 }
-#endif /* (TRC_CFG_INCLUDE_STREAM_BUFFER_EVENTS == 1 && TRC_CFG_FREERTOS_VERSION >= TRC_FREERTOS_VERSION_10_0_0) */
+#endif /* (TRC_CFG_INCLUDE_STREAM_BUFFER_EVENTS == 1 && TRC_CFG_ESP_IDF_VERSION >= TRC_ESP_IDF_VERSION_4_3_0) */
 
 #endif /* (TRC_CFG_SCHEDULING_ONLY == 0) */
 
 void* prvTraceGetCurrentTaskHandle()
 {
 	return xTaskGetCurrentTaskHandle();
+}
+
+__attribute__((constructor)) void vTraceInit() {
+#if defined(TRC_CFG_ENABLE_STACK_MONITOR) && (TRC_CFG_ENABLE_STACK_MONITOR == 1) && (TRC_CFG_SCHEDULING_ONLY == 0)
+	/* Creates the TzCtrl task - reports unused stack */
+	if (HandleTzCtrl == 0)
+	{
+#if defined(configSUPPORT_STATIC_ALLOCATION) && (configSUPPORT_STATIC_ALLOCATION == 1)
+		HandleTzCtrl = xTaskCreateStatic(TzCtrl, STRING_CAST("TzCtrl"), TRC_CFG_CTRL_TASK_STACK_SIZE, NULL, TRC_CFG_CTRL_TASK_PRIORITY, stackTzCtrl, &tcbTzCtrl);
+#else /* defined(configSUPPORT_STATIC_ALLOCATION) && (configSUPPORT_STATIC_ALLOCATION == 1) */
+		xTaskCreate(TzCtrl, STRING_CAST("TzCtrl"), TRC_CFG_CTRL_TASK_STACK_SIZE, NULL, TRC_CFG_CTRL_TASK_PRIORITY, &HandleTzCtrl);
+#endif /* defined(configSUPPORT_STATIC_ALLOCATION) && (configSUPPORT_STATIC_ALLOCATION == 1) */
+	}
+#endif /* defined(TRC_CFG_ENABLE_STACK_MONITOR) && (TRC_CFG_ENABLE_STACK_MONITOR == 1) && (TRC_CFG_SCHEDULING_ONLY == 0) */
 }
 
 /******************************************************************************
@@ -792,22 +899,10 @@ void vTraceEnable(int startOption)
 	/* Make sure recorder data is initialized */
 	vTraceInitialize();
 
-#if defined(TRC_CFG_ENABLE_STACK_MONITOR) && (TRC_CFG_ENABLE_STACK_MONITOR == 1) && (TRC_CFG_SCHEDULING_ONLY == 0)
-	/* Creates the TzCtrl task - reports unused stack */
-	if (HandleTzCtrl == 0)
-	{
-#if defined(configSUPPORT_STATIC_ALLOCATION) && (configSUPPORT_STATIC_ALLOCATION == 1)
-		HandleTzCtrl = xTaskCreateStatic(TzCtrl, STRING_CAST("TzCtrl"), TRC_CFG_CTRL_TASK_STACK_SIZE, NULL, TRC_CFG_CTRL_TASK_PRIORITY, stackTzCtrl, &tcbTzCtrl);
-#else /* defined(configSUPPORT_STATIC_ALLOCATION) && (configSUPPORT_STATIC_ALLOCATION == 1) */
-		xTaskCreate(TzCtrl, STRING_CAST("TzCtrl"), TRC_CFG_CTRL_TASK_STACK_SIZE, NULL, TRC_CFG_CTRL_TASK_PRIORITY, &HandleTzCtrl);
-#endif /* defined(configSUPPORT_STATIC_ALLOCATION) && (configSUPPORT_STATIC_ALLOCATION == 1) */
-	}
-#endif /* defined(TRC_CFG_ENABLE_STACK_MONITOR) && (TRC_CFG_ENABLE_STACK_MONITOR == 1) && (TRC_CFG_SCHEDULING_ONLY == 0) */
-
 	if (startOption == TRC_START)
 	{
 		prvTraceInitTimestamps();
-		
+
 		vTraceStart();
 	}
 	else if (startOption == TRC_START_AWAIT_HOST)
@@ -890,8 +985,6 @@ void vTraceInitObjectPropertyTable()
 /* Initialization of the handle mechanism, see e.g, prvTraceGetObjectHandle */
 void vTraceInitObjectHandleStack()
 {
-	uint32_t i = 0;
-
 	objectHandleStacks.indexOfNextAvailableHandle[0] = objectHandleStacks.lowestIndexOfClass[0] = 0;
 	objectHandleStacks.indexOfNextAvailableHandle[1] = objectHandleStacks.lowestIndexOfClass[1] = (TRC_CFG_NQUEUE);
 	objectHandleStacks.indexOfNextAvailableHandle[2] = objectHandleStacks.lowestIndexOfClass[2] = (TRC_CFG_NQUEUE) + (TRC_CFG_NSEMAPHORE);
@@ -911,16 +1004,6 @@ void vTraceInitObjectHandleStack()
 	objectHandleStacks.highestIndexOfClass[6] = (TRC_CFG_NQUEUE) + (TRC_CFG_NSEMAPHORE) + (TRC_CFG_NMUTEX) + (TRC_CFG_NTASK) + (TRC_CFG_NISR) + (TRC_CFG_NTIMER) + (TRC_CFG_NEVENTGROUP) - 1;
 	objectHandleStacks.highestIndexOfClass[7] = (TRC_CFG_NQUEUE) + (TRC_CFG_NSEMAPHORE) + (TRC_CFG_NMUTEX) + (TRC_CFG_NTASK) + (TRC_CFG_NISR) + (TRC_CFG_NTIMER) + (TRC_CFG_NEVENTGROUP) + (TRC_CFG_NSTREAMBUFFER) - 1;
 	objectHandleStacks.highestIndexOfClass[8] = (TRC_CFG_NQUEUE) + (TRC_CFG_NSEMAPHORE) + (TRC_CFG_NMUTEX) + (TRC_CFG_NTASK) + (TRC_CFG_NISR) + (TRC_CFG_NTIMER) + (TRC_CFG_NEVENTGROUP) + (TRC_CFG_NSTREAMBUFFER) + (TRC_CFG_NMESSAGEBUFFER) - 1;
-
-	for (i = 0; i < TRACE_NCLASSES; i++)
-	{
-		objectHandleStacks.handleCountWaterMarksOfClass[i] = 0;
-	}
-
-	for (i = 0; i < TRACE_KERNEL_OBJECT_COUNT; i++)
-	{
-		objectHandleStacks.objectHandles[i] = 0;
-	}
 }
 
 /* Returns the "Not enough handles" error message for this object class */
