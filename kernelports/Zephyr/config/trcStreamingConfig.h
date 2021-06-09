@@ -127,6 +127,18 @@ extern "C" {
 #define TRC_CFG_ISR_TAILCHAINING_THRESHOLD CONFIG_PERCEPIO_RECORDER_TRC_CFG_ISR_TAILCHAINING_THRESHOLD_STREAMING
 
 /**
+ * @def TRC_CFG_INCLUDE_ISR_TRACING
+ * 
+ * @brief Macro which should be defined as an integer value.
+ * 
+ * If set to 1, trace recorder will include ISR tracing events, for Zephyr
+ * this follows the systemwide tracing configuration.
+ */
+#ifdef CONFIG_TRACING_ISR
+#define TRC_CFG_INCLUDE_ISR_TRACING 1
+#endif
+
+/**
  * @}
  */
 

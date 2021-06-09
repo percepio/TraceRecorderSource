@@ -55,6 +55,9 @@ static struct k_thread HandleTzCtrl;
 /* Trace recorder current thread handle */
 static struct k_thread *CurrentThread = NULL;
 
+/* Generic Zephyr ISR handle */
+static traceHandle HandleISR;
+
 #endif /* ((TRC_CFG_RECORDER_MODE) == TRC_RECORDER_MODE_STREAMING || ((TRC_CFG_ENABLE_STACK_MONITOR) == 1) && (TRC_CFG_SCHEDULING_ONLY == 0)) */
 
 /* Monitored by TzCtrl task, that give warnings as User Events */
@@ -1089,7 +1092,15 @@ void sys_trace_k_queue_insert_enter(struct k_queue *queue, void *prev, void *dat
 void sys_trace_k_queue_insert_exit(struct k_queue *queue, void *prev, void *data) {
 }
 
-void sys_trace_k_queue_append_list_exit(struct k_queue *queue, void *head, void *tail, int ret) {
+void sys_trace_k_queue_append_list_enter(struct k_queue *queue, void *head, void *tail) {
+	xTraceSDKEventBegin(PSF_EVENT_QUEUE_APPEND_LIST_BLOCKING, 12);
+	xTraceSDKEventAddObject((void*)queue);
+	xTraceSDKEventAdd32((uint32_t)head);
+	xTraceSDKEventAdd32((uint32_t)tail);
+	xTraceSDKEventEnd();
+}
+
+void sys_trace_k_queue_append_list_exit(struct k_queue *queue, int ret) {
 	if (ret == 0) {
 		xTraceSDKEventBegin(PSF_EVENT_QUEUE_APPEND_LIST_SUCCESS, 16);
 	} else {
@@ -1097,8 +1108,6 @@ void sys_trace_k_queue_append_list_exit(struct k_queue *queue, void *head, void 
 	}
 	
 	xTraceSDKEventAddObject((void*)queue);
-	xTraceSDKEventAdd32((uint32_t)head);
-	xTraceSDKEventAdd32((uint32_t)tail);
 	xTraceSDKEventAdd32(ret);
 	xTraceSDKEventEnd();
 }
@@ -2120,9 +2129,11 @@ void sys_trace_syscall_exit() {
  * the Zephyr team.
  */
 void sys_trace_isr_enter(void) {
+	vTraceStoreISRBegin(HandleISR);
 }
 
 void sys_trace_isr_exit(void) {
+	vTraceStoreISREnd(0);
 }
 
 void sys_trace_isr_exit_to_scheduler(void) {
@@ -2310,6 +2321,9 @@ static int tracelyzer_pre_kernel_init(const struct device *arg)
 #else
 	vTraceEnable(TRC_INIT);
 #endif
+
+	/* Create ISR handle */
+	HandleISR = xTraceSetISRProperties("Zephyr ISR", -32);
 
 	return 0;
 }

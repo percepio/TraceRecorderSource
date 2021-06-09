@@ -15,6 +15,8 @@ extern uint16_t CurrentFilterMask;
 
 extern uint16_t CurrentFilterGroup;
 
+TRACE_ALLOC_CRITICAL_SECTION();
+
 void vTraceSDKSetObjectFilter();
 
 /*******************************************************************************
@@ -33,7 +35,7 @@ traceResult xTraceSDKRegisterObject(uint32_t uiEventCode, void* pxObject, uint32
 
 #if (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING)
 	prvTraceSaveObjectData(pxObject, uiData); \
-	if (prvTraceBeginStoreEvent(uiEventCode, sizeof(uint32_t)) == TRACE_SUCCESS)
+	if (prvTraceBeginStoreEvent(uiEventCode, sizeof(uint32_t) + sizeof(uint32_t)) == TRACE_SUCCESS)
 	{
 		prvTraceStoreEventPayload32((uint32_t)pxObject);
 		prvTraceStoreEventPayload32(uiData);
@@ -67,7 +69,7 @@ traceResult xTraceSDKUnregisterObject(uint32_t uiEventCode, void* pxObject, uint
 	traceResult xResult = TRACE_FAIL;
 
 #if (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING)
-	if (prvTraceBeginStoreEvent(uiEventCode, sizeof(uint32_t)) == TRACE_SUCCESS)
+	if (prvTraceBeginStoreEvent(uiEventCode, sizeof(uint32_t) + sizeof(uint32_t)) == TRACE_SUCCESS)
 	{
 		prvTraceStoreEventPayload32((uint32_t)pxObject);
 		prvTraceStoreEventPayload32(uiData);
@@ -223,10 +225,17 @@ traceResult xTraceSDKTaskReady(void* pxTCB)
 ******************************************************************************/
 traceResult xTraceSDKEventBegin(uint32_t uiEventCode, uint32_t uiPayloadSize)
 {
+	TRACE_ENTER_CRITICAL_SECTION();
+	
 	traceResult xResult = TRACE_FAIL;
 	
 #if (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING)
 	xResult = prvTraceBeginStoreEvent(uiEventCode, uiPayloadSize);
+
+	if (xResult == TRACE_FAIL)
+	{
+		TRACE_EXIT_CRITICAL_SECTION();
+	}
 #endif /* (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING) */
 
 #if (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_SNAPSHOT)
@@ -256,6 +265,8 @@ traceResult xTraceSDKEventEnd()
 #if (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_SNAPSHOT)
 	xResult = TRACE_SUCCESS;
 #endif /* (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING) */
+
+	TRACE_EXIT_CRITICAL_SECTION();
 
 	return xResult;
 }
