@@ -440,10 +440,11 @@
 #define sys_port_trace_k_queue_insert_exit(queue) 							   \
     sys_trace_k_queue_insert_exit(queue, prev, data)
 #undef sys_port_trace_k_queue_append_list_enter
-#define sys_port_trace_k_queue_append_list_enter(queue)     
+#define sys_port_trace_k_queue_append_list_enter(queue)                        \
+    sys_trace_k_queue_append_list_enter(queue, head, tail)
 #undef sys_port_trace_k_queue_append_list_exit
 #define sys_port_trace_k_queue_append_list_exit(queue, ret) 				   \
-    sys_trace_k_queue_append_list_exit(queue, head, tail, ret)
+    sys_trace_k_queue_append_list_exit(queue, ret)
 #undef sys_port_trace_k_queue_merge_slist_enter
 #define sys_port_trace_k_queue_merge_slist_enter(queue)                        \
     sys_trace_k_queue_merge_slist_enter(queue, list)
@@ -1038,8 +1039,9 @@ void sys_trace_k_queue_insert_enter(struct k_queue *queue, void *prev,
     void *data);
 void sys_trace_k_queue_insert_exit(struct k_queue *queue, void *prev,
     void *data);
-void sys_trace_k_queue_append_list_exit(struct k_queue *queue, void *head,
-    void *tail, int ret);
+void sys_trace_k_queue_append_list_enter(struct k_queue *queue, void *head,
+    void *tail);
+void sys_trace_k_queue_append_list_exit(struct k_queue *queue, int ret);
 void sys_trace_k_queue_merge_slist_enter(struct k_queue *queue,
     sys_slist_t *list);
 void sys_trace_k_queue_merge_slist_exit(struct k_queue *queue,

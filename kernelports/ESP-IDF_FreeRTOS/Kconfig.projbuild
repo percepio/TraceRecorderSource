@@ -349,7 +349,14 @@ menu "Percepio Trace Recorder"
 	            The maximum number of object data entries (used for task priorities) that can
 				be stored at the same time. Must be sufficient for all tasks, otherwise there
 				will be warnings (as User Events) from TzCtrl task, that monitors this.
+		
+		config PERCEPIO_RECORDER_TRC_STREAM_PORT_USE_INTERNAL_BUFFER
+			bool "Use Internal Paged Event Buffer"
+			default n
+			help
+				Important for the J-Link port, in most other ports this can be skipped.
 				
+		if PERCEPIO_RECORDER_TRC_STREAM_PORT_USE_INTERNAL_BUFFER
 		config PERCEPIO_RECORDER_TRC_CFG_PAGED_EVENT_BUFFER_PAGE_COUNT
 	        int "Paged Event Buffer Page Count"
 	        depends on PERCEPIO_RECORDER_TRC_RECORDER_MODE_STREAMING
@@ -370,6 +377,7 @@ menu "Percepio Trace Recorder"
 				the Ethernet MTU (Maximum Transmission Unit). However, since the currently
 				active page can't be transfered, having more but smaller pages is more
 				efficient with respect memory usage, than having a few large pages.
+		endif # PERCEPIO_RECORDER_TRC_STREAM_PORT_USE_INTERNAL_BUFFER
 				
 		config PERCEPIO_RECORDER_TRC_CFG_ISR_TAILCHAINING_THRESHOLD_STREAMING
 	        int "ISR Tailchaining Threshold"

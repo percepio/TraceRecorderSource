@@ -40,12 +40,17 @@ extern "C" {
     #define TRC_CFG_APPTRACE_TRAX_MODE APPTRACE_TRAX_MODE_NO_BLOCK_SKIP
 #endif
 
+void initTrax();
 int readFromTrax(void* ptrData, uint32_t size, int32_t* ptrBytesRead);
 int writeToTrax(void* ptrData, uint32_t size, int32_t* ptrBytesWritten);
 
-#define TRC_STREAM_PORT_INIT()
+#define TRC_STREAM_PORT_INIT() initTrax()
 
+#ifdef CONFIG_PERCEPIO_RECORDER_TRC_STREAM_PORT_USE_INTERNAL_BUFFER
+#define TRC_STREAM_PORT_USE_INTERNAL_BUFFER 1
+#else
 #define TRC_STREAM_PORT_USE_INTERNAL_BUFFER 0
+#endif
 
 #if (TRC_STREAM_PORT_USE_INTERNAL_BUFFER == 1)
 extern char _TzIntBuf[(TRC_CFG_PAGED_EVENT_BUFFER_PAGE_COUNT) * (TRC_CFG_PAGED_EVENT_BUFFER_PAGE_SIZE)] __attribute__((aligned (4)));

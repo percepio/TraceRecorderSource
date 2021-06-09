@@ -38,7 +38,7 @@ extern "C" {
  * See trcHardwarePort.h for available ports and information on how to
  * define your own port, if not already present.
  ******************************************************************************/
-#define TRC_CFG_HARDWARE_PORT TRC_HARDWARE_PORT_XTensa_LX7
+#define TRC_CFG_HARDWARE_PORT TRC_HARDWARE_PORT_XTensa_LX6
 
 /*******************************************************************************
  * Configuration Macro: TRC_CFG_RECORDER_MODE

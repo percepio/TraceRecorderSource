@@ -37,7 +37,7 @@ extern traceString trcWarningChannel;
 
 /* Dummy definitions, since no RTOS */
 #define TRACE_TICK_RATE_HZ 10000 /* Must not be 0. */
-#define TRACE_GET_CURRENT_TASK() 0
+#define TRACE_GET_CURRENT_TASK() k_current_get()
 #define TRACE_GET_OS_TICKS() (0)
 #define TRACE_GET_TASK_NUMBER(x) 0
 
@@ -207,9 +207,9 @@ void vTracePeriodicControl(void);
 #define PSF_EVENT_PWORK_CANCEL_BLOCKING						0x15B
 #define PSF_EVENT_PWORK_CANCEL_FAILURE						0x15C
 
-#define PSF_EVENT_ISR_ENTER									
-#define PSF_EVENT_ISR_EXIT
-#define PSF_EVENT_ISR_EXIT_TO_SCHEDULER
+#define PSF_EVENT_ISR_ENTER									0x162
+#define PSF_EVENT_ISR_EXIT									0x163
+#define PSF_EVENT_ISR_EXIT_TO_SCHEDULER						0x164
 
 #define PSF_EVENT_POLL_EVENT_INIT							0x82
 #define PSF_EVENT_POLL_POLL_SUCCESS							0x8F
@@ -236,6 +236,7 @@ void vTracePeriodicControl(void);
 #define PSF_EVENT_QUEUE_ALLOC_PREPEND_FAILURE				0xC7
 #define PSF_EVENT_QUEUE_INSERT								0xC8
 #define PSF_EVENT_QUEUE_APPEND_LIST_SUCCESS					0xC9
+#define PSF_EVENT_QUEUE_APPEND_LIST_BLOCKING				0x165
 #define PSF_EVENT_QUEUE_APPEND_LIST_FAILURE					0xCA
 #define PSF_EVENT_QUEUE_MERGE_SLIST_SUCCESS					0xCB
 #define PSF_EVENT_QUEUE_MERGE_SLIST_BLOCKING				0x6E
