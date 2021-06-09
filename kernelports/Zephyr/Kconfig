@@ -4,13 +4,6 @@
 if PERCEPIO_TRACERECORDER
 
 menu "Percepio Trace Recorder"
-	config PERCEPIO_RECORDER_CFG_SCHEDULING_ONLY
-        bool "Only Record Scheduling Events"
-        default n
-        help
-            If this setting is enabled, only scheduling events are recorded. If disabled,
-            all events are recorded (unless filtered in other ways).
-
 	choice
 		prompt "Recorder Mode"
 		default PERCEPIO_TRC_RECORDER_MODE_STREAMING
@@ -89,7 +82,6 @@ menu "Percepio Trace Recorder"
 
 	menuconfig PERCEPIO_RECORDER_CFG_STACK_MONITOR
 		bool "Stack Monitor"
-		depends on !PERCEPIO_RECORDER_CFG_SCHEDULING_ONLY
 		select TRACING_STACK
 		default y
 		help 
@@ -103,7 +95,7 @@ menu "Percepio Trace Recorder"
 
 		config PERCEPIO_RECORDER_CFG_STACK_MONITOR_MAX_TASKS
 			int "Stack Monitor Max Tasks"
-			depends on TRACING_STACK && !PERCEPIO_RECORDER_CFG_SCHEDULING_ONLY
+			depends on TRACING_STACK
 			range 1 64
 			default 15
 			help
@@ -112,7 +104,7 @@ menu "Percepio Trace Recorder"
 
 		config PERCEPIO_RECORDER_CFG_STACK_MONITOR_MAX_REPORTS
 			int "Stack Monitor Max Reports"
-			depends on TRACING_STACK && !PERCEPIO_RECORDER_CFG_SCHEDULING_ONLY
+			depends on TRACING_STACK
 			range 1 64
 			default 1
 			help
@@ -131,8 +123,8 @@ menu "Percepio Trace Recorder"
 
 	config PERCEPIO_RECORDER_CFG_CTRL_TASK_PRIORITY
 		int "Control Task Priority"
-		depends on TRACING_STACK && !PERCEPIO_RECORDER_CFG_SCHEDULING_ONLY
-		range 1 32
+		depends on TRACING_STACK
+		range -32 32
 		default 1
 		help
 			In streaming mode, TzCtrl is used to receive start/stop commands from
@@ -148,7 +140,7 @@ menu "Percepio Trace Recorder"
 
 	config PERCEPIO_RECORDER_CFG_CTRL_TASK_DELAY
 		int "Control Task Delay"
-		depends on TRACING_STACK && !PERCEPIO_RECORDER_CFG_SCHEDULING_ONLY
+		depends on TRACING_STACK
 		range 1 1000000000
 		default 10
 		help
@@ -162,7 +154,7 @@ menu "Percepio Trace Recorder"
 		
 	config PERCEPIO_RECORDER_CFG_CTRL_TASK_STACK_SIZE
 		int "Control Task Stack Size"
-		depends on TRACING_STACK && !PERCEPIO_RECORDER_CFG_SCHEDULING_ONLY
+		depends on TRACING_STACK
 		range 1 1048576
 		default 2048
 		help
@@ -171,7 +163,6 @@ menu "Percepio Trace Recorder"
 
 	config PERCEPIO_RECORDER_CFG_MAX_ISR_NESTING
 		int "Max ISR Nesting"
-		depends on !PERCEPIO_RECORDER_CFG_SCHEDULING_ONLY
 		range 1 1048576
 		default 8
 		help
@@ -195,9 +186,9 @@ menu "Percepio Trace Recorder"
 				bool "RTT Streaming"
 				select USE_SEGGER_RTT
 
-			config PERCEPIO_RECORDER_TRC_RECORDER_STREAM_PORT_ITM
-				depends on ARM
-				bool "ITM Streaming"
+			#config PERCEPIO_RECORDER_TRC_RECORDER_STREAM_PORT_ITM
+			#	depends on ARM
+			#	bool "ITM Streaming"
 		endchoice
 
 		if PERCEPIO_RECORDER_TRC_RECORDER_STREAM_PORT_RTT

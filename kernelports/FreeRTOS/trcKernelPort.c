@@ -9,6 +9,7 @@
  */
 
 #include "FreeRTOS.h"
+#include "trcInternalBuffer.h"
 
 #if (!defined(TRC_USE_TRACEALYZER_RECORDER) && configUSE_TRACE_FACILITY == 1)
 #error Trace Recorder: You need to include trcRecorder.h at the end of your FreeRTOSConfig.h!
@@ -524,22 +525,6 @@ void vTraceSetMessageBufferName(void* object, const char* name)
 void* prvTraceGetCurrentTaskHandle(void)
 {
 	return xTaskGetCurrentTaskHandle();
-}
-
-/*******************************************************************************
- * prvIsNewTCB
- *
- * Tells if this task is already executing, or if there has been a task-switch.
- * Assumed to be called within a trace hook in kernel context.
- ******************************************************************************/
-uint32_t prvIsNewTCB(void* pNewTCB)
-{
-	if (pCurrentTCB != pNewTCB)
-	{
-		pCurrentTCB = pNewTCB;
-		return 1;
-	}
-	return 0;
 }
 
 /*******************************************************************************

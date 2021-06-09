@@ -86,7 +86,7 @@ extern "C" {
  *
  * Default value is 0 (= include additional events).
  */
-#define TRC_CFG_SCHEDULING_ONLY CONFIG_PERCEPIO_TRC_CFG_SCHEDULING_ONLY
+#define TRC_CFG_SCHEDULING_ONLY 0
 
 /**
  * @def TRC_CFG_INCLUDE_USER_EVENTS
@@ -138,9 +138,9 @@ extern "C" {
  * In snapshot mode, the TzCtrl task is only used for stack monitoring and is
  * not created unless this is enabled.
  */
+#ifdef CONFIG_PERCEPIO_RECORDER_CFG_STACK_MONITOR
 #define TRC_CFG_ENABLE_STACK_MONITOR CONFIG_PERCEPIO_RECORDER_CFG_STACK_MONITOR
-
-#if CONFIG_PERCEPIO_RECORDER_CFG_STACK_MONITOR
+#endif
 
 /**
  * @def TRC_CFG_STACK_MONITOR_MAX_TASKS
@@ -150,7 +150,11 @@ extern "C" {
  * This controls how many tasks that can be monitored by the stack monitor.
  * If this is too small, some tasks will be excluded and a warning is shown.
  */
+#ifdef CONFIG_PERCEPIO_RECORDER_CFG_STACK_MONITOR_MAX_TASKS
 #define TRC_CFG_STACK_MONITOR_MAX_TASKS CONFIG_PERCEPIO_RECORDER_CFG_STACK_MONITOR_MAX_TASKS
+#else
+#define TRC_CFG_STACK_MONITOR_MAX_TASKS 10
+#endif
 
 /**
  * @def TRC_CFG_STACK_MONITOR_MAX_REPORTS
@@ -169,10 +173,11 @@ extern "C" {
  * can be executed on low priority. This way, you can avoid that the stack
  * analysis disturbs any time-sensitive tasks.
  */
+#ifdef CONFIG_PERCEPIO_RECORDER_CFG_STACK_MONITOR_MAX_REPORTS
 #define TRC_CFG_STACK_MONITOR_MAX_REPORTS CONFIG_PERCEPIO_RECORDER_CFG_STACK_MONITOR_MAX_REPORTS
-
-#endif // CONFIG_PERCEPIO_RECORDER_CFG_STACK_MONITOR
-
+#else
+#define TRC_CFG_STACK_MONITOR_MAX_REPORTS 1
+#endif
 
 /**
  * @def TRC_CFG_CTRL_TASK_PRIORITY
@@ -190,7 +195,11 @@ extern "C" {
  * not created if stack monitoring is disabled. TRC_CFG_CTRL_TASK_PRIORITY should
  * be low, to avoid disturbing any time-sensitive tasks.
  */
+#ifdef CONFIG_PERCEPIO_RECORDER_CFG_CTRL_TASK_PRIORITY
 #define TRC_CFG_CTRL_TASK_PRIORITY CONFIG_PERCEPIO_RECORDER_CFG_CTRL_TASK_PRIORITY
+#else
+#define TRC_CFG_CTRL_TASK_PRIORITY 1
+#endif
 
 /**
  * @def TRC_CFG_CTRL_TASK_DELAY_MS
@@ -203,7 +212,11 @@ extern "C" {
  * increases the CPU load of TzCtrl somewhat, but may improve the performance of
  * of the trace streaming, especially if the trace buffer is small.
  */
+#ifdef CONFIG_PERCEPIO_RECORDER_CFG_CTRL_TASK_DELAY
 #define TRC_CFG_CTRL_TASK_DELAY_MS CONFIG_PERCEPIO_RECORDER_CFG_CTRL_TASK_DELAY
+#else
+#define TRC_CFG_CTRL_TASK_DELAY_MS 10
+#endif
 
 /**
  * @def TRC_CFG_CTRL_TASK_STACK_SIZE
@@ -211,8 +224,11 @@ extern "C" {
  * @brief The stack size of the Tracealyzer Control (TzCtrl) task.
  * See TRC_CFG_CTRL_TASK_PRIORITY for further information about TzCtrl.
  */
+#ifdef CONFIG_PERCEPIO_RECORDER_CFG_CTRL_TASK_STACK_SIZE
 #define TRC_CFG_CTRL_TASK_STACK_SIZE CONFIG_PERCEPIO_RECORDER_CFG_CTRL_TASK_STACK_SIZE
-
+#else
+#define TRC_CFG_CTRL_TASK_STACK_SIZE (512)
+#endif
 
 /**
  * @def TRC_CFG_RECORDER_BUFFER_ALLOCATION
@@ -249,7 +265,11 @@ extern "C" {
  *
  * This value must be a non-zero positive constant, at least 1.
  */
+#ifdef CONFIG_PERCEPIO_RECORDER_CFG_MAX_ISR_NESTING
 #define TRC_CFG_MAX_ISR_NESTING CONFIG_PERCEPIO_RECORDER_CFG_MAX_ISR_NESTING
+#else
+#define TRC_CFG_MAX_ISR_NESTING 8
+#endif
 
 /**
  * @def TRC_CFG_RECORDER_DATA_ATTRIBUTE

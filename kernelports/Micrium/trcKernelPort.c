@@ -10,6 +10,7 @@
 
 #include <os.h>
 #include <lib_str.h>
+#include "trcInternalBuffer.h"
 
 #if (defined(TRC_USE_TRACEALYZER_RECORDER) && TRC_USE_TRACEALYZER_RECORDER == 1)
 
@@ -320,7 +321,7 @@ uint32_t prvTraceGetStackHighWaterMark(void* task)
 	CPU_STK_SIZE free = 0, used = 0;
 	OS_ERR err;
 	
-	OSTaskStkChk((OS_TCB*)tasksInStackMonitor[i].tcb, &free, &used, &err);
+	OSTaskStkChk(task, &free, &used, &err);
 	
 	return free;
 }

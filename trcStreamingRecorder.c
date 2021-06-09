@@ -19,6 +19,22 @@
 #include <stdarg.h>
 
 #include "trcExtensions.h"
+#include "trcInternalBuffer.h"
+
+/* Unless specified in trcConfig.h we assume this is a single core target */
+#ifndef TRC_CFG_PLATFORM_NUM_CORES
+#define TRC_CFG_PLATFORM_NUM_CORES 1
+#endif
+
+#ifndef TRC_GET_CURRENT_CORE
+#define TRC_GET_CURRENT_CORE() 0
+#endif
+
+#if (TRC_CFG_PLATFORM_NUM_CORES) > 1
+#define TRC_GET_EVENT_COUNT(eventCounter) (((TRC_GET_CURRENT_CORE() & 0xF) << 12) | (eventCounter & 0xFFF))
+#else
+#define TRC_GET_EVENT_COUNT(eventCounter) eventCounter
+#endif
 
 #define TRC_PLATFORM_CFG_LENGTH 8
 
@@ -75,6 +91,7 @@ typedef struct{
   uint16_t version;
   uint16_t platform;
   uint32_t options;
+  uint32_t numCores;
   char platform_cfg[TRC_PLATFORM_CFG_LENGTH];
   uint16_t platform_cfg_patch;
   uint8_t platform_cfg_minor;
@@ -90,6 +107,7 @@ typedef struct{
 #ifndef TRC_CFG_RECORDER_DATA_INIT
 #define TRC_CFG_RECORDER_DATA_INIT 1
 #endif
+
 
 /* The size of each slot in the Symbol Table */
 #define SYMBOL_TABLE_SLOT_SIZE (sizeof(uint32_t) + (((TRC_CFG_SYMBOL_MAX_LENGTH)+(sizeof(uint32_t)-1))/sizeof(uint32_t))*sizeof(uint32_t))
@@ -124,12 +142,6 @@ typedef struct{
   } ObjectDataTableBuffer;
 } ObjectDataTable;
 
-typedef struct{
-	uint16_t Status;  /* 16 bit to avoid implicit padding (warnings) */
-	uint16_t BytesRemaining;
-	char* WritePointer;
-} PageType;
-
 #if defined(TRC_CFG_ENABLE_STACK_MONITOR) && (TRC_CFG_ENABLE_STACK_MONITOR == 1) && (TRC_CFG_SCHEDULING_ONLY == 0)
 typedef struct {
 	void* tcb;
@@ -140,11 +152,6 @@ typedef struct {
 /* Code used for "task address" when no task has started, to indicate "(startup)".
  * This value was used since NULL/0 was already reserved for the idle task. */
 #define HANDLE_NO_TASK 2
-
-/* The status codes for the pages of the internal trace buffer. */
-#define PAGE_STATUS_FREE 0
-#define PAGE_STATUS_WRITE 1
-#define PAGE_STATUS_READ 2
 
 /* Calls prvTraceError if the _assert condition is false. For void functions,
 where no return value is to be provided. */
@@ -168,7 +175,7 @@ static uint32_t SessionCounter = 0u;
 static uint32_t PSFEndianessIdentifier = 0x50534600;
 
 /* Used to interpret the data format */
-static uint16_t FormatVersion = 0x0008;
+static uint16_t FormatVersion = 0x0009;
 
 /* The number of events stored. Used as event sequence number. */
 static uint32_t eventCounter = 0;
@@ -231,12 +238,6 @@ int32_t isPendingContextSwitch TRC_CFG_RECORDER_DATA_ATTRIBUTE;
 uint32_t uiTraceTickCount TRC_CFG_RECORDER_DATA_ATTRIBUTE;
 uint32_t timestampFrequency TRC_CFG_RECORDER_DATA_ATTRIBUTE;
 uint32_t DroppedEventCounter TRC_CFG_RECORDER_DATA_ATTRIBUTE;
-uint32_t TotalBytesRemaining_LowWaterMark TRC_CFG_RECORDER_DATA_ATTRIBUTE;
-uint32_t TotalBytesRemaining TRC_CFG_RECORDER_DATA_ATTRIBUTE;
-
-PageType PageInfo[TRC_CFG_PAGED_EVENT_BUFFER_PAGE_COUNT] TRC_CFG_RECORDER_DATA_ATTRIBUTE;
-
-char* EventBuffer TRC_CFG_RECORDER_DATA_ATTRIBUTE;
 
 /*******************************************************************************
  * NoRoomForSymbol
@@ -362,16 +363,6 @@ static void prvTraceStoreExtensionInfo(void);
 
 /* Internal function for starting/stopping the recorder. */
 static void prvSetRecorderEnabled(uint32_t isEnabled);
-
-/* Mark the page read as complete. */
-static void prvPageReadComplete(int pageIndex);
-
-/* Retrieve a buffer page to write to. */
-static int prvAllocateBufferPage(int prevPage);
-
-/* Get the current buffer page index (return value) and the number 
-of valid bytes in the buffer page (bytesUsed). */
-static int prvGetBufferPage(int32_t* bytesUsed);
 
 /* Performs timestamping using definitions in trcHardwarePort.h */
 static uint32_t prvGetTimestamp32(void);
@@ -884,8 +875,6 @@ void vTraceInitialize(void)
 	uiTraceTickCount = 0;
 	timestampFrequency = 0;
 	DroppedEventCounter = 0;
-	TotalBytesRemaining_LowWaterMark = (TRC_CFG_PAGED_EVENT_BUFFER_PAGE_COUNT)* (TRC_CFG_PAGED_EVENT_BUFFER_PAGE_SIZE);
-	TotalBytesRemaining = (TRC_CFG_PAGED_EVENT_BUFFER_PAGE_COUNT)* (TRC_CFG_PAGED_EVENT_BUFFER_PAGE_SIZE);
 	ErrorAndWarningFlags = 0;
 	errorCode = 0;
 	isPendingContextSwitch = 0;
@@ -942,7 +931,7 @@ static void prvSetRecorderEnabled(uint32_t isEnabled)
 		TRC_STREAM_PORT_ON_TRACE_BEGIN();
 
 		#if (TRC_STREAM_PORT_USE_INTERNAL_BUFFER == 1)
-		prvPagedEventBufferInit(_TzTraceData);
+		TRC_STREAM_PORT_INTERNAL_BUFFER_INIT();
 		#endif
 		
      	eventCounter = 0;
@@ -988,7 +977,7 @@ static void prvTraceStoreStartEvent()
 		if (pxEvent != NULL)
 		{
 			pxEvent->base.EventID = PSF_EVENT_TRACE_START | PARAM_COUNT(3);
-			pxEvent->base.EventCount = (uint16_t)eventCounter;
+			pxEvent->base.EventCount = (uint16_t)TRC_GET_EVENT_COUNT(eventCounter);
 			pxEvent->base.TS = prvGetTimestamp32();
 			pxEvent->param1 = (uint32_t)TRACE_GET_OS_TICKS();
 			pxEvent->param2 = (uint32_t)currentTask;
@@ -1019,7 +1008,7 @@ static void prvTraceStoreTSConfig(void)
 		if (event != NULL)
 		{
 			event->base.EventID = PSF_EVENT_TS_CONFIG | (uint16_t)PARAM_COUNT(5);
-			event->base.EventCount = (uint16_t)eventCounter;
+			event->base.EventCount = (uint16_t)TRC_GET_EVENT_COUNT(eventCounter);
 			event->base.TS = prvGetTimestamp32();
 			
 			event->param1 = (uint32_t)timestampFrequency;
@@ -1034,7 +1023,7 @@ static void prvTraceStoreTSConfig(void)
 		if (event != NULL)
 		{
 			event->base.EventID = PSF_EVENT_TS_CONFIG | (uint16_t)PARAM_COUNT(4);
-			event->base.EventCount = (uint16_t)eventCounter;
+			event->base.EventCount = (uint16_t)TRC_GET_EVENT_COUNT(eventCounter);
 			event->base.TS = prvGetTimestamp32();
 						
 			event->param1 = (uint32_t)timestampFrequency;
@@ -1125,6 +1114,8 @@ static void prvTraceStoreHeader(void)
 		header->platform_cfg_patch = TRC_PLATFORM_CFG_PATCH;
 		header->platform_cfg_minor = TRC_PLATFORM_CFG_MINOR;
 		header->platform_cfg_major = TRC_PLATFORM_CFG_MAJOR;
+		header->options = 2;
+		header->numCores = TRC_CFG_PLATFORM_NUM_CORES;
 		header->heapCounter = trcHeapCounter;
 		header->heapMax = trcHeapMax;
         /* Lowest bit used for TRC_IRQ_PRIORITY_ORDER */
@@ -1307,7 +1298,7 @@ traceResult prvTraceBeginStoreEvent(uint32_t uiEventCode, uint32_t uiTotalPayloa
 	if (pxEvent != 0)
 	{
 		pxEvent->base.EventID = (uint16_t)uiEventCode | PARAM_COUNT(uiPayloadCount);
-		pxEvent->base.EventCount = (uint16_t)eventCounter;
+		pxEvent->base.EventCount = (uint16_t)TRC_GET_EVENT_COUNT(eventCounter);
 
 		pvCurrentEvent = pxEvent;
 	}
@@ -1482,7 +1473,7 @@ void prvTraceStoreEvent1(uint16_t eventID, uint32_t param1)
 			if (event != NULL)
 			{
 				event->base.EventID = eventID | PARAM_COUNT(1);
-				event->base.EventCount = (uint16_t)eventCounter;
+				event->base.EventCount = (uint16_t)TRC_GET_EVENT_COUNT(eventCounter);
 				event->base.TS = prvGetTimestamp32();
 				event->param1 = (uint32_t)param1;
 				TRC_STREAM_PORT_COMMIT_EVENT(event, sizeof(EventWithParam_1));
@@ -1510,7 +1501,7 @@ void prvTraceStoreEvent2(uint16_t eventID, uint32_t param1, uint32_t param2)
 			if (event != NULL)
 			{
 				event->base.EventID = eventID | PARAM_COUNT(2);
-				event->base.EventCount = (uint16_t)eventCounter;
+				event->base.EventCount = (uint16_t)TRC_GET_EVENT_COUNT(eventCounter);
 				event->base.TS = prvGetTimestamp32();
 				event->param1 = (uint32_t)param1;
 				event->param2 = param2;
@@ -1542,7 +1533,7 @@ void prvTraceStoreEvent3(	uint16_t eventID,
 			if (event != NULL)
 			{
 				event->base.EventID = eventID | PARAM_COUNT(3);
-				event->base.EventCount = (uint16_t)eventCounter;
+				event->base.EventCount = (uint16_t)TRC_GET_EVENT_COUNT(eventCounter);
 				event->base.TS = prvGetTimestamp32();
 				event->param1 = (uint32_t)param1;
 				event->param2 = param2;
@@ -1576,7 +1567,7 @@ void prvTraceStoreEvent(int nParam, uint16_t eventID, ...)
 			if (event != NULL)
 			{
 				event->base.EventID = eventID | (uint16_t)PARAM_COUNT(nParam);
-				event->base.EventCount = (uint16_t)eventCounter;
+				event->base.EventCount = (uint16_t)TRC_GET_EVENT_COUNT(eventCounter);
 				event->base.TS = prvGetTimestamp32();
 
 				va_start(vl, eventID);
@@ -1662,7 +1653,7 @@ static void prvTraceStoreStringEventHelper(int nArgs,
 				uint32_t* data32;
 				uint8_t* data8;
 				event->base.EventID = (eventID) | (uint16_t)PARAM_COUNT(nWords);
-				event->base.EventCount = (uint16_t)eventCounter;
+				event->base.EventCount = (uint16_t)TRC_GET_EVENT_COUNT(eventCounter);
 				event->base.TS = prvGetTimestamp32();
 
 				/* 32-bit write-pointer for the data argument */
@@ -1760,7 +1751,7 @@ void prvTraceStoreSimpleStringEventHelper(uint16_t eventID,
 				uint32_t* data32;
 				uint8_t* data8;
 				event->base.EventID = (eventID) | (uint16_t)PARAM_COUNT(nWords);
-				event->base.EventCount = (uint16_t)eventCounter;
+				event->base.EventCount = (uint16_t)TRC_GET_EVENT_COUNT(eventCounter);
 				event->base.TS = prvGetTimestamp32();
 
 				/* 32-bit write-pointer for the data argument */
@@ -2122,208 +2113,6 @@ static uint32_t prvGetTimestamp32(void)
 	uint32_t ticks = TRACE_GET_OS_TICKS();
 	return ((TRC_HWTC_COUNT) & 0x00FFFFFFU) + ((ticks & 0x000000FFU) << 24);
 #endif
-}
-
-/* Retrieve a buffer page to write to. */
-static int prvAllocateBufferPage(int prevPage)
-{
-	int index;
-	int count = 0;
-
-	index = (prevPage + 1) % (TRC_CFG_PAGED_EVENT_BUFFER_PAGE_COUNT);
-
-	while((PageInfo[index].Status != PAGE_STATUS_FREE) && (count ++ < (TRC_CFG_PAGED_EVENT_BUFFER_PAGE_COUNT)))
-	{
-		index = (index + 1) % (TRC_CFG_PAGED_EVENT_BUFFER_PAGE_COUNT);
-	}
-
-	if (PageInfo[index].Status == PAGE_STATUS_FREE)
-	{
-		return index;
-	}
-
-	return -1;
-}
-
-/* Mark the page read as complete. */
-static void prvPageReadComplete(int pageIndex)
-{
-  	TRACE_ALLOC_CRITICAL_SECTION();
-
-	TRACE_ENTER_CRITICAL_SECTION();
-	PageInfo[pageIndex].BytesRemaining = (TRC_CFG_PAGED_EVENT_BUFFER_PAGE_SIZE);
-	PageInfo[pageIndex].WritePointer = &EventBuffer[pageIndex * (TRC_CFG_PAGED_EVENT_BUFFER_PAGE_SIZE)];
-	PageInfo[pageIndex].Status = PAGE_STATUS_FREE;
-
-	TotalBytesRemaining += (TRC_CFG_PAGED_EVENT_BUFFER_PAGE_SIZE);
-
-	TRACE_EXIT_CRITICAL_SECTION();
-}
-
-/* Get the current buffer page index and remaining number of bytes. */
-static int prvGetBufferPage(int32_t* bytesUsed)
-{
-	static int8_t lastPage = -1;
-	int count = 0;
-  	int8_t index = (int8_t) ((lastPage + 1) % (TRC_CFG_PAGED_EVENT_BUFFER_PAGE_COUNT));
-
-	while((PageInfo[index].Status != PAGE_STATUS_READ) && (count++ < (TRC_CFG_PAGED_EVENT_BUFFER_PAGE_COUNT)))
-	{
-		index = (int8_t)((index + 1) % (TRC_CFG_PAGED_EVENT_BUFFER_PAGE_COUNT));
-	}
-
-	if (PageInfo[index].Status == PAGE_STATUS_READ)
-	{
-		*bytesUsed = (TRC_CFG_PAGED_EVENT_BUFFER_PAGE_SIZE) - PageInfo[index].BytesRemaining;
-		lastPage = index;
-		return index;
-	}
-
-	*bytesUsed = 0;
-
-	return -1;
-}
-
-/*******************************************************************************
- * uint32_t prvPagedEventBufferTransfer(void)
- *
- * Transfers one buffer page of trace data, if a full page is available, using
- * the macro TRC_STREAM_PORT_WRITE_DATA as defined in trcStreamingPort.h.
- *
- * This function is intended to be called the periodic TzCtrl task with a suitable
- * delay (e.g. 10-100 ms).
- *
- * Returns the number of bytes sent. If non-zero, it is good to call this 
- * again, in order to send any additional data waiting in the buffer.
- * If zero, wait a while before calling again.
- *
- * In case of errors from the streaming interface, it registers a warning
- * (PSF_WARNING_STREAM_PORT_WRITE) provided by xTraceGetLastError().
- *
- *******************************************************************************/
-uint32_t prvPagedEventBufferTransfer(void)
-{
-	int8_t pageToTransfer = -1;
-    int32_t bytesTransferredTotal = 0;
-	int32_t bytesTransferredNow = 0;
-	int32_t bytesToTransfer;
-
-    pageToTransfer = (int8_t)prvGetBufferPage(&bytesToTransfer);
-
-	/* bytesToTransfer now contains the number of "valid" bytes in the buffer page, that should be transmitted.
-	There might be some unused junk bytes in the end, that must be ignored. */
-    
-    if (pageToTransfer > -1)
-    {
-        while (1)  /* Keep going until we have transferred all that we intended to */
-        {
-			if (TRC_STREAM_PORT_WRITE_DATA(
-					&EventBuffer[pageToTransfer * (TRC_CFG_PAGED_EVENT_BUFFER_PAGE_SIZE) + bytesTransferredTotal],
-					(uint32_t)(bytesToTransfer - bytesTransferredTotal),
-					&bytesTransferredNow) == 0)
-			{
-				/* Write was successful. Update the number of transferred bytes. */
-				bytesTransferredTotal += bytesTransferredNow;
-
-				if (bytesTransferredTotal == bytesToTransfer)
-				{
-					/* All bytes have been transferred. Mark the buffer page as "Read Complete" (so it can be written to) and return OK. */
-					prvPageReadComplete(pageToTransfer);
-					return (uint32_t)bytesTransferredTotal;
-				}
-			}
-			else
-			{
-				/* Some error from the streaming interface... */
-				vTraceStop();
-				return 0;
-			}
-		}
-	}
-	return 0;
-}
-
-/*******************************************************************************
- * void* prvPagedEventBufferGetWritePointer(int sizeOfEvent)
- *
- * Returns a pointer to an available location in the buffer able to store the
- * requested size.
- * 
- * Return value: The pointer.
- * 
- * Parameters:
- * - sizeOfEvent: The size of the event that is to be placed in the buffer.
- *
-*******************************************************************************/
-void* prvPagedEventBufferGetWritePointer(int sizeOfEvent)
-{
-	void* ret;
-	static int currentWritePage = -1;
-
-	if (currentWritePage == -1)
-	{
-	    currentWritePage = prvAllocateBufferPage(currentWritePage);
-		if (currentWritePage == -1)
-		{
-		  	DroppedEventCounter++;
-			return NULL;
-		}
-	}
-
-    if (PageInfo[currentWritePage].BytesRemaining - sizeOfEvent < 0)
-	{
-		PageInfo[currentWritePage].Status = PAGE_STATUS_READ;
-
-		TotalBytesRemaining -= PageInfo[currentWritePage].BytesRemaining; // Last trailing bytes
-
-		if (TotalBytesRemaining < TotalBytesRemaining_LowWaterMark)
-		  TotalBytesRemaining_LowWaterMark = TotalBytesRemaining;
-
-		currentWritePage = prvAllocateBufferPage(currentWritePage);
-		if (currentWritePage == -1)
-		{
-		  DroppedEventCounter++;
-		  return NULL;
-		}
-	}
-	ret = PageInfo[currentWritePage].WritePointer;
-	PageInfo[currentWritePage].WritePointer += sizeOfEvent;
-	PageInfo[currentWritePage].BytesRemaining = (uint16_t)(PageInfo[currentWritePage].BytesRemaining -sizeOfEvent);
-
-	TotalBytesRemaining = (TotalBytesRemaining-(uint16_t)sizeOfEvent);
-
-	if (TotalBytesRemaining < TotalBytesRemaining_LowWaterMark)
-		TotalBytesRemaining_LowWaterMark = TotalBytesRemaining;
-
-	return ret;
-}
-
-/*******************************************************************************
- * void prvPagedEventBufferInit(char* buffer)
- *
- * Assigns the buffer to use and initializes the PageInfo structure.
- *
- * Return value: void
- * 
- * Parameters:
- * - char* buffer: pointer to the trace data buffer, allocated by the caller.
- *
-*******************************************************************************/
-void prvPagedEventBufferInit(char* buffer)
-{
-  	int i;
-  	TRACE_ALLOC_CRITICAL_SECTION();
-    
-    EventBuffer = buffer;
-    
-	TRACE_ENTER_CRITICAL_SECTION();
-	for (i = 0; i < (TRC_CFG_PAGED_EVENT_BUFFER_PAGE_COUNT); i++)
-	{
-		PageInfo[i].BytesRemaining = (TRC_CFG_PAGED_EVENT_BUFFER_PAGE_SIZE);
-		PageInfo[i].WritePointer = &EventBuffer[i * (TRC_CFG_PAGED_EVENT_BUFFER_PAGE_SIZE)];
-		PageInfo[i].Status = PAGE_STATUS_FREE;
-	}
-	TRACE_EXIT_CRITICAL_SECTION();
 }
 
 #if defined(TRC_CFG_ENABLE_STACK_MONITOR) && (TRC_CFG_ENABLE_STACK_MONITOR == 1) && (TRC_CFG_SCHEDULING_ONLY == 0)

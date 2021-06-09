@@ -14,10 +14,31 @@
 #include "trcKernelPort.h"
 #include "trcRecorder.h"
 #include "trcSDK.h"
+#include "trcInternalBuffer.h"
+
 
 /* Streaming specific macros */
 #if ((TRC_CFG_RECORDER_MODE) == TRC_RECORDER_MODE_STREAMING)
-	#define TRC_PORT_MALLOC(size) k_malloc(size)
+	/* Ensure that CONFIG_MEM_POOL has been set when the user selects dynamic
+	 * allocation of the recorder buffer.
+	 */
+	#if (TRC_CFG_RECORDER_BUFFER_ALLOCATION == TRC_RECORDER_BUFFER_ALLOCATION_DYNAMIC)
+		
+		/* While we could add CONFIG_KERNEL_MEM_POOL as a dependency for the 
+		 * dynamic allocation option, we have opted to output and error if 
+		 * the user have forgotten this since they also have to specify an
+		 * appropriate size for the kernel memory pool.
+		 */
+		#ifndef CONFIG_KERNEL_MEM_POOL
+			#error "Tracerecorder: You have choosen the TRC_RECORDER_BUFFER_ALLOCATION_DYNAMIC option without enabling KERNEL_MEM_POOL in Zephyr. Enable this option and allocate an appropriate size."
+		#endif
+
+		#if !defined(CONFIG_HEAP_MEM_POOL_SIZE) || ((CONFIG_HEAP_MEM_POOL_SIZE) < ((TRC_CFG_RTT_BUFFER_SIZE_UP) + (TRC_CFG_RTT_BUFFER_SIZE_DOWN)))
+			#error "Tracerecorder: You have choosen the TRC_RECORDER_BUFFER_ALLOCATION_DYNAMIC option without allocating enough memory for the KERNEL_MEM_POOL in Zephyr"
+		#endif
+
+		#define TRC_PORT_MALLOC(size) k_malloc(size)
+	#endif
 #endif
 
 #if ((TRC_CFG_RECORDER_MODE) == TRC_RECORDER_MODE_STREAMING || ((TRC_CFG_ENABLE_STACK_MONITOR) == 1) && (TRC_CFG_SCHEDULING_ONLY == 0))
@@ -148,6 +169,8 @@ void sys_trace_k_thread_create(struct k_thread *thread, size_t stack_size, int p
 #endif
 	xTraceSDKSetObjectData((void*)thread, prio);
 
+	prvAddTaskToStackMonitor((void*)thread);
+
 	xTraceSDKEventBegin(PSF_EVENT_THREAD_INIT, 12);
 	xTraceSDKEventAddObject((void*)thread);
 	xTraceSDKEventAdd32((uint32_t)stack_size);
@@ -254,6 +277,8 @@ void sys_trace_k_thread_wakeup(struct k_thread *thread) {
 }
 
 void sys_trace_k_thread_abort(struct k_thread *thread) {
+	prvRemoveTaskFromStackMonitor(thread);
+
 	xTraceSDKEventBegin(PSF_EVENT_THREAD_ABORT, 4);
 	xTraceSDKEventAddObject((void*)thread);
 	xTraceSDKEventEnd();
@@ -837,13 +862,6 @@ void sys_trace_k_sem_reset(struct k_sem *sem) {
 
 /* Mutex trace function definitions */
 void sys_trace_k_mutex_init(struct k_mutex *mutex, int ret) {
-#if defined(CONFIG_PERCEPIO_RECORDER_TRC_RECORDER_STREAM_PORT_RTT) && !defined(PERCEPIO_RECORDER_TRC_STREAM_PORT_USE_INTERNAL_BUFFER)
-	/* If we use Zephyr RTT we have to ignore tracing of their locking
-	 * mutex or we will end up in a recursive trace loop
-	 */
-	if (mutex == &rtt_term_mutex) return;
-#endif
-	
 	xTraceSDKEventBegin(PSF_EVENT_MUTEX_CREATE, 8);
 	xTraceSDKEventAddObject((void*)mutex);
 	xTraceSDKEventAdd32(ret);
@@ -854,13 +872,6 @@ void sys_trace_k_mutex_lock_enter(struct k_mutex *mutex, k_timeout_t timeout) {
 }
 
 void sys_trace_k_mutex_lock_blocking(struct k_mutex *mutex, k_timeout_t timeout) {
-#if defined(CONFIG_PERCEPIO_RECORDER_TRC_RECORDER_STREAM_PORT_RTT) && !defined(PERCEPIO_RECORDER_TRC_STREAM_PORT_USE_INTERNAL_BUFFER)
-	/* If we use Zephyr RTT we have to ignore tracing of their locking
-	 * mutex or we will end up in a recursive trace loop
-	 */
-	if (mutex == &rtt_term_mutex) return;
-#endif
-
 	xTraceSDKEventBegin(PSF_EVENT_MUTEX_TAKE_BLOCK, 8);
 	xTraceSDKEventAddObject((void*)mutex);
 	xTraceSDKEventAdd32(timeout.ticks);
@@ -868,13 +879,6 @@ void sys_trace_k_mutex_lock_blocking(struct k_mutex *mutex, k_timeout_t timeout)
 }
 
 void sys_trace_k_mutex_lock_exit(struct k_mutex *mutex, k_timeout_t timeout, int ret) {
-#if defined(CONFIG_PERCEPIO_RECORDER_TRC_RECORDER_STREAM_PORT_RTT) && !defined(PERCEPIO_RECORDER_TRC_STREAM_PORT_USE_INTERNAL_BUFFER)
-	/* If we use Zephyr RTT we have to ignore tracing of their locking
-	 * mutex or we will end up in a recursive trace loop
-	 */
-	if (mutex == &rtt_term_mutex) return;
-#endif
-
 	if (ret == 0) {
 		xTraceSDKEventBegin(PSF_EVENT_MUTEX_TAKE, 12);
 	} else {
@@ -891,13 +895,6 @@ void sys_trace_k_mutex_unlock_enter(struct k_mutex *mutex) {
 }
 
 void sys_trace_k_mutex_unlock_exit(struct k_mutex *mutex, int ret) {
-#if defined(CONFIG_PERCEPIO_RECORDER_TRC_RECORDER_STREAM_PORT_RTT) && !defined(PERCEPIO_RECORDER_TRC_STREAM_PORT_USE_INTERNAL_BUFFER)
-	/* If we use Zephyr RTT we have to ignore tracing of their locking
-	 * mutex or we will end up in a recursive trace loop
-	 */
-	if (mutex == &rtt_term_mutex) return;
-#endif
-
 	if (ret == 0) {
 		xTraceSDKEventBegin(PSF_EVENT_MUTEX_GIVE, 8);
 	} else {

@@ -1526,15 +1526,7 @@ extern void vTraceStoreMemMangEvent(uint32_t ecode, uint32_t address, int32_t si
 *
 * Set the name for a kernel object (defined by its address).
 ******************************************************************************/			
-void vTraceStoreKernelObjectName(void* object, const char* name); 
-
-/*******************************************************************************
-* prvIsNewTCB
-*
-* Tells if this task is already executing, or if there has been a task-switch.
-* Assumed to be called within a trace hook in kernel context.
-*******************************************************************************/
-uint32_t prvIsNewTCB(void* pNewTCB);
+void vTraceStoreKernelObjectName(void* object, const char* name);
 
 #define TRACE_GET_CURRENT_TASK() prvTraceGetCurrentTaskHandle()
 
@@ -1790,8 +1782,9 @@ extern volatile uint32_t uiTraceSystemState;
 	uiTraceSystemState = TRC_STATE_IN_TASKSWITCH; \
 	if (TRACE_GET_OBJECT_FILTER(TASK, TRACE_GET_CURRENT_TASK()) & CurrentFilterMask) \
 	{ \
-		if (prvIsNewTCB(pxCurrentTCB)) \
+		if (prvTraceGetCurrentTask() != (uint32_t)pxCurrentTCB) \
 		{ \
+			prvTraceSetCurrentTask((uint32_t)pxCurrentTCB); \
 			prvTraceStoreEvent2(PSF_EVENT_TASK_ACTIVATE, (uint32_t)pxCurrentTCB, pxCurrentTCB->uxPriority); \
 		} \
 	} \

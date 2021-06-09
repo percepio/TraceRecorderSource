@@ -1749,6 +1749,10 @@ if (!(eval)) \
 			prvPagedEventBufferInit(_TzTraceData);
 #endif
 
+#ifndef TRC_STREAM_PORT_INTERNAL_BUFFER_INIT
+	#define TRC_STREAM_PORT_INTERNAL_BUFFER_INIT() prvPagedEventBufferInit(_TzTraceData);
+#endif
+
 
 /* Signal an error. */
 void prvTraceError(int errCode);
@@ -1843,15 +1847,6 @@ void prvTraceStoreEvent(int nParam, uint16_t EventID, ...);
 
 /* Stories an event with a string and <nParam> 32-bit integer parameters */
 void prvTraceStoreStringEvent(int nArgs, uint16_t eventID, const char* str, ...);
-
-/* Initializes the paged event buffer used by certain stream ports */
-void prvPagedEventBufferInit(char* buffer);
-
-/* Retrieve a pointer to the paged event buffer */
-void* prvPagedEventBufferGetWritePointer(int sizeOfEvent);
-
-/* Transfer a full buffer page */
-uint32_t prvPagedEventBufferTransfer(void);
 
 /* The data structure for commands (a bit overkill) */
 typedef struct
