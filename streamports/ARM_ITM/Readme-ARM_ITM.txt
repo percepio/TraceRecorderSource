@@ -1,4 +1,6 @@
 Tracealyzer Stream Port for ARM Cortex-M ITM
+Percepio AB
+www.percepio.com
 --------------------------------------------
 
 This directory contains a "stream port" for the Tracealyzer recorder library,
@@ -20,7 +22,7 @@ see Percepio Application Note PA-023, https://percepio.com/iar
 To setup Lauterbach TRACE32 for ITM tracing with a uTrace,
 see Percepio Application Note PA-033, https://percepio.com/apn/PA033-TRACE32%20ITM%20Streaming.pdf
 
-Learning more:
+Learn more:
  - Tracealyzer User Manual (Help -> User Manual)
  - https://percepio.com/gettingstarted
  - Percepio Application Note PA-021 (Keil), https://percepio.com/2018/05/04/keil-itm-support/
@@ -30,6 +32,3 @@ Learning more:
  - About the recorder and custom streaming, http://percepio.com/2016/10/05/rtos-tracing
 
 For questions, please contact support@percepio.com
-
-Percepio AB
-www.percepio.com
