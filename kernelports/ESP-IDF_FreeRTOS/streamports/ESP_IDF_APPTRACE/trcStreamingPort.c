@@ -1,5 +1,5 @@
 /*
- * Trace Recorder for Tracealyzer v4.5.0b
+ * Trace Recorder for Tracealyzer v4.5.0
  * Copyright 2021 Percepio AB
  * www.percepio.com
  *
@@ -12,6 +12,7 @@
 #include "trcRecorder.h"
 #include "esp_app_trace.h"
 
+extern IRAM_ATTR bool spi_flash_cache_enabled(void);
 
 portMUX_TYPE trax_mutex = portMUX_INITIALIZER_UNLOCKED;
 
@@ -23,23 +24,29 @@ portMUX_TYPE trax_mutex = portMUX_INITIALIZER_UNLOCKED;
 char _TzIntBuf[(TRC_CFG_PAGED_EVENT_BUFFER_PAGE_COUNT) * (TRC_CFG_PAGED_EVENT_BUFFER_PAGE_SIZE)] __attribute__((aligned (4)));
 #endif
 
-int IRAM_ATTR readFromTrax(void* ptrData, uint32_t size, int32_t* ptrBytesRead)
+void initTrax() {
+	while (!esp_apptrace_host_is_connected(ESP_APPTRACE_DEST_TRAX))  {}
+}
+
+int readFromTrax(void* ptrData, uint32_t size, int32_t* ptrBytesRead)
 {
 	esp_apptrace_read(ESP_APPTRACE_DEST_TRAX, ptrData, (uint32_t*)ptrBytesRead, 0);
 
 	return 0;
 }
 
-int IRAM_ATTR writeToTrax(void* ptrData, uint32_t size, int32_t* ptrBytesWritten)
+int writeToTrax(void* ptrData, uint32_t size, int32_t* ptrBytesWritten)
 {
-	esp_err_t err;
+	esp_err_t err = ESP_OK;
 
 	portENTER_CRITICAL_SAFE(&trax_mutex);
-#if TRC_CFG_APPTRACE_TRAX_MODE == APPTRACE_TRAX_MODE_BLOCK_IF_FIFO_FULL
+	if (spi_flash_cache_enabled()) {
+#if TRC_CFG_APPTRACE_TRAX_BLOCKING_MODE == 1
 	err = esp_apptrace_write(ESP_APPTRACE_DEST_TRAX, ptrData, size, ESP_APPTRACE_TMO_INFINITE);
 #else
 	err = esp_apptrace_write(ESP_APPTRACE_DEST_TRAX, ptrData, size, 0);
 #endif
+	}
 	portEXIT_CRITICAL_SAFE(&trax_mutex);
 
 	if (err == ESP_OK) {

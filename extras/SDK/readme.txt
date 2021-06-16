@@ -1,4 +1,4 @@
-Percepio Trace Recorder SDK v4.5.0b
+Percepio Trace Recorder SDK v4.5.0
 Copyright 2021 Percepio AB
 www.percepio.com
 

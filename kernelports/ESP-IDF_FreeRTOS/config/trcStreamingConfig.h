@@ -1,5 +1,5 @@
 /*
- * Trace Recorder for Tracealyzer v4.5.0b
+ * Trace Recorder for Tracealyzer v4.5.0
  * Copyright 2021 Percepio AB
  * www.percepio.com
  *
@@ -63,7 +63,7 @@ extern "C" {
  *
  * Note: not used by the J-Link RTT stream port (see trcStreamingPort.h instead)
  ******************************************************************************/
-#ifdef PERCEPIO_RECORDER_TRC_STREAM_PORT_USE_INTERNAL_BUFFER
+#ifdef CONFIG_PERCEPIO_RECORDER_TRC_STREAM_PORT_USE_INTERNAL_BUFFER
 #define TRC_CFG_PAGED_EVENT_BUFFER_PAGE_COUNT CONFIG_PERCEPIO_RECORDER_TRC_CFG_PAGED_EVENT_BUFFER_PAGE_COUNT
 #else
 #define TRC_CFG_PAGED_EVENT_BUFFER_PAGE_COUNT 10
@@ -80,7 +80,7 @@ extern "C" {
  *
  * Note: not used by the J-Link RTT stream port (see trcStreamingPort.h instead)
  ******************************************************************************/
-#ifdef PERCEPIO_RECORDER_TRC_STREAM_PORT_USE_INTERNAL_BUFFER
+#ifdef CONFIG_PERCEPIO_RECORDER_TRC_STREAM_PORT_USE_INTERNAL_BUFFER
 #define TRC_CFG_PAGED_EVENT_BUFFER_PAGE_SIZE CONFIG_PERCEPIO_RECORDER_TRC_CFG_PAGED_EVENT_BUFFER_PAGE_SIZE
 #else
 #define TRC_CFG_PAGED_EVENT_BUFFER_PAGE_SIZE 500

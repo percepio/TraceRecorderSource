@@ -1,5 +1,5 @@
 /*
- * Trace Recorder for Tracealyzer v4.5.0b
+ * Trace Recorder for Tracealyzer v4.5.0
  * Copyright 2021 Percepio AB
  * www.percepio.com
  *
@@ -17,7 +17,7 @@ extern "C" {
 #endif
 
 /*******************************************************************************
- * TRC_CFG_APPTRACE_TRAX_MODE
+ * TRC_CFG_APPTRACE_TRAX_BLOCKING_MODE
  * This stream port for streaming over XTensa Trax relies on apptrace that utilize
  * an internal TRAX RAM buffer read by OpenOCD during execution.
  *
@@ -35,9 +35,9 @@ extern "C" {
  * in sdkconfig.
  ******************************************************************************/
 #if CONFIG_PERCEPIO_RECORDER_CFG_TRAX_MODE_BLOCK_IF_FIFO_FULL == 1
-    #define TRC_CFG_APPTRACE_TRAX_MODE APPTRACE_TRAX_MODE_BLOCK_IF_FIFO_FULL
+    #define TRC_CFG_APPTRACE_TRAX_BLOCKING_MODE 1
 #else
-    #define TRC_CFG_APPTRACE_TRAX_MODE APPTRACE_TRAX_MODE_NO_BLOCK_SKIP
+    #define TRC_CFG_APPTRACE_TRAX_BLOCKING_MODE 0
 #endif
 
 void initTrax();

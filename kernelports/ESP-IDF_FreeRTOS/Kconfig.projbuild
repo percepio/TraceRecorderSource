@@ -49,6 +49,7 @@ menu "Percepio Trace Recorder"
 
         config PERCEPIO_RECORDER_CFG_START_MODE_START
             bool "Start"
+            depends on PERCEPIO_RECORDER_TRC_RECORDER_MODE_SNAPSHOT
 
         config PERCEPIO_RECORDER_CFG_START_MODE_START_AWAIT_HOST
             bool "Start Await Host"
@@ -56,6 +57,7 @@ menu "Percepio Trace Recorder"
 
         config PERCEPIO_RECORDER_CFG_START_MODE_INIT
             bool "Initialize"
+            depends on PERCEPIO_RECORDER_TRC_RECORDER_MODE_SNAPSHOT
     endchoice
 
     choice PERCEPIO_RECORDER_CFG_TRAX_BLOCKING_MODE

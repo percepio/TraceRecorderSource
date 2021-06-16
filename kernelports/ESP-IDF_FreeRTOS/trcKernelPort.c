@@ -1,5 +1,5 @@
 /*
- * Trace Recorder for Tracealyzer v4.5.0b
+ * Trace Recorder for Tracealyzer v4.5.0
  * Copyright 2021 Percepio AB
  * www.percepio.com
  *
@@ -395,9 +395,9 @@ __attribute__((constructor)) void vTraceInit() {
  ******************************************************************************/
 void vTraceEnable(int startOption)
 {
-	int32_t bytes = 0;
-	int32_t status;
-	extern uint32_t RecorderEnabled;
+	//int32_t bytes = 0;
+	//int32_t status;
+	//extern uint32_t RecorderEnabled;
 	TracealyzerCommandType msg;
 
 	/* Make sure recorder data is initialized */
@@ -441,7 +441,7 @@ void vTraceEnable(int startOption)
 		trcWarningChannel = xTraceRegisterString("#WFR"); 
 	}
 
-	if (startOption == TRC_START_AWAIT_HOST)
+	/*if (startOption == TRC_START_AWAIT_HOST)
 	{
 		#if !CONFIG_FREERTOS_UNICORE
 			// While we want timekeeping for the sections above, we want to disable it when running with the
@@ -459,7 +459,7 @@ void vTraceEnable(int startOption)
 			timer_start(1,1);
 		#endif
 		
-		/* We keep trying to read commands until the recorder has been started */
+		// We keep trying to read commands until the recorder has been started
 		do
 		{
 			bytes = 0;
@@ -477,7 +477,7 @@ void vTraceEnable(int startOption)
 				{
 					if (msg.cmdCode == CMD_SET_ACTIVE && msg.param1 == 1)
 					{
-						/* On start, init and reset the timestamping */
+						// On start, init and reset the timestamping
 						TRC_PORT_SPECIFIC_INIT();
 					}
 					
@@ -486,17 +486,25 @@ void vTraceEnable(int startOption)
 			}
 		}
 		while (RecorderEnabled == 0);
-	}
-	else if (startOption == TRC_START)
+	}*/
+	if (startOption == TRC_START_AWAIT_HOST)
 	{
+		#if !CONFIG_FREERTOS_UNICORE
+			// While we want timekeeping for the sections above, we want to disable it when running with the
+			// external timer so we avoid a massive timeblock during the period the connection is finalized.
+			timer_pause(1, 1);
+		#endif
+
 		// We have to ensure that apptrace is connected before streaming any data, otherwise
 		// we will have problems with junk data and many cases were we end up in a failure state
 		// where no bytes are received by the host.
-		while (!esp_apptrace_host_is_connected(ESP_APPTRACE_DEST_TRAX))  {}
-
-		/* We start streaming directly - this assumes that the interface is ready! */
 		TRC_PORT_SPECIFIC_INIT();
 		
+		#if !CONFIG_FREERTOS_UNICORE
+			// Now that we have a connection with apptrace, enable the timer again.
+			timer_start(1,1);
+		#endif
+
 		msg.cmdCode = CMD_SET_ACTIVE;
 		msg.param1 = 1;
 		prvProcessCommand(&msg);
