@@ -1,5 +1,5 @@
 /*
- * Trace Recorder for Tracealyzer v4.5.0
+ * Trace Recorder for Tracealyzer v4.5.1(beta)
  * Copyright 2021 Percepio AB
  * www.percepio.com
  *
@@ -43,7 +43,7 @@ int32_t writeToRTT(void* ptrData, uint32_t size, int32_t* ptrBytesWritten)
 {
 	uint32_t bytesWritten;
 	
-	bytesWritten = SEGGER_RTT_Write((TRC_CFG_RTT_UP_BUFFER_INDEX), (const char*)ptrData, size);
+	bytesWritten = SEGGER_RTT_WriteNoLock((TRC_CFG_RTT_UP_BUFFER_INDEX), (const char*)ptrData, size);
 	
 	if (ptrBytesWritten != NULL)
 		*ptrBytesWritten = (int32_t)bytesWritten;

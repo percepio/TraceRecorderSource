@@ -1,5 +1,5 @@
 /*
- * Trace Recorder for Tracealyzer v4.5.0
+ * Trace Recorder for Tracealyzer v4.5.1(beta)
  * Copyright 2021 Percepio AB
  * www.percepio.com
  *
@@ -24,19 +24,19 @@
 extern "C" {
 #endif
 
-#if OS_VERSION >= 30600u
+#if (OS_VERSION >= 30600u)
 #if (defined(OS_CFG_TRACE_EN) && (OS_CFG_TRACE_EN > 0u))
   #define TRC_USE_TRACEALYZER_RECORDER   1
 #else
   #define TRC_USE_TRACEALYZER_RECORDER   0
 #endif
-#else /*OS_VERSION >= 30600u*/
+#else /* (OS_VERSION >= 30600u) */
 #if (defined(TRACE_CFG_EN) && (TRACE_CFG_EN > 0u))
   #define TRC_USE_TRACEALYZER_RECORDER   1
 #else
   #define TRC_USE_TRACEALYZER_RECORDER   0
 #endif
-#endif /*OS_VERSION >= 30600u*/
+#endif /* (OS_VERSION >= 30600u) */
 
 #if (TRC_USE_TRACEALYZER_RECORDER == 1)
 
@@ -589,7 +589,7 @@ unsigned char prvTraceIsSchedulerStarted(void);
 
 #if (TRC_CFG_SCHEDULING_ONLY == 0)
 
-#if OS_VERSION < 30700u
+#if (OS_VERSION < 30700u)
 /* Called in OSTaskSuspend() */
 /* Critical section needed. Also SR_ALLOC needed. */
 #undef OS_TRACE_TASK_SUSPEND
@@ -608,7 +608,7 @@ unsigned char prvTraceIsSchedulerStarted(void);
 		TRACE_EXIT_CRITICAL_SECTION(); \
 	}
 
-#else
+#else /* (OS_VERSION < 30700u) */
 /* Called in OSTaskSuspend() */
 /* Critical section needed. Also SR_ALLOC needed. */
 #undef OS_TRACE_TASK_SUSPEND_ENTER
@@ -618,7 +618,7 @@ unsigned char prvTraceIsSchedulerStarted(void);
 #undef OS_TRACE_TASK_SUSPEND_EXIT
 #define OS_TRACE_TASK_SUSPEND_EXIT(p_err) \
 	prvTraceTaskSuspendExit(p_err);
-#endif
+#endif /* (OS_VERSION < 30700u) */
 
 /* Called on any of the task delay functions */
 /* No critical section needed */
@@ -1041,14 +1041,14 @@ unsigned char prvTraceIsSchedulerStarted(void);
 #define OS_TRACE_MUTEX_TASK_PRIO_DISINHERIT(p_tcb, prio) \
 	trcKERNEL_HOOKS_TASK_PRIORITY_CHANGE(TASK_PRIORITY_DISINHERIT, p_tcb, prio);
 
-#if OS_VERSION < 30700u
+#if (OS_VERSION < 30700u)
 /* Called in vTaskResume */
 /* No critical section needed */
 #undef OS_TRACE_TASK_RESUME
 #define OS_TRACE_TASK_RESUME(p_tcb) \
 	trcKERNEL_HOOKS_TASK_RESUME(TASK_RESUME, p_tcb);
 
-#else
+#else /* (OS_VERSION < 30700u) */
 /* Called in vTaskResume */
 /* Critical section needed */
 #undef OS_TRACE_TASK_RESUME_ENTER
@@ -1058,7 +1058,191 @@ unsigned char prvTraceIsSchedulerStarted(void);
 #undef OS_TRACE_TASK_RESUME_EXIT
 #define OS_TRACE_TASK_RESUME_EXIT(p_err) \
 	prvTraceTaskResumeExit(p_err);
-#endif
+#endif /* (OS_VERSION < 30700u) */
+
+#else /* (TRC_CFG_SCHEDULING_ONLY == 0) */
+
+/* SCHEDULING ONLY, DEFINE ALL AS EMPTY */
+
+#undef OS_TRACE_TASK_SUSPEND
+#define OS_TRACE_TASK_SUSPEND(p_tcb) 
+
+#undef OS_TRACE_TASK_SUSPEND_ENTER
+#define OS_TRACE_TASK_SUSPEND_ENTER(p_tcb) 
+
+#undef OS_TRACE_TASK_SUSPEND_EXIT
+#define OS_TRACE_TASK_SUSPEND_EXIT(p_err) 
+
+#undef OS_TRACE_TASK_DLY
+#define OS_TRACE_TASK_DLY(dly_ticks) 
+
+#undef OS_TRACE_TASK_SEM_DEL
+#define OS_TRACE_TASK_SEM_DEL(p_tcb) 
+
+#undef traceTASK_MSG_Q_DELETE
+#define traceTASK_MSG_Q_DELETE(p_msg_q) 
+
+#undef OS_TRACE_SEM_DEL
+#define OS_TRACE_SEM_DEL(p_sem) 
+
+#undef OS_TRACE_Q_DEL
+#define OS_TRACE_Q_DEL(p_q) 
+
+#undef OS_TRACE_MUTEX_DEL
+#define OS_TRACE_MUTEX_DEL(p_mutex) 
+
+#undef OS_TRACE_FLAG_DEL
+#define OS_TRACE_FLAG_DEL(p_grp) 
+
+#undef OS_TRACE_TASK_SEM_DEL
+#define OS_TRACE_TASK_SEM_DEL(p_tcb) 
+
+#undef OS_TRACE_TASK_MSG_Q_DEL
+#define OS_TRACE_TASK_MSG_Q_DEL(p_msg_q) 
+
+#undef OS_TRACE_TASK_CREATE_FAILED
+#define OS_TRACE_TASK_CREATE_FAILED(p_tcb) 
+
+#undef OS_TRACE_TASK_MSG_Q_CREATE
+#define OS_TRACE_TASK_MSG_Q_CREATE(p_msg_q, p_name ) 
+
+#undef OS_TRACE_TASK_SEM_CREATE
+#define OS_TRACE_TASK_SEM_CREATE(p_tcb, p_name ) 
+
+#undef OS_TRACE_MUTEX_CREATE
+#define OS_TRACE_MUTEX_CREATE(p_mutex, p_name ) 
+
+#undef OS_TRACE_SEM_CREATE
+#define OS_TRACE_SEM_CREATE(p_sem, p_name ) 
+
+#undef OS_TRACE_Q_CREATE
+#define OS_TRACE_Q_CREATE(p_q, p_name ) 
+
+#undef OS_TRACE_FLAG_CREATE
+#define OS_TRACE_FLAG_CREATE(p_grp, p_name ) 
+
+#undef OS_TRACE_MEM_CREATE
+#define OS_TRACE_MEM_CREATE(p_mem, p_name ) 
+
+#undef OS_TRACE_TASK_MSG_Q_POST
+#define OS_TRACE_TASK_MSG_Q_POST(p_msg_q) 
+
+#undef OS_TRACE_TASK_MSG_Q_POST_FAILED
+#define OS_TRACE_TASK_MSG_Q_POST_FAILED(p_msg_q) 
+
+#undef OS_TRACE_TASK_SEM_POST
+#define OS_TRACE_TASK_SEM_POST(p_tcb) 
+
+#undef OS_TRACE_TASK_SEM_POST_FAILED
+#define OS_TRACE_TASK_SEM_POST_FAILED(p_tcb) 
+
+#undef OS_TRACE_SEM_POST
+#define OS_TRACE_SEM_POST(p_sem) 
+
+#undef OS_TRACE_SEM_POST_FAILED
+#define OS_TRACE_SEM_POST_FAILED(p_sem) 
+
+#undef OS_TRACE_Q_POST
+#define OS_TRACE_Q_POST(p_q) 
+
+#undef OS_TRACE_Q_POST_FAILED
+#define OS_TRACE_Q_POST_FAILED(p_q) 
+
+#undef OS_TRACE_MUTEX_POST
+#define OS_TRACE_MUTEX_POST(p_mutex) 
+
+#undef OS_TRACE_MUTEX_POST_FAILED
+#define OS_TRACE_MUTEX_POST_FAILED(p_mutex) 
+
+#undef OS_TRACE_FLAG_POST
+#define OS_TRACE_FLAG_POST(p_grp) 
+
+#undef OS_TRACE_FLAG_POST_FAILED
+#define OS_TRACE_FLAG_POST_FAILED(p_grp) 
+
+#undef OS_TRACE_MEM_PUT
+#define OS_TRACE_MEM_PUT(p_mem) 
+
+#undef OS_TRACE_MEM_PUT_FAILED
+#define OS_TRACE_MEM_PUT_FAILED(p_mem) 
+
+#undef OS_TRACE_TASK_MSG_Q_PEND
+#define OS_TRACE_TASK_MSG_Q_PEND(p_msg_q) 
+
+#undef OS_TRACE_TASK_MSG_Q_PEND_FAILED
+#define OS_TRACE_TASK_MSG_Q_PEND_FAILED(p_msg_q) 
+
+#undef OS_TRACE_TASK_MSG_Q_PEND_BLOCK
+#define OS_TRACE_TASK_MSG_Q_PEND_BLOCK(p_msg_q) 
+
+#undef OS_TRACE_TASK_SEM_PEND
+#define OS_TRACE_TASK_SEM_PEND(p_tcb) 
+
+#undef OS_TRACE_TASK_SEM_PEND_FAILED
+#define OS_TRACE_TASK_SEM_PEND_FAILED(p_tcb) 
+
+#undef OS_TRACE_TASK_SEM_PEND_BLOCK
+#define OS_TRACE_TASK_SEM_PEND_BLOCK(p_tcb) 
+
+#undef OS_TRACE_SEM_PEND
+#define OS_TRACE_SEM_PEND(p_sem) 
+
+#undef OS_TRACE_SEM_PEND_FAILED
+#define OS_TRACE_SEM_PEND_FAILED(p_sem) 
+
+#undef OS_TRACE_SEM_PEND_BLOCK
+#define OS_TRACE_SEM_PEND_BLOCK(p_sem) 
+
+#undef OS_TRACE_Q_PEND
+#define OS_TRACE_Q_PEND(p_q) 
+
+#undef OS_TRACE_Q_PEND_FAILED
+#define OS_TRACE_Q_PEND_FAILED(p_q) 
+
+#undef OS_TRACE_Q_PEND_BLOCK
+#define OS_TRACE_Q_PEND_BLOCK(p_q) 
+
+#undef OS_TRACE_MUTEX_PEND
+#define OS_TRACE_MUTEX_PEND(p_mutex) 
+
+#undef OS_TRACE_MUTEX_PEND_FAILED
+#define OS_TRACE_MUTEX_PEND_FAILED(p_mutex) 
+
+#undef OS_TRACE_MUTEX_PEND_BLOCK
+#define OS_TRACE_MUTEX_PEND_BLOCK(p_mutex) 
+
+#undef OS_TRACE_FLAG_PEND
+#define OS_TRACE_FLAG_PEND(p_grp) 
+
+#undef OS_TRACE_FLAG_PEND_FAILED
+#define OS_TRACE_FLAG_PEND_FAILED(p_grp) 
+
+#undef OS_TRACE_FLAG_PEND_BLOCK
+#define OS_TRACE_FLAG_PEND_BLOCK(p_grp) 
+
+#undef OS_TRACE_MEM_GET
+#define OS_TRACE_MEM_GET(p_mem) 
+
+#undef OS_TRACE_MEM_GET_FAILED
+#define OS_TRACE_MEM_GET_FAILED(p_mem) 
+
+#undef OS_TRACE_TASK_PRIO_CHANGE
+#define OS_TRACE_TASK_PRIO_CHANGE( pxTask, uxNewPriority ) 
+
+#undef OS_TRACE_MUTEX_TASK_PRIO_INHERIT
+#define OS_TRACE_MUTEX_TASK_PRIO_INHERIT(p_tcb, prio) 
+
+#undef OS_TRACE_MUTEX_TASK_PRIO_DISINHERIT
+#define OS_TRACE_MUTEX_TASK_PRIO_DISINHERIT(p_tcb, prio) 
+
+#undef OS_TRACE_TASK_RESUME
+#define OS_TRACE_TASK_RESUME(p_tcb) 
+
+#undef OS_TRACE_TASK_RESUME_ENTER
+#define OS_TRACE_TASK_RESUME_ENTER(p_tcb) 
+
+#undef OS_TRACE_TASK_RESUME_EXIT
+#define OS_TRACE_TASK_RESUME_EXIT(p_err) 
 
 #endif /* (TRC_CFG_SCHEDULING_ONLY == 0) */
 
@@ -1253,7 +1437,7 @@ void prvTraceOnEnd(void);
 		prvTraceStoreEvent2(PSF_EVENT_TASK_CREATE, (uint32_t)p_tcb, p_tcb->Prio); \
 	} \
 	TRACE_EXIT_CRITICAL_SECTION();
-#else
+#else /* (OS_VERSION >= 30700u) */
 #define OS_TRACE_TASK_CREATE(p_tcb) \
 	TRACE_ENTER_CRITICAL_SECTION(); \
     if (p_tcb != NULL) \
@@ -1269,7 +1453,8 @@ void prvTraceOnEnd(void);
 		prvTraceStoreEvent2(PSF_EVENT_TASK_CREATE, (uint32_t)p_tcb, p_tcb->Prio); \
 	} \
 	TRACE_EXIT_CRITICAL_SECTION();
-#endif
+#endif /* (OS_VERSION >= 30700u) */
+
 /* Called in OSTaskCreate, if it fails (typically if the stack can not be allocated) */
 /* No need to protect critical section. */
 #undef OS_TRACE_TASK_CREATE_FAILED
@@ -1327,7 +1512,7 @@ extern volatile uint32_t uiTraceSystemState;
 	
 #if (TRC_CFG_SCHEDULING_ONLY == 0)
 
-#if OS_VERSION < 30700u
+#if (OS_VERSION < 30700u)
 /* Called on OSTaskSuspend */
 /* No need to protect critical section. */
 #undef OS_TRACE_TASK_SUSPEND
@@ -1340,7 +1525,7 @@ extern volatile uint32_t uiTraceSystemState;
 	{ \
 		prvTraceStoreEvent1(PSF_EVENT_TASK_SUSPEND, (uint32_t)p_tcb); \
 	}
-#else
+#else /* (OS_VERSION < 30700u) */
 /* Called on OSTaskSuspend */
 /* Critical section needed to prevent variable to be overwritten. */
 #undef OS_TRACE_TASK_SUSPEND_ENTER
@@ -1350,7 +1535,7 @@ extern volatile uint32_t uiTraceSystemState;
 #undef OS_TRACE_TASK_SUSPEND_EXIT
 #define OS_TRACE_TASK_SUSPEND_EXIT(p_err) \
 	prvTraceTaskSuspendExit(p_err);
-#endif
+#endif /* (OS_VERSION < 30700u) */
 
 #if (TRACE_CFG_USE_TICKLESS_IDLE != 0)
 
@@ -1752,14 +1937,14 @@ extern volatile uint32_t uiTraceSystemState;
 #define OS_TRACE_MUTEX_TASK_PRIO_DISINHERIT( p_tcb, prio ) \
 	prvTraceStoreEvent2(PSF_EVENT_TASK_PRIO_DISINHERIT, (uint32_t)p_tcb, prio);
 
-#if OS_VERSION < 30700u
+#if (OS_VERSION < 30700u)
 /* Called in OSTaskResume */
 /* No need to protect critical section. */
 #undef OS_TRACE_TASK_RESUME
 #define OS_TRACE_TASK_RESUME( p_tcb ) \
 	prvTraceStoreEvent1(PSF_EVENT_TASK_RESUME, (uint32_t)p_tcb);
 
-#else
+#else /* (OS_VERSION < 30700u) */
 /* Called in OSTaskResume */
 /* Critical section needed to prevent variable to be overwritten. */
 #undef OS_TRACE_TASK_RESUME_ENTER
@@ -1769,7 +1954,182 @@ extern volatile uint32_t uiTraceSystemState;
 #undef OS_TRACE_TASK_RESUME_EXIT
 #define OS_TRACE_TASK_RESUME_EXIT( p_err )\
 	prvTraceTaskResumeExit(p_err);
-#endif
+#endif /* (OS_VERSION < 30700u) */
+
+#else /* (TRC_CFG_SCHEDULING_ONLY == 0) */
+	
+/* SCHEDULING ONLY, DEFINE ALL AS EMPTY */
+	
+#undef OS_TRACE_TASK_SUSPEND
+#define OS_TRACE_TASK_SUSPEND( p_tcb ) 
+
+#undef OS_TRACE_TASK_SUSPEND_ENTER
+#define OS_TRACE_TASK_SUSPEND_ENTER( p_tcb ) 
+
+#undef OS_TRACE_TASK_SUSPEND_EXIT
+#define OS_TRACE_TASK_SUSPEND_EXIT(p_err) 
+
+#undef traceLOW_POWER_IDLE_BEGIN
+#define traceLOW_POWER_IDLE_BEGIN() 
+
+#undef traceLOW_POWER_IDLE_END
+#define traceLOW_POWER_IDLE_END() 
+
+#undef OS_TRACE_TASK_DLY
+#define OS_TRACE_TASK_DLY(dly_ticks) 
+
+#undef OS_TRACE_TASK_MSG_Q_DEL
+#define OS_TRACE_TASK_MSG_Q_DEL(p_msg_q) 
+
+#undef OS_TRACE_TASK_SEM_DEL
+#define OS_TRACE_TASK_SEM_DEL(p_tcb) 
+
+#undef OS_TRACE_Q_DEL
+#define OS_TRACE_Q_DEL( p_q ) 
+
+#undef OS_TRACE_MUTEX_DEL
+#define OS_TRACE_MUTEX_DEL( p_mutex ) 
+
+#undef OS_TRACE_SEM_DEL
+#define OS_TRACE_SEM_DEL( p_sem ) 
+
+#undef OS_TRACE_FLAG_DEL
+#define OS_TRACE_FLAG_DEL( p_grp ) 
+
+#undef OS_TRACE_TASK_MSG_Q_CREATE
+#define OS_TRACE_TASK_MSG_Q_CREATE(p_msg_q, p_name) 
+
+#undef OS_TRACE_TASK_SEM_CREATE
+#define OS_TRACE_TASK_SEM_CREATE(p_tcb, p_name) 
+
+#undef OS_TRACE_Q_CREATE
+#define OS_TRACE_Q_CREATE(p_q, p_name ) 
+
+#undef OS_TRACE_SEM_CREATE
+#define OS_TRACE_SEM_CREATE( p_sem, p_name) 
+
+#undef OS_TRACE_MUTEX_CREATE
+#define OS_TRACE_MUTEX_CREATE( p_mutex, p_name ) 
+
+#undef OS_TRACE_MEM_CREATE
+#define OS_TRACE_MEM_CREATE( p_mem, p_name ) 
+
+#undef OS_TRACE_FLAG_CREATE
+#define OS_TRACE_FLAG_CREATE( p_grp, p_name ) 
+
+#undef OS_TRACE_TASK_MSG_Q_POST
+#define OS_TRACE_TASK_MSG_Q_POST(p_msg_q) 
+
+#undef OS_TRACE_TASK_MSG_Q_POST_FAILED
+#define OS_TRACE_TASK_MSG_Q_POST_FAILED(p_msg_q) 
+
+#undef OS_TRACE_TASK_SEM_POST
+#define OS_TRACE_TASK_SEM_POST(p_tcb) 
+
+#undef OS_TRACE_TASK_SEM_POST_FAILED
+#define OS_TRACE_TASK_SEM_POST_FAILED(p_tcb) 
+
+#undef OS_TRACE_Q_POST
+#define OS_TRACE_Q_POST(p_q) 
+
+#undef OS_TRACE_Q_POST_FAILED
+#define OS_TRACE_Q_POST_FAILED(p_q) 
+
+#undef OS_TRACE_SEM_POST
+#define OS_TRACE_SEM_POST(p_sem) 
+
+#undef OS_TRACE_SEM_POST_FAILED
+#define OS_TRACE_SEM_POST_FAILED(p_tcb) 
+
+#undef OS_TRACE_MUTEX_POST
+#define OS_TRACE_MUTEX_POST(p_mutex) 
+
+#undef OS_TRACE_MUTEX_POST_FAILED
+#define OS_TRACE_MUTEX_POST_FAILED(p_mutex) 
+
+#undef OS_TRACE_FLAG_POST
+#define OS_TRACE_FLAG_POST(p_grp) 
+
+#undef OS_TRACE_FLAG_POST_FAILED
+#define OS_TRACE_FLAG_POST_FAILED(p_grp) 
+
+#undef OS_TRACE_MEM_PUT
+#define OS_TRACE_MEM_PUT(p_mem) 
+
+#undef OS_TRACE_MEM_PUT_FAILED
+#define OS_TRACE_MEM_PUT_FAILED(p_mem) 
+
+#undef OS_TRACE_TASK_MSG_Q_PEND
+#define OS_TRACE_TASK_MSG_Q_PEND(p_msg_q) 
+
+#undef OS_TRACE_TASK_MSG_Q_PEND_FAILED
+#define OS_TRACE_TASK_MSG_Q_PEND_FAILED(p_msg_q) 
+
+#undef OS_TRACE_TASK_MSG_Q_PEND_BLOCK
+#define OS_TRACE_TASK_MSG_Q_PEND_BLOCK(p_msg_q) 
+
+#undef OS_TRACE_TASK_SEM_PEND
+#define OS_TRACE_TASK_SEM_PEND(p_tcb) 
+
+#undef OS_TRACE_TASK_SEM_PEND_FAILED
+#define OS_TRACE_TASK_SEM_PEND_FAILED(p_tcb) 
+
+#undef OS_TRACE_TASK_SEM_PEND_BLOCK
+#define OS_TRACE_TASK_SEM_PEND_BLOCK(p_tcb) 
+
+#undef OS_TRACE_SEM_PEND
+#define OS_TRACE_SEM_PEND(p_sem) 
+
+#undef OS_TRACE_SEM_PEND_FAILED
+#define OS_TRACE_SEM_PEND_FAILED(p_sem) 
+
+#undef OS_TRACE_SEM_PEND_BLOCK
+#define OS_TRACE_SEM_PEND_BLOCK(p_sem) 
+
+#undef OS_TRACE_Q_PEND
+#define OS_TRACE_Q_PEND(p_q) 
+
+#undef OS_TRACE_Q_PEND_FAILED
+#define OS_TRACE_Q_PEND_FAILED(p_q) 
+
+#undef OS_TRACE_Q_PEND_BLOCK
+#define OS_TRACE_Q_PEND_BLOCK(p_q) 
+
+#undef OS_TRACE_MUTEX_PEND
+#define OS_TRACE_MUTEX_PEND(p_mutex) 
+
+#undef OS_TRACE_MUTEX_PEND_FAILED
+#define OS_TRACE_MUTEX_PEND_FAILED(p_mutex) 
+
+#undef OS_TRACE_MUTEX_PEND_BLOCK
+#define OS_TRACE_MUTEX_PEND_BLOCK(p_mutex) 
+
+#undef OS_TRACE_FLAG_PEND
+#define OS_TRACE_FLAG_PEND(p_grp) 
+
+#undef OS_TRACE_FLAG_PEND_FAILED
+#define OS_TRACE_FLAG_PEND_FAILED(p_grp) 
+
+#undef OS_TRACE_FLAG_PEND_BLOCK
+#define OS_TRACE_MEM_GET_FAILED(p_mem) 
+
+#undef OS_TRACE_TASK_PRIO_CHANGE
+#define OS_TRACE_TASK_PRIO_CHANGE( p_tcb, prio ) 
+
+#undef OS_TRACE_MUTEX_TASK_PRIO_INHERIT
+#define OS_TRACE_MUTEX_TASK_PRIO_INHERIT( p_tcb, prio ) 
+
+#undef OS_TRACE_MUTEX_TASK_PRIO_DISINHERIT
+#define OS_TRACE_MUTEX_TASK_PRIO_DISINHERIT( p_tcb, prio ) 
+
+#undef OS_TRACE_TASK_RESUME
+#define OS_TRACE_TASK_RESUME( p_tcb ) 
+
+#undef OS_TRACE_TASK_RESUME_ENTER
+#define OS_TRACE_TASK_RESUME_ENTER( p_tcb )
+
+#undef OS_TRACE_TASK_RESUME_EXIT
+#define OS_TRACE_TASK_RESUME_EXIT( p_err )
 
 #endif /* (TRC_CFG_SCHEDULING_ONLY == 0) */
 

@@ -1,5 +1,5 @@
 /*
- * Trace Recorder for Tracealyzer v4.5.0
+ * Trace Recorder for Tracealyzer v4.5.1(beta)
  * Copyright 2021 Percepio AB
  * www.percepio.com
  *
@@ -561,15 +561,15 @@ void vTraceSetFilterMask(uint16_t filterMask);
 ******************************************************************************/
 void vTraceInitialize(void);
 
-#if defined (TRC_CFG_ENABLE_STACK_MONITOR) && (TRC_CFG_ENABLE_STACK_MONITOR == 1)
+#if defined (TRC_CFG_ENABLE_STACK_MONITOR) && (TRC_CFG_ENABLE_STACK_MONITOR == 1) && (TRC_CFG_SCHEDULING_ONLY == 0)
 void prvAddTaskToStackMonitor(void* task);
 void prvRemoveTaskFromStackMonitor(void* task);
 void prvReportStackUsage(void);
-#else /* defined (TRC_CFG_ENABLE_STACK_MONITOR) && (TRC_CFG_ENABLE_STACK_MONITOR == 1) */
+#else /* defined (TRC_CFG_ENABLE_STACK_MONITOR) && (TRC_CFG_ENABLE_STACK_MONITOR == 1) && (TRC_CFG_SCHEDULING_ONLY == 0) */
 #define prvAddTaskToStackMonitor(task)
 #define prvRemoveTaskFromStackMonitor(task)
 #define prvReportStackUsage()
-#endif /* defined (TRC_CFG_ENABLE_STACK_MONITOR) && (TRC_CFG_ENABLE_STACK_MONITOR == 1) */
+#endif /* defined (TRC_CFG_ENABLE_STACK_MONITOR) && (TRC_CFG_ENABLE_STACK_MONITOR == 1) && (TRC_CFG_SCHEDULING_ONLY == 0) */
 
 #if (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_SNAPSHOT)
 

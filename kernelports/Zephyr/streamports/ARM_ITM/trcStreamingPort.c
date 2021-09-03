@@ -1,5 +1,5 @@
 /*
- * Trace Recorder for Tracealyzer v4.5.0
+ * Trace Recorder for Tracealyzer v4.5.1(beta)
  * Copyright 2021 Percepio AB
  * www.percepio.com
  *
@@ -102,12 +102,12 @@ int32_t read_from_host(void* ptrData, uint32_t size, int32_t* ptrBytesRead)
 
 static void itm_write_32(uint32_t data)
 {	
-     if   ((CoreDebug->DEMCR & CoreDebug_DEMCR_TRCENA_Msk)  &&      // Trace enabled
-           (ITM->TCR & ITM_TCR_ITMENA_Msk)                  &&      // ITM enabled
-           (ITM->TER & (1UL << TRC_CFG_ITM_PORT)))                  // ITM port enabled
+    if ((CoreDebug->DEMCR & CoreDebug_DEMCR_TRCENA_Msk)	&&	// Trace enabled
+		(ITM->TCR & ITM_TCR_ITMENA_Msk)					&&	// ITM enabled
+		(ITM->TER & (1UL << TRC_CFG_ITM_PORT)))				// ITM port enabled
     {
-        while (ITM->PORT[TRC_CFG_ITM_PORT].u32 == 0);     // Block until room in ITM FIFO - This stream port is always in "blocking mode", since intended for high-speed ITM!
-        ITM->PORT[TRC_CFG_ITM_PORT].u32 = data;           // Write the data
+        while (ITM->PORT[TRC_CFG_ITM_PORT].u32 == 0);	// Block until room in ITM FIFO - This stream port is always in "blocking mode", since intended for high-speed ITM!
+        ITM->PORT[TRC_CFG_ITM_PORT].u32 = data;			// Write the data
 	}	
 }
 

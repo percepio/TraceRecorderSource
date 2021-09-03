@@ -1,5 +1,5 @@
 /*
- * Trace Recorder for Tracealyzer v4.5.0
+ * Trace Recorder for Tracealyzer v4.5.1(beta)
  * Copyright 2021 Percepio AB
  * www.percepio.com
  *
@@ -75,7 +75,11 @@ int32_t read_from_host(void* ptrData, uint32_t size, int32_t* ptrBytesRead);
  * Default: 1 (0 is typically terminal output and 31 is used by Keil)
  *
  ******************************************************************************/
+#ifdef CONFIG_PERCEPIO_RECORDER_TRC_CFG_ITM_PORT
+#define TRC_CFG_ITM_PORT CONFIG_PERCEPIO_RECORDER_TRC_CFG_ITM_PORT
+#else
 #define TRC_CFG_ITM_PORT 1
+#endif
 
 #if (TRC_CFG_ITM_PORT < 0) || (TRC_CFG_ITM_PORT > 31)
 #error "Bad ITM port selected."

@@ -1,5 +1,5 @@
 /*
- * Trace Recorder for Tracealyzer v4.5.0
+ * Trace Recorder for Tracealyzer v4.5.1(beta)
  * Copyright 2021 Percepio AB
  * www.percepio.com
  *
@@ -2496,7 +2496,10 @@ void prvTraceSetObjectName(traceObjectClass objectclass,
 {
 	static uint16_t idx;
 
-	TRACE_ASSERT(name != NULL, "prvTraceSetObjectName: name == NULL", TRC_UNUSED);
+	if (name == 0)
+	{
+		name = "";
+	}
 
 	if (objectclass >= TRACE_NCLASSES)
 	{
