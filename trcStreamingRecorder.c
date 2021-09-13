@@ -1,5 +1,5 @@
 /*
- * Trace Recorder for Tracealyzer v4.5.1(beta)
+ * Trace Recorder for Tracealyzer v4.5.1
  * Copyright 2021 Percepio AB
  * www.percepio.com
  *
@@ -1591,6 +1591,11 @@ void prvTraceStoreStringEvent(int nArgs, uint16_t eventID, const char* str, ...)
 	int len;
   	va_list vl;
 
+	if (str == 0)
+	{
+		str = "";
+	}
+
 	for (len = 0; (str[len] != 0) && (len < 52); len++); /* empty loop */
 
 	va_start(vl, str);
@@ -1806,6 +1811,11 @@ void prvTraceSaveObjectSymbol(void* address, const char *name)
 
 	TRACE_ENTER_CRITICAL_SECTION();
 
+	if (name == 0)
+	{
+		name = "";
+	}
+
 	/* We do not look for previous entries -> changing a registered string is no longer possible */
 	if (firstFreeSymbolTableIndex < SYMBOL_TABLE_BUFFER_SIZE)
 	{
@@ -1819,7 +1829,7 @@ void prvTraceSaveObjectSymbol(void* address, const char *name)
 			ptrSymbol[i] = (uint8_t)name[i];	/* We do this first to ensure we also get the 0 termination, if there is one */
 
 			if (name[i] == 0)
-			break;
+				break;
 		}
 
 		/* Check the length of "name", if longer than SYMBOL_MAX_LENGTH */

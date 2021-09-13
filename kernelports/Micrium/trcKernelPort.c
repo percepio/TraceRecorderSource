@@ -1,5 +1,5 @@
 /*
- * Trace Recorder for Tracealyzer v4.5.1(beta)
+ * Trace Recorder for Tracealyzer v4.5.1
  * Copyright 2021 Percepio AB
  * www.percepio.com
  *
@@ -39,6 +39,8 @@ void prvReportStackUsage(void);
 
 #endif /* (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING) || (defined(TRC_CFG_ENABLE_STACK_MONITOR) && (TRC_CFG_ENABLE_STACK_MONITOR == 1) && (TRC_CFG_SCHEDULING_ONLY == 0)) */
 
+#define TRC_MAX_STRING_APPEND_SIZE 64
+
 /* Variables to hold the latest suspended and resumed task */
 static void* lastResumedTask = 0;
 static void* lastSuspendedTask = 0;
@@ -48,13 +50,31 @@ void* prvTraceGetCurrentTaskHandle(void)
 	return (void*)OSTCBCurPtr;                                         /* OSTCBCurPtr is a pointer to currently running TCB    */
 }
 
-char * prvTraceAppend(const char *p_name, const char *suffix)
+char* prvTraceAppend(const char *name, const char *suffix)
 {
-	static char buf[64];
+	static char buf[TRC_MAX_STRING_APPEND_SIZE];
+	uint32_t i = 0, j = 0;
 	
-	Str_Copy_N(&buf[0], p_name, 64);
-	Str_Cat_N(buf, " ", 64);
-	Str_Cat_N(buf, suffix, 64);
+	/* (i < ((TRC_MAX_STRING_APPEND_SIZE) - 2)) leaves room for ' ' and null termination */
+	while ((i < ((TRC_MAX_STRING_APPEND_SIZE) - 2)) && (name[i] != 0))
+	{
+		buf[i] = name[i];
+		i++;
+	}
+	
+	buf[i] = ' ';
+	i++;
+	
+	/* (i < ((TRC_MAX_STRING_APPEND_SIZE) - 1)) leaves room for null termination */
+	while ((i < ((TRC_MAX_STRING_APPEND_SIZE) - 1)) && (suffix[j] != 0))
+	{
+		buf[i] = suffix[j];
+		i++;
+		j++;
+	}
+	
+	/* Always null termination */
+	buf[i] = 0;
 
 	return (&buf[0]);
 }

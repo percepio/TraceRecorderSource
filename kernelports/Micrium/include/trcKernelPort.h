@@ -1,5 +1,5 @@
 /*
- * Trace Recorder for Tracealyzer v4.5.1(beta)
+ * Trace Recorder for Tracealyzer v4.5.1
  * Copyright 2021 Percepio AB
  * www.percepio.com
  *
@@ -63,7 +63,7 @@ extern "C" {
 /* Gives the currently executing task (wrapper for RTOS-specific function) */
 void* prvTraceGetCurrentTaskHandle(void);
 uint32_t prvIsNewTCB(void* pNewTCB);
-char* prvTraceAppend(const char*, const char*);
+char* prvTraceAppend(const char* name, const char* suffix);
 
 #if defined(TRC_CFG_ENABLE_STACK_MONITOR) && (TRC_CFG_ENABLE_STACK_MONITOR == 1)
 uint32_t prvTraceGetStackHighWaterMark(void* task);

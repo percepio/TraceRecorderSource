@@ -1,4 +1,4 @@
-Percepio Trace Recorder Initialization v4.5.1(beta)
+Percepio Trace Recorder Initialization v4.5.1
 Copyright 2021 Percepio AB
 www.percepio.com
 
