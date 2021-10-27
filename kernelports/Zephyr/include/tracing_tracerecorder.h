@@ -809,11 +809,11 @@
 
 /* Syscall trace mappings */
 #undef sys_port_trace_syscall_enter
-#define sys_port_trace_syscall_enter()										   \
-    sys_trace_syscall_enter()
+#define sys_port_trace_syscall_enter(id, name, ...)                             \
+    sys_trace_syscall_enter(id, #name)
 #undef sys_port_trace_syscall_exit
-#define sys_port_trace_syscall_exit()										   \
-    sys_trace_syscall_exit()
+#define sys_port_trace_syscall_exit(id, name, ...)							    \
+    sys_trace_syscall_exit(id, #name)
 
 
 
@@ -1246,8 +1246,8 @@ void sys_trace_k_timer_status_sync_exit(struct k_timer *timer,
 
 
 /* Syscall trace function declarations */
-void sys_trace_syscall_enter();
-void sys_trace_syscall_exit();
+void sys_trace_syscall_enter(uint32_t id, const char *name);
+void sys_trace_syscall_exit(uint32_t id, const char *name);
 
 
 /* Legacy trace functions that are pending refactoring/removal by

@@ -2114,12 +2114,12 @@ void sys_trace_k_timer_status_sync_exit(struct k_timer *timer, uint32_t result) 
 
 
 /* Syscall trace function definitions */
-void sys_trace_syscall_enter() {
+void sys_trace_syscall_enter(uint32_t id, const char *name) {
 	xTraceSDKEventBegin(PSF_EVENT_SYSTEM_SYSCALL_ENTER, 0);
 	xTraceSDKEventEnd();
 }
 
-void sys_trace_syscall_exit() {
+void sys_trace_syscall_exit(uint32_t id, const char *name) {
 	xTraceSDKEventBegin(PSF_EVENT_SYSTEM_SYSCALL_EXIT, 0);
 	xTraceSDKEventEnd();
 }
