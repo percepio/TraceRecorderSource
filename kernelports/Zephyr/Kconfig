@@ -84,6 +84,7 @@ endchoice
 menuconfig PERCEPIO_RECORDER_CFG_STACK_MONITOR
 	bool "Stack Monitor"
 	select TRACING_STACK
+	select THREAD_STACK_INFO
 	default y
 	help 
 	  If enabled (1), the recorder periodically reports the unused stack space of 
