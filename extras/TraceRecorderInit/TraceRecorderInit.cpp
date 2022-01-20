@@ -1,5 +1,5 @@
 /*
- * Percepio Trace Recorder Initialization v4.5.2
+ * Percepio Trace Recorder Initialization v4.6.0(RC0)
  * Copyright 2021 Percepio AB
  * www.percepio.com
  *
@@ -24,8 +24,8 @@
  *	start gathering trace events.
  */
  
-#include "TraceRecorderInit.h"
-#include "trcRecorder.h"
+#include <TraceRecorderInit.h>
+#include <trcRecorder.h>
 
 extern "C" uint32_t RecorderInitialized;
 

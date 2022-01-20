@@ -1,5 +1,5 @@
 /*
- * Trace Recorder for Tracealyzer v4.5.2
+ * Trace Recorder for Tracealyzer v4.6.0(RC0)
  * Copyright 2021 Percepio AB
  * www.percepio.com
  *
@@ -12,80 +12,259 @@
 #define TRC_KERNEL_PORT_H
 
 #include <kernel.h>
-#include "trcRecorder.h"
-#include "trcPortDefines.h"
+#include <version.h>
+#include <trcRecorder.h>
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 
-/* Not used by Zephyr but needed by the header */
-#define TRC_PLATFORM_CFG ""
-#define TRC_PLATFORM_CFG_MAJOR 1
-#define TRC_PLATFORM_CFG_MINOR 0
-#define TRC_PLATFORM_CFG_PATCH 0
-
-
-/* The user event channel for recorder warnings, must be defined in trcKernelPort.c */
-extern traceString trcWarningChannel;
-
-
-/*  */
+/**
+ * @def TRACE_KERNEL_VERSION
+ * 
+ * @brief This defines the kernel version/identity. 
+ */
 #define TRACE_KERNEL_VERSION 0x9AA9
 
-
-/* Dummy definitions, since no RTOS */
-#define TRACE_TICK_RATE_HZ 10000 /* Must not be 0. */
-#define TRACE_GET_CURRENT_TASK() k_current_get()
-#define TRACE_GET_OS_TICKS() (0)
-#define TRACE_GET_TASK_NUMBER(x) 0
-
-/* Hardcoded to 0 for bare metal */
-#define prvTraceIsSchedulerSuspended() 0
-#define prvIsNewTCB(x) 0
-#define prvTraceGetCurrentTaskHandle(x) NULL
-
-
-
-
 /**
+ * @def TRC_PLATFORM_CFG
  * 
+ * @brief This defines the basis for version specific lookup of
+ * platform configuration files. If left empty the default
+ * RTOS XML files are used.
  */
-#if defined (TRC_CFG_ENABLE_STACK_MONITOR) && ((TRC_CFG_ENABLE_STACK_MONITOR) == 1)
-uint32_t prvTraceGetStackHighWaterMark(void* task);
-#else /* defined (TRC_CFG_ENABLE_STACK_MONITOR) && (TRC_CFG_ENABLE_STACK_MONITOR == 1) */
-#define prvAddTaskToStackMonitor(task)        // Do nothing
-#define prvRemoveTaskFromStackMonitor(task)   // Do nothing
-#endif /* defined (TRC_CFG_ENABLE_STACK_MONITOR) && (TRC_CFG_ENABLE_STACK_MONITOR == 1) */
-
-
-#if ((TRC_CFG_HARDWARE_PORT) == TRC_HARDWARE_PORT_ZEPHYR)
-	#define TRACE_ALLOC_CRITICAL_SECTION() int key;
-	#define TRACE_ENTER_CRITICAL_SECTION() { key = irq_lock(); }
-	#define TRACE_EXIT_CRITICAL_SECTION() { irq_unlock(key); }
-#endif
-
-
-
-
-#if ((TRC_CFG_RECORDER_MODE) == TRC_RECORDER_MODE_STREAMING)
-
-/*******************************************************************************
-* vTraceStoreKernelObjectName
-*
-* Set the name for a kernel object (defined by its address).
-******************************************************************************/			
-void vTraceStoreKernelObjectName(void* object, const char* name); 
-
-
-/* For bare metal test - replaces TzCtrl task - call this periodically */
-void vTracePeriodicControl(void);
-
+#define TRC_PLATFORM_CFG "Zephyr"
 
 /**
- * KERNEL SPECIFIC OBJECT CONFIGURATION
+ * @def TRC_PLATFORM_CFG_MAJOR
+ * 
+ * @brief Major release version for Zephyr recorder.
  */
+#define TRC_PLATFORM_CFG_MAJOR 3
+
+/**
+ * @def TRC_PLATFORM_CFG_MINOR
+ * 
+ * @brief Minor release version for Zephyr recorder.
+ */
+#define TRC_PLATFORM_CFG_MINOR 0
+
+/**
+ * @def TRC_PLATFORM_CFG_PATCH
+ * 
+ * @brief Patchlevel release version for Zephyr recorder.
+ */
+#define TRC_PLATFORM_CFG_PATCH 0
+
+/**
+ * @def TRC_TICK_RATE_HZ
+ * 
+ * @brief 
+ */
+#define TRC_TICK_RATE_HZ CONFIG_SYS_CLOCK_TICKS_PER_SEC
+
+/**
+ * @def TraceKernelPortTaskHandle_t
+ * 
+ * @brief 
+ */
+#define TraceKernelPortTaskHandle_t struct k_thread
+
+extern TraceHeapHandle_t xSystemHeapHandle;
+
+/**
+ * @brief A structure representing the kernel port buffer.
+ */
+typedef struct TraceKernelPortDataBuffer
+{
+	uint8_t buffer[sizeof(TraceHeapHandle_t) + sizeof(TraceKernelPortTaskHandle_t) + 4];
+} TraceKernelPortDataBuffer_t;
+
+/**
+ * @brief Kernel port initialize callback.
+ * 
+ * This function is called by the recorder as part of its initialization phase.
+ * 
+ * @param pxBuffer Buffer
+ * @retval TRC_FAIL Initialization failed
+ * @retval TRC_SUCCESS Success
+ */
+traceResult xTraceKernelPortInitialize(TraceKernelPortDataBuffer_t* pxBuffer);
+
+/**
+ * @brief Kernel port begin callback.
+ * 
+ * This function is called by the recorder as part of its begin phase.
+ * 
+ * @retval TRC_FAIL Enabling failed
+ * @retval TRC_SUCCESS Success
+ */
+traceResult xTraceKernelPortEnable(void);
+
+/**
+ * @brief Get unused stack size for kernel port thread.
+ * 
+ * @param pvThread Thread
+ * @param puxUnusedStack Destination variable
+ * @retval TRC_FAIL Failed to get size
+ * @retval TRC_SUCCESS Success
+ */
+traceResult xTraceKernelPortGetUnusedStack(void* pvThread, TraceUnsignedBaseType_t* puxUnusedStack);
+
+/**
+ * @brief Get kernel port system heap handle.
+ * 
+ * @return TraceHeapHandle_t 
+ */
+TraceHeapHandle_t xTraceKernelPortGetSystemHeapHandle(void);
+
+/**
+ * @brief Get kernel port scheduler suspended state
+ * 
+ * @retval 0 Scheduler not suspended
+ * @retval 1 Scheduler suspended
+ */
+unsigned char xTraceKernelPortIsSchedulerSuspended(void);
+
+/**
+ * @brief Sets kernel object name for display in Tracealyzer.
+ * 
+ * @param object Kernel object
+ * @param name name
+ */
+void vTraceSetKernelObjectName(void* object, const char* name);
+
+/**
+ * @brief Sets Work Queue name for display in Tracealyzer.
+ * 
+ * @param object Work queue object
+ * @param name name
+ */
+void vTraceSetWorkQueueName(void* object, const char* name);
+
+/**
+ * @brief Sets Heap name for display in Tracealyzer.
+ * 
+ * @param object Heap object
+ * @param name name
+ */
+void vTraceSetHeapName(void* object, const char* name);
+
+/**
+ * @brief Sets Semaphore name for display in Tracealyzer.
+ * 
+ * @param object Semaphore object
+ * @param name name
+ */
+void vTraceSetSemaphoreName(void* object, const char* name);
+
+/**
+ * @brief Sets Mutex name for display in Tracealyzer.
+ * 
+ * @param object Mutex object
+ * @param name name
+ */
+void vTraceSetMutexName(void* object, const char* name);
+
+/**
+ * @brief Sets Condvar name for display in Tracealyzer.
+ * 
+ * @param object Condvar object
+ * @param name name
+ */
+void vTraceSetCondvarName(void* object, const char* name);
+
+/**
+ * @brief Sets Queue name for display in Tracealyzer.
+ * 
+ * @param object Queue object
+ * @param name name
+ */
+void vTraceSetQueueName(void* object, const char* name);
+
+/**
+ * @brief Sets FIFO Queue name for display in Tracealyzer.
+ * 
+ * @param object FIFO Queue object
+ * @param name name
+ */
+void vTraceSetFIFOQueueName(void* object, const char* name);
+
+/**
+ * @brief Sets LIFO Queue name for display in Tracealyzer.
+ * 
+ * @param object LIFO Queue object
+ * @param name name
+ */
+void vTraceSetLIFOQueueName(void* object, const char* name);
+
+/**
+ * @brief Sets Stack name for display in Tracealyzer.
+ * 
+ * @param object Stack object
+ * @param name name
+ */
+void vTraceSetStackName(void* object, const char* name);
+
+/**
+ * @brief Sets Message Queue name for display in Tracealyzer.
+ * 
+ * @param object Message Queue object
+ * @param name name
+ */
+void vTraceSetMessageQueueName(void* object, const char* name);
+
+/**
+ * @brief Sets Mailbox name for display in Tracealyzer.
+ * 
+ * @param object Mailbox object
+ * @param name name
+ */
+void vTraceSetMailboxName(void* object, const char* name);
+
+/**
+ * @brief Sets Pipe name for display in Tracealyzer.
+ * 
+ * @param object Pipe object
+ * @param name name
+ */
+void vTraceSetPipeName(void* object, const char* name);
+
+/**
+ * @brief Sets Memory Heap name for display in Tracealyzer.
+ * 
+ * @param object Memory Heap object
+ * @param name name
+ */
+void vTraceSetMemoryHeapName(void* object, const char* name);
+
+/**
+ * @brief Sets Memory Slab name for display in Tracealyzer.
+ * 
+ * @param object Memory Slab object
+ * @param name name
+ */
+void vTraceSetMemorySlabName(void* object, const char* name);
+
+/**
+ * @brief Sets Timer name for display in Tracealyzer.
+ * 
+ * @param object Timer object
+ * @param name name
+ */
+void vTraceSetTimerName(void* object, const char* name);
+
+
+/* Flag an error if the user is trying to use the tracerecorder in a version of
+ * Zephyr that predates the new tracing system on which the recorder relies
+ * (Zephyr 2.6.0).
+ */
+#if ((KERNEL_VERSION_MAJOR) < 2)
+	#error "Tracerecorder is not compatible with Zephyr versions older than v2.6.0"
+#elif (((KERNEL_VERSION_MAJOR) == 2) && ((KERNEL_VERSION_MINOR) < 6))
+	#error "Tracerecorder is not compatible with Zephyr versions lower than v2.6.0"
+#endif
 
 
 /**
@@ -100,12 +279,24 @@ void vTracePeriodicControl(void);
 #define PSF_EVENT_TASK_PRIO_INHERIT							0x05
 #define PSF_EVENT_TASK_PRIO_DISINHERIT						0x06
 #define PSF_EVENT_DEFINE_ISR								0x07
+
+#define PSF_EVENT_STATEMACHINE_STATE_CREATE					0x0
+#define PSF_EVENT_STATEMACHINE_CREATE						0x0
+#define PSF_EVENT_STATEMACHINE_STATECHANGE					0x0
+#define PSF_EVENT_INTERVAL_CREATE							0x0
+#define PSF_EVENT_INTERVAL_STATECHANGE						0x0
+#define PSF_EVENT_COUNTER_CREATE							0x0
+#define PSF_EVENT_COUNTER_CHANGE							0x0
+
+#define PSF_EVENT_MALLOC_FAILED 							0x0
+#define PSF_EVENT_FREE_FAILED 								0x0
+#define PSF_EVENT_EXTENSION_CREATE							0x0
+#define PSF_EVENT_HEAP_CREATE								0x0
 							
 #define PSF_EVENT_THREAD_SCHED_WAKEUP						0xB6
 #define PSF_EVENT_THREAD_SCHED_ABORT						0x20
 #define PSF_EVENT_THREAD_SCHED_PRIORITY_SET					0x04
 #define PSF_EVENT_THREAD_SCHED_READY						0x30
-#define PSF_EVENT_TASK_READY								0x30	// Forced compliance due to SDK implementation
 #define PSF_EVENT_THREAD_SCHED_PEND
 #define PSF_EVENT_THREAD_SCHED_RESUME						0x7C
 #define PSF_EVENT_THREAD_SCHED_SUSPEND						0x7B
@@ -130,13 +321,13 @@ void vTracePeriodicControl(void);
 #define PSF_EVENT_THREAD_BUSY_WAIT_EXIT						0xF3
 #define PSF_EVENT_THREAD_YIELD								0xB5
 #define PSF_EVENT_THREAD_WAKEUP								0x15D
-#define PSF_EVENT_THREAD_ABORT								0x15E
+#define PSF_EVENT_THREAD_ABORT								0x15E	
 #define PSF_EVENT_THREAD_START								0xB3
 #define PSF_EVENT_THREAD_SET_PRIORITY						0x15F
 #define PSF_EVENT_THREAD_SUSPEND							0x161
 #define PSF_EVENT_THREAD_RESUME								0x160
-#define PSF_EVENT_THREAD_SCHED_LOCK							0xB7		// Ignored for now
-#define PSF_EVENT_THREAD_SCHED_UNLOCK						0xB8		// Ignored for now
+#define PSF_EVENT_THREAD_SCHED_LOCK							0xB7
+#define PSF_EVENT_THREAD_SCHED_UNLOCK						0xB8
 
 #define PSF_EVENT_WORK_INIT									0x11E
 #define PSF_EVENT_WORK_SUBMIT_TO_QUEUE_SUCCESS				0x11F
@@ -196,7 +387,8 @@ void vTracePeriodicControl(void);
 #define PSF_EVENT_UWORK_QUEUE_START_ENTER					0x151
 #define PSF_EVENT_UWORK_QUEUE_START_EXIT					0x152
 
-#define PSF_EVENT_PWORK_INIT								0x153
+#define PSF_EVENT_PWORK_INIT_ENTER							0x153
+#define PSF_EVENT_PWORK_INIT_EXIT							0x166
 #define PSF_EVENT_PWORK_SUBMIT_TO_QUEUE_SUCCESS				0x154
 #define PSF_EVENT_PWORK_SUBMIT_TO_QUEUE_BLOCKING			0x155
 #define PSF_EVENT_PWORK_SUBMIT_TO_QUEUE_FAILURE				0x156
@@ -307,7 +499,6 @@ void vTracePeriodicControl(void);
 #define PSF_EVENT_SEMAPHORE_CREATE_TIMEOUT					0x12
 #define PSF_EVENT_MUTEX_RECURSIVE_CREATE					0x17
 #define PSF_EVENT_STREAMBUFFER_CREATE						0x18
-#define PSF_EVENT_MAILBOX_INIT                              0x1B
 #define PSF_EVENT_MEMORY_SLAB_INIT_SUCCESS                  0x1C
 #define PSF_EVENT_MEMORY_SLAB_INIT_FAILURE					0x29
 #define PSF_EVENT_KHEAP_INIT                                0x1D
@@ -349,28 +540,28 @@ void vTracePeriodicControl(void);
 #define PSF_EVENT_TIMER_DELETE_FAILED						0x48
 
 #define PSF_EVENT_SEMAPHORE_RESET							0x6A
-#define PSF_EVENT_SEMAPHORE_GIVE							0x51
+#define PSF_EVENT_SEMAPHORE_GIVE_SUCCESS					0x51
 #define PSF_EVENT_SEMAPHORE_GIVE_FAILED						0x54
-#define PSF_EVENT_SEMAPHORE_GIVE_BLOCK						0x57
+#define PSF_EVENT_SEMAPHORE_GIVE_BLOCKING					0x57
 #define PSF_EVENT_SEMAPHORE_GIVE_FROMISR					0x5A
 #define PSF_EVENT_SEMAPHORE_GIVE_FROMISR_FAILED				0x5D
-#define PSF_EVENT_SEMAPHORE_TAKE							0x61
+#define PSF_EVENT_SEMAPHORE_TAKE_SUCCESS					0x61
+#define PSF_EVENT_SEMAPHORE_TAKE_BLOCKING					0x67
 #define PSF_EVENT_SEMAPHORE_TAKE_FAILED						0x64
 #define PSF_EVENT_SEMAPHORE_TAKE_FROMISR_FAILED				0x6D
-#define PSF_EVENT_SEMAPHORE_PEEK							0x71
-#define PSF_EVENT_SEMAPHORE_TAKE_BLOCK						0x67
+#define PSF_EVENT_SEMAPHORE_PEEK_SUCCESS					0x71
 #define PSF_EVENT_SEMAPHORE_PEEK_FAILED						0x74
-#define PSF_EVENT_SEMAPHORE_PEEK_BLOCK						0x77
+#define PSF_EVENT_SEMAPHORE_PEEK_BLOCKING					0x77
 
-#define PSF_EVENT_MUTEX_GIVE								0x52
+#define PSF_EVENT_MUTEX_GIVE_SUCCESS						0x52
 #define PSF_EVENT_MUTEX_GIVE_FAILED							0x55
-#define PSF_EVENT_MUTEX_GIVE_BLOCK							0x58
-#define PSF_EVENT_MUTEX_TAKE								0x62
+#define PSF_EVENT_MUTEX_GIVE_BLOCKING						0x58
+#define PSF_EVENT_MUTEX_TAKE_SUCCESS						0x62
 #define PSF_EVENT_MUTEX_TAKE_FAILED							0x65
-#define PSF_EVENT_MUTEX_TAKE_BLOCK							0x68
-#define PSF_EVENT_MUTEX_PEEK								0x72
+#define PSF_EVENT_MUTEX_TAKE_BLOCKING						0x68
+#define PSF_EVENT_MUTEX_PEEK_SUCCESS						0x72
 #define PSF_EVENT_MUTEX_PEEK_FAILED							0x75
-#define PSF_EVENT_MUTEX_PEEK_BLOCK							0x78
+#define PSF_EVENT_MUTEX_PEEK_BLOCKING						0x78
 
 #define PSF_EVENT_CONDVAR_INIT								0x6F
 #define PSF_EVENT_CONDVAR_SIGNAL_SUCCESS					0x76
@@ -390,6 +581,7 @@ void vTracePeriodicControl(void);
 #define PSF_EVENT_TIMER_STATUS_SYNC_AWAIT					0xA3
 #define PSF_EVENT_TIMER_STATUS_SYNC_EXIT					0xA4
 
+#define PSF_EVENT_MAILBOX_INIT                              0x1B
 #define PSF_EVENT_MAILBOX_MESSAGE_PUT_SUCCESS				0xF7
 #define PSF_EVENT_MAILBOX_MESSAGE_PUT_BLOCKING				0xF8
 #define PSF_EVENT_MAILBOX_MESSAGE_PUT_FAILURE				0xF9
@@ -470,7 +662,13 @@ void vTracePeriodicControl(void);
 #define PSF_EVENT_SYSTEM_SYSCALL_ENTER						0xFE
 #define PSF_EVENT_SYSTEM_SYSCALL_EXIT						0xFF
 
-#endif // PERCEPIO_TRC_RECORDER_MODE_STREAMING == 1
+/* Forced compliance due to task API implementation */
+#define PSF_EVENT_TASK_CREATE								0x0
+#define PSF_EVENT_TASK_READY								PSF_EVENT_THREAD_SCHED_READY
+#define PSF_EVENT_TASK_PRIORITY								PSF_EVENT_THREAD_SET_PRIORITY
+#define PSF_EVENT_TASK_DELETE								PSF_EVENT_THREAD_ABORT
+
+#define TRC_EVENT_LAST_ID 									0x167
 
 
 #ifdef __cplusplus

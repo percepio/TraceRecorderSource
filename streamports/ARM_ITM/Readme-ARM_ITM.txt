@@ -6,7 +6,7 @@ www.percepio.com
 This directory contains a "stream port" for the Tracealyzer recorder library,
 i.e., the specific code needed to use a particular interface for streaming a
 Tracealyzer RTOS trace. The stream port is defined by a set of macros in
-trcStreamingPort.h, found in the "include" directory.
+trcStreamPort.h, found in the "include" directory.
 
 This particular stream port targets ARM's ITM interface, which together with
 a fast debug probe such as a Keil ULINKpro or ULINKplus provides excellent

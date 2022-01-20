@@ -1,5 +1,5 @@
 /*
- * Trace Recorder for Tracealyzer v4.5.2
+ * Trace Recorder for Tracealyzer v4.6.0(RC0)
  * Copyright 2021 Percepio AB
  * www.percepio.com
  *
@@ -11,7 +11,7 @@
 
 #include <kernel.h>
 #include <init.h>
-#include "trcRecorder.h"
+#include <trcRecorder.h>
 
 
 /* Legacy trace defines that are pending refactoring/removal by
@@ -399,10 +399,10 @@
     sys_trace_k_queue_cancel_wait(queue)
 #undef sys_port_trace_k_queue_queue_insert_enter
 #define sys_port_trace_k_queue_queue_insert_enter(queue, alloc)				   \
-    sys_trace_k_queue_queue_insert_enter(queue, alloc, data);
+    sys_trace_k_queue_queue_insert_enter(queue, alloc, data)
 #undef sys_port_trace_k_queue_queue_insert_blocking
 #define sys_port_trace_k_queue_queue_insert_blocking(queue, alloc, timeout)	   \
-    sys_trace_k_queue_queue_insert_enter(queue, alloc, data);
+    sys_trace_k_queue_queue_insert_blocking(queue, alloc, data)
 #undef sys_port_trace_k_queue_queue_insert_exit
 #define sys_port_trace_k_queue_queue_insert_exit(queue, alloc, ret)			   \
     sys_trace_k_queue_queue_insert_exit(queue, alloc, data, ret);
@@ -672,8 +672,8 @@
 #define sys_port_trace_k_mbox_get_exit(mbox, timeout, ret) 					   \
     sys_trace_k_mbox_get_exit(mbox, rx_msg, buffer, timeout, ret)
 #undef sys_port_trace_k_mbox_data_get
-#define sys_port_trace_k_mbox_data_get(rx_msg) 								   \
-    sys_trace_k_mbox_data_get(mbox, rx_msg, buffer)
+#define sys_port_trace_k_mbox_data_get(rx_msg, buffer) 						   \
+    sys_trace_k_mbox_data_get(rx_msg, buffer)
 
 
 /* Pipe trace mappings */
@@ -753,10 +753,10 @@
 #define sys_port_trace_k_heap_sys_k_malloc_exit(heap, ret)					   \
     sys_trace_k_heap_sys_k_malloc_exit(heap, size, ret)
 #undef sys_port_trace_k_heap_sys_k_free_enter
-#define sys_port_trace_k_heap_sys_k_free_enter(heap)						   \
+#define sys_port_trace_k_heap_sys_k_free_enter(heap, heap_ref)				   \
     sys_trace_k_heap_sys_k_free_enter(heap)
 #undef sys_port_trace_k_heap_sys_k_free_exit
-#define sys_port_trace_k_heap_sys_k_free_exit(heap)							   \
+#define sys_port_trace_k_heap_sys_k_free_exit(heap, heap_ref)				   \
     sys_trace_k_heap_sys_k_free_exit(heap)
 #undef sys_port_trace_k_heap_sys_k_calloc_enter
 #define sys_port_trace_k_heap_sys_k_calloc_enter(heap)						   \
@@ -809,10 +809,10 @@
 
 /* Syscall trace mappings */
 #undef sys_port_trace_syscall_enter
-#define sys_port_trace_syscall_enter(id, name, ...)                             \
+#define sys_port_trace_syscall_enter(id, name, ...) 						   \
     sys_trace_syscall_enter(id, #name)
 #undef sys_port_trace_syscall_exit
-#define sys_port_trace_syscall_exit(id, name, ...)							    \
+#define sys_port_trace_syscall_exit(id, name, ...)							   \
     sys_trace_syscall_exit(id, #name)
 
 
@@ -1136,8 +1136,7 @@ void sys_trace_k_mbox_get_blocking(struct k_mbox *mbox,
     struct k_mbox_msg *rx_msg, void *buffer, k_timeout_t timeout);
 void sys_trace_k_mbox_get_exit(struct k_mbox *mbox, struct k_mbox_msg *rx_msg,
     void *buffer, k_timeout_t timeout, int ret);
-void sys_trace_k_mbox_data_get(struct k_mbox *mbox, struct k_mbox_msg *rx_msg,
-    void *buffer);
+void sys_trace_k_mbox_data_get(struct k_mbox_msg *rx_msg, void *buffer);
 
 
 /* Pipe trace function declarations */

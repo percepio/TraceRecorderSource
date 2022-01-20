@@ -1,5 +1,5 @@
 /*
- * Trace Recorder for Tracealyzer v4.5.2
+ * Trace Recorder for Tracealyzer v4.6.0(RC0)
  * Copyright 2021 Percepio AB
  * www.percepio.com
  *
@@ -92,7 +92,7 @@
 
 /***** Trace Wrappers *****/
 
-#include "aws_secure_sockets.h" /* Including the original header file, so that custom data types are understood. */
+#include <aws_secure_sockets.h>/* Including the original header file, so that custom data types are understood. */
 
 static inline int32_t SOCKETS_Connect__trace( Socket_t xSocket, SocketsSockaddr_t * pxAddress, Socklen_t xAddressLength )
 {

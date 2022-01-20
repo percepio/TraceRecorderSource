@@ -5,7 +5,7 @@ www.percepio.com
 
 This directory contains a "stream port" for the Tracealyzer recorder library,
 i.e., the I/O code needed for streaming a Tracealyzer RTOS trace over specific
-interface. The stream port is defined by a set of macros in trcStreamingPort.h,
+interface. The stream port is defined by a set of macros in trcStreamPort.h,
 found in the "include" directory.
 
 This particular stream port is for streaming over TCP/IP on Windows, intended
@@ -20,7 +20,7 @@ need will Visual Studio, but there are free versions (Express or Community).
 3. Make sure the recorder library is configured for streaming mode (see
 trcConfig.h).
 
-4. Make sure the project's include paths contains trcStreamingPort.h found in
+4. Make sure the project's include paths contains trcStreamPort.h found in
 this include folder (and not any other stream port), and the related code 
 in this folder.
 

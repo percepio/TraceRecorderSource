@@ -6,7 +6,7 @@ www.percepio.com
 This directory contains a "stream port" for the Tracealyzer recorder library,
 i.e., the specific code needed to use a particular interface for streaming a
 Tracealyzer RTOS trace. The stream port is defined by a set of macros in
-trcStreamingPort.h, found in the "include" directory.
+trcStreamPort.h, found in the "include" directory.
 
 This particular stream port targets TCP/IP. This example assumes lwIP but is
 easy to modify for other TCP/IP stacks.
@@ -18,7 +18,7 @@ Instructions:
    https://percepio.com/docs/FreeRTOS/manual/index.html#Creating_and_Loading_Traces___Introduction
 
 2. Make sure all .c and .h files from this stream port folder is included in 
-   your build, and that no other variant of trcStreamingPort.h is included.
+   your build, and that no other variant of trcStreamPort.h is included.
 
 3. In lwipopts.h, make sure you have this line:
    

@@ -1,4 +1,0 @@
-[mapping:TraceRecorder]
-archive: libTraceRecorder.a
-entries:
-	* (noflash)
