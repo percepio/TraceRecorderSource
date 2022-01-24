@@ -1,5 +1,5 @@
 /*
- * Trace Recorder for Tracealyzer v4.6.0(RC0)
+ * Trace Recorder for Tracealyzer v4.6.0(RC1)
  * Copyright 2021 Percepio AB
  * www.percepio.com
  *
@@ -1956,7 +1956,8 @@ traceResult xTraceISREnd(TraceBaseType_t uxIsTaskSwitchRequired)
 
 	/* Force a thread switch outcome result when exiting an ISR. Without this
 	 * we would get incorrect switching if the ISR exits to the thread that
-	 * it entered from. */
+	 * it entered from.
+	 */
 	xTraceResetCurrentThread();
 
 	return xResult;

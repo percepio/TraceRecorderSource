@@ -2,7 +2,6 @@
 # SPDX-License-Identifier: Apache-2.0
 
 menu "ITM Config"
-
 config PERCEPIO_TRC_CFG_ITM_PORT
 	int "ITM Port"
 	default 1
@@ -12,5 +11,4 @@ config PERCEPIO_TRC_CFG_ITM_PORT
 	  configured for the same channel.
 	  
 	  Default: 1 (0 is typically terminal output)
-
-endmenu
+endmenu # "ITM Config"

@@ -1,5 +1,5 @@
 /*
-* Percepio Trace Recorder for Tracealyzer v4.6.0(RC0)
+* Percepio Trace Recorder for Tracealyzer v4.6.0(RC1)
 * Copyright 2021 Percepio AB
 * www.percepio.com
 *
@@ -39,47 +39,64 @@ typedef struct TraceEventBuffer
 } TraceEventBuffer_t;
 
 /**
- * @brief
+ * @brief Initialize trace event buffer.
+ * 
+ * This routine initializes a trace event buffer and assigns it a
+ * memory area based on the supplied buffer.
+ * 
+ * Trace event buffer options specifies the buffer behavior regarding
+ * old data, the alternatives are TRC_EVENT_BUFFER_OPTION_SKIP and
+ * TRC_EVENT_BUFFER_OPTION_OVERWRITE (mutal exclusive).
  *
- * @param
- * @param
- * @param
- * @param
+ * @param pxTraceEventBuffer Pointer to uninitialized trace event buffer.
+ * @param uiOptions Trace event buffer options.
+ * @param puiBuffer Pointer to buffer that will be used by the trace event buffer.
+ * @param uiSize Size of buffer
  *
- * @return
+ * @retval TRC_FAIL Failure
+ * @retval TRC_SUCCESS Success
  */
 traceResult xTraceEventBufferInitialize(TraceEventBuffer_t * pxTraceEventBuffer, uint32_t uiOptions,
 		uint8_t *puiBuffer, uint32_t uiSize);
 
 /**
- * @brief
+ * @brief Pushes data into trace event buffer.
+ * 
+ * This routine attempts to push data into the trace event buffer.
  *
- * @param
- * @param
- * @param
- * @param
+ * @param pxTraceEventBuffer Pointer to initialized trace event buffer.
+ * @param pxData Pointer to data that should be pushed into trace event buffer.
+ * @param uiSize Size of data that should be pushed into trace event buffer.
+ * @param piBytesWritten Pointer to variable which the routine will write the number
+ * of bytes that was pushed into the trace event buffer.
  *
- * @return
+ * @retval TRC_FAIL Failure
+ * @retval TRC_SUCCESS Success
  */
-traceResult xTraceEventBufferPush(TraceEventBuffer_t *pxTraceEvtBuffer, void *pxData, uint32_t uiSize, int32_t *piBytesWritten);
+traceResult xTraceEventBufferPush(TraceEventBuffer_t *pxTraceEventBuffer, void *pxData, uint32_t uiSize, int32_t *piBytesWritten);
 
 /**
- * @brief
+ * @brief Transfer trace event buffer data through streamport.
  * 
- * @param
- * @param
+ * This routine will attempt to transfer all existing data in the trace event
+ * buffer through the streamport. New data pushed to the trace event buffer
+ * during the execution of this routine will not be transfered to 
  * 
- * @return
+ * @param pxTraceEventBuffer Pointer to initialized trace event buffer.
+ * @param piBytesWritten
+ * 
+ * @retval TRC_FAIL Failure
+ * @retval TRC_SUCCESS Success
  */
 traceResult xTraceEventBufferTransfer(TraceEventBuffer_t* pxTraceEventBuffer, int32_t* piBytesWritten);
 
 /**
  * @brief Clears all data from event buffer.
  * 
- * @param
- * @param
+ * @param pxTraceEventBuffer Pointer to initialized trace event buffer.
  * 
- * @return
+ * @retval TRC_FAIL Failure
+ * @retval TRC_SUCCESS Success
  */
 traceResult xTraceEventBufferClear(TraceEventBuffer_t* pxTraceEventBuffer);
 

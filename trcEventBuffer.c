@@ -1,5 +1,5 @@
 /*
-* Percepio Trace Recorder for Tracealyzer v4.6.0(RC0)
+* Percepio Trace Recorder for Tracealyzer v4.6.0(RC1)
 * Copyright 2021 Percepio AB
 * www.percepio.com
 *
@@ -37,11 +37,12 @@ traceResult xTraceEventBufferInitialize(TraceEventBuffer_t* pxTraceEventBuffer, 
 }
 
 /**
- * @brief
- *
- * @param
- *
- * @return
+ * @brief Pops the oldest event from the Event Buffer.
+ * 
+ * @param pxTraceEventBuffer Pointer to initialized trace event buffer.
+ * 
+ * @retval TRC_FAIL Failure
+ * @retval TRC_SUCCESS Success
  */
 static traceResult prvTraceEventBufferPop(TraceEventBuffer_t *pxTraceEventBuffer)
 {

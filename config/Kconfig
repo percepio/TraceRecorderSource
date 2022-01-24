@@ -2,16 +2,16 @@
 # SPDX-License-Identifier: Apache-2.0
 
 config PERCEPIO_TRC_CFG_RECORDER_RTOS_FREERTOS
-      bool
-      default n
+    bool
+     default n
 
 config PERCEPIO_TRC_CFG_RECORDER_RTOS_THREADX
-      bool
-      default n
+    bool
+    default n
 
 config PERCEPIO_TRC_CFG_RECORDER_RTOS_ZEPHYR
-      bool
-      default n
+    bool
+    default n
 
 choice PERCEPIO_TRC_CFG_START_MODE
 	prompt "Recorder Start Mode"
@@ -29,7 +29,7 @@ choice PERCEPIO_TRC_CFG_START_MODE
 	  this option from the startup code, you start tracing at this point and capture
 	  the early events.
 	  
-	  TRC_INIT: Initializes the trace recorder, but does not start the tracing.
+	  TRC_START_FROM_HOST: Initializes the trace recorder, but does not start the tracing.
 	  In snapshot mode, this must be followed by a vTraceEnable(TRC_START) sometime
 	  later.
 
@@ -38,11 +38,10 @@ config PERCEPIO_TRC_START_MODE_START
 
 config PERCEPIO_TRC_START_MODE_START_AWAIT_HOST
 	bool "Start Await Host"
-	depends on PERCEPIO_TRC_RECORDER_MODE_STREAMING && !PERCEPIO_TRC_CFG_STREAM_PORT_ITM && !PERCEPIO_TRC_CFG_STREAM_PORT_RINGBUFFER
+	depends on PERCEPIO_TRC_RECORDER_MODE_STREAMING && !PERCEPIO_TRC_CFG_STREAM_PORT_RINGBUFFER
 
-config PERCEPIO_TRC_START_MODE_INIT
-	bool "Initialize"
-	depends on !PERCEPIO_TRC_CFG_STREAM_PORT_ITM
+config PERCEPIO_TRC_START_MODE_START_FROM_HOST
+	bool "Start From Host"
 endchoice
 
 choice PERCEPIO_TRC_CFG_STREAM_PORT
@@ -50,34 +49,33 @@ choice PERCEPIO_TRC_CFG_STREAM_PORT
     depends on PERCEPIO_TRC_RECORDER_MODE_STREAMING
     default PERCEPIO_TRC_CFG_STREAM_PORT_RTT
 
-    config PERCEPIO_TRC_CFG_STREAM_PORT_RTT
-      bool "RTT"
-      depends on (ARM && PERCEPIO_TRC_CFG_RECORDER_RTOS_ZEPHYR) || \
-        PERCEPIO_TRC_CFG_RECORDER_RTOS_THREADX || \
-        PERCEPIO_TRC_CFG_RECORDER_RTOS_FREERTOS
-      select USE_SEGGER_RTT if PERCEPIO_TRC_CFG_RECORDER_RTOS_ZEPHYR
-      select PERCEPIO_TRC_CFG_RTT_WRITE_NO_LOCK if PERCEPIO_TRC_CFG_RECORDER_RTOS_ZEPHYR
-    
-    config PERCEPIO_TRC_CFG_STREAM_PORT_ITM
-      bool "ITM"
-      depends on (ARM && PERCEPIO_TRC_CFG_RECORDER_RTOS_ZEPHYR) || \
-        PERCEPIO_TRC_CFG_RECORDER_RTOS_THREADX || \
-        PERCEPIO_TRC_CFG_RECORDER_RTOS_FREERTOS
-	
-	config PERCEPIO_TRC_CFG_STREAM_PORT_RINGBUFFER
-	  bool "Ring Buffer"
-    
-    config PERCEPIO_TRC_CFG_STREAM_PORT_FILE
-      bool "File"
-      depends on !PERCEPIO_TRC_CFG_RECORDER_RTOS_ZEPHYR
+config PERCEPIO_TRC_CFG_STREAM_PORT_RTT
+	bool "RTT"
+	depends on (ARM && PERCEPIO_TRC_CFG_RECORDER_RTOS_ZEPHYR) || \
+	PERCEPIO_TRC_CFG_RECORDER_RTOS_THREADX || \
+	PERCEPIO_TRC_CFG_RECORDER_RTOS_FREERTOS
+	select USE_SEGGER_RTT if PERCEPIO_TRC_CFG_RECORDER_RTOS_ZEPHYR
 
-    config PERCEPIO_TRC_CFG_STREAM_PORT_TCPIP
-      bool "TCP/IP"
-      depends on !PERCEPIO_TRC_CFG_RECORDER_RTOS_ZEPHYR
-    
-    config PERCEPIO_TRC_CFG_STREAM_PORT_STM32_USB_CDC
-      bool "STM32 USB CDC"
-      depends on !PERCEPIO_TRC_CFG_RECORDER_RTOS_ZEPHYR
+config PERCEPIO_TRC_CFG_STREAM_PORT_ITM
+	bool "ITM"
+	depends on (ARM && PERCEPIO_TRC_CFG_RECORDER_RTOS_ZEPHYR) || \
+	PERCEPIO_TRC_CFG_RECORDER_RTOS_THREADX || \
+	PERCEPIO_TRC_CFG_RECORDER_RTOS_FREERTOS
+
+config PERCEPIO_TRC_CFG_STREAM_PORT_RINGBUFFER
+	bool "Ring Buffer"
+
+config PERCEPIO_TRC_CFG_STREAM_PORT_FILE
+	bool "File"
+	depends on !PERCEPIO_TRC_CFG_RECORDER_RTOS_ZEPHYR
+
+config PERCEPIO_TRC_CFG_STREAM_PORT_TCPIP
+	bool "TCP/IP"
+	depends on !PERCEPIO_TRC_CFG_RECORDER_RTOS_ZEPHYR
+
+config PERCEPIO_TRC_CFG_STREAM_PORT_STM32_USB_CDC
+	bool "STM32 USB CDC"
+	depends on !PERCEPIO_TRC_CFG_RECORDER_RTOS_ZEPHYR
 endchoice
 
 if PERCEPIO_TRC_CFG_STREAM_PORT_RTT
@@ -89,7 +87,6 @@ endif
 if PERCEPIO_TRC_CFG_STREAM_PORT_RINGBUFFER
 rsource "../streamports/RingBuffer/Kconfig"
 endif
-
 
 choice PERCEPIO_TRC_CFG_RECORDER_BUFFER_ALLOCATION
     prompt "Recorder Allocation Mode"
@@ -108,20 +105,19 @@ choice PERCEPIO_TRC_CFG_RECORDER_BUFFER_ALLOCATION
       The custom mode allows you to control how and where the allocation is made,
       for details see PERCEPIO_TRC_ALLOC_CUSTOM_BUFFER and vTraceSetRecorderDataBuffer().
 
-    config PERCEPIO_TRC_RECORDER_BUFFER_ALLOCATION_STATIC
-        bool "Static allocation"
+config PERCEPIO_TRC_RECORDER_BUFFER_ALLOCATION_STATIC
+	bool "Static allocation"
 
-    config PERCEPIO_TRC_RECORDER_BUFFER_ALLOCATION_DYNAMIC
-        bool "Dynamic allocation"
-    
-    config PERCEPIO_TRC_RECORDER_BUFFER_ALLOCATION_CUSTOM
-        bool "Custom allocation"
+config PERCEPIO_TRC_RECORDER_BUFFER_ALLOCATION_DYNAMIC
+	bool "Dynamic allocation"
+
+config PERCEPIO_TRC_RECORDER_BUFFER_ALLOCATION_CUSTOM
+	bool "Custom allocation"
 endchoice
 
 
 menu "Coverage"
 	depends on !PERCEPIO_TRC_CFG_RECORDER_RTOS_ZEPHYR
-
 config PERCEPIO_TRC_CFG_SCHEDULING_ONLY
     bool "Only Record Scheduling Events"
     default n
@@ -188,12 +184,10 @@ config PERCEPIO_TRC_CFG_INCLUDE_OSTICK_EVENTS
       If this is enabled, events will be generated whenever the OS clock is
       increased. If disabled, OS tick events are not generated, which allows for
       recording longer traces in the same amount of RAM.
-
 endmenu
 
 
 menu "Control Task"
-
 config PERCEPIO_TRC_CFG_CTRL_TASK_PRIORITY
 	int "Control Task Priority"
 	range 0 32 if PERCEPIO_TRC_CFG_RECORDER_RTOS_FREERTOS || PERCEPIO_TRC_CFG_RECORDER_RTOS_THREADX
@@ -231,12 +225,12 @@ config PERCEPIO_TRC_CFG_CTRL_TASK_STACK_SIZE
 	help
 	  The stack size of the Tracealyzer Control (TzCtrl) task.
 	  See PERCEPIO_TRC_CFG_CTRL_TASK_PRIORITY for further information about TzCtrl.
-
 endmenu
 
 menuconfig PERCEPIO_TRC_CFG_ENABLE_STACK_MONITOR
 	bool "Stack Monitor"
   	select TRACING_STACK if PERCEPIO_TRC_CFG_RECORDER_RTOS_ZEPHYR
+	select THREAD_STACK_INFO if PERCEPIO_TRC_CFG_RECORDER_RTOS_ZEPHYR
 	default y
 	help 
 	  If enabled (1), the recorder periodically reports the unused stack space of 
@@ -276,7 +270,6 @@ endif # PERCEPIO_TRC_CFG_ENABLE_STACK_MONITOR
 
 
 menu "ISR"
-
 config PERCEPIO_TRC_CFG_MAX_ISR_NESTING
 	int "Max ISR Nesting"
 	range 1 1048576
@@ -307,12 +300,10 @@ config PERCEPIO_TRC_CFG_ISR_TAILCHAINING_THRESHOLD
 	  
 	  The default setting is 0, meaning "disabled" and that you may get an
 	  extra fragments of the previous context in between tail-chained ISRs.
-
 endmenu
 
 
 menu "Debug"
-
 config PERCEPIO_TRC_CFG_RECORDER_DATA_INIT
   int "Data Init"
   default 1
@@ -339,14 +330,12 @@ config PERCEPIO_TRC_CFG_USE_TRACE_ASSERT
   help
     Enable or disable debug asserts. Information regarding any assert that is
     triggered will be in trcAssert.c.
-
 endmenu
 
 
 if PERCEPIO_TRC_RECORDER_MODE_SNAPSHOT
 
 menu "Snapshot Config"
-
 choice PERCEPIO_TRC_CFG_SNAPSHOT_MODE
 	prompt "Snapshot Mode"
 	default PERCEPIO_TRC_SNAPSHOT_MODE_RING_BUFFER
@@ -407,7 +396,6 @@ config PERCEPIO_TRC_CFG_SYMBOL_TABLE_SIZE
 	  32-bit pointer, i.e., using 4 bytes rather than 0.
 
 menu "Advanced Settings"
-
 config PERCEPIO_TRC_CFG_HEAP_SIZE_BELOW_16M
 	bool "Heap Size Below 16M"
 	default n
@@ -535,9 +523,7 @@ config PERCEPIO_TRC_CFG_UB_CHANNELS
 	  These are used to structure the events when using the separate user
 	  event buffer, and contains both a User Event Channel (the name) and
 	  a default format string for the channel.
-
 endmenu # "Advanced Settings"
-
 endmenu # "Snapshot Config"
 
 endif # PERCEPIO_TRC_RECORDER_MODE_SNAPSHOT
@@ -546,37 +532,35 @@ endif # PERCEPIO_TRC_RECORDER_MODE_SNAPSHOT
 if PERCEPIO_TRC_RECORDER_MODE_STREAMING
 
 menu "Streaming Config"
-
 config PERCEPIO_TRC_CFG_ENTRY_SLOTS
-  int "Entry Slots"
-  range 1 4194304
-  default 50
-  help
-    The maximum number of objects and symbols that can be stored. This includes:
-     - Task names
-     - Named ISRs (vTraceSetISRProperties)
-     - Named kernel objects (vTraceStoreKernelObjectName)
-     - User event channels (xTraceStringRegister)
+	int "Entry Slots"
+	range 1 4194304
+	default 50
+	help
+      The maximum number of objects and symbols that can be stored. This includes:
+       - Task names
+       - Named ISRs (vTraceSetISRProperties)
+       - Named kernel objects (vTraceStoreKernelObjectName)
+       - User event channels (xTraceStringRegister)
 
-    If this value is too small, not all symbol names will be stored and the
-    trace display will be affected. In that case, there will be warnings
-    (as User Events) from TzCtrl task, that monitors this.
+      If this value is too small, not all symbol names will be stored and the
+      trace display will be affected. In that case, there will be warnings
+      (as User Events) from TzCtrl task, that monitors this.
 
 config PERCEPIO_TRC_CFG_ENTRY_SYMBOL_MAX_LENGTH
-  int "Symbol Max Length"
-  range 1 4194304
-  default 32
-  help
-    The maximum length of symbol names, including:
-     - Task names
-     - Named ISRs (vTraceSetISRProperties)
-     - Named kernel objects (vTraceStoreKernelObjectName)
-     - User event channel names (xTraceStringRegister)
+	int "Symbol Max Length"
+	range 1 4194304
+	default 32
+	help
+      The maximum length of symbol names, including:
+       - Task names
+       - Named ISRs (vTraceSetISRProperties)
+       - Named kernel objects (vTraceStoreKernelObjectName)
+       - User event channel names (xTraceStringRegister)
 
-    If longer symbol names are used, they will be truncated by the recorder,
-    which will affect the trace display. In that case, there will be warnings
-    (as User Events) from TzCtrl task, that monitors this.
-
-endmenu
+      If longer symbol names are used, they will be truncated by the recorder,
+      which will affect the trace display. In that case, there will be warnings
+      (as User Events) from TzCtrl task, that monitors this.
+endmenu # "Streaming Config"
 
 endif # PERCEPIO_TRC_RECORDER_MODE_STREAMING

@@ -3,7 +3,6 @@
 
 menu "RTOS Specific"
     visible if n
-
 config PERCEPIO_TRC_CFG_RECORDER_RTOS_THREADX
     bool "Zephyr"
     default y
@@ -16,7 +15,5 @@ config PERCEPIO_TRC_RECORDER_MODE_STREAMING
 endmenu
 
 menu "Recorder Common"
-
 rsource "../../../config/Kconfig"
-
 endmenu # "Recorder Common"

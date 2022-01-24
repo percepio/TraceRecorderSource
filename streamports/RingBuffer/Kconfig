@@ -2,7 +2,6 @@
 # SPDX-License-Identifier: Apache-2.0
 
 menu "Ring Buffer Config"
-
 config PERCEPIO_TRC_CFG_STREAM_PORT_RINGBUFFER_SIZE
 	int "Buffer size"
 	default 5000
@@ -30,5 +29,4 @@ config PERCEPIO_TRC_STREAM_PORT_RINGBUFFER_MODE_OVERWRITE_WHEN_FULL
 config PERCEPIO_TRC_STREAM_PORT_RINGBUFFER_MODE_STOP_WHEN_FULL
 	bool "Stop when full"
 endchoice
-
-endmenu
+endmenu # "Ring Buffer Config"

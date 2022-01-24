@@ -1,5 +1,5 @@
 /*
- * Trace Recorder for Tracealyzer v4.6.0(RC0)
+ * Trace Recorder for Tracealyzer v4.6.0(RC1)
  * Copyright 2021 Percepio AB
  * www.percepio.com
  *
@@ -15,10 +15,9 @@
 extern "C" {
 #endif
 
-/*******************************************************************************
- * TRC_CFG_NTASK, TRC_CFG_NISR, TRC_CFG_NQUEUE, TRC_CFG_NSEMAPHORE...
- *
- * A group of macros which should be defined as integer values, zero or larger.
+/**
+ * @def TRC_CFG_NTASK, TRC_CFG_NISR, TRC_CFG_NQUEUE, TRC_CFG_NSEMAPHORE...
+ * @brief A group of macros which should be defined as integer values, zero or larger.
  *
  * These define the capacity of the Object Property Table, i.e., the maximum
  * number of objects active at any given point, within each object class (e.g.,
@@ -36,7 +35,7 @@ extern "C" {
  * unless you are very confident on these numbers. Then do a recording and
  * check the actual usage by selecting View menu -> Trace Details ->
  * Resource Usage -> Object Table.
- ******************************************************************************/
+ */
 #define TRC_CFG_NTASK			15
 #define TRC_CFG_NISR			5
 #define TRC_CFG_NQUEUE			10
@@ -47,13 +46,12 @@ extern "C" {
 #define TRC_CFG_NSTREAMBUFFER	5
 #define TRC_CFG_NMESSAGEBUFFER	5
 
-/******************************************************************************
- * TRC_CFG_NAME_LEN_TASK, TRC_CFG_NAME_LEN_QUEUE, ...
- *
- * Macros that specify the maximum lengths (number of characters) for names of
+/**
+ * @def TRC_CFG_NAME_LEN_TASK, TRC_CFG_NAME_LEN_QUEUE, ...
+ * @brief Macros that specify the maximum lengths (number of characters) for names of
  * kernel objects, such as tasks and queues. If longer names are used, they will
  * be truncated when stored in the recorder.
- *****************************************************************************/
+ */
 #define TRC_CFG_NAME_LEN_TASK			15
 #define TRC_CFG_NAME_LEN_ISR			15
 #define TRC_CFG_NAME_LEN_QUEUE			15

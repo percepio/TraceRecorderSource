@@ -1,5 +1,5 @@
 /*
- * Trace Recorder for Tracealyzer v4.6.0(RC0)
+ * Trace Recorder for Tracealyzer v4.6.0(RC1)
  * Copyright 2021 Percepio AB
  * www.percepio.com
  *
@@ -50,12 +50,11 @@ traceResult xTraceStreamPortInitialize(TraceStreamPortBuffer_t* pxBuffer)
 
 traceResult xTraceStreamPortOnEnable(uint32_t uiStartOption)
 {
-	if (uiStartOption == TRC_START || uiStartOption == TRC_START_AWAIT_HOST)
-	{
-		/* Configure the RTT buffers */
-		SEGGER_RTT_ConfigUpBuffer(TRC_CFG_STREAM_PORT_RTT_UP_BUFFER_INDEX, "TzData", pxStreamPortRTT->bufferUp, sizeof(pxStreamPortRTT->bufferUp), TRC_CFG_STREAM_PORT_RTT_MODE);
-		SEGGER_RTT_ConfigDownBuffer(TRC_CFG_STREAM_PORT_RTT_DOWN_BUFFER_INDEX, "TzCtrl", pxStreamPortRTT->bufferDown, sizeof(pxStreamPortRTT->bufferDown), TRC_CFG_STREAM_PORT_RTT_MODE);
-	}
+	(void)uiStartOption;
+
+	/* Configure the RTT buffers */
+	SEGGER_RTT_ConfigUpBuffer(TRC_CFG_STREAM_PORT_RTT_UP_BUFFER_INDEX, "TzData", pxStreamPortRTT->bufferUp, sizeof(pxStreamPortRTT->bufferUp), TRC_CFG_STREAM_PORT_RTT_MODE);
+	SEGGER_RTT_ConfigDownBuffer(TRC_CFG_STREAM_PORT_RTT_DOWN_BUFFER_INDEX, "TzCtrl", pxStreamPortRTT->bufferDown, sizeof(pxStreamPortRTT->bufferDown), TRC_CFG_STREAM_PORT_RTT_MODE);
 
 	return TRC_SUCCESS;
 }

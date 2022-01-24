@@ -1,5 +1,5 @@
 /*
- * Trace Recorder for Tracealyzer v4.6.0(RC0)
+ * Trace Recorder for Tracealyzer v4.6.0(RC1)
  * Copyright 2021 Percepio AB
  * www.percepio.com
  *
@@ -22,14 +22,12 @@ extern "C" {
 
 /**
  * @def TRACE_KERNEL_VERSION
- * 
  * @brief This defines the kernel version/identity. 
  */
 #define TRACE_KERNEL_VERSION 0x9AA9
 
 /**
  * @def TRC_PLATFORM_CFG
- * 
  * @brief This defines the basis for version specific lookup of
  * platform configuration files. If left empty the default
  * RTOS XML files are used.
@@ -38,36 +36,31 @@ extern "C" {
 
 /**
  * @def TRC_PLATFORM_CFG_MAJOR
- * 
- * @brief Major release version for Zephyr recorder.
+ * @brief Major release version for recorder.
  */
 #define TRC_PLATFORM_CFG_MAJOR 3
 
 /**
  * @def TRC_PLATFORM_CFG_MINOR
- * 
- * @brief Minor release version for Zephyr recorder.
+ * @brief Minor release version for recorder.
  */
 #define TRC_PLATFORM_CFG_MINOR 0
 
 /**
  * @def TRC_PLATFORM_CFG_PATCH
- * 
- * @brief Patchlevel release version for Zephyr recorder.
+ * @brief Patchlevel release version for recorder.
  */
 #define TRC_PLATFORM_CFG_PATCH 0
 
 /**
  * @def TRC_TICK_RATE_HZ
- * 
- * @brief 
+ * @brief Trace RTOS tick rate in Hz.
  */
 #define TRC_TICK_RATE_HZ CONFIG_SYS_CLOCK_TICKS_PER_SEC
 
 /**
  * @def TraceKernelPortTaskHandle_t
- * 
- * @brief 
+ * @brief RTOS data type for tasks/threads.
  */
 #define TraceKernelPortTaskHandle_t struct k_thread
 

@@ -1,5 +1,5 @@
 /*
- * Trace Recorder for Tracealyzer v4.6.0(RC0)
+ * Trace Recorder for Tracealyzer v4.6.0(RC1)
  * Copyright 2021 Percepio AB
  * www.percepio.com
  *
@@ -78,7 +78,7 @@ extern "C" {
 #define TRC_CFG_INCLUDE_MEMMANG_EVENTS 1
 #endif
 
-/******************************************************************************
+/**
  * @def TRC_CFG_INCLUDE_USER_EVENTS
  * @brief Macro which should be defined as either zero (0) or one (1).
  *

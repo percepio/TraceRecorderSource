@@ -1,5 +1,5 @@
 /*
- * Percepio Trace Recorder for Tracealyzer v4.6.0(RC0)
+ * Percepio Trace Recorder for Tracealyzer v4.6.0(RC1)
  * Copyright 2021 Percepio AB
  * www.percepio.com
  *
@@ -30,7 +30,11 @@ extern "C" {
 /**
  * @brief Initializes the internal event buffer used by certain stream ports.
  * 
- * @param buffer Pointer to previously allocated memory buffer
+ * @param puiBuffer Pointer to previously allocated memory buffer
+ * @param uiSize Size of buffer
+ * 
+ * @retval TRC_FAIL Failure
+ * @retval TRC_SUCCESS Success
  */
 traceResult xTraceInternalEventBufferInitialize(uint8_t* puiBuffer, uint32_t uiSize);
 
@@ -38,8 +42,12 @@ traceResult xTraceInternalEventBufferInitialize(uint8_t* puiBuffer, uint32_t uiS
  * @brief Pushes data to the internal buffer.
  * 
  * @param pvData Pointer to data
- * @param uiSize Size of data in bytes
- * @param piBytesWritten Bytes written
+ * @param uiSize Size of data
+ * @param piBytesWritten Pointer to variable which the routine will write the number
+ * of bytes that was pushed into the trace event buffer.
+ * 
+ * @retval TRC_FAIL Failure
+ * @retval TRC_SUCCESS Success
  */
 traceResult xTraceInternalEventBufferPush(void *pvData, uint32_t uiSize, int32_t *piBytesWritten);
 
@@ -52,11 +60,20 @@ traceResult xTraceInternalEventBufferPush(void *pvData, uint32_t uiSize, int32_t
  *
  * In case of errors from the streaming interface, it registers a warning
  * (TRC_WARNING_STREAM_PORT_WRITE) provided by xTraceErrorGetLast().
+ * 
+ * @param piBytesWritten Pointer to variable which the routine will write the number
+ * of bytes that was pushed into the trace event buffer.
+ * 
+ * @retval TRC_FAIL Failure
+ * @retval TRC_SUCCESS Success
  */
 traceResult xTraceInternalEventBufferTransfer(int32_t *piBytesWritten);
 
 /**
  * @brief Clears all events in the internal event buffer.
+ * 
+ * @retval TRC_FAIL Failure
+ * @retval TRC_SUCCESS Success
  */
 traceResult xTraceInternalEventBufferClear(void);
 

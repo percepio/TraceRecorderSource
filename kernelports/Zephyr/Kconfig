@@ -5,7 +5,6 @@ if TRACING && PERCEPIO_TRACERECORDER
 
 menu "RTOS Specific"
     visible if n
-
 config PERCEPIO_TRC_CFG_RECORDER_RTOS_ZEPHYR
     bool "Zephyr"
     default y
@@ -15,7 +14,11 @@ config PERCEPIO_TRC_CFG_RECORDER_RTOS_ZEPHYR
 config PERCEPIO_TRC_RECORDER_MODE_STREAMING
     bool "Streaming recorder mode"
     default y
-endmenu
+    
+config PERCEPIO_TRC_RECORDER_MODE_SNAPSHOT
+    bool "Snapshot recorder mode"
+    default n
+endmenu # "RTOS Specific"
 
 # Source recorder common config
 rsource "../../config/Kconfig"

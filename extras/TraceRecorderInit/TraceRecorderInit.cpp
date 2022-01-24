@@ -1,5 +1,5 @@
 /*
- * Percepio Trace Recorder Initialization v4.6.0(RC0)
+ * Percepio Trace Recorder Initialization v4.6.0(RC1)
  * Copyright 2021 Percepio AB
  * www.percepio.com
  *
@@ -42,7 +42,7 @@ bool TraceRecorderInit::Initialize()
 TraceRecorderInit::TraceRecorderInit()
 {
 	RecorderInitialized = 0;
-	vTraceInitialize();
+	xTraceInitialize();
 }
 
 TraceRecorderInit::~TraceRecorderInit()

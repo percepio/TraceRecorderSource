@@ -1,5 +1,5 @@
 /*
- * Trace Recorder for Tracealyzer v4.6.0(RC0)
+ * Trace Recorder for Tracealyzer v4.6.0(RC1)
  * Copyright 2021 Percepio AB
  * www.percepio.com
  *
@@ -255,61 +255,11 @@ traceResult xTraceHeaderInitialize(TraceHeaderBuffer_t *pxBuffer)
 	return TRC_SUCCESS;
 }
 
-/******************************************************************************
-* xTraceEnable(uint32_t uiStartOption);
-*
-* Initializes and optionally starts the trace, depending on the start option.
-* To use the trace recorder, the startup must call xTraceEnable before any RTOS
-* calls are made (including "create" calls). Three start options are provided:
-*
-* TRC_START: Starts the tracing directly. In snapshot mode this allows for
-* starting the trace at any point in your code, assuming xTraceEnable(TRC_INIT)
-* has been called in the startup.
-* Can also be used for streaming without Tracealyzer control, e.g. to a local
-* flash file system (assuming such a "stream port", see trcStreamPort.h).
-*
-* TRC_START_AWAIT_HOST: For streaming mode only. Initializes the trace recorder
-* if necessary and waits for a Start command from Tracealyzer ("Start Recording"
-* button). This call is intentionally blocking! By calling xTraceEnable with
-* this option from the startup code, you start tracing at this point and capture
-* the early events.
-*
-* TRC_INIT: Initializes the trace recorder, but does not start the tracing.
-* In snapshot mode, this must be followed by a xTraceEnable(TRC_START) sometime
-* later.
-*
-* Usage examples:
-*
-* Snapshot trace, from startup:
-* 	<board init>
-* 	xTraceEnable(TRC_START);
-* 	<RTOS init>
-*
-* Snapshot trace, from a later point:
-* 	<board init>
-* 	xTraceEnable(TRC_INIT);
-* 	<RTOS init>
-* 	...
-* 	xTraceEnable(TRC_START); // e.g., in task context, at some relevant event
-*
-* Streaming trace, from startup:
-*	<board init>
-*	xTraceEnable(TRC_START_AWAIT_HOST); // Blocks!
-*	<RTOS init>
-*
-* Streaming trace, from a later point:
-*	<board startup>
-*	xTraceEnable(TRC_INIT);
-*	<RTOS startup>
-*
-******************************************************************************/
 traceResult xTraceEnable(uint32_t uiStartOption)
 {
 	TraceCommand_t xCommand;
 	int32_t iBytes = 0;
 
-	/* INIT or START */
-	
 	if (xTraceInitialize() == TRC_FAIL)
 	{
 		return TRC_FAIL;
@@ -317,14 +267,14 @@ traceResult xTraceEnable(uint32_t uiStartOption)
 
 	xTraceStreamPortOnEnable(uiStartOption);
 
+	if (xTraceKernelPortEnable() == TRC_FAIL)
+	{
+		return TRC_FAIL;
+	}
+
 	if (uiStartOption == TRC_START_AWAIT_HOST)
 	{
-		if (xTraceKernelPortEnable() == TRC_FAIL)
-		{
-			return TRC_FAIL;
-		}
-		
-		/* We keep trying to read commands until the recorder has been started */
+		/* We keep trying to read commands from host until the recorder has been started */
 		do
 		{
 			iBytes = 0;
@@ -351,21 +301,16 @@ traceResult xTraceEnable(uint32_t uiStartOption)
 	}
 	else if (uiStartOption == TRC_START)
 	{
-		if (xTraceKernelPortEnable() == TRC_FAIL)
-		{
-			return TRC_FAIL;
-		}
-		
-		/* We start streaming directly - this assumes that the interface is ready! */
+		/* We start streaming directly - this assumes that the host interface is ready! */
 		TRC_PORT_SPECIFIC_INIT();
 
 		xCommand.cmdCode = CMD_SET_ACTIVE;
 		xCommand.param1 = 1;
 		prvProcessCommand(&xCommand);
 	}
-	else if (uiStartOption == TRC_INIT)
+	else if (uiStartOption == TRC_START_FROM_HOST)
 	{
-		/* On TRC_INIT */
+		/* We prepare the system to receive commands from host, but let system resume execution until that happens */
 		TRC_PORT_SPECIFIC_INIT();
 	}
 

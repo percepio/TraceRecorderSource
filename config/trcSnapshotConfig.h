@@ -1,5 +1,5 @@
 /*
- * Trace Recorder for Tracealyzer v4.6.0(RC0)
+ * Trace Recorder for Tracealyzer v4.6.0(RC1)
  * Copyright 2021 Percepio AB
  * www.percepio.com
  *
@@ -16,10 +16,9 @@
 extern "C" {
 #endif
 
-/******************************************************************************
- * TRC_CFG_SNAPSHOT_MODE
- *
- * Macro which should be defined as one of:
+/**
+ * @def TRC_CFG_SNAPSHOT_MODE
+ * @brief Macro which should be defined as one of:
  * - TRC_SNAPSHOT_MODE_RING_BUFFER
  * - TRC_SNAPSHOT_MODE_STOP_WHEN_FULL
  * Default is TRC_SNAPSHOT_MODE_RING_BUFFER.
@@ -33,13 +32,12 @@ extern "C" {
  * When TRC_CFG_SNAPSHOT_MODE is TRC_SNAPSHOT_MODE_STOP_WHEN_FULL, the
  * recording is stopped when the buffer becomes full. This is useful for
  * recording events following a specific state, e.g., the startup sequence.
- *****************************************************************************/
+ */
 #define TRC_CFG_SNAPSHOT_MODE TRC_SNAPSHOT_MODE_RING_BUFFER
 
-/*******************************************************************************
- * TRC_CFG_EVENT_BUFFER_SIZE
- *
- * Macro which should be defined as an integer value.
+/**
+ * @def TRC_CFG_EVENT_BUFFER_SIZE
+ * @brief Macro which should be defined as an integer value.
  *
  * This defines the capacity of the event buffer, i.e., the number of records
  * it may store. Most events use one record (4 byte), although some events
@@ -48,13 +46,12 @@ extern "C" {
  *
  * Default value is 1000, which means that 4000 bytes is allocated for the
  * event buffer.
- ******************************************************************************/
+ */
 #define TRC_CFG_EVENT_BUFFER_SIZE 1000
 
-/******************************************************************************
- * TRC_CFG_INCLUDE_FLOAT_SUPPORT
- *
- * Macro which should be defined as either zero (0) or one (1).
+/**
+ * @def TRC_CFG_INCLUDE_FLOAT_SUPPORT
+ * @brief Macro which should be defined as either zero (0) or one (1).
  *
  * If this is zero (0), the support for logging floating point values in
  * vTracePrintF is stripped out, in case floating point values are not used or
@@ -66,13 +63,12 @@ extern "C" {
  * vTracePrintF can be used with integer and string arguments in either case.
  *
  * Default value is 0.
- *****************************************************************************/
+ */
 #define TRC_CFG_INCLUDE_FLOAT_SUPPORT 0
 
-/*******************************************************************************
- * TRC_CFG_SYMBOL_TABLE_SIZE
- *
- * Macro which should be defined as an integer value.
+/**
+ * @def TRC_CFG_SYMBOL_TABLE_SIZE
+ * @brief Macro which should be defined as an integer value.
  *
  * This defines the capacity of the symbol table, in bytes. This symbol table
  * stores User Events labels and names of deleted tasks, queues, or other kernel
@@ -82,7 +78,7 @@ extern "C" {
  * 32-bit pointer, i.e., using 4 bytes rather than 0.
  *
  * Default value is 800.
- ******************************************************************************/
+ */
 #define TRC_CFG_SYMBOL_TABLE_SIZE 800
 
 #if (TRC_CFG_SYMBOL_TABLE_SIZE == 0)
@@ -97,22 +93,20 @@ extern "C" {
  * are not interested in, in order to get longer traces.
  *****************************************************************************/
 
-/******************************************************************************
-* TRC_CFG_HEAP_SIZE_BELOW_16M
-*
-* An integer constant that can be used to reduce the buffer usage of memory
-* allocation events (malloc/free). This value should be 1 if the heap size is
-* below 16 MB (2^24 byte), and you can live with reported addresses showing the
-* lower 24 bits only. If 0, you get the full 32-bit addresses.
-*
-* Default value is 0.
-******************************************************************************/
+/**
+ * @def TRC_CFG_HEAP_SIZE_BELOW_16M
+ * @brief An integer constant that can be used to reduce the buffer usage of memory
+ * allocation events (malloc/free). This value should be 1 if the heap size is
+ * below 16 MB (2^24 byte), and you can live with reported addresses showing the
+ * lower 24 bits only. If 0, you get the full 32-bit addresses.
+ *
+ * Default value is 0.
+ */
 #define TRC_CFG_HEAP_SIZE_BELOW_16M 0
 
-/******************************************************************************
- * TRC_CFG_USE_IMPLICIT_IFE_RULES
- *
- * Macro which should be defined as either zero (0) or one (1).
+/**
+ * @def TRC_CFG_USE_IMPLICIT_IFE_RULES
+ * @brief Macro which should be defined as either zero (0) or one (1).
  * Default is 1.
  *
  * Tracealyzer groups the events into "instances" based on Instance Finish
@@ -135,13 +129,12 @@ extern "C" {
  * - Task suspend
  * - Blocking on "input" operations, i.e., when the task is waiting for the
  *   next a message/signal/event. But only if this event is blocking.
- *****************************************************************************/
+ */
 #define TRC_CFG_USE_IMPLICIT_IFE_RULES 1
 
-/******************************************************************************
- * TRC_CFG_USE_16BIT_OBJECT_HANDLES
- *
- * Macro which should be defined as either zero (0) or one (1).
+/**
+ * @def TRC_CFG_USE_16BIT_OBJECT_HANDLES
+ * @brief Macro which should be defined as either zero (0) or one (1).
  *
  * If set to 0 (zero), the recorder uses 8-bit handles to identify kernel
  * objects such as tasks and queues. This limits the supported number of
@@ -159,13 +152,12 @@ extern "C" {
  * NOTE: An object with handle above 255 will use an extra 4-byte record in
  * the event buffer whenever the object is referenced. Moreover, some internal
  * tables in the recorder gets slightly larger when using 16-bit handles.
- *****************************************************************************/
+ */
 #define TRC_CFG_USE_16BIT_OBJECT_HANDLES 0
 
-/*******************************************************************************
- * TRC_CFG_USE_SEPARATE_USER_EVENT_BUFFER
- *
- * Macro which should be defined as an integer value.
+/**
+ * @def TRC_CFG_USE_SEPARATE_USER_EVENT_BUFFER
+ * @brief Macro which should be defined as an integer value.
  *
  * Set TRC_CFG_USE_SEPARATE_USER_EVENT_BUFFER to 1 to enable the
  * separate user event buffer (UB).
@@ -219,26 +211,23 @@ extern "C" {
  *
  *  // Finds the existing UB channel
  *  xTracePrintF(chn2, "%Z: %d", value2);
-
- ******************************************************************************/
+ */
 #define TRC_CFG_USE_SEPARATE_USER_EVENT_BUFFER 0
 
-/*******************************************************************************
- * TRC_CFG_SEPARATE_USER_EVENT_BUFFER_SIZE
- *
- * Macro which should be defined as an integer value.
+/**
+ * @def TRC_CFG_SEPARATE_USER_EVENT_BUFFER_SIZE
+ * @brief Macro which should be defined as an integer value.
  *
  * This defines the capacity of the user event buffer (UB), in number of slots.
  * A single user event can use multiple slots, depending on the arguments.
  *
  * Only applicable if TRC_CFG_USE_SEPARATE_USER_EVENT_BUFFER is 1.
- ******************************************************************************/
+ */
 #define TRC_CFG_SEPARATE_USER_EVENT_BUFFER_SIZE 200
 
-/*******************************************************************************
- * TRC_CFG_UB_CHANNELS
- *
- * Macro which should be defined as an integer value.
+/**
+ * @def TRC_CFG_UB_CHANNELS
+ * @brief Macro which should be defined as an integer value.
  *
  * This defines the number of User Event Buffer Channels (UB channels).
  * These are used to structure the events when using the separate user
@@ -246,7 +235,7 @@ extern "C" {
  * a default format string for the channel.
  *
  * Only applicable if TRC_CFG_USE_SEPARATE_USER_EVENT_BUFFER is 1.
- ******************************************************************************/
+ */
 #define TRC_CFG_UB_CHANNELS 32
 
 #ifdef __cplusplus

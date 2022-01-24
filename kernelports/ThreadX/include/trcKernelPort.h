@@ -1,5 +1,5 @@
 /*
- * Trace Recorder for Tracealyzer v4.6.0(RC0)
+ * Trace Recorder for Tracealyzer v4.6.0(RC1)
  * Copyright 2021 Percepio AB
  * www.percepio.com
  *
@@ -22,64 +22,57 @@ extern "C" {
 
 /**
  * @def TRC_USE_TRACEALYZER_RECORDER
- *
  * @brief Enables/Disables the recorder.
  */
 #define TRC_USE_TRACEALYZER_RECORDER 1
 
 /**
  * @def TRACE_KERNEL_VERSION
- *
  * @brief This defines the kernel version/identity.
  */
 #define TRACE_KERNEL_VERSION 0xEAAE
 
 /**
  * @def TRC_PLATFORM_CFG
- *
- * @brief
+ * @brief This defines the basis for version specific lookup of
+ * platform configuration files. If left empty the default
+ * RTOS XML files are used.
  */
 #define TRC_PLATFORM_CFG "ThreadX"
 
 /**
  * @def TRC_PLATFORM_CFG_MAJOR
- *
- * @brief
+ * @brief Major release version for recorder.
  */
 #define TRC_PLATFORM_CFG_MAJOR 1
 
 /**
  * @def TRC_PLATFORM_CFG_MINOR
- *
- * @brief
+ * @brief Minor release version for recorder.
  */
 #define TRC_PLATFORM_CFG_MINOR 0
 
 /**
  * @def TRC_PLATFORM_CFG_PATCH
- *
- * @brief
+ * @brief Patchlevel release version for recorder.
  */
 #define TRC_PLATFORM_CFG_PATCH 0
 
 /**
  * @def TRACE_CPU_CLOCK_HZ
- *
- * @brief
+ * @brief Trace CPU clock speed in Hz.
  */
 #define TRACE_CPU_CLOCK_HZ TRC_CFG_CPU_CLOCK_HZ
 
 /**
  * @def TRC_TICK_RATE_HZ
- *
- * @brief
+ * @brief Trace RTOS tick rate in Hz.
  */
 #define TRC_TICK_RATE_HZ TX_TIMER_TICKS_PER_SECOND
 
 /**
  * @def TraceKernelPortTaskHandle_t
- *
- * @brief
+ * @brief RTOS data type for tasks/threads.
  */
 #define TraceKernelPortTaskHandle_t TX_THREAD
 
@@ -221,7 +214,6 @@ void vTraceSetMessageBufferName(void* object, const char* name);
  * 3000-3999 Tz Segment 3
  * 4000-4095 Tz Internal
  */
-
 #define PSF_EVENT_S1_OFFSET 1000
 #define PSF_EVENT_S2_OFFSET 2000
 #define PSF_EVENT_S3_OFFSET 3000

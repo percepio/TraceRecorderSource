@@ -2,19 +2,18 @@
 # SPDX-License-Identifier: Apache-2.0
 
 menu "Trace Recorder"
-
 choice PERCEPIO_TRC_CFG_RECORDER_RTOS
 	prompt "Recorder RTOS"
   	default PERCEPIO_TRC_CFG_RECORDER_RTOS_FREERTOS
 
-  	config PERCEPIO_TRC_CFG_RECORDER_RTOS_FREERTOS
-      bool "FreeRTOS"
-	  
-	config PERCEPIO_TRC_CFG_RECORDER_RTOS_THREADX
-      bool "ThreadX"
-	  
-	config PERCEPIO_TRC_CFG_RECORDER_RTOS_ZEPHYR
-      bool "Zephyr"
+config PERCEPIO_TRC_CFG_RECORDER_RTOS_FREERTOS
+	bool "FreeRTOS"
+	
+config PERCEPIO_TRC_CFG_RECORDER_RTOS_THREADX
+	bool "ThreadX"
+	
+config PERCEPIO_TRC_CFG_RECORDER_RTOS_ZEPHYR
+	bool "Zephyr"
 endchoice
 
 if PERCEPIO_TRC_CFG_RECORDER_RTOS_FREERTOS
@@ -28,5 +27,4 @@ endif # PERCEPIO_TRC_CFG_RECORDER_RTOS_THREADX
 if PERCEPIO_TRC_CFG_RECORDER_RTOS_ZEPHYR
 rsource "kernelports/Zephyr/config/Kconfig"
 endif # PERCEPIO_TRC_CFG_RECORDER_RTOS_ZEPHYR
-
-endmenu
+endmenu # "Trace Recorder"

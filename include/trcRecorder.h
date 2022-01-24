@@ -1,5 +1,5 @@
 /*
- * Trace Recorder for Tracealyzer v4.6.0(RC0)
+ * Trace Recorder for Tracealyzer v4.6.0(RC1)
  * Copyright 2021 Percepio AB
  * www.percepio.com
  *
@@ -140,10 +140,6 @@ typedef struct TraceHeaderBuffer
 * xTraceInitialize
 *
 * Initializes the recorder data.
-* This function will be called by xTraceEnable(...).
-* Only needs to be called manually if traced objects are created before the
-* trace recorder can be enabled, at which point make sure to call this function
-* as early as possible.
 * See TRC_CFG_RECORDER_DATA_INIT in trcConfig.h.
 ******************************************************************************/
 traceResult xTraceInitialize(void);
@@ -196,7 +192,8 @@ traceResult xTraceInitialize(void);
 *	<RTOS startup>
 *	
 ******************************************************************************/
-traceResult xTraceEnable(uint32_t uiStartOption);
+traceResult
+	xTraceEnable(uint32_t uiStartOption);
 
 traceResult xTraceDisable(void);
 

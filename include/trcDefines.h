@@ -1,5 +1,5 @@
 /*
- * Trace Recorder for Tracealyzer v4.6.0(RC0)
+ * Trace Recorder for Tracealyzer v4.6.0(RC1)
  * Copyright 2021 Percepio AB
  * www.percepio.com
  *
@@ -26,7 +26,7 @@
 #define TRC_STATE_IN_APPLICATION 2
 
 /* Start options for vTraceEnable. */
-#define TRC_INIT				0
+#define TRC_START_FROM_HOST		0
 #define TRC_START				1
 #define TRC_START_AWAIT_HOST	2
 

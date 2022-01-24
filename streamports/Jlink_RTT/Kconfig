@@ -102,5 +102,4 @@ config PERCEPIO_TRC_CFG_STREAM_PORT_RTT_NO_LOCK_WRITE
 	  RTT data. This should normally be disabled with an exception being
 	  Zephyr, where the SEGGER RTT locks aren't necessary and causes
 	  problems if enabled.
-
-endmenu
+endmenu # menu "RTT Config"

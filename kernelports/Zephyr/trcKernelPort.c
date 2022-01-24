@@ -1,5 +1,5 @@
 /*
- * Trace Recorder for Tracealyzer v4.6.0(RC0)
+ * Trace Recorder for Tracealyzer v4.6.0(RC1)
  * Copyright 2021 Percepio AB
  * www.percepio.com
  *
@@ -211,7 +211,7 @@ static int tracelyzer_pre_kernel_init(const struct device *arg)
 #elif CONFIG_PERCEPIO_TRC_START_MODE_START_AWAIT_HOST
 	xTraceEnable(TRC_START_AWAIT_HOST);
 #else
-	xTraceEnable(TRC_INIT);
+	xTraceEnable(TRC_START_FROM_HOST);
 #endif
 
 	/* Create ISR handle */

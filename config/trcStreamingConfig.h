@@ -1,5 +1,5 @@
 /*
- * Trace Recorder for Tracealyzer v4.6.0(RC0)
+ * Trace Recorder for Tracealyzer v4.6.0(RC1)
  * Copyright 2021 Percepio AB
  * www.percepio.com
  *
@@ -16,10 +16,9 @@
 extern "C" {
 #endif
 
-/*******************************************************************************
- * Configuration Macro: TRC_CFG_ENTRY_SLOTS
- *
- * The maximum number of objects and symbols that can be stored. This includes:
+/**
+ * @def TRC_CFG_ENTRY_SLOTS
+ * @brief The maximum number of objects and symbols that can be stored. This includes:
  * - Task names
  * - Named ISRs (vTraceSetISRProperties)
  * - Named kernel objects (vTraceStoreKernelObjectName)
@@ -28,13 +27,12 @@ extern "C" {
  * If this value is too small, not all symbol names will be stored and the
  * trace display will be affected. In that case, there will be warnings
  * (as User Events) from TzCtrl task, that monitors this.
- ******************************************************************************/
+ */
 #define TRC_CFG_ENTRY_SLOTS 50
 
-/*******************************************************************************
- * Configuration Macro: TRC_CFG_ENTRY_SYMBOL_MAX_LENGTH
- *
- * The maximum length of symbol names, including:
+/**
+ * @def TRC_CFG_ENTRY_SYMBOL_MAX_LENGTH
+ * @brief The maximum length of symbol names, including:
  * - Task names
  * - Named ISRs (vTraceSetISRProperties)
  * - Named kernel objects (vTraceStoreKernelObjectName)
@@ -43,7 +41,7 @@ extern "C" {
  * If longer symbol names are used, they will be truncated by the recorder,
  * which will affect the trace display. In that case, there will be warnings
  * (as User Events) from TzCtrl task, that monitors this.
- ******************************************************************************/
+ */
 #define TRC_CFG_ENTRY_SYMBOL_MAX_LENGTH 32
 
 #ifdef __cplusplus

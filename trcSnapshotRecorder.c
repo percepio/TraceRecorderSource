@@ -1,5 +1,5 @@
 /*
- * Trace Recorder for Tracealyzer v4.6.0(RC0)
+ * Trace Recorder for Tracealyzer v4.6.0(RC1)
  * Copyright 2021 Percepio AB
  * www.percepio.com
  *
@@ -340,40 +340,6 @@ traceResult xTraceGetEventBuffer(void** ppvBuffer, TraceUnsignedBaseType_t* puiS
 	return TRC_SUCCESS;
 }
 
-/******************************************************************************
-* xTraceEnable(int startOption) - snapshot mode
-*
-* Initializes and optionally starts the trace, depending on the start option.
-* To use the trace recorder, the startup must call vTraceEnable before any RTOS
-* calls are made (including "create" calls). Three start options are provided:
-*
-* TRC_START: Starts the tracing directly. In snapshot mode this allows for
-* starting the trace at any point in your code, assuming xTraceEnable(TRC_INIT)
-* has been called in the startup.
-* Can also be used for streaming without Tracealyzer control, e.g. to a local
-* flash file system (assuming such a "stream port", see trcStreamPort.h).
-*
-* TRC_INIT: Initializes the trace recorder, but does not start the tracing.
-* In snapshot mode, this must be followed by a vTraceEnable(TRC_START) sometime
-* later.
-*
-* Usage examples, in snapshot mode:
-*
-* Snapshot trace, from startup:
-* 	<board init>
-* 	xTraceEnable(TRC_START);
-* 	<RTOS init>
-*
-* Snapshot trace, from a later point:
-* 	<board init>
-* 	xTraceEnable(TRC_INIT);
-* 	<RTOS init>
-* 	...
-* 	xTraceEnable(TRC_START); // e.g., in task context, at some relevant event
-*
-*
-* Note: See other implementation of xTraceEnable in trcStreamingRecorder.c
-******************************************************************************/
 traceResult xTraceEnable(uint32_t uiStartOption)
 {
 	/* Make sure recorder data is initialized */
@@ -399,9 +365,9 @@ traceResult xTraceEnable(uint32_t uiStartOption)
 
 		return TRC_FAIL;
 	}
-	else if (uiStartOption != TRC_INIT)
+	else if (uiStartOption != TRC_START_FROM_HOST)
 	{
-		prvTraceError("Unexpected argument to xTraceEnable (snapshot mode)");
+		prvTraceError("xTraceEnable(TRC_START_FROM_HOST) not allowed in Snapshot mode");
 
 		return TRC_FAIL;
 	}
@@ -1729,15 +1695,6 @@ TraceStringHandle_t xTraceRegisterString(const char* name)
 }
 #endif
 
-/******************************************************************************
-* vTraceInitialize
-*
-* Initializes the recorder data.
-* This function will be called by vTraceEnable(...).
-* Only needs to be called manually if traced objects are created before the
-* trace recorder can be enabled
-* See TRC_CFG_RECORDER_DATA_INIT in trcConfig.h for more information.
-******************************************************************************/
 traceResult xTraceInitialize()
 {
 #if defined(TRC_CFG_ENABLE_STACK_MONITOR) && (TRC_CFG_ENABLE_STACK_MONITOR == 1) && (TRC_CFG_SCHEDULING_ONLY == 0)
