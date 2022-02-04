@@ -1,5 +1,5 @@
 /*
-* Percepio Trace Recorder for Tracealyzer v4.6.0(RC1)
+* Percepio Trace Recorder for Tracealyzer v4.6.0
 * Copyright 2021 Percepio AB
 * www.percepio.com
 *
@@ -16,11 +16,6 @@
 
 TraceISRInfo_t* pxTraceISRInfo;
 
-/*******************************************************************************
- * xTraceISRInitialize
- *
- * Initializes the ISR stack tracing system.
- ******************************************************************************/
 traceResult xTraceISRInitialize(TraceISRInfoBuffer_t *pxBuffer)
 {
 	uint32_t uiCoreIndex;
@@ -52,25 +47,6 @@ traceResult xTraceISRInitialize(TraceISRInfoBuffer_t *pxBuffer)
 	return TRC_SUCCESS;
 }
 
-/*******************************************************************************
- * xTraceISRRegister
- *
- * Stores a name and priority level for an Interrupt Service Routine, to allow
- * for better visualization. Returns a traceHandle used by vTraceStoreISRBegin.
-*
-* Example:
-*	 #define PRIO_OF_ISR_TIMER1 3 // the hardware priority of the interrupt
-*	 TraceISRHandle_t xISRTimer1Handle = 0; // The ID set by the recorder
-*	 ...
-*	 xTraceISRRegister("ISRTimer1", PRIO_OF_ISR_TIMER1, &xISRTimer1Handle);
-*	 ...
-*	 void ISR_handler()
-*	 {
-*		 xTraceISRBegin(xISRTimer1Handle);
-*		 ...
-*		 xTraceISREnd(0);
-*	 }
- ******************************************************************************/
 traceResult xTraceISRRegister(const char* szName, uint32_t uiPriority, TraceISRHandle_t *pxISRHandle)
 {
 	TraceEntryHandle_t xEntryHandle;
@@ -130,25 +106,6 @@ traceResult xTraceISRRegister(const char* szName, uint32_t uiPriority, TraceISRH
 	return TRC_SUCCESS;
 }
 
-/*******************************************************************************
-* xTraceISRBegin
-*
-* Registers the beginning of an Interrupt Service Routine, using a
-* TraceISRHandle_t provided by xTraceISRRegister(...).
-*
-* Example:
-*	 #define PRIO_OF_ISR_TIMER1 3 // the hardware priority of the interrupt
-*	 TraceISRHandle_t xISRTimer1Handle = 0; // The ID set by the recorder
-*	 ...
-*	 xTraceISRRegister("ISRTimer1", PRIO_OF_ISR_TIMER1, &xISRTimer1Handle);
-*	 ...
-*	 void ISR_handler()
-*	 {
-*		 xTraceISRBegin(xISRTimer1Handle);
-*		 ...
-*		 xTraceISREnd(0);
-*	 }
-******************************************************************************/
 traceResult xTraceISRBegin(TraceISRHandle_t xISRHandle)
 {
 	TraceEventHandle_t xEventHandle = 0;
@@ -199,28 +156,6 @@ traceResult xTraceISRBegin(TraceISRHandle_t xISRHandle)
 	return TRC_SUCCESS;
 }
 
-/*******************************************************************************
-* xTraceISREnd
-*
-* Registers the end of an Interrupt Service Routine.
-*
-* The parameter xIsTaskSwitchRequired indicates if the interrupt has requested
-* a task-switch (= 1), e.g., by signaling a semaphore. Otherwise (= 0) the
-* interrupt is assumed to return to the previous context.
-*
-* Example:
-*	 #define PRIO_OF_ISR_TIMER1 3 // the hardware priority of the interrupt
-*	 TraceISRHandle_t xISRTimer1Handle = 0; // The ID set by the recorder
-*	 ...
-*	 xTraceISRRegister("ISRTimer1", PRIO_OF_ISR_TIMER1, &xISRTimer1Handle);
-*	 ...
-*	 void ISR_handler()
-*	 {
-*		 xTraceISRBegin(xISRTimer1Handle);
-*		 ...
-*		 xTraceISREnd(0);
-*	 }
-******************************************************************************/
 traceResult xTraceISREnd(TraceBaseType_t xIsTaskSwitchRequired)
 {
 	TraceEventHandle_t xEventHandle = 0;
@@ -280,13 +215,6 @@ traceResult xTraceISREnd(TraceBaseType_t xIsTaskSwitchRequired)
 
 #if ((TRC_CFG_USE_TRACE_ASSERT) == 1)
 
-/*******************************************************************************
- * xTraceISRGetCurrentNesting
- *
- * Returns the current level of ISR nesting.
- * Return values:
- *	-1 means there are no active ISRs at all.
- ******************************************************************************/
 traceResult xTraceISRGetCurrentNesting(int32_t* puiValue)
 {
 	/* This should never fail */
@@ -309,13 +237,6 @@ int32_t xTraceISRGetCurrentNestingReturned(void)
 	return pxTraceISRInfo->coreInfos[TRC_CFG_GET_CURRENT_CORE()].stackIndex;
 }
 
-/*******************************************************************************
- * xTraceISRGetCurrentNesting
- *
- * Returns the current level of ISR nesting.
- * Return values:
- *	-1 means there are no active ISRs at all.
- ******************************************************************************/
 traceResult xTraceISRGetCurrent(TraceISRHandle_t* pxISRHandle)
 {
 	/* This should never fail */

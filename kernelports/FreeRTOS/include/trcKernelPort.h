@@ -1,5 +1,5 @@
 /*
- * Trace Recorder for Tracealyzer v4.6.0(RC1)
+ * Trace Recorder for Tracealyzer v4.6.0
  * Copyright 2021 Percepio AB
  * www.percepio.com
  *
@@ -20,7 +20,7 @@ extern "C" {
 
 #define TRC_USE_TRACEALYZER_RECORDER configUSE_TRACE_FACILITY
 
-/*** FreeRTOS version codes **************************************************/
+/* FreeRTOS version codes */
 #define FREERTOS_VERSION_NOT_SET				0
 #define TRC_FREERTOS_VERSION_7_3_X				1 /* v7.3 is earliest supported.*/
 #define TRC_FREERTOS_VERSION_7_4_X				2
@@ -67,8 +67,6 @@ extern "C" {
 	#define TraceKernelPortTaskHandle_t TaskHandle_t
 #endif
 
-
-
 #if (defined(TRC_USE_TRACEALYZER_RECORDER)) && (TRC_USE_TRACEALYZER_RECORDER == 1)
 
 #define TRC_PLATFORM_CFG "FreeRTOS"
@@ -77,14 +75,14 @@ extern "C" {
 #define TRC_PLATFORM_CFG_PATCH 0
 
 #if defined(TRC_CFG_ENABLE_STACK_MONITOR) && (TRC_CFG_ENABLE_STACK_MONITOR == 1) && (TRC_CFG_SCHEDULING_ONLY == 0)
-	/* Required for this feature */
+
+/* Required for stack monitoring */
 #undef INCLUDE_uxTaskGetStackHighWaterMark
 #define INCLUDE_uxTaskGetStackHighWaterMark 1
-#endif /* defined(TRC_CFG_ENABLE_STACK_MONITOR) && (TRC_CFG_ENABLE_STACK_MONITOR == 1) && (TRC_CFG_SCHEDULING_ONLY == 0) */
 
-/*******************************************************************************
- * INCLUDE_xTaskGetCurrentTaskHandle must be set to 1 for tracing to work properly
- ******************************************************************************/
+#endif
+
+/* INCLUDE_xTaskGetCurrentTaskHandle must be set to 1 for tracing to work properly */
 #undef INCLUDE_xTaskGetCurrentTaskHandle
 #define INCLUDE_xTaskGetCurrentTaskHandle 1
 
@@ -96,191 +94,300 @@ extern "C" {
 #define TRC_KERNEL_PORT_BUFFER_SIZE (sizeof(TraceUnsignedBaseType_t))
 #endif
 
+/**
+ * @internal The kernel port data buffer
+ */
 typedef struct TraceKernelPortDataBuffer
 {
 	uint8_t buffer[TRC_KERNEL_PORT_BUFFER_SIZE];
 } TraceKernelPortDataBuffer_t;
 
-traceResult xTraceKernelPortEnable(void);
-
+/**
+ * @internal Initializes the kernel port
+ * 
+ * @param[in] pxBuffer Kernel port data buffer
+ *
+ * @retval TRC_FAIL Failure
+ * @retval TRC_SUCCESS Success
+ */
 traceResult xTraceKernelPortInitialize(TraceKernelPortDataBuffer_t* pxBuffer);
 
+/**
+ * @internal Enables the kernel port
+ * 
+ * @retval TRC_FAIL Failure
+ * @retval TRC_SUCCESS Success
+ */
+traceResult xTraceKernelPortEnable(void);
+
+/**
+ * @internal Calls on FreeRTOS vTaskDelay(...)
+ *
+ * @param[in] uiTicks Tick count to delay
+ * 
+ * @retval TRC_FAIL Failure
+ * @retval TRC_SUCCESS Success
+ */
 traceResult xTraceKernelPortDelay(uint32_t uiTicks);
 
+/**
+ * @internal Query if FreeRTOS scheduler is suspended
+ *
+ * @retval 1 Scheduler suspended
+ * @retval 0 Scheduler not suspended
+ */
 unsigned char xTraceKernelPortIsSchedulerSuspended(void);
 
+/**
+ * @brief Kernel specific way to properly allocate critical sections
+ */
 #define TRC_KERNEL_PORT_ALLOC_CRITICAL_SECTION() 
 
+/**
+ * @brief Kernel specific way to properly allocate critical sections
+ */
 #define TRC_KERNEL_PORT_ENTER_CRITICAL_SECTION() portENTER_CRITICAL()
 
+/**
+ * @brief Kernel specific way to properly allocate critical sections
+ */
 #define TRC_KERNEL_PORT_EXIT_CRITICAL_SECTION() portEXIT_CRITICAL()
 
+/**
+* @brief Kernel specific way to set interrupt mask
+*/
 #define TRC_KERNEL_PORT_SET_INTERRUPT_MASK() ((TraceBaseType_t)portSET_INTERRUPT_MASK_FROM_ISR())
 
 #if (TRC_CFG_FREERTOS_VERSION >= TRC_FREERTOS_VERSION_8_X_X)
+
+/**
+ * @brief Kernel specific way to clear interrupt mask
+ */
 #define TRC_KERNEL_PORT_CLEAR_INTERRUPT_MASK(xMask) portCLEAR_INTERRUPT_MASK_FROM_ISR((UBaseType_t)(xMask))
+
 #else
+
+/**
+ * @brief Kernel specific way to clear interrupt mask
+ */
 #define TRC_KERNEL_PORT_CLEAR_INTERRUPT_MASK(xMask) portCLEAR_INTERRUPT_MASK_FROM_ISR((unsigned portBASE_TYPE)xMask)
 #endif
 
 #if (TRC_CFG_SCHEDULING_ONLY == 0)
-/*******************************************************************************
- * vTraceSetQueueName(void* object, const char* name)
- *
- * Parameter object: pointer to the Queue that shall be named
- * Parameter name: the name to set (const string literal)
- *
- * Sets a name for Queue objects for display in Tracealyzer.
- ******************************************************************************/
-void vTraceSetQueueName(void* object, const char* name);
 
-/*******************************************************************************
- * vTraceSetSemaphoreName(void* object, const char* name)
+/**
+ * @brief Set the queue name
  *
- * Parameter object: pointer to the Semaphore that shall be named
- * Parameter name: the name to set (const string literal)
- *
- * Sets a name for Semaphore objects for display in Tracealyzer.
- ******************************************************************************/
-void vTraceSetSemaphoreName(void* object, const char* name);
+ * @param[in] pvQueue Queue pointer
+ * @param[in] szName Queue name
+ */
+void vTraceSetQueueName(void* pvQueue, const char* szName);
 
-/*******************************************************************************
- * vTraceSetMutexName(void* object, const char* name)
+/**
+ * @brief Set the semaphore name
  *
- * Parameter object: pointer to the Mutex that shall be named
- * Parameter name: the name to set (const string literal)
- *
- * Sets a name for Semaphore objects for display in Tracealyzer.
- ******************************************************************************/
-void vTraceSetMutexName(void* object, const char* name);
+ * @param[in] pvSemaphore Semaphore pointer
+ * @param[in] szName Semaphore name
+ */
+void vTraceSetSemaphoreName(void* pvSemaphore, const char* szName);
 
-/*******************************************************************************
-* vTraceSetEventGroupName(void* object, const char* name)
-*
-* Parameter object: pointer to the EventGroup that shall be named
-* Parameter name: the name to set (const string literal)
-*
-* Sets a name for EventGroup objects for display in Tracealyzer.
-******************************************************************************/
+/**
+ * @brief Set the mutex name
+ *
+ * @param[in] pvMutex Mutex pointer
+ * @param[in] szName Mutex name
+ */
+void vTraceSetMutexName(void* pvMutex, const char* szName);
+
 #if (TRC_CFG_INCLUDE_EVENT_GROUP_EVENTS == 1)
-void vTraceSetEventGroupName(void* object, const char* name);
-#else /* (TRC_CFG_INCLUDE_EVENT_GROUP_EVENTS == 1) */
-#define vTraceSetEventGroupName(object, name) /* Do nothing */
-#endif /* (TRC_CFG_INCLUDE_EVENT_GROUP_EVENTS == 1) */
+
+/**
+ * @brief Set the event group name
+ *
+ * @param[in] pvEventGroup Event group pointer
+ * @param[in] szName Event group name
+ */
+void vTraceSetEventGroupName(void* pvEventGroup, const char* szName);
+
+#else
+
+/**
+ * @brief Disabled by TRC_CFG_INCLUDE_EVENT_GROUP_EVENTS
+ */
+#define vTraceSetEventGroupName(__pvEventGroup, __szName) ((void)(__pvEventGroup), (void)(__szName))
+
+#endif
 
 #if (TRC_CFG_INCLUDE_STREAM_BUFFER_EVENTS == 1)
-/*******************************************************************************
-* vTraceSetStreamBufferName(void* object, const char* name)
-*
-* Parameter object: pointer to the StreamBuffer that shall be named
-* Parameter name: the name to set (const string literal)
-*
-* Sets a name for StreamBuffer objects for display in Tracealyzer.
-******************************************************************************/
-void vTraceSetStreamBufferName(void* object, const char* name);
-#else /* (TRC_CFG_INCLUDE_STREAM_BUFFER_EVENTS == 1) */
-#define vTraceSetStreamBufferName(object, name) /* Do nothing */
-#endif /* (TRC_CFG_INCLUDE_STREAM_BUFFER_EVENTS == 1) */
 
-#if (TRC_CFG_INCLUDE_STREAM_BUFFER_EVENTS == 1)
-/*******************************************************************************
- * vTraceSetMessageBufferName(void* object, const char* name)
+/**
+ * @brief Set the stream buffer name
  *
- * Parameter object: pointer to the MessageBuffer that shall be named
- * Parameter name: the name to set (const string literal)
+ * @param[in] pvStreamBuffer Stream buffer pointer
+ * @param[in] szName Stream buffer name
+ */
+void vTraceSetStreamBufferName(void* pvStreamBuffer, const char* szName);
+
+/**
+ * @brief Set the message buffer name
  *
- * Sets a name for MessageBuffer objects for display in Tracealyzer.
- ******************************************************************************/
-void vTraceSetMessageBufferName(void* object, const char* name);
-#else /* (TRC_CFG_INCLUDE_STREAM_BUFFER_EVENTS == 1) */
-#define vTraceSetMessageBufferName(object, name) /* Do nothing */
-#endif /* (TRC_CFG_INCLUDE_STREAM_BUFFER_EVENTS == 1) */
+ * @param[in] pvMessageBuffer Message buffer pointer
+ * @param[in] szName Message buffer name
+ */
+void vTraceSetMessageBufferName(void* pvMessageBuffer, const char* szName);
+
+#else
+
+/**
+ * @brief Disabled by TRC_CFG_INCLUDE_STREAM_BUFFER_EVENTS
+ */
+#define vTraceSetStreamBufferName(__pvStreamBuffer, __szName) ((void)(__pvStreamBuffer), (void)(__szName))
+
+/**
+ * @brief Disabled by TRC_CFG_INCLUDE_STREAM_BUFFER_EVENTS
+ */
+#define vTraceSetMessageBufferName(__pvMessageBuffer, __szName) ((void)(__pvMessageBuffer), (void)(__szName))
+
+#endif
 
 #if defined(TRC_CFG_ENABLE_STACK_MONITOR) && (TRC_CFG_ENABLE_STACK_MONITOR == 1)
-traceResult xTraceKernelPortGetUnusedStack(void* task, TraceUnsignedBaseType_t *puxUnusedStack);
-#endif /* defined(TRC_CFG_ENABLE_STACK_MONITOR) && (TRC_CFG_ENABLE_STACK_MONITOR == 1)*/
 
-#else /* (TRC_CFG_SCHEDULING_ONLY == 0) */
+ /**
+  * @internal Retrieves the unused stack for a task
+  *
+  * @param[in] pvTask Task pointer
+  * @param[out] puxUnusedStack The unused stack
+  *
+  * @retval TRC_FAIL Failure
+  * @retval TRC_SUCCESS Success
+  */
+traceResult xTraceKernelPortGetUnusedStack(void* pvTask, TraceUnsignedBaseType_t *puxUnusedStack);
 
-#define vTraceSetQueueName(object, name) /* Do nothing */
-#define vTraceSetSemaphoreName(object, name) /* Do nothing */
-#define vTraceSetMutexName(object, name) /* Do nothing */
-#define vTraceSetEventGroupName(object, name) /* Do nothing */
-#define vTraceSetStreamBufferName(object, name) /* Do nothing */
-#define vTraceSetMessageBufferName(object, name) /* Do nothing */
-#define prvAddTaskToStackMonitor(task) /* Do nothing */
-#define prvRemoveTaskFromStackMonitor(task) /* Do nothing */
+#endif
 
-#endif /* (TRC_CFG_SCHEDULING_ONLY == 0) */
+#else
 
-/*******************************************************************************
- * Note: Setting names for event groups is difficult to support, this has been 
- * excluded intentionally. This since we don't know if event_groups.c is 
- * included in the build, so referencing it from the recorder may cause errors.
- ******************************************************************************/
+/**
+ * @brief Disabled by TRC_CFG_SCHEDULING_ONLY
+ */
+#define vTraceSetQueueName(__pvQueue, __szName) ((void)(__pvQueue), (void)(__szName))
+
+/**
+ * @brief Disabled by TRC_CFG_SCHEDULING_ONLY
+ */
+#define vTraceSetSemaphoreName(__pvSemaphore, __szName) ((void)(__pvSemaphore), (void)(__szName))
+
+/**
+ * @brief Disabled by TRC_CFG_SCHEDULING_ONLY
+ */
+#define vTraceSetMutexName(__pvMutex, __szName) ((void)(__pvMutex), (void)(__szName))
+
+/**
+ * @brief Disabled by TRC_CFG_SCHEDULING_ONLY
+ */
+#define vTraceSetEventGroupName(__pvEventGroup, __szName) ((void)(__pvEventGroup), (void)(__szName))
+
+/**
+ * @brief Disabled by TRC_CFG_SCHEDULING_ONLY
+ */
+#define vTraceSetStreamBufferName(__pvStreamBuffer, __szName) ((void)(__pvStreamBuffer), (void)(__szName))
+
+/**
+ * @brief Disabled by TRC_CFG_SCHEDULING_ONLY
+ */
+#define vTraceSetMessageBufferName(__pvMessageBuffer, __szName) ((void)(__pvMessageBuffer), (void)(__szName))
+
+/**
+ * @brief Disabled by TRC_CFG_SCHEDULING_ONLY
+ */
+#define xTraceKernelPortGetUnusedStack(pvTask, puxUnusedStack) ((void)(pvTask), (void)(puxUnusedStack))
+
+#endif
 
 #if (((TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_SNAPSHOT) && (TRC_CFG_INCLUDE_ISR_TRACING == 1)) || (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING))
 
-/*******************************************************************************
- * INCLUDE_xTaskGetSchedulerState must be set to 1 for tracing to work properly
- ******************************************************************************/
+/* Required for ISR tracing and Streaming */
 #undef INCLUDE_xTaskGetSchedulerState
 #define INCLUDE_xTaskGetSchedulerState 1
 
-#endif /* (((TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_SNAPSHOT) && (TRC_CFG_INCLUDE_ISR_TRACING == 1)) || (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING)) */
-
-#define TRACE_KERNEL_VERSION 0x1AA1
-#define TRC_TICK_RATE_HZ configTICK_RATE_HZ /* Defined in "FreeRTOS.h" */
-#define TRACE_CPU_CLOCK_HZ configCPU_CLOCK_HZ /* Defined in "FreeRTOSConfig.h" */
-
-/* If using dynamic allocation of snapshot trace buffer... */
-#define TRACE_MALLOC(size) pvPortMalloc(size) 	
-
-#if defined(configUSE_TIMERS)
-#if (configUSE_TIMERS == 1)
-#undef INCLUDE_xTimerGetTimerDaemonTaskHandle
-#define INCLUDE_xTimerGetTimerDaemonTaskHandle 1
-#endif /* configUSE_TIMERS == 1*/
-#endif /* configUSE_TIMERS */
-
-#if (TRC_CFG_HARDWARE_PORT == TRC_HARDWARE_PORT_XMOS_XCOREAI)
-	#undef TRC_CFG_CORE_COUNT
-	#define TRC_CFG_CORE_COUNT configNUM_CORES
-	#undef TRC_CFG_GET_CURRENT_CORE
-	#define TRC_CFG_GET_CURRENT_CORE() rtos_core_id_get()
 #endif
 
+/**
+ * @internal Legacy ID used by Tracealyzer to identify FreeRTOS traces
+ */
+#define TRACE_KERNEL_VERSION 0x1AA1
+
+/**
+ * @internal Kernel specific tick rate frequency definition
+ */
+#define TRC_TICK_RATE_HZ configTICK_RATE_HZ /* Defined in "FreeRTOS.h" */
+
+/**
+ * @internal Kernel specific CPU clock frequency definition
+ */
+#define TRACE_CPU_CLOCK_HZ configCPU_CLOCK_HZ /* Defined in "FreeRTOSConfig.h" */
+
+/**
+ * @internal Kernel specific malloc definition
+ */
+#define TRACE_MALLOC(size) pvPortMalloc(size) 	
+
+#if (defined(configUSE_TIMERS) && (configUSE_TIMERS == 1))
+
+#undef INCLUDE_xTimerGetTimerDaemonTaskHandle
+#define INCLUDE_xTimerGetTimerDaemonTaskHandle 1
+
+#endif
+
+#if (TRC_CFG_HARDWARE_PORT == TRC_HARDWARE_PORT_XMOS_XCOREAI)
+
+#undef TRC_CFG_CORE_COUNT
+#define TRC_CFG_CORE_COUNT configNUM_CORES
+
+#undef TRC_CFG_GET_CURRENT_CORE
+#define TRC_CFG_GET_CURRENT_CORE() rtos_core_id_get()
+
+#endif
 
 #if (TRC_CFG_FREERTOS_VERSION == TRC_FREERTOS_VERSION_9_0_1)
-	/******************************************************************************
-	* Fix for FreeRTOS v9.0.1 to correctly identify xQueuePeek events.
-	*
-	* In FreeRTOS v9.0.1, the below trace hooks are incorrectly used from three
-	* different functions. This as the earlier function xQueueGenericReceive
-	* has been replaced by xQueuePeek, xQueueSemaphoreTake and xQueueReceive.
-	*
-	* xQueueGenericReceive had a parameter "xJustPeeking", used by the trace hooks
-	* to tell between xQueuePeek events and others. This is no longer present, so
-	* we need another way to correctly identify peek events. Since all three
-	* functions call the same trace macros, the context of these macro is unknown.
-	*
-	* We therefore check the __LINE__ macro inside of the trace macros. This gives
-	* the line number of queue.c, where the macros are used. This can be used to
-	* tell if the context is xQueuePeek or another function.
-	* __LINE__ is a standard compiler feature since ancient times, so it should
-	* work on all common compilers.
-	*
-	* This might seem as a quite brittle and unusual solution, but works in this
-	* particular case and is only for FreeRTOS v9.0.1.
-	* Future versions of FreeRTOS should not need this fix, as we have submitted
-	* a correction of queue.c with individual trace macros for each function.
-	******************************************************************************/
+
+/**
+ * @brief Fix for FreeRTOS v9.0.1 to correctly identify xQueuePeek events.
+ *
+ * In FreeRTOS v9.0.1, the below trace hooks are incorrectly used from three
+ * different functions. This as the earlier function xQueueGenericReceive
+ * has been replaced by xQueuePeek, xQueueSemaphoreTake and xQueueReceive.
+ *
+ * xQueueGenericReceive had a parameter "xJustPeeking", used by the trace hooks
+ * to tell between xQueuePeek events and others. This is no longer present, so
+ * we need another way to correctly identify peek events. Since all three
+ * functions call the same trace macros, the context of these macro is unknown.
+ *
+ * We therefore check the __LINE__ macro inside of the trace macros. This gives
+ * the line number of queue.c, where the macros are used. This can be used to
+ * tell if the context is xQueuePeek or another function.
+ * __LINE__ is a standard compiler feature since ancient times, so it should
+ * work on all common compilers.
+ *
+ * This might seem as a quite brittle and unusual solution, but works in this
+ * particular case and is only for FreeRTOS v9.0.1.
+ * Future versions of FreeRTOS should not need this fix, as we have submitted
+ * a correction of queue.c with individual trace macros for each function.
+ */
 #define isQueueReceiveHookActuallyPeek (__LINE__ > 1674) /* Half way between the closes trace points */
 
 #elif (TRC_CFG_FREERTOS_VERSION <= TRC_FREERTOS_VERSION_9_0_0)
+
+/**
+ * @brief Is receive actually a peek
+ */
 #define isQueueReceiveHookActuallyPeek xJustPeeking
 
 #elif (TRC_CFG_FREERTOS_VERSION > TRC_FREERTOS_VERSION_9_0_1)
+
+/**
+ * @brief Is never a peek for this FreeRTOS version
+ */
 #define isQueueReceiveHookActuallyPeek (__LINE__ < 0) /* instead of pdFALSE to fix a warning of "constant condition" */
 
 #endif
@@ -289,9 +396,9 @@ traceResult xTraceKernelPortGetUnusedStack(void* task, TraceUnsignedBaseType_t *
 #define TZ__CAT2(a,b) a ## b
 #define TZ__CAT(a,b) TZ__CAT2(a, b)
 
-/**************************************************************************/
-/* Makes sure xQueueGiveFromISR also has a xCopyPosition parameter        */
-/**************************************************************************/
+/*
+ * The following xQueueGiveFromISR macro hacks make sure xQueueGiveFromISR also has a xCopyPosition parameter
+ */
 
 /* Expands name if this header is included... uxQueueType must be a macro that only exists in queue.c or whatever, and it must expand to nothing or to something that's valid in identifiers */
 #define xQueueGiveFromISR(a,b) TZ__CAT(xQueueGiveFromISR__, uxQueueType) (a,b)
@@ -304,91 +411,353 @@ BaseType_t MyWrapper_xQueueGiveFromISR(__a, __b, const BaseType_t xCopyPosition)
 /* If not in queue.c, "uxQueueType" isn't expanded */
 #define xQueueGiveFromISR__uxQueueType(__a, __b) xQueueGiveFromISR(__a,__b)
 
-/**************************************************************************/
-/* End of xQueueGiveFromISR fix                                           */
-/**************************************************************************/
-
-/******************************************************************************/
-/*** Definitions for Snapshot mode ********************************************/
-/******************************************************************************/
 #if (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_SNAPSHOT)
 
+/**
+ * @internal Kernel specific way to get current task handle
+ */
 #define TRACE_GET_CURRENT_TASK() prvTraceGetCurrentTaskHandle()
 
 extern uint16_t CurrentFilterMask;
-
 extern uint16_t CurrentFilterGroup;
 
-uint8_t prvTraceGetQueueType(void* handle);
-uint16_t prvTraceGetTaskNumberLow16(void* handle);
-uint16_t prvTraceGetTaskNumberHigh16(void* handle);
-void prvTraceSetTaskNumberLow16(void* handle, uint16_t value);
-void prvTraceSetTaskNumberHigh16(void* handle, uint16_t value);
+/**
+ * @internal Get specific queue type
+ *
+ * @param[in] pvQueue Queue handle
+ *
+ * @returns uint8_t Queue type
+ */
+uint8_t prvTraceGetQueueType(void* pvQueue);
 
-uint16_t prvTraceGetQueueNumberLow16(void* handle);
-uint16_t prvTraceGetQueueNumberHigh16(void* handle);
-void prvTraceSetQueueNumberLow16(void* handle, uint16_t value);
-void prvTraceSetQueueNumberHigh16(void* handle, uint16_t value);
+/**
+ * @internal Retrieve lower 16-bit of task number
+ *
+ * @param[in] pvTask Task handle
+ *
+ * @returns uint16_t Lower 16-bit of task number
+ */
+uint16_t prvTraceGetTaskNumberLow16(void* pvTask);
+
+/**
+ * @internal Retrieve upper 16-bit of task number
+ *
+ * @param[in] pvTask Task handle
+ *
+ * @returns uint16_t Upper 16-bit of task number
+ */
+uint16_t prvTraceGetTaskNumberHigh16(void* pvTask);
+
+/**
+ * @internal Set lower 16-bit of task number
+ *
+ * @param[in] pvTask Task handle
+ * @param[in] uiValue Value
+ */
+void prvTraceSetTaskNumberLow16(void* pvTask, uint16_t uiValue);
+
+/**
+ * @internal Set upper 16-bit of task number
+ *
+ * @param[in] pvTask Task handle
+ * @param[in] uiValue Value
+ */
+void prvTraceSetTaskNumberHigh16(void* pvTask, uint16_t uiValue);
+
+/**
+ * @internal Retrieve lower 16-bit of queue number
+ *
+ * @param[in] pvQueue Queue handle
+ *
+ * @returns uint16_t Lower 16-bit of queue number
+ */
+uint16_t prvTraceGetQueueNumberLow16(void* pvQueue);
+
+/**
+ * @internal Retrieve upper 16-bit of queue number
+ *
+ * @param[in] pvQueuevQueue handle
+ *
+ * @returns uint16_t Upper 16-bit of queue number
+ */
+uint16_t prvTraceGetQueueNumberHigh16(void* pvQueue);
+
+
+/**
+ * @internal Set lower 16-bit of queue number
+ *
+ * @param[in] pvQueue Queue handle
+ * @param[in] uiValue Value
+ */
+void prvTraceSetQueueNumberLow16(void* pvQueue, uint16_t uiValue);
+
+
+/**
+ * @internal Set upper 16-bit of queue number
+ *
+ * @param[in] pvQueue Queue handle
+ * @param[in] uiValue Value
+ */
+void prvTraceSetQueueNumberHigh16(void* pvQueue, uint16_t uiValue);
 
 #if (TRC_CFG_INCLUDE_TIMER_EVENTS == 1 && TRC_CFG_FREERTOS_VERSION >= TRC_FREERTOS_VERSION_10_0_0)
-uint16_t prvTraceGetTimerNumberLow16(void* handle);
-uint16_t prvTraceGetTimerNumberHigh16(void* handle);
-void prvTraceSetTimerNumberLow16(void* handle, uint16_t value);
-void prvTraceSetTimerNumberHigh16(void* handle, uint16_t value);
-#endif /* (TRC_CFG_INCLUDE_TIMER_EVENTS == 1 && TRC_CFG_FREERTOS_VERSION >= TRC_FREERTOS_VERSION_10_0_0) */
+
+/**
+ * @internal Retrieve lower 16-bit of timer number
+ *
+ * @param[in] pvTimer Timer handle
+ *
+ * @returns uint16_t Lower 16-bit of timer number
+ */
+uint16_t prvTraceGetTimerNumberLow16(void* pvTimer);
+
+/**
+ * @internal Retrieve upper 16-bit of timer number
+ *
+ * @param[in] pvTimer Timer handle
+ *
+ * @returns uint16_t Upper 16-bit of timer number
+ */
+uint16_t prvTraceGetTimerNumberHigh16(void* pvTimer);
+
+/**
+ * @internal Set lower 16-bit of timer number
+ *
+ * @param[in] pvTimer Timer handle
+ * @param[in] uiValue Value
+ */
+void prvTraceSetTimerNumberLow16(void* pvTimer, uint16_t uiValue);
+
+/**
+ * @internal Set upper 16-bit of timer number
+ *
+ * @param[in] pvTimer Timer handle
+ * @param[in] uiValue Value
+ */
+void prvTraceSetTimerNumberHigh16(void* pvTimer, uint16_t uiValue);
+
+#endif
 
 #if (TRC_CFG_INCLUDE_EVENT_GROUP_EVENTS == 1 && TRC_CFG_FREERTOS_VERSION >= TRC_FREERTOS_VERSION_10_0_0)
-uint16_t prvTraceGetEventGroupNumberLow16(void* handle);
-uint16_t prvTraceGetEventGroupNumberHigh16(void* handle);
-void prvTraceSetEventGroupNumberLow16(void* handle, uint16_t value);
+
+/**
+ * @internal Retrieve lower 16-bit of event group number
+ *
+ * @param[in] pvEventGroup Event group handle
+ *
+ * @returns uint16_t Lower 16-bit of event group number
+ */
+uint16_t prvTraceGetEventGroupNumberLow16(void* pvEventGroup);
+
+/**
+ * @internal Retrieve upper 16-bit of event group number
+ *
+ * @param[in] pvEventGroup Event group handle
+ *
+ * @returns uint16_t Upper 16-bit of event group number
+ */
+uint16_t prvTraceGetEventGroupNumberHigh16(void* pvEventGroup);
+
+/**
+ * @internal Set lower 16-bit of event group number
+ *
+ * @param[in] pvEventGroup Event group handle
+ * @param[in] uiValue Value
+ */
+void prvTraceSetEventGroupNumberLow16(void* pvEventGroup, uint16_t uiValue);
+
+/**
+ * @internal Set upper 16-bit of event group number
+ *
+ * @param[in] pvEventGroup Event group handle
+ * @param[in] uiValue Value
+ */
 void prvTraceSetEventGroupNumberHigh16(void* handle, uint16_t value);
-#endif /* (TRC_CFG_INCLUDE_EVENT_GROUP_EVENTS == 1 && TRC_CFG_FREERTOS_VERSION >= TRC_FREERTOS_VERSION_10_0_0) */
+
+#endif
 
 #if (TRC_CFG_INCLUDE_STREAM_BUFFER_EVENTS == 1 && TRC_CFG_FREERTOS_VERSION >= TRC_FREERTOS_VERSION_10_0_0)
-uint16_t prvTraceGetStreamBufferNumberLow16(void* handle);
-uint16_t prvTraceGetStreamBufferNumberHigh16(void* handle);
-void prvTraceSetStreamBufferNumberLow16(void* handle, uint16_t value);
-void prvTraceSetStreamBufferNumberHigh16(void* handle, uint16_t value);
-#endif /* (TRC_CFG_INCLUDE_STREAM_BUFFER_EVENTS == 1 && TRC_CFG_FREERTOS_VERSION >= TRC_FREERTOS_VERSION_10_0_0) */
 
+/**
+ * @internal Retrieve lower 16-bit of stream buffer number
+ *
+ * @param[in] pvStreamBuffer Stream buffer handle
+ *
+ * @returns uint16_t Lower 16-bit of stream buffer number
+ */
+uint16_t prvTraceGetStreamBufferNumberLow16(void* pvStreamBuffer);
+
+/**
+ * @internal Retrieve upper 16-bit of stream buffer number
+ *
+ * @param[in] pvStreamBuffer Stream buffer handle
+ *
+ * @returns uint16_t Upper 16-bit of stream buffer number
+ */
+uint16_t prvTraceGetStreamBufferNumberHigh16(void* pvStreamBuffer);
+
+/**
+ * @internal Set lower 16-bit of stream buffer number
+ *
+ * @param[in] pvStreamBuffer Stream buffer handle
+ * @param[in] uiValue Value
+ */
+void prvTraceSetStreamBufferNumberLow16(void* pvStreamBuffer, uint16_t uiValue);
+
+/**
+ * @internal Set upper 16-bit of stream buffer number
+ *
+ * @param[in] pvStreamBuffer Stream buffer handle
+ * @param[in] uiValue Value
+ */
+void prvTraceSetStreamBufferNumberHigh16(void* pvStreamBuffer, uint16_t uiValue);
+
+#endif
+
+/**
+ * @brief Retrieve filter of task
+ *
+ * @param[in] pxTask Task handle
+ *
+ * @returns uint16_t Task filter
+ */
 #define TRACE_GET_TASK_FILTER(pxTask) prvTraceGetTaskNumberHigh16((void*)pxTask)
+
+/**
+ * @brief Set filter of task
+ *
+ * @param[in] pxTask Task handle
+ * @param[in] group Group
+ */
 #define TRACE_SET_TASK_FILTER(pxTask, group) prvTraceSetTaskNumberHigh16((void*)pxTask, group)
 
-#define TRACE_GET_QUEUE_FILTER(pxObject) prvTraceGetQueueNumberHigh16((void*)pxObject)
-#define TRACE_SET_QUEUE_FILTER(pxObject, group) prvTraceSetQueueNumberHigh16((void*)pxObject, group)
+/**
+ * @brief Retrieve filter of queue
+ *
+ * @param[in] pxQueue Queue handle
+ *
+ * @returns uint16_t Queue filter
+ */
+#define TRACE_GET_QUEUE_FILTER(pxQueue) prvTraceGetQueueNumberHigh16((void*)pxQueue)
+
+/**
+ * @brief Set filter of queue
+ *
+ * @param[in] pxQueue Queue handle
+ * @param[in] group Group
+ */
+#define TRACE_SET_QUEUE_FILTER(pxQueue, group) prvTraceSetQueueNumberHigh16((void*)pxQueue, group)
 
 #if (TRC_CFG_FREERTOS_VERSION >= TRC_FREERTOS_VERSION_10_0_0)
-#define TRACE_GET_EVENTGROUP_FILTER(pxObject) prvTraceGetEventGroupNumberHigh16((void*)pxObject)
-#define TRACE_SET_EVENTGROUP_FILTER(pxObject, group) prvTraceSetEventGroupNumberHigh16((void*)pxObject, group)
-#else /* (TRC_CFG_FREERTOS_VERSION >= TRC_FREERTOS_VERSION_10_0_0) */
-/* FreeRTOS versions before v10.0 does not support filtering for event groups */
-#define TRACE_GET_EVENTGROUP_FILTER(pxObject) 1
-#define TRACE_SET_EVENTGROUP_FILTER(pxObject, group) 
-#endif /* (TRC_CFG_FREERTOS_VERSION >= TRC_FREERTOS_VERSION_10_0_0) */
+
+/**
+ * @brief Retrieve filter of event group
+ *
+ * @param[in] pxEventGroup Queue handle
+ *
+ * @returns uint16_t Queue filter
+ */
+#define TRACE_GET_EVENTGROUP_FILTER(pxEventGroup) prvTraceGetEventGroupNumberHigh16((void*)pxEventGroup)
+
+/**
+ * @brief Set filter of event group
+ *
+ * @param[in] pxEventGroup Queue handle
+ * @param[in] group Group
+ */
+#define TRACE_SET_EVENTGROUP_FILTER(pxEventGroup, group) prvTraceSetEventGroupNumberHigh16((void*)pxEventGroup, group)
+
+#else
+
+/**
+ * @brief Disabled by TRC_CFG_FREERTOS_VERSION
+ */
+#define TRACE_GET_EVENTGROUP_FILTER(pxEventGroup) ((void)(pxEventGroup), 1)
+
+/**
+ * @brief Disabled by TRC_CFG_FREERTOS_VERSION
+ */
+#define TRACE_SET_EVENTGROUP_FILTER(pxEventGroup, group) ((void)(pxEventGroup), (void)(group))
+
+#endif
 
 #if (TRC_CFG_FREERTOS_VERSION >= TRC_FREERTOS_VERSION_10_0_0)
-#define TRACE_GET_TIMER_FILTER(pxObject) prvTraceGetTimerNumberHigh16((void*)pxObject)
-#define TRACE_SET_TIMER_FILTER(pxObject, group) prvTraceSetTimerNumberHigh16((void*)pxObject, group)
-#else /* (TRC_CFG_FREERTOS_VERSION >= TRC_FREERTOS_VERSION_10_0_0) */
-/* FreeRTOS versions before v10.0 does not support filtering for timers */
-#define TRACE_GET_TIMER_FILTER(pxObject) 1
-#define TRACE_SET_TIMER_FILTER(pxObject, group) 
-#endif /* (TRC_CFG_FREERTOS_VERSION >= TRC_FREERTOS_VERSION_10_0_0) */
 
-#define TRACE_GET_STREAMBUFFER_FILTER(pxObject) prvTraceGetStreamBufferNumberHigh16((void*)pxObject)
-#define TRACE_SET_STREAMBUFFER_FILTER(pxObject, group) prvTraceSetStreamBufferNumberHigh16((void*)pxObject, group)
+/**
+ * @brief Retrieve filter of timer
+ *
+ * @param[in] pxEventGroup Timer handle
+ *
+ * @returns uint16_t Timer filter
+ */
+#define TRACE_GET_TIMER_FILTER(pxTimer) prvTraceGetTimerNumberHigh16((void*)pxTimer)
 
-/* We can only support filtering if FreeRTOS is at least v8.0 */
+/**
+ * @brief Set filter of timer
+ *
+ * @param[in] pxTimer Timer handle
+ * @param[in] group Group
+ */
+#define TRACE_SET_TIMER_FILTER(pxTimer, group) prvTraceSetTimerNumberHigh16((void*)pxTimer, group)
+
+#else
+
+/**
+ * @brief Disabled by TRC_CFG_FREERTOS_VERSION
+ */
+#define TRACE_GET_TIMER_FILTER(pxTimer) ((void)(pxTimer), 1)
+
+/**
+ * @brief Disabled by TRC_CFG_FREERTOS_VERSION
+ */
+#define TRACE_SET_TIMER_FILTER(pxTimer, group) ((void)(pxTimer), (void)(group))
+
+#endif
+
+/**
+ * @brief Retrieve filter of stream buffer
+ *
+ * @param[in] pxStreamBuffer Stream buffer handle
+ *
+ * @returns uint16_t Timer filter
+ */
+#define TRACE_GET_STREAMBUFFER_FILTER(pxStreamBuffer) prvTraceGetStreamBufferNumberHigh16((void*)pxStreamBuffer)
+
+/**
+ * @brief Set filter of stream buffer
+ *
+ * @param[in] pxStreamBuffer Stream buffer handle
+ * @param[in] group Group
+ */
+#define TRACE_SET_STREAMBUFFER_FILTER(pxStreamBuffer, group) prvTraceSetStreamBufferNumberHigh16((void*)pxStreamBuffer, group)
+
 #if (TRC_CFG_FREERTOS_VERSION >= TRC_FREERTOS_VERSION_8_X_X)
-#define TRACE_GET_OBJECT_FILTER(CLASS, pxObject) TRACE_GET_##CLASS##_FILTER(pxObject)
-#define TRACE_SET_OBJECT_FILTER(CLASS, pxObject, group) TRACE_SET_##CLASS##_FILTER(pxObject, group)
-#else /* (TRC_CFG_FREERTOS_VERSION >= TRC_FREERTOS_VERSION_8_X_X) */
-#define TRACE_GET_OBJECT_FILTER(CLASS, pxObject) 0xFFFF
-#define TRACE_SET_OBJECT_FILTER(CLASS, pxObject, group) 
-#endif /* (TRC_CFG_FREERTOS_VERSION >= TRC_FREERTOS_VERSION_8_X_X) */
-	
-/*** The object classes *******************************************************/
 
+/**
+ * @internal Get object filter
+ */
+#define TRACE_GET_OBJECT_FILTER(CLASS, pxObject) TRACE_GET_##CLASS##_FILTER(pxObject)
+
+/**
+ * @internal Set object filter
+ */
+#define TRACE_SET_OBJECT_FILTER(CLASS, pxObject, group) TRACE_SET_##CLASS##_FILTER(pxObject, group)
+
+#else
+
+/**
+ * @internal Disabled by TRC_CFG_FREERTOS_VERSION
+ */
+#define TRACE_GET_OBJECT_FILTER(CLASS, pxObject) 0xFFFF
+
+/**
+ * @internal Disabled by TRC_CFG_FREERTOS_VERSION
+ */
+#define TRACE_SET_OBJECT_FILTER(CLASS, pxObject, group)
+
+#endif
+
+/* The object classes */
 #define TRACE_NCLASSES 9
 #define TRACE_CLASS_QUEUE ((traceObjectClass)0)
 #define TRACE_CLASS_SEMAPHORE ((traceObjectClass)1)
@@ -400,7 +769,7 @@ void prvTraceSetStreamBufferNumberHigh16(void* handle, uint16_t value);
 #define TRACE_CLASS_STREAMBUFFER ((traceObjectClass)7)
 #define TRACE_CLASS_MESSAGEBUFFER ((traceObjectClass)8)
 
-/*** Definitions for Object Table ********************************************/
+/* Definitions for Object Table */
 #define TRACE_KERNEL_OBJECT_COUNT ((TRC_CFG_NQUEUE) + (TRC_CFG_NSEMAPHORE) + (TRC_CFG_NMUTEX) + (TRC_CFG_NTASK) + (TRC_CFG_NISR) + (TRC_CFG_NTIMER) + (TRC_CFG_NEVENTGROUP) + (TRC_CFG_NSTREAMBUFFER) + (TRC_CFG_NMESSAGEBUFFER))
 
 /* Queue properties (except name):	current number of message in queue */
@@ -452,22 +821,26 @@ void prvTraceSetStreamBufferNumberHigh16(void* handle, uint16_t value);
 /* Flag to tell the context of tracePEND_FUNC_CALL_FROM_ISR */
 extern int uiInEventGroupSetBitsFromISR;
 
-/* Initialization of the object property table */
+/**
+ * @internal Initialized the object property table
+ */
 traceResult xTraceKernelPortInitObjectPropertyTable(void);
 
-/* Initialization of the handle mechanism, see e.g, prvTraceGetObjectHandle */
+/**
+ * @internal Initialized the object handle stack
+ */
 traceResult xTraceKernelPortInitObjectHandleStack(void);
 
-/* Returns the "Not enough handles" error message for the specified object class */
+/**
+ * @internal Retrieve error string
+ */
 const char* pszTraceGetErrorNotEnoughHandles(traceObjectClass objectclass);
 
+/**
+ * @internal Retrieve current task handle
+ */
 void* prvTraceGetCurrentTaskHandle(void);
 
-/******************************************************************************
- * TraceQueueClassTable
- * Translates a FreeRTOS QueueType into trace objects classes (TRACE_CLASS_).
- * Has one entry for each QueueType, gives TRACE_CLASS ID.
- ******************************************************************************/			
 extern traceObjectClass TraceQueueClassTable[5];
 
 
@@ -920,8 +1293,7 @@ extern volatile uint32_t uiTraceSystemState;
 
 #if (TRC_CFG_SCHEDULING_ONLY == 0)
 
-#if defined(configUSE_TICKLESS_IDLE)
-#if (configUSE_TICKLESS_IDLE != 0)
+#if defined(configUSE_TICKLESS_IDLE) && (configUSE_TICKLESS_IDLE != 0)
 
 #undef traceLOW_POWER_IDLE_BEGIN
 #define traceLOW_POWER_IDLE_BEGIN() \
@@ -939,8 +1311,7 @@ extern volatile uint32_t uiTraceSystemState;
 		prvTraceStoreLowPower(1); \
 	}
 
-#endif /* (configUSE_TICKLESS_IDLE != 0) */
-#endif /* defined(configUSE_TICKLESS_IDLE)  */
+#endif
 
 /* Called on vTaskSuspend */
 #undef traceTASK_SUSPEND
@@ -961,15 +1332,18 @@ extern volatile uint32_t uiTraceSystemState;
 
 /* Called on vTaskDelayUntil - note the use of FreeRTOS variable xTimeToWake */
 #undef traceTASK_DELAY_UNTIL
-#if TRC_CFG_FREERTOS_VERSION >= TRC_FREERTOS_VERSION_9_0_0
+#if (TRC_CFG_FREERTOS_VERSION >= TRC_FREERTOS_VERSION_9_0_0)
+
 #define traceTASK_DELAY_UNTIL(xTimeToWake) \
 	trcKERNEL_HOOKS_TASK_DELAY(TASK_DELAY_UNTIL, pxCurrentTCB, xTimeToWake); \
 	trcKERNEL_HOOKS_SET_TASK_INSTANCE_FINISHED();
-#else /* TRC_CFG_FREERTOS_VERSION >= TRC_FREERTOS_VERSION_9_0_0 */
+#else
+
 #define traceTASK_DELAY_UNTIL() \
 	trcKERNEL_HOOKS_TASK_DELAY(TASK_DELAY_UNTIL, pxCurrentTCB, xTimeToWake); \
 	trcKERNEL_HOOKS_SET_TASK_INSTANCE_FINISHED();
-#endif /* TRC_CFG_FREERTOS_VERSION >= TRC_FREERTOS_VERSION_9_0_0 */
+
+#endif
 
 /* Called in xQueueCreate, and thereby for all other object based on queues, such as semaphores. */
 #undef traceQUEUE_CREATE
@@ -991,6 +1365,7 @@ extern volatile uint32_t uiTraceSystemState;
 
 /* This macro is not necessary as of FreeRTOS v9.0.0 */
 #if (TRC_CFG_FREERTOS_VERSION < TRC_FREERTOS_VERSION_9_0_0)
+
 /* Called in xQueueCreateMutex, and thereby also from xSemaphoreCreateMutex and xSemaphoreCreateRecursiveMutex */
 #undef traceCREATE_MUTEX
 #define traceCREATE_MUTEX( pxNewQueue ) \
@@ -1000,7 +1375,8 @@ extern volatile uint32_t uiTraceSystemState;
 #undef traceCREATE_MUTEX_FAILED
 #define traceCREATE_MUTEX_FAILED() \
 	trcKERNEL_HOOKS_KERNEL_SERVICE_WITH_NUMERIC_PARAM_ONLY(TRACE_GET_CLASS_EVENT_CODE(CREATE_OBJ, TRCFAILED, QUEUE, queueQUEUE_TYPE_MUTEX), 0);
-#endif /* (TRC_CFG_FREERTOS_VERSION < TRC_FREERTOS_VERSION_9_0_0) */
+
+#endif
 
 /* Called when the Mutex can not be given, since not holder */
 #undef traceGIVE_MUTEX_RECURSIVE_FAILED
@@ -1162,7 +1538,7 @@ extern void vTraceStoreMemMangEvent(uint32_t ecode, uint32_t address, int32_t si
 #define traceFREE( pvAddress, uiSize ) \
 	vTraceStoreMemMangEvent(MEM_FREE_SIZE, ( uint32_t ) pvAddress, -((int32_t)uiSize));
 
-#endif /* (TRC_CFG_INCLUDE_MEMMANG_EVENTS == 1) */
+#endif
 
 #if (TRC_CFG_INCLUDE_TIMER_EVENTS == 1)
 
@@ -1204,7 +1580,7 @@ extern void vTraceStoreMemMangEvent(uint32_t ecode, uint32_t address, int32_t si
 #define traceTIMER_EXPIRED(tmr) \
 	trcKERNEL_HOOKS_KERNEL_SERVICE(TIMER_EXPIRED, TIMER, tmr);
 
-#endif /* (TRC_CFG_INCLUDE_TIMER_EVENTS == 1) */
+#endif
 
 #if (TRC_CFG_INCLUDE_PEND_FUNC_CALL_EVENTS == 1)
 
@@ -1224,9 +1600,9 @@ extern void vTraceStoreMemMangEvent(uint32_t ecode, uint32_t address, int32_t si
 		prvTraceStoreKernelCall(PEND_FUNC_CALL_FROM_ISR, TRACE_CLASS_TASK, TRACE_GET_TASK_NUMBER(xTimerGetTimerDaemonTaskHandle()) ); \
 	uiInEventGroupSetBitsFromISR = 0;
 
-#endif /* (TRC_CFG_INCLUDE_PEND_FUNC_CALL_EVENTS == 1) */
+#endif
 
-#endif /* (TRC_CFG_FREERTOS_VERSION >= TRC_FREERTOS_VERSION_8_X_X) */
+#endif
 
 #if (TRC_CFG_INCLUDE_EVENT_GROUP_EVENTS == 1)
 
@@ -1293,10 +1669,11 @@ extern void vTraceStoreMemMangEvent(uint32_t ecode, uint32_t address, int32_t si
 	trcKERNEL_HOOKS_KERNEL_SERVICE_WITH_PARAM_FROM_ISR(EVENT_GROUP_SET_BITS_FROM_ISR, EVENTGROUP, eg, bitsToSet); \
 	uiInEventGroupSetBitsFromISR = 1;
 
-#endif /* (TRC_CFG_INCLUDE_EVENT_GROUP_EVENTS == 1) */
+#endif
 
 #undef traceTASK_NOTIFY_TAKE
 #if (TRC_CFG_FREERTOS_VERSION < TRC_FREERTOS_VERSION_9_0_0)
+
 #define traceTASK_NOTIFY_TAKE() \
 	if (pxCurrentTCB->eNotifyState == eNotified){ \
 		trcKERNEL_HOOKS_KERNEL_SERVICE_WITH_PARAM(TRACE_TASK_NOTIFY_TAKE, TASK, pxCurrentTCB, xTicksToWait); \
@@ -1304,33 +1681,43 @@ extern void vTraceStoreMemMangEvent(uint32_t ecode, uint32_t address, int32_t si
 	else{ \
 		trcKERNEL_HOOKS_KERNEL_SERVICE_WITH_PARAM(TRACE_TASK_NOTIFY_TAKE_TRCFAILED, TASK, pxCurrentTCB, xTicksToWait); \
 	}
+
 #elif (TRC_CFG_FREERTOS_VERSION < TRC_FREERTOS_VERSION_10_4_0)
+
 #define traceTASK_NOTIFY_TAKE() \
 	if (pxCurrentTCB->ucNotifyState == taskNOTIFICATION_RECEIVED){ \
 		trcKERNEL_HOOKS_KERNEL_SERVICE_WITH_PARAM(TRACE_TASK_NOTIFY_TAKE, TASK, pxCurrentTCB, xTicksToWait); \
 	}else{ \
 		trcKERNEL_HOOKS_KERNEL_SERVICE_WITH_PARAM(TRACE_TASK_NOTIFY_TAKE_TRCFAILED, TASK, pxCurrentTCB, xTicksToWait);}
-#else /* TRC_CFG_FREERTOS_VERSION < TRC_FREERTOS_VERSION_9_0_0 */
+
+#else
+
 #define traceTASK_NOTIFY_TAKE(index) \
 	if (pxCurrentTCB->ucNotifyState[index] == taskNOTIFICATION_RECEIVED){ \
 		trcKERNEL_HOOKS_KERNEL_SERVICE_WITH_PARAM(TRACE_TASK_NOTIFY_TAKE, TASK, pxCurrentTCB, xTicksToWait); \
 	}else{ \
 		trcKERNEL_HOOKS_KERNEL_SERVICE_WITH_PARAM(TRACE_TASK_NOTIFY_TAKE_TRCFAILED, TASK, pxCurrentTCB, xTicksToWait);}
-#endif /* TRC_CFG_FREERTOS_VERSION < TRC_FREERTOS_VERSION_9_0_0 */
+
+#endif
 
 #undef traceTASK_NOTIFY_TAKE_BLOCK
 #if (TRC_CFG_FREERTOS_VERSION < TRC_FREERTOS_VERSION_10_4_0)
+
 #define traceTASK_NOTIFY_TAKE_BLOCK() \
 	trcKERNEL_HOOKS_KERNEL_SERVICE_WITH_PARAM(TRACE_TASK_NOTIFY_TAKE_TRCBLOCK, TASK, pxCurrentTCB, xTicksToWait); \
 	trcKERNEL_HOOKS_SET_TASK_INSTANCE_FINISHED();
-#else /* TRC_CFG_FREERTOS_VERSION < TRC_FREERTOS_VERSION_10_4_0 */
+
+#else
+
 #define traceTASK_NOTIFY_TAKE_BLOCK(index) \
 	trcKERNEL_HOOKS_KERNEL_SERVICE_WITH_PARAM(TRACE_TASK_NOTIFY_TAKE_TRCBLOCK, TASK, pxCurrentTCB, xTicksToWait); \
 	trcKERNEL_HOOKS_SET_TASK_INSTANCE_FINISHED();
-#endif /* TRC_CFG_FREERTOS_VERSION < TRC_FREERTOS_VERSION_10_4_0 */
+
+#endif
 
 #undef traceTASK_NOTIFY_WAIT
 #if (TRC_CFG_FREERTOS_VERSION < TRC_FREERTOS_VERSION_9_0_0)
+
 #define traceTASK_NOTIFY_WAIT() \
 	if (TRACE_GET_OBJECT_FILTER(TASK, pxCurrentTCB) & CurrentFilterMask) \
 	{ \
@@ -1339,7 +1726,9 @@ extern void vTraceStoreMemMangEvent(uint32_t ecode, uint32_t address, int32_t si
 		else \
 			prvTraceStoreKernelCallWithParam(TRACE_TASK_NOTIFY_WAIT_TRCFAILED, TRACE_CLASS_TASK, TRACE_GET_TASK_NUMBER(pxCurrentTCB), xTicksToWait); \
 	}
+
 #elif (TRC_CFG_FREERTOS_VERSION < TRC_FREERTOS_VERSION_10_4_0)
+
 #define traceTASK_NOTIFY_WAIT() \
 	if (TRACE_GET_OBJECT_FILTER(TASK, pxCurrentTCB) & CurrentFilterMask) \
 	{ \
@@ -1348,7 +1737,9 @@ extern void vTraceStoreMemMangEvent(uint32_t ecode, uint32_t address, int32_t si
 		else \
 			prvTraceStoreKernelCallWithParam(TRACE_TASK_NOTIFY_WAIT_TRCFAILED, TRACE_CLASS_TASK, TRACE_GET_TASK_NUMBER(pxCurrentTCB), xTicksToWait); \
 	}
-#else /* TRC_CFG_FREERTOS_VERSION < TRC_FREERTOS_VERSION_9_0_0 */
+
+#else
+
 #define traceTASK_NOTIFY_WAIT(index) \
 	if (TRACE_GET_OBJECT_FILTER(TASK, pxCurrentTCB) & CurrentFilterMask) \
 	{ \
@@ -1357,55 +1748,72 @@ extern void vTraceStoreMemMangEvent(uint32_t ecode, uint32_t address, int32_t si
 		else \
 			prvTraceStoreKernelCallWithParam(TRACE_TASK_NOTIFY_WAIT_TRCFAILED, TRACE_CLASS_TASK, TRACE_GET_TASK_NUMBER(pxCurrentTCB), xTicksToWait); \
 	}
-#endif /* TRC_CFG_FREERTOS_VERSION < TRC_FREERTOS_VERSION_9_0_0 */
+
+#endif
 
 #undef traceTASK_NOTIFY_WAIT_BLOCK
 #if (TRC_CFG_FREERTOS_VERSION < TRC_FREERTOS_VERSION_10_4_0)
+
 #define traceTASK_NOTIFY_WAIT_BLOCK() \
 	if (TRACE_GET_OBJECT_FILTER(TASK, pxCurrentTCB) & CurrentFilterMask) \
 		prvTraceStoreKernelCallWithParam(TRACE_TASK_NOTIFY_WAIT_TRCBLOCK, TRACE_CLASS_TASK, TRACE_GET_TASK_NUMBER(pxCurrentTCB), xTicksToWait); \
 	trcKERNEL_HOOKS_SET_TASK_INSTANCE_FINISHED();
-#else /* TRC_CFG_FREERTOS_VERSION < TRC_FREERTOS_VERSION_10_4_0 */
+
+#else
+
 #define traceTASK_NOTIFY_WAIT_BLOCK(index) \
 	if (TRACE_GET_OBJECT_FILTER(TASK, pxCurrentTCB) & CurrentFilterMask) \
 		prvTraceStoreKernelCallWithParam(TRACE_TASK_NOTIFY_WAIT_TRCBLOCK, TRACE_CLASS_TASK, TRACE_GET_TASK_NUMBER(pxCurrentTCB), xTicksToWait); \
 	trcKERNEL_HOOKS_SET_TASK_INSTANCE_FINISHED();
-#endif /* TRC_CFG_FREERTOS_VERSION < TRC_FREERTOS_VERSION_10_4_0 */
+
+#endif
 
 #undef traceTASK_NOTIFY
 #if (TRC_CFG_FREERTOS_VERSION < TRC_FREERTOS_VERSION_10_4_0)
+
 #define traceTASK_NOTIFY() \
 	if (TRACE_GET_OBJECT_FILTER(TASK, TRACE_GET_CURRENT_TASK()) & CurrentFilterMask) \
 		if (TRACE_GET_OBJECT_FILTER(TASK, xTaskToNotify) & CurrentFilterMask) \
 			prvTraceStoreKernelCall(TRACE_TASK_NOTIFY, TRACE_CLASS_TASK, TRACE_GET_TASK_NUMBER(xTaskToNotify));
-#else /* TRC_CFG_FREERTOS_VERSION < TRC_FREERTOS_VERSION_10_4_0 */
+
+#else
+
 #define traceTASK_NOTIFY(index) \
 	if (TRACE_GET_OBJECT_FILTER(TASK, TRACE_GET_CURRENT_TASK()) & CurrentFilterMask) \
 		if (TRACE_GET_OBJECT_FILTER(TASK, xTaskToNotify) & CurrentFilterMask) \
 			prvTraceStoreKernelCall(TRACE_TASK_NOTIFY, TRACE_CLASS_TASK, TRACE_GET_TASK_NUMBER(xTaskToNotify));
-#endif /* TRC_CFG_FREERTOS_VERSION < TRC_FREERTOS_VERSION_10_4_0 */
+
+#endif
 
 #undef traceTASK_NOTIFY_FROM_ISR
 #if (TRC_CFG_FREERTOS_VERSION < TRC_FREERTOS_VERSION_10_4_0)
+
 #define traceTASK_NOTIFY_FROM_ISR() \
 	if (TRACE_GET_OBJECT_FILTER(TASK, xTaskToNotify) & CurrentFilterMask) \
 		prvTraceStoreKernelCall(TRACE_TASK_NOTIFY_FROM_ISR, TRACE_CLASS_TASK, TRACE_GET_TASK_NUMBER(xTaskToNotify));
-#else /* TRC_CFG_FREERTOS_VERSION < TRC_FREERTOS_VERSION_10_4_0 */
+
+#else
+
 #define traceTASK_NOTIFY_FROM_ISR(index) \
 	if (TRACE_GET_OBJECT_FILTER(TASK, xTaskToNotify) & CurrentFilterMask) \
 		prvTraceStoreKernelCall(TRACE_TASK_NOTIFY_FROM_ISR, TRACE_CLASS_TASK, TRACE_GET_TASK_NUMBER(xTaskToNotify));
-#endif /* TRC_CFG_FREERTOS_VERSION < TRC_FREERTOS_VERSION_10_4_0 */
+
+#endif
 	
 #undef traceTASK_NOTIFY_GIVE_FROM_ISR
 #if (TRC_CFG_FREERTOS_VERSION < TRC_FREERTOS_VERSION_10_4_0)
+
 #define traceTASK_NOTIFY_GIVE_FROM_ISR() \
 	if (TRACE_GET_OBJECT_FILTER(TASK, xTaskToNotify) & CurrentFilterMask) \
 		prvTraceStoreKernelCall(TRACE_TASK_NOTIFY_GIVE_FROM_ISR, TRACE_CLASS_TASK, TRACE_GET_TASK_NUMBER(xTaskToNotify));
-#else /* TRC_CFG_FREERTOS_VERSION < TRC_FREERTOS_VERSION_10_4_0 */
+
+#else
+
 #define traceTASK_NOTIFY_GIVE_FROM_ISR(index) \
 	if (TRACE_GET_OBJECT_FILTER(TASK, xTaskToNotify) & CurrentFilterMask) \
 		prvTraceStoreKernelCall(TRACE_TASK_NOTIFY_GIVE_FROM_ISR, TRACE_CLASS_TASK, TRACE_GET_TASK_NUMBER(xTaskToNotify));
-#endif /* TRC_CFG_FREERTOS_VERSION < TRC_FREERTOS_VERSION_10_4_0 */
+
+#endif
 
 #if (TRC_CFG_INCLUDE_STREAM_BUFFER_EVENTS == 1)
 
@@ -1481,15 +1889,12 @@ extern void vTraceStoreMemMangEvent(uint32_t ecode, uint32_t address, int32_t si
 		trcKERNEL_HOOKS_KERNEL_SERVICE_FROM_ISR(TRACE_GET_OBJECT_EVENT_CODE(RECEIVE_FROM_ISR, TRCFAILED, STREAMBUFFER, xStreamBuffer), STREAMBUFFER, xStreamBuffer); \
 	}
 
-#endif /* (TRC_CFG_INCLUDE_STREAM_BUFFER_EVENTS == 1) */
+#endif
 
-#endif /* (TRC_CFG_SCHEDULING_ONLY == 0) */
+#endif
 
-#endif /*#if TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_SNAPSHOT */
+#endif
 
-/******************************************************************************/
-/*** Definitions for Streaming mode *******************************************/
-/******************************************************************************/
 #if (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING)
 
 TraceHeapHandle_t xTraceKernelPortGetSystemHeapHandle(void);
@@ -1727,9 +2132,13 @@ TraceHeapHandle_t xTraceKernelPortGetSystemHeapHandle(void);
 #define traceINCREASE_TICK_COUNT( xCount ) { uint32_t uiTraceTickCount; xTraceTimestampGetOsTickCount(&uiTraceTickCount); xTraceTimestampSetOsTickCount(uiTraceTickCount + (xCount)); }
 
 #if (TRC_CFG_INCLUDE_OSTICK_EVENTS == 1)
+
 #define OS_TICK_EVENT(uxSchedulerSuspended, xTickCount) if ((uxSchedulerSuspended) == (unsigned portBASE_TYPE) pdFALSE) { prvTraceStoreEvent_Param(PSF_EVENT_NEW_TIME, (uint32_t)(xTickCount)); }
+
 #else
-#define OS_TICK_EVENT(uxSchedulerSuspended, xTickCount) 
+
+#define OS_TICK_EVENT(uxSchedulerSuspended, xTickCount)
+
 #endif
 
 /* Called on each OS tick. Will call uiPortGetTimestamp to make sure it is called at least once every OS tick. */
@@ -1766,18 +2175,22 @@ TraceHeapHandle_t xTraceKernelPortGetSystemHeapHandle(void);
 
 #undef traceTASK_CREATE
 #if TRC_CFG_FREERTOS_VERSION >= TRC_FREERTOS_VERSION_9_0_0
+
 #define traceTASK_CREATE(pxNewTCB) \
 	if ((pxNewTCB) != 0) \
 	{ \
 		xTraceTaskRegisterWithoutHandle((void*)(pxNewTCB), (pxNewTCB)->pcTaskName, (pxNewTCB)->uxPriority); \
 	}
-#else /* TRC_CFG_FREERTOS_VERSION >= TRC_FREERTOS_VERSION_9_0_0 */
+
+#else
+
 #define traceTASK_CREATE(pxNewTCB) \
 	if (pxNewTCB != 0) \
 	{ \
 		xTraceTaskRegisterWithoutHandle((void*)pxNewTCB, (const char*)pcName, (uint32_t)uxPriority); \
 	}
-#endif /* TRC_CFG_FREERTOS_VERSION >= TRC_FREERTOS_VERSION_9_0_0 */
+
+#endif
 
 /* Called in vTaskCreate, if it fails (typically if the stack can not be allocated) */
 #undef traceTASK_CREATE_FAILED
@@ -1801,7 +2214,7 @@ TraceHeapHandle_t xTraceKernelPortGetSystemHeapHandle(void);
 #define traceLOW_POWER_IDLE_END() \
 	prvTraceStoreEvent_None(PSF_EVENT_LOWPOWER_END)
 
-#endif /* (defined(configUSE_TICKLESS_IDLE) && configUSE_TICKLESS_IDLE != 0) */
+#endif
 
 /* Called on vTaskSuspend */
 #undef traceTASK_SUSPEND
@@ -1816,14 +2229,19 @@ TraceHeapHandle_t xTraceKernelPortGetSystemHeapHandle(void);
 /* Called on vTaskDelayUntil - note the use of FreeRTOS variable xTimeToWake */
 #undef traceTASK_DELAY_UNTIL
 #if TRC_CFG_FREERTOS_VERSION >= TRC_FREERTOS_VERSION_9_0_0
+
 #define traceTASK_DELAY_UNTIL(xTimeToWake) \
 	prvTraceStoreEvent_Param(PSF_EVENT_TASK_DELAY_UNTIL, (xTimeToWake))
-#else /* TRC_CFG_FREERTOS_VERSION >= TRC_FREERTOS_VERSION_9_0_0 */
+
+#else
+
 #define traceTASK_DELAY_UNTIL() \
 	prvTraceStoreEvent_Param(PSF_EVENT_TASK_DELAY_UNTIL, xTimeToWake)
-#endif /* TRC_CFG_FREERTOS_VERSION >= TRC_FREERTOS_VERSION_9_0_0 */
+
+#endif
 
 #if (TRC_CFG_FREERTOS_VERSION >= TRC_FREERTOS_VERSION_9_0_0)
+
 #define traceQUEUE_CREATE_HELPER() \
 		case queueQUEUE_TYPE_MUTEX: \
 			xTraceObjectRegisterWithoutHandle(PSF_EVENT_MUTEX_CREATE, (void*)pxNewQueue, "", 0); \
@@ -1831,9 +2249,12 @@ TraceHeapHandle_t xTraceKernelPortGetSystemHeapHandle(void);
 		case queueQUEUE_TYPE_RECURSIVE_MUTEX: \
 			xTraceObjectRegisterWithoutHandle(PSF_EVENT_MUTEX_RECURSIVE_CREATE, (void*)pxNewQueue, "", 0); \
 			break;
+
 #else
+
 #define traceQUEUE_CREATE_HELPER()
-#endif /* (TRC_CFG_FREERTOS_VERSION < TRC_FREERTOS_VERSION_9_0_0) */
+
+#endif
 
 /* Called in xQueueCreate, and thereby for all other object based on queues, such as semaphores. */
 #undef traceQUEUE_CREATE
@@ -1850,6 +2271,7 @@ TraceHeapHandle_t xTraceKernelPortGetSystemHeapHandle(void);
 	}
 
 #if (TRC_CFG_FREERTOS_VERSION >= TRC_FREERTOS_VERSION_9_0_0)
+
 #define traceQUEUE_CREATE_FAILED_HELPER() \
 		case queueQUEUE_TYPE_MUTEX: \
 			prvTraceStoreEvent_HandleParam(PSF_EVENT_MUTEX_CREATE_FAILED, 0, 0); \
@@ -1857,9 +2279,12 @@ TraceHeapHandle_t xTraceKernelPortGetSystemHeapHandle(void);
 		case queueQUEUE_TYPE_RECURSIVE_MUTEX: \
 			prvTraceStoreEvent_HandleParam(PSF_EVENT_MUTEX_RECURSIVE_CREATE_FAILED, 0, 0); \
 			break;
+
 #else
+
 #define traceQUEUE_CREATE_FAILED_HELPER()
-#endif /* (TRC_CFG_FREERTOS_VERSION < TRC_FREERTOS_VERSION_9_0_0) */
+
+#endif
 
 /* Called in xQueueCreate, if the queue creation fails */
 #undef traceQUEUE_CREATE_FAILED
@@ -1895,37 +2320,54 @@ TraceHeapHandle_t xTraceKernelPortGetSystemHeapHandle(void);
 /* Called in xQueueCreateCountingSemaphore, if the queue creation fails */
 #undef traceCREATE_COUNTING_SEMAPHORE
 #if (TRC_CFG_FREERTOS_VERSION >= TRC_FREERTOS_VERSION_8_X_X)
+
 #define traceCREATE_COUNTING_SEMAPHORE() \
 	xTraceObjectRegisterWithoutHandle(PSF_EVENT_SEMAPHORE_COUNTING_CREATE, (void*)xHandle, "", (uint32_t)uxMaxCount)
+
 #elif (TRC_CFG_FREERTOS_VERSION >= TRC_FREERTOS_VERSION_7_5_X)
+
 #define traceCREATE_COUNTING_SEMAPHORE() \
 	xTraceObjectRegisterWithoutHandle(PSF_EVENT_SEMAPHORE_COUNTING_CREATE, (void*)xHandle, "", uxInitialCount)
+
 #elif (TRC_CFG_FREERTOS_VERSION >= TRC_FREERTOS_VERSION_7_4_X)
+
 #define traceCREATE_COUNTING_SEMAPHORE() \
 	xTraceObjectRegisterWithoutHandle(PSF_EVENT_SEMAPHORE_COUNTING_CREATE, (void*)xHandle, "", uxCountValue)
+
 #else
+
 #define traceCREATE_COUNTING_SEMAPHORE() \
 	xTraceObjectRegisterWithoutHandle(PSF_EVENT_SEMAPHORE_COUNTING_CREATE, (void*)pxHandle, "", uxCountValue)
-#endif /* TRC_CFG_FREERTOS_VERSION >= TRC_FREERTOS_VERSION_8_X_X */
+
+#endif
 
 #undef traceCREATE_COUNTING_SEMAPHORE_FAILED
 #if (TRC_CFG_FREERTOS_VERSION >= TRC_FREERTOS_VERSION_8_X_X)
+
 #define traceCREATE_COUNTING_SEMAPHORE_FAILED() \
 	prvTraceStoreEvent_HandleParam(PSF_EVENT_SEMAPHORE_COUNTING_CREATE_FAILED, 0, uxMaxCount)
+
 #elif (TRC_CFG_FREERTOS_VERSION >= TRC_FREERTOS_VERSION_7_5_X)
+
 #define traceCREATE_COUNTING_SEMAPHORE_FAILED() \
 	prvTraceStoreEvent_HandleParam(PSF_EVENT_SEMAPHORE_COUNTING_CREATE_FAILED, 0, uxInitialCount)
+
 #elif (TRC_CFG_FREERTOS_VERSION >= TRC_FREERTOS_VERSION_7_4_X)
+
 #define traceCREATE_COUNTING_SEMAPHORE_FAILED() \
 	prvTraceStoreEvent_HandleParam(PSF_EVENT_SEMAPHORE_COUNTING_CREATE_FAILED, 0, uxCountValue)
+
 #else
+
 #define traceCREATE_COUNTING_SEMAPHORE_FAILED() \
 	prvTraceStoreEvent_HandleParam(PSF_EVENT_SEMAPHORE_COUNTING_CREATE_FAILED, 0, uxCountValue)
-#endif /* TRC_CFG_FREERTOS_VERSION >= TRC_FREERTOS_VERSION_8_X_X */
+
+#endif
 
 
 /* This macro is not necessary as of FreeRTOS v9.0.0 */
 #if (TRC_CFG_FREERTOS_VERSION < TRC_FREERTOS_VERSION_9_0_0)
+
 /* Called in xQueueCreateMutex, and thereby also from xSemaphoreCreateMutex and xSemaphoreCreateRecursiveMutex */
 #undef traceCREATE_MUTEX
 #define traceCREATE_MUTEX( pxNewQueue ) \
@@ -2113,6 +2555,7 @@ TraceHeapHandle_t xTraceKernelPortGetSystemHeapHandle(void);
 	}
 
 #if (TRC_CFG_FREERTOS_VERSION > TRC_FREERTOS_VERSION_9_0_1)
+
 /* Called when a peek operation on a queue fails (timeout) */
 #undef traceQUEUE_PEEK_FAILED
 #define traceQUEUE_PEEK_FAILED( pxQueue ) \
@@ -2149,7 +2592,7 @@ TraceHeapHandle_t xTraceKernelPortGetSystemHeapHandle(void);
 			break; \
 	}
 
-#endif /* (TRC_CFG_FREERTOS_VERSION > TRC_FREERTOS_VERSION_9_0_1) */
+#endif
 
 /* Called when a message is received in interrupt context, e.g., using xQueueReceiveFromISR */
 #undef traceQUEUE_RECEIVE_FROM_ISR
@@ -2224,7 +2667,6 @@ TraceHeapHandle_t xTraceKernelPortGetSystemHeapHandle(void);
 
 #if (TRC_CFG_INCLUDE_MEMMANG_EVENTS == 1)
 
-
 #undef traceMALLOC
 #define traceMALLOC( pvAddress, uiSize ) \
 	if (xTraceIsRecorderEnabled()) \
@@ -2239,7 +2681,7 @@ TraceHeapHandle_t xTraceKernelPortGetSystemHeapHandle(void);
 		xTraceHeapFree(xTraceKernelPortGetSystemHeapHandle(), pvAddress, uiSize); \
 	}
 
-#endif /* (TRC_CFG_INCLUDE_MEMMANG_EVENTS == 1) */
+#endif
 
 #if (TRC_CFG_INCLUDE_TIMER_EVENTS == 1)
 
@@ -2253,6 +2695,7 @@ TraceHeapHandle_t xTraceKernelPortGetSystemHeapHandle(void);
 	prvTraceStoreEvent_None(PSF_EVENT_TIMER_CREATE_FAILED);
 
 #if (TRC_CFG_FREERTOS_VERSION >= TRC_FREERTOS_VERSION_8_X_X)
+
 #define traceTIMER_COMMAND_SEND_8_0_CASES(tmr) \
 		case tmrCOMMAND_RESET: \
 			prvTraceStoreEvent_HandleParam((xReturn == pdPASS) ? PSF_EVENT_TIMER_RESET : PSF_EVENT_TIMER_RESET_FAILED, (void*)(tmr), xOptionalValue); \
@@ -2269,9 +2712,11 @@ TraceHeapHandle_t xTraceKernelPortGetSystemHeapHandle(void);
 		case tmrCOMMAND_CHANGE_PERIOD_FROM_ISR: \
 			prvTraceStoreEvent_HandleParam((xReturn == pdPASS) ? PSF_EVENT_TIMER_CHANGEPERIOD_FROMISR : PSF_EVENT_TIMER_CHANGEPERIOD_FROMISR_FAILED, (void*)(tmr), xOptionalValue); \
 			break;
-#else /* TRC_CFG_FREERTOS_VERSION >= TRC_FREERTOS_VERSION_8_X_X */
-#define traceTIMER_COMMAND_SEND_8_0_CASES(tmr) 
-#endif /* TRC_CFG_FREERTOS_VERSION >= TRC_FREERTOS_VERSION_8_X_X */
+#else
+
+#define traceTIMER_COMMAND_SEND_8_0_CASES(tmr)
+
+#endif
 
 /* Note that xCommandID can never be tmrCOMMAND_EXECUTE_CALLBACK (-1) since the trace macro is not called in that case */
 #undef traceTIMER_COMMAND_SEND
@@ -2297,7 +2742,7 @@ TraceHeapHandle_t xTraceKernelPortGetSystemHeapHandle(void);
 #define traceTIMER_EXPIRED(tmr) \
 	prvTraceStoreEvent_HandleParam(PSF_EVENT_TIMER_EXPIRED, (void*)(tmr), (uint32_t)((tmr)->pxCallbackFunction))
 
-#endif /* #if (TRC_CFG_INCLUDE_TIMER_EVENTS == 1) */
+#endif
 
 
 #if (TRC_CFG_INCLUDE_PEND_FUNC_CALL_EVENTS == 1)
@@ -2310,7 +2755,7 @@ TraceHeapHandle_t xTraceKernelPortGetSystemHeapHandle(void);
 #define tracePEND_FUNC_CALL_FROM_ISR(func, arg1, arg2, ret) \
 	prvTraceStoreEvent_Param(((ret) == pdPASS) ? PSF_EVENT_TIMER_PENDFUNCCALL_FROMISR : PSF_EVENT_TIMER_PENDFUNCCALL_FROMISR_FAILED, (uint32_t)(func))
 
-#endif /* (TRC_CFG_INCLUDE_PEND_FUNC_CALL_EVENTS == 1) */
+#endif
 
 #if (TRC_CFG_INCLUDE_EVENT_GROUP_EVENTS == 1)
 
@@ -2358,25 +2803,33 @@ TraceHeapHandle_t xTraceKernelPortGetSystemHeapHandle(void);
 #define traceEVENT_GROUP_SET_BITS_FROM_ISR(eg, bitsToSet) \
 	prvTraceStoreEvent_HandleParam(PSF_EVENT_EVENTGROUP_SETBITS_FROMISR, (void*)(eg), bitsToSet)
 
-#endif /* (TRC_CFG_INCLUDE_EVENT_GROUP_EVENTS == 1) */
+#endif
 
 #undef traceTASK_NOTIFY
 #if (TRC_CFG_FREERTOS_VERSION >= TRC_FREERTOS_VERSION_10_4_0)
+
 #define traceTASK_NOTIFY(index) \
 	prvTraceStoreEvent_Handle(PSF_EVENT_TASK_NOTIFY, (void*)xTaskToNotify)
-#else /* TRC_CFG_FREERTOS_VERSION >= TRC_FREERTOS_VERSION_10_4_0 */
+
+#else
+
 #define traceTASK_NOTIFY() \
 	prvTraceStoreEvent_Handle(PSF_EVENT_TASK_NOTIFY, (void*)xTaskToNotify)
-#endif /* TRC_CFG_FREERTOS_VERSION >= TRC_FREERTOS_VERSION_10_4_0 */
+
+#endif
 
 #undef traceTASK_NOTIFY_FROM_ISR
 #if (TRC_CFG_FREERTOS_VERSION >= TRC_FREERTOS_VERSION_10_4_0)
+
 #define traceTASK_NOTIFY_FROM_ISR(index) \
 	prvTraceStoreEvent_Handle(PSF_EVENT_TASK_NOTIFY_FROM_ISR, (void*)xTaskToNotify)
-#else /* TRC_CFG_FREERTOS_VERSION >= TRC_FREERTOS_VERSION_10_4_0 */
+
+#else
+
 #define traceTASK_NOTIFY_FROM_ISR() \
 	prvTraceStoreEvent_Handle(PSF_EVENT_TASK_NOTIFY_FROM_ISR, (void*)xTaskToNotify)
-#endif /* TRC_CFG_FREERTOS_VERSION >= TRC_FREERTOS_VERSION_10_4_0 */
+
+#endif
 
 /* NOTIFY and NOTIFY_GIVE will be handled identically */
 #undef traceTASK_NOTIFY_GIVE_FROM_ISR
@@ -2384,15 +2837,21 @@ TraceHeapHandle_t xTraceKernelPortGetSystemHeapHandle(void);
 
 #undef traceTASK_NOTIFY_WAIT
 #if (TRC_CFG_FREERTOS_VERSION >= TRC_FREERTOS_VERSION_10_4_0)
+
 #define traceTASK_NOTIFY_WAIT(index) \
 	prvTraceStoreEvent_HandleParam(pxCurrentTCB->ucNotifyState[index] == taskNOTIFICATION_RECEIVED ? PSF_EVENT_TASK_NOTIFY_WAIT : PSF_EVENT_TASK_NOTIFY_WAIT_FAILED, (void*)pxCurrentTCB, xTicksToWait)
+
 #elif (TRC_CFG_FREERTOS_VERSION >= TRC_FREERTOS_VERSION_9_0_0)
+
 #define traceTASK_NOTIFY_WAIT() \
 	prvTraceStoreEvent_HandleParam(pxCurrentTCB->ucNotifyState == taskNOTIFICATION_RECEIVED ? PSF_EVENT_TASK_NOTIFY_WAIT : PSF_EVENT_TASK_NOTIFY_WAIT_FAILED, (void*)pxCurrentTCB, xTicksToWait)
-#else /* TRC_CFG_FREERTOS_VERSION >= TRC_FREERTOS_VERSION_10_4_0 */
+
+#else
+
 #define traceTASK_NOTIFY_WAIT() \
 	prvTraceStoreEvent_HandleParam(pxCurrentTCB->eNotifyState == eNotified ? PSF_EVENT_TASK_NOTIFY_WAIT : PSF_EVENT_TASK_NOTIFY_WAIT_FAILED, (void*)pxCurrentTCB, xTicksToWait)
-#endif /* TRC_CFG_FREERTOS_VERSION >= TRC_FREERTOS_VERSION_10_4_0 */
+
+#endif
 
 /* WAIT and TAKE will be handled identically */
 #undef traceTASK_NOTIFY_TAKE
@@ -2400,12 +2859,16 @@ TraceHeapHandle_t xTraceKernelPortGetSystemHeapHandle(void);
 
 #undef traceTASK_NOTIFY_WAIT_BLOCK
 #if (TRC_CFG_FREERTOS_VERSION >= TRC_FREERTOS_VERSION_10_4_0)
+
 #define traceTASK_NOTIFY_WAIT_BLOCK(index) \
 	prvTraceStoreEvent_HandleParam(PSF_EVENT_TASK_NOTIFY_WAIT_BLOCK, (void*)pxCurrentTCB, xTicksToWait)
-#else /* TRC_CFG_FREERTOS_VERSION >= TRC_FREERTOS_VERSION_10_4_0 */
+
+#else
+
 #define traceTASK_NOTIFY_WAIT_BLOCK() \
 	prvTraceStoreEvent_HandleParam(PSF_EVENT_TASK_NOTIFY_WAIT_BLOCK, (void*)pxCurrentTCB, xTicksToWait)
-#endif /* TRC_CFG_FREERTOS_VERSION >= TRC_FREERTOS_VERSION_10_4_0 */
+
+#endif
 
 /* WAIT_BLOCK and TAKE_BLOCK will be handled identically */
 #undef traceTASK_NOTIFY_TAKE_BLOCK
@@ -2483,13 +2946,13 @@ TraceHeapHandle_t xTraceKernelPortGetSystemHeapHandle(void);
 		prvTraceStoreEvent_Handle(prvGetStreamBufferType(xStreamBuffer) > 0 ? PSF_EVENT_MESSAGEBUFFER_RECEIVE_FROM_ISR_FAILED : PSF_EVENT_STREAMBUFFER_RECEIVE_FROM_ISR_FAILED, (void*)(xStreamBuffer)); \
 	}
 
-#endif /* (TRC_CFG_INCLUDE_STREAM_BUFFER_EVENTS == 1) */
+#endif
 
-#endif /* (TRC_CFG_SCHEDULING_ONLY == 0) */
+#endif
 
-#endif /* (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING) */
+#endif
 
-#else /* (TRC_USE_TRACEALYZER_RECORDER == 1) */
+#else
 	
 /* When recorder is disabled */
 #define vTraceSetQueueName(object, name)
@@ -2499,7 +2962,7 @@ TraceHeapHandle_t xTraceKernelPortGetSystemHeapHandle(void);
 #define vTraceSetStreamBufferName(object, name)
 #define vTraceSetMessageBufferName(object, name)
 	
-#endif /* (TRC_USE_TRACEALYZER_RECORDER == 1) */
+#endif
 
 #ifdef __cplusplus
 }

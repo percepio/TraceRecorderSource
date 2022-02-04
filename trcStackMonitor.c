@@ -1,5 +1,5 @@
 /*
-* Percepio Trace Recorder for Tracealyzer v4.6.0(RC1)
+* Percepio Trace Recorder for Tracealyzer v4.6.0
 * Copyright 2021 Percepio AB
 * www.percepio.com
 *
@@ -164,13 +164,6 @@ traceResult xTraceStackMonitorGetAtIndex(uint32_t uiIndex, void **ppvTask, Trace
 	return TRC_SUCCESS;
 }
 
-/*******************************************************************************
-* xTraceStackMonitorReport
-*
-* This function will check all tasks' stacks.
-*
-* @return Function result. TRACE_SUCCESS or TRACE_FAIL.
-******************************************************************************/
 traceResult xTraceStackMonitorReport(void)
 {
 	TraceUnsignedBaseType_t uxLowWaterMark;

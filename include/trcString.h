@@ -1,12 +1,16 @@
 /*
-* Percepio Trace Recorder for Tracealyzer v4.6.0(RC1)
+* Percepio Trace Recorder for Tracealyzer v4.6.0
 * Copyright 2021 Percepio AB
 * www.percepio.com
 *
 * SPDX-License-Identifier: Apache-2.0
-*
-* The interface for strings.
 */
+
+/**
+ * @file 
+ * 
+ * @brief Public trace string APIs.
+ */
 
 #ifndef TRC_STRING_H
 #define TRC_STRING_H
@@ -21,21 +25,45 @@
 extern "C" {
 #endif
 
-/*******************************************************************************
-* xTraceStringRegister
-*
-* Register strings in the recorder, e.g. for names of user event channels.
-*
-* Example:
-*	 TraceStringHandle_t myEventHandle;
-*	 xTraceStringRegister("MyUserEvent", &myEventHandle);
-*	 ...
-*	 xTracePrintF(myEventHandle, "My value is: %d", myValue);
-******************************************************************************/
+/**
+ * @defgroup trace_string_apis Trace String APIs
+ * @ingroup trace_recorder_apis
+ * @{
+ */
+
+/**
+ * @brief Registers a trace string.
+ * 
+ * This routine registers a strings in the recorder, e.g. for names of user
+ * event channels.
+ *
+ * Example:
+ *	 TraceStringHandle_t myEventHandle;
+ *	 xTraceStringRegister("MyUserEvent", &myEventHandle);
+ *	 ...
+ *	 xTracePrintF(myEventHandle, "My value is: %d", myValue);
+ * 
+ * @param[in] szString String.
+ * @param[out] pString Pointer to uninitialized trace string.
+ * 
+ * @retval TRC_FAIL Failure
+ * @retval TRC_SUCCESS Success
+ */
 traceResult xTraceStringRegister(const char *szString, TraceStringHandle_t* pString);
 
-/* DEPRECATED */
+/**
+ * @brief Registers a trace string. 
+ * 
+ * @deprecated Remains for backward compability with pre v4.6 versions
+ * of the recorder.
+ * 
+ * @param[in] name Name.
+ * 
+ * @return TraceStringHandle_t 
+ */
 TraceStringHandle_t xTraceRegisterString(const char *name);
+
+/** @} */
 
 #ifdef __cplusplus
 }

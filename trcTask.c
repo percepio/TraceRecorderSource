@@ -1,5 +1,5 @@
 /*
-* Percepio Trace Recorder for Tracealyzer v4.6.0(RC1)
+* Percepio Trace Recorder for Tracealyzer v4.6.0
 * Copyright 2021 Percepio AB
 * www.percepio.com
 *
@@ -23,14 +23,6 @@
 
 TraceTaskInfo_t* pxTraceTaskInfo;
 
-/*******************************************************************************
-* xTraceTaskInitialize
-*
-* This function will initialize the local storage.
-*
-* @param pxBuffer The pointer to the buffer to use.
-* @return Function result. TRACE_SUCCESS or TRACE_FAIL.
-******************************************************************************/
 traceResult xTraceTaskInitialize(TraceTaskInfoBuffer_t *pxBuffer)
 {
 	uint32_t i;
@@ -52,15 +44,6 @@ traceResult xTraceTaskInitialize(TraceTaskInfoBuffer_t *pxBuffer)
 	return TRC_SUCCESS;
 }
 
-/*******************************************************************************
-* xTraceTaskUnregister
-*
-* This function will unregister an object in the trace.
-*
-* @param pvTask The pointer to the task.
-* @param uxState The task's priority.
-* @return Function result. TRACE_SUCCESS or TRACE_FAIL.
-******************************************************************************/
 traceResult xTraceTaskUnregister(TraceTaskHandle_t xTaskHandle, TraceUnsignedBaseType_t uxPriority)
 {
 	void* pvTask;
@@ -73,15 +56,6 @@ traceResult xTraceTaskUnregister(TraceTaskHandle_t xTaskHandle, TraceUnsignedBas
 	return xTraceObjectUnregister((TraceObjectHandle_t)xTaskHandle, PSF_EVENT_TASK_DELETE, uxPriority);
 }
 
-/*******************************************************************************
-* xTraceTaskSetPriority
-*
-* This function will set the priority for a task.
-*
-* @param pvTask The pointer to the task.
-* @param uxPriority The task's priority.
-* @return Function result. TRACE_SUCCESS or TRACE_FAIL.
-******************************************************************************/
 traceResult xTraceTaskSetPriority(TraceTaskHandle_t xTaskHandle, TraceUnsignedBaseType_t uxPriority)
 {
 	TraceEventHandle_t xEventHandle = 0;
@@ -128,15 +102,6 @@ traceResult xTraceTaskSetPriorityWithoutHandle(void* pvTask, TraceUnsignedBaseTy
 	return TRC_SUCCESS;
 }
 
-/*******************************************************************************
-* xTraceTaskSwitch
-*
-* This function will register a task switch and priority.
-*
-* @param pvTask The pointer to the task.
-* @param uxPriority The task's priority.
-* @return Function result. TRACE_SUCCESS or TRACE_FAIL.
-******************************************************************************/
 traceResult xTraceTaskSwitch(void *pvTask, TraceUnsignedBaseType_t uxPriority)
 {
 	traceResult xResult = TRC_FAIL;
@@ -178,14 +143,6 @@ traceResult xTraceTaskSwitch(void *pvTask, TraceUnsignedBaseType_t uxPriority)
 	return xResult;
 }
 
-/*******************************************************************************
-* xTraceTaskReady
-*
-* This function will set a task to ready in the trace.
-*
-* @param pvTask The pointer to the task.
-* @return Function result. TRACE_SUCCESS or TRACE_FAIL.
-******************************************************************************/
 #if (TRC_CFG_INCLUDE_READY_EVENTS == 1)
 traceResult xTraceTaskReady(void *pvTask)
 {
@@ -203,13 +160,6 @@ traceResult xTraceTaskReady(void *pvTask)
 }
 #endif /* (TRC_CFG_INCLUDE_READY_EVENTS == 1) */
 
-/*******************************************************************************
- * xTraceTaskInstanceFinishedNow
- *
- * Creates an event that ends the current task instance at this very instant.
- * This makes the viewer to splits the current fragment at this point and begin
- * a new actor instance, even if no task-switch has occurred.
- *****************************************************************************/
 traceResult xTraceTaskInstanceFinishedNow(void)
 {
 	TraceEventHandle_t xEventHandle = 0;
@@ -224,17 +174,6 @@ traceResult xTraceTaskInstanceFinishedNow(void)
 	return TRC_SUCCESS;
 }
 
-/*******************************************************************************
- * xTraceTaskInstanceFinishedNext
- *
- * Marks the current "task instance" as finished on the next kernel call.
- *
- * If that kernel call is blocking, the instance ends after the blocking event
- * and the corresponding return event is then the start of the next instance.
- * If the kernel call is not blocking, the viewer instead splits the current
- * fragment right before the kernel call, which makes this call the first event
- * of the next instance.
- *****************************************************************************/
 traceResult xTraceTaskInstanceFinishedNext(void)
 {
 	TraceEventHandle_t xEventHandle = 0;

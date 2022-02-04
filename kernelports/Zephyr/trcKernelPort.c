@@ -1,5 +1,5 @@
 /*
- * Trace Recorder for Tracealyzer v4.6.0(RC1)
+ * Trace Recorder for Tracealyzer v4.6.0
  * Copyright 2021 Percepio AB
  * www.percepio.com
  *
@@ -18,12 +18,11 @@
  * allocation of the recorder buffer.
  */
 #if (TRC_CFG_RECORDER_BUFFER_ALLOCATION == TRC_RECORDER_BUFFER_ALLOCATION_DYNAMIC)
-    
     /* While we could add CONFIG_KERNEL_MEM_POOL as a dependency for the 
-        * dynamic allocation option, we have opted to output and error if 
-        * the user have forgotten this since they also have to specify an
-        * appropriate size for the kernel memory pool.
-        */
+	 * dynamic allocation option, we have opted to output and error if 
+	 * the user have forgotten this since they also have to specify an
+	 * appropriate size for the kernel memory pool.
+	 */
     #ifndef CONFIG_KERNEL_MEM_POOL
         #error "Tracerecorder: You have choosen the TRC_RECORDER_BUFFER_ALLOCATION_DYNAMIC option without enabling KERNEL_MEM_POOL in Zephyr. Enable this option and allocate an appropriate size."
     #endif
@@ -54,7 +53,7 @@ static K_THREAD_STACK_DEFINE(TzCtrl_thread_stack, (TRC_CFG_CTRL_TASK_STACK_SIZE)
  * interface (assuming TRC_STREAM_PORT_USE_INTERNAL_BUFFER == 1) and for
  * receiving commands from Tracealyzer. Also does some diagnostics.
  * 
- * @param _args
+ * @param[in] _args
  */
 void TzCtrl_thread_entry(void *_args)
 {
@@ -200,7 +199,7 @@ void vTraceSetTimerName(void* object, const char* name)
  * @brief Initialize aspects of the recorder that must preceed the
  * kernel initialization (scheduling, threads, etc.).
  * 
- * @param arg
+ * @param[in] arg
  */
 static int tracelyzer_pre_kernel_init(const struct device *arg)
 {
@@ -224,7 +223,7 @@ static int tracelyzer_pre_kernel_init(const struct device *arg)
  * @brief Initialize aspects of the recorder that depends on the kernel
  * being initialized.
  * 
- * @param arg
+ * @param[in] arg
  */
 static int tracealyzer_post_kernel_init(const struct device *arg)
 {

@@ -1,5 +1,5 @@
 /*
- * Trace Recorder for Tracealyzer v4.6.0(RC1)
+ * Trace Recorder for Tracealyzer v4.6.0
  * Copyright 2021 Percepio AB
  * www.percepio.com
  *
@@ -107,6 +107,7 @@ extern UINT _tx_timer_performance_info_get_orig(TX_TIMER *timer_ptr, ULONG *acti
 extern traceResult xTraceISREnd_orig(TraceBaseType_t uxIsTaskSwitchRequired);
 
 extern traceResult xTraceEventBeginRawOffline_orig(uint32_t uiSize, TraceEventHandle_t* pxEventHandle);
+extern traceResult xTraceEventEndOffline_orig(TraceEventHandle_t xEventHandle);
 
 
 UINT _txe_block_allocate(TX_BLOCK_POOL *pool_ptr, VOID **block_ptr, ULONG wait_option)
@@ -314,33 +315,33 @@ UINT _txe_byte_allocate(TX_BYTE_POOL *pool_ptr, VOID **memory_ptr, ULONG memory_
 
 	if (ret == TX_SUCCESS)
 	{
-		if (xTraceEventBegin(PSF_EVENT_BYTE_ALLOCATE_SUCCESS, sizeof(void*) + sizeof(void*) + sizeof(UINT),
+		if (xTraceEventBegin(PSF_EVENT_BYTE_ALLOCATE_SUCCESS, sizeof(void*) + sizeof(void*) + sizeof(void*),
 			&xTraceHandle) == TRC_SUCCESS) {
 			xTraceEventAddPointer(xTraceHandle, (void*)pool_ptr);
 			xTraceEventAddPointer(xTraceHandle, (void*)memory_ptr);
-			xTraceEventAdd32(xTraceHandle, ret);
+			xTraceEventAddPointer(xTraceHandle, (void*)*memory_ptr);
 			xTraceEventEnd(xTraceHandle);
 		}
 	}
 	else if (ret == TX_NO_MEMORY)
 	{
-		if (xTraceEventBegin(PSF_EVENT_BYTE_ALLOCATE_TIMEOUT, sizeof(void*) + sizeof(void*) + sizeof(UINT),
+		if (xTraceEventBegin(PSF_EVENT_BYTE_ALLOCATE_TIMEOUT, sizeof(void*) + sizeof(void*) + sizeof(void*),
 			&xTraceHandle) == TRC_SUCCESS) {
 			xTraceEventAddPointer(xTraceHandle, (void*)pool_ptr);
 			xTraceEventAddPointer(xTraceHandle, (void*)memory_ptr);
-			xTraceEventAdd32(xTraceHandle, ret);
+			xTraceEventAddPointer(xTraceHandle, (void*)memory_ptr);
 			xTraceEventEnd(xTraceHandle);
 		}
 	}
 	else
 	{
-		if (xTraceEventBegin(PSF_EVENT_BYTE_ALLOCATE_FAILED, sizeof(void*) + sizeof(void*) + sizeof(ULONG) + sizeof(ULONG) + sizeof(UINT),
+		if (xTraceEventBegin(PSF_EVENT_BYTE_ALLOCATE_FAILED, sizeof(void*) + sizeof(void*) + sizeof(ULONG) + sizeof(ULONG) + sizeof(void*),
 			&xTraceHandle) == TRC_SUCCESS) {
 			xTraceEventAddPointer(xTraceHandle, (void*)pool_ptr);
 			xTraceEventAddPointer(xTraceHandle, (void*)memory_ptr);
 			xTraceEventAddUnsignedBaseType(xTraceHandle, memory_size);
 			xTraceEventAdd32(xTraceHandle, wait_option);
-			xTraceEventAdd32(xTraceHandle, ret);
+			xTraceEventAddPointer(xTraceHandle, (void*)memory_ptr);
 			xTraceEventEnd(xTraceHandle);
 		}
 	}
@@ -1963,12 +1964,41 @@ traceResult xTraceISREnd(TraceBaseType_t uxIsTaskSwitchRequired)
 	return xResult;
 }
 
+static TRACE_ALLOC_CRITICAL_SECTION();
+
 traceResult xTraceEventBeginRawOffline(uint32_t uiSize, TraceEventHandle_t* pxEventHandle)
 {
+	traceResult xResult;
+
+	/* We must use a critical section here or there is a chance that an interrupt
+	 * could fire in the time between checking for a thread switch and the event
+	 * being sent.
+	 */
+	TRACE_ENTER_CRITICAL_SECTION();
+
 	/* Perform a thread switch check before each event to see if ThreadX has switched to a new
 	 * thread without informing us.
 	 */
 	xTraceCheckThreadSwitch();
 
-	return xTraceEventBeginRawOffline_orig(uiSize, pxEventHandle);
+	xResult = xTraceEventBeginRawOffline_orig(uiSize, pxEventHandle);
+
+	if (xResult == TRC_FAIL) {
+		/* Exit wrapped critical section */
+		TRACE_EXIT_CRITICAL_SECTION();
+	}
+
+	return xResult;
+}
+
+traceResult xTraceEventEndOffline(TraceEventHandle_t xEventHandle)
+{
+	traceResult xResult;
+
+	xResult = xTraceEventEndOffline_orig(xEventHandle);
+
+	/* Exit wrapped critical section */
+	TRACE_EXIT_CRITICAL_SECTION();
+
+	return xResult;
 }

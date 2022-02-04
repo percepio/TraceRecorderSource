@@ -1,51 +1,102 @@
 /*
-* Percepio Trace Recorder SDK for Tracealyzer v4.6.0(RC1)
+* Percepio Trace Recorder SDK for Tracealyzer v4.6.0
 * Copyright 2021 Percepio AB
 * www.percepio.com
 *
 * SPDX-License-Identifier: Apache-2.0
-*
-* The interface for the stack monitor.
 */
+
+/**
+ * @file 
+ * 
+ * @brief Public trace stack monitor APIs.
+ */
 
 #ifndef TRC_STACK_MONITOR_H
 #define TRC_STACK_MONITOR_H
-
-#include <stdint.h>
-#include <trcRecorder.h>
 
 #if (TRC_USE_TRACEALYZER_RECORDER == 1)
 
 #if (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING)
 
+#include <stdint.h>
+#include <trcRecorder.h>
+
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+/**
+ * @defgroup trace_stack_monitor_apis Trace Stack Monitor APIs
+ * @ingroup trace_recorder_apis
+ * @{
+ */
 
 #if (((TRC_CFG_ENABLE_STACK_MONITOR) == 1) && ((TRC_CFG_SCHEDULING_ONLY) == 0))
 
 #define TRACE_STACK_MONITOR_BUFFER_SIZE ((sizeof(void*) + sizeof(TraceUnsignedBaseType_t)) * (TRC_CFG_STACK_MONITOR_MAX_TASKS) + sizeof(uint32_t))
 
+/**
+ * @internal Trace Stack Monitor Buffer Structure
+ */
 typedef struct TraceStackMonitorBuffer
 {
 	uint32_t buffer[(TRACE_STACK_MONITOR_BUFFER_SIZE) / sizeof(uint32_t)];
 } TraceStackMonitorBuffer_t;
 
+/**
+ * @internal Initialize trace stack monitor system.
+ * 
+ * @param[in] pxBuffer Pointer to memory that will be used by the trace
+ * stack monitor system.
+ * 
+ * @retval TRC_FAIL Failure
+ * @retval TRC_SUCCESS Success
+ */
 traceResult xTraceStackMonitorInitialize(TraceStackMonitorBuffer_t* pxBuffer);
 
+/**
+ * @brief Adds task/thread to trace stack monitor.
+ * 
+ * @param[in] pvTask Task/Thread.
+ * 
+ * @retval TRC_FAIL Failure
+ * @retval TRC_SUCCESS Success
+ */
 traceResult xTraceStackMonitorAdd(void* pvTask);
 
+/**
+ * @brief Removes task/thread from trace stack monitor.
+ * 
+ * @param[in] pvTask Task/Thread.
+ * 
+ * @retval TRC_FAIL Failure
+ * @retval TRC_SUCCESS Success
+ */
 traceResult xTraceStackMonitorRemove(void* pvTask);
 
+/**
+ * @brief Gets trace stack monitor tread/task at index.
+ * 
+ * @param[in] uiIndex Index.
+ * @param[in] ppvTask Task/Thread.
+ * @param[out] puxLowWaterMark Low water mark.
+ * 
+ * @retval TRC_FAIL Failure
+ * @retval TRC_SUCCESS Success
+ */
 traceResult xTraceStackMonitorGetAtIndex(uint32_t uiIndex, void** ppvTask, TraceUnsignedBaseType_t* puxLowWaterMark);
 
-/*******************************************************************************
-* xTraceStackMonitorReport
-*
-* This function will check all tasks' stacks.
-*
-* @return Function result. TRACE_SUCCESS or TRACE_FAIL.
-******************************************************************************/
+/**
+ * @brief Performs trace stack monitor reporting.
+ * 
+ * This routine performs a trace stack monitor check and report
+ * for TRC_CFG_STACK_MONITOR_MAX_REPORTS number of registered
+ * tasks/threads.
+ * 
+ * @retval TRC_FAIL Failure
+ * @retval TRC_SUCCESS Success
+ */
 traceResult xTraceStackMonitorReport(void);
 
 #else /* (((TRC_CFG_ENABLE_STACK_MONITOR) == 1) && ((TRC_CFG_SCHEDULING_ONLY) == 0)) */
@@ -70,6 +121,8 @@ typedef struct TraceStackMonitorBuffer
 #define xTraceStackMonitorReport() TRC_COMMA_EXPR_TO_STATEMENT_EXPR_1(TRC_SUCCESS)
 
 #endif /* (((TRC_CFG_ENABLE_STACK_MONITOR) == 1) && ((TRC_CFG_SCHEDULING_ONLY) == 0)) */
+
+/** @} */
 
 #ifdef __cplusplus
 }

@@ -1,5 +1,5 @@
 /*
-* Trace Recorder for Tracealyzer v4.6.0(RC1)
+* Trace Recorder for Tracealyzer v4.6.0
 * Copyright 2021 Percepio AB
 * www.percepio.com
 *
@@ -83,7 +83,6 @@ extern TraceStreamPortData_t* pxStreamPortData;
 
 /**
 * @def TRC_STREAM_PORT_BUFFER_SIZE
-*
 * @brief The buffer size, aligned to base type.
 */
 #define TRC_STREAM_PORT_DATA_BUFFER_SIZE (sizeof(TraceStreamPortData_t))
@@ -97,11 +96,12 @@ typedef struct TraceStreamPortBuffer
 } TraceStreamPortBuffer_t;
 
 /**
- * @brief Stream port initialize callback.
+ * @internal Stream port initialize callback.
  * 
  * This function is called by the recorder as part of its initialization phase.
  * 
- * @param pxBuffer Buffer
+ * @param[in] pxBuffer Buffer
+ * 
  * @retval TRC_FAIL Initialization failed
  * @retval TRC_SUCCESS Success
  */
@@ -110,8 +110,9 @@ traceResult xTraceStreamPortInitialize(TraceStreamPortBuffer_t* pxBuffer);
 /**
  * @brief Allocates data from the stream port.
  * 
- * @param uiSize Allocation size
- * @param ppvData Allocation data pointer
+ * @param[in] uiSize Allocation size
+ * @param[out] ppvData Allocation data pointer
+ * 
  * @retval TRC_FAIL Allocate failed
  * @retval TRC_SUCCESS Success
  */
@@ -122,9 +123,10 @@ traceResult xTraceStreamPortInitialize(TraceStreamPortBuffer_t* pxBuffer);
  * stream port this data might be directly written to the stream port interface, buffered, or
  * something else.
  * 
- * @param pvData Data to commit
- * @param uiSize Data to commit size
- * @param piBytesCommitted Bytes commited
+ * @param[in] pvData Data to commit
+ * @param[in] uiSize Data to commit size
+ * @param[out] piBytesCommitted Bytes commited
+ * 
  * @retval TRC_FAIL Commit failed
  * @retval TRC_SUCCESS Success
  */
@@ -133,9 +135,10 @@ traceResult xTraceStreamPortCommit(void* pvData, uint32_t uiSize, int32_t* piByt
 /**
  * @brief Writes data through the stream port interface.
  * 
- * @param pvData Data to write
- * @param uiSize Data to write size
- * @param piBytesWritten Bytes written
+ * @param[in] pvData Data to write
+ * @param[in] uiSize Data to write size
+ * @param[out] piBytesWritten Bytes written
+ * 
  * @retval TRC_FAIL Write failed
  * @retval TRC_SUCCESS Success
  */
@@ -144,20 +147,47 @@ traceResult xTraceStreamPortCommit(void* pvData, uint32_t uiSize, int32_t* piByt
 /**
  * @brief Reads data through the stream port interface.
  * 
- * @param pvData Destination data buffer 
- * @param uiSize Destination data buffer size
- * @param piBytesRead Bytes read
+ * @param[in] pvData Destination data buffer 
+ * @param[in] uiSize Destination data buffer size
+ * @param[out] piBytesRead Bytes read
+ * 
  * @retval TRC_FAIL Read failed
  * @retval TRC_SUCCESS Success
  */
 #define xTraceStreamPortReadData(pvData, uiSize, piBytesRead) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_4((void)pvData, (void)uiSize, (void)piBytesRead, TRC_SUCCESS)
 
+/**
+ * @brief Callback for when recorder is enabled
+ * 
+ * @param[in] uiStartOption Start option used when enabling trace recorder
+ *
+ * @retval TRC_FAIL Read failed
+ * @retval TRC_SUCCESS Success
+ */
 #define xTraceStreamPortOnEnable(uiStartOption) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_2((void)(uiStartOption), TRC_SUCCESS)
 
+/**
+ * @brief Callback for when recorder is disabled
+ *
+ * @retval TRC_FAIL Read failed
+ * @retval TRC_SUCCESS Success
+ */
 #define xTraceStreamPortOnDisable() TRC_COMMA_EXPR_TO_STATEMENT_EXPR_1(TRC_SUCCESS)
 
-#define xTraceStreamPortOnTraceBegin() TRC_COMMA_EXPR_TO_STATEMENT_EXPR_1(TRC_SUCCESS)
+/**
+ * @brief Callback for when tracing begins
+ *
+ * @retval TRC_FAIL Read failed
+ * @retval TRC_SUCCESS Success
+ */
+traceResult xTraceStreamPortOnTraceBegin();
 
+/**
+ * @brief Callback for when tracing ends
+ *
+ * @retval TRC_FAIL Read failed
+ * @retval TRC_SUCCESS Success
+ */
 #define xTraceStreamPortOnTraceEnd() TRC_COMMA_EXPR_TO_STATEMENT_EXPR_1(TRC_SUCCESS)
 
 #ifdef __cplusplus

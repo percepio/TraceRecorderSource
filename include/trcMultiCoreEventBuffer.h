@@ -1,12 +1,16 @@
 /*
-* Percepio Trace Recorder for Tracealyzer v4.6.0(RC1)
+* Percepio Trace Recorder for Tracealyzer v4.6.0
 * Copyright 2021 Percepio AB
 * www.percepio.com
 *
 * SPDX-License-Identifier: Apache-2.0
-*
-* The interface for the multi-core event buffer.
 */
+
+/**
+ * @file 
+ * 
+ * @internal Public trace multicore event buffer APIs.
+ */
 
 #ifndef TRC_MULTI_CORE_EVENT_BUFFER_H
 #define TRC_MULTI_CORE_EVENT_BUFFER_H
@@ -21,14 +25,22 @@
 extern "C" {
 #endif
 
-/* TODO: MOVE THIS TO .c FILE. THEN EXPOSE ANONYMOUS BUFFER FOR INITIALIZE */
+/**
+ * @defgroup trace_multi_core_event_buffer_apis Trace Multi-Core Event Buffer APIs
+ * @ingroup trace_recorder_apis
+ * @{
+ */
+
+/**
+ * @brief Trace Multi-Core Event Buffer Structure
+ */
 typedef struct TraceMultiCoreEventBuffer
 {
-	TraceEventBuffer_t *xEventBuffer[TRC_CFG_CORE_COUNT];
+	TraceEventBuffer_t *xEventBuffer[TRC_CFG_CORE_COUNT]; /**< */
 } TraceMultiCoreEventBuffer_t;
 
 /**
- * @brief Initialize multicore event buffer.
+ * @internal Initialize multi-core event buffer.
  * 
  * This routine initializes a multi-core trace event buffer and assignts it
  * a memory area based on the supplied buffer.
@@ -37,10 +49,10 @@ typedef struct TraceMultiCoreEventBuffer
  * old data, the alternatives are TRC_EVENT_BUFFER_OPTION_SKIP and
  * TRC_EVENT_BUFFER_OPTION_OVERWRITE (mutal exclusive).
  * 
- * @param pxTraceMultiCoreEventBuffer Pointer to unitialized multi-core trace event buffer.
- * @param uiOptions Trace event buffer options.
- * @param puiBuffer Pointer to buffer that will be used by the multi-core trace event buffer.
- * @param uiSize Size of buffer.
+ * @param[out] pxTraceMultiCoreEventBuffer Pointer to unitialized multi-core trace event buffer.
+ * @param[in] uiOptions Trace event buffer options.
+ * @param[in] puiBuffer Pointer to buffer that will be used by the multi-core trace event buffer.
+ * @param[in] uiSize Size of buffer.
  * 
  * @retval TRC_FAIL Failure
  * @retval TRC_SUCCESS Success
@@ -59,10 +71,10 @@ traceResult xTraceMultiCoreEventBufferInitialize(TraceMultiCoreEventBuffer_t* px
  * of which core the data is pushed for is managed automatically through the
  * TRC_CFG_GET_CURRENT_CORE macro which is defined on an RTOS basis. 
  * 
- * @param pxTraceMultiCoreEventBuffer Pointer to initialized multi-core event buffer.
- * @param pvData Pointer to data should be pushed into multi-core event buffer.
- * @param uiSize Size of data that should be pushed into multi-core trace event buffer.
- * @param piBytesWritten Pointer to variable which the routine will write the number
+ * @param[in] pxTraceMultiCoreEventBuffer Pointer to initialized multi-core event buffer.
+ * @param[in] pvData Pointer to data should be pushed into multi-core event buffer.
+ * @param[in] uiSize Size of data that should be pushed into multi-core trace event buffer.
+ * @param[out] piBytesWritten Pointer to variable which the routine will write the number
  * of bytes that was pushed into the multi-core trace event buffer.
  * 
  * @retval TRC_FAIL Failure
@@ -72,6 +84,22 @@ traceResult xTraceMultiCoreEventBufferPush(TraceMultiCoreEventBuffer_t* pxTraceM
 
 #else
 
+/**
+ * @brief Pushes data into multi-core trace event buffer.
+ * 
+ * This routine attempts to push data into the multi-core trace event buffer. Selection
+ * of which core the data is pushed for is managed automatically through the
+ * TRC_CFG_GET_CURRENT_CORE macro which is defined on an RTOS basis. 
+ * 
+ * @param[in] pxTraceMultiCoreEventBuffer Pointer to initialized multi-core event buffer.
+ * @param[in] pvData Pointer to data should be pushed into multi-core event buffer.
+ * @param[in] uiSize Size of data that should be pushed into multi-core trace event buffer.
+ * @param[out] piBytesWritten Pointer to variable which the routine will write the number
+ * of bytes that was pushed into the multi-core trace event buffer.
+ * 
+ * @retval TRC_FAIL Failure
+ * @retval TRC_SUCCESS Success
+ */
 #define xTraceMultiCoreEventBufferPush(pxTraceMultiCoreEventBuffer, pvData, uiSize, piBytesWritten) xTraceEventBufferPush((pxTraceMultiCoreEventBuffer)->xEventBuffer[TRC_CFG_GET_CURRENT_CORE()], pvData, uiSize, piBytesWritten)
 
 #endif
@@ -83,8 +111,8 @@ traceResult xTraceMultiCoreEventBufferPush(TraceMultiCoreEventBuffer_t* pxTraceM
  * buffer through the streamport. New data pushed to the trace event buffer
  * during the execution of this routine will not be transfered to 
  * 
- * @param pxTraceMultiCoreEventBuffer Pointer to initialized multi-core event buffer.
- * @param piBytesWritten Pointer to variable which the routine will write the number
+ * @param[in] pxTraceMultiCoreEventBuffer Pointer to initialized multi-core event buffer.
+ * @param[out] piBytesWritten Pointer to variable which the routine will write the number
  * of bytes that was pushed into the multi-core trace event buffer.
  * 
  * @retval TRC_FAIL Failure
@@ -95,12 +123,14 @@ traceResult xTraceMultiCoreEventBufferTransfer(TraceMultiCoreEventBuffer_t* pxTr
 /**
  * @brief Clears all data from event buffer.
  * 
- * @param pxTraceMultiCoreEventBuffer Pointer to initialized multic-core trace event buffer.
+ * @param[in] pxTraceMultiCoreEventBuffer Pointer to initialized multi-core trace event buffer.
  *  
  * @retval TRC_FAIL Failure
  * @retval TRC_SUCCESS Success
  */
 traceResult xTraceMultiCoreEventBufferClear(TraceMultiCoreEventBuffer_t* pxTraceMultiCoreEventBuffer);
+
+/** @} */
 
 #ifdef __cplusplus
 }

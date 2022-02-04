@@ -1,5 +1,5 @@
 /*
-* Percepio Trace Recorder for Tracealyzer v4.6.0(RC1)
+* Percepio Trace Recorder for Tracealyzer v4.6.0
 * Copyright 2021 Percepio AB
 * www.percepio.com
 *
@@ -27,7 +27,6 @@ int32_t DUMMY_iTraceBytesCommitted;
 
 TRACE_ALLOC_CRITICAL_SECTION();
 
-/* Initialize the internal event data structures */
 traceResult xTraceEventInitialize(TraceEventDataBuffer_t* pxBuffer)
 {
 	TraceCoreEventData_t* pxCoreEventData;
@@ -57,7 +56,6 @@ traceResult xTraceEventInitialize(TraceEventDataBuffer_t* pxBuffer)
 	return TRC_SUCCESS;
 }
 
-/* Begins an event with specified size. Must call xTraceEventEnd() to finalize event creation. Does not care about RecorderEnabled. */
 traceResult xTraceEventBeginRawOffline(uint32_t uiSize, TraceEventHandle_t* pxEventHandle)
 {
 	TraceEventData_t* pxEventData;
@@ -100,7 +98,6 @@ traceResult xTraceEventBeginRawOffline(uint32_t uiSize, TraceEventHandle_t* pxEv
 	return TRC_SUCCESS;
 }
 
-/* Begins an event with specified size. Must call xTraceEventEnd() to finalize event creation. Does not care about RecorderEnabled. */
 traceResult xTraceEventBeginRawOfflineBlocking(uint32_t uiSize, TraceEventHandle_t* pxEventHandle)
 {
 	TraceEventData_t* pxEventData;
@@ -143,7 +140,6 @@ traceResult xTraceEventBeginRawOfflineBlocking(uint32_t uiSize, TraceEventHandle
 	return TRC_SUCCESS;
 }
 
-/* Ends the event that was begun by calling on xTraceEventBegin() */
 traceResult xTraceEventEndOffline(TraceEventHandle_t xEventHandle)
 {
 	int32_t iBytesCommitted;
@@ -166,7 +162,6 @@ traceResult xTraceEventEndOffline(TraceEventHandle_t xEventHandle)
 	return TRC_SUCCESS;
 }
 
-/* Ends the event that was begun by calling on xTraceEventBegin() */
 traceResult xTraceEventEndOfflineBlocking(TraceEventHandle_t xEventHandle)
 {
 	TraceEventData_t* pxEventData = (TraceEventData_t*)xEventHandle;
@@ -194,7 +189,6 @@ traceResult xTraceEventEndOfflineBlocking(TraceEventHandle_t xEventHandle)
 	return TRC_SUCCESS;
 }
 
-/* Adds data of size uiSize as event payload */
 traceResult xTraceEventAddData(TraceEventHandle_t xEventHandle, void* pvData, uint32_t uiSize)
 {
 	uint32_t i;
@@ -221,7 +215,6 @@ traceResult xTraceEventAddData(TraceEventHandle_t xEventHandle, void* pvData, ui
 
 #if ((TRC_CFG_USE_TRACE_ASSERT) == 1)
 
-/* Get event size */
 traceResult xTraceEventGetSize(void *pvAddress, uint32_t* puiSize)
 {
 	/* This should never fail */
@@ -236,7 +229,6 @@ traceResult xTraceEventGetSize(void *pvAddress, uint32_t* puiSize)
 	return TRC_EVENT_GET_SIZE(pvAddress, puiSize);
 }
 
-/* Retrieves a data pointer with an offset. Also verifies the size so it won't go outside buffer. */
 traceResult xTraceEventGetRawData(TraceEventHandle_t xEventHandle, uint32_t uiOffset, uint32_t uiSize, void** ppvData)
 {
 	/* This should never fail */
@@ -254,7 +246,6 @@ traceResult xTraceEventGetRawData(TraceEventHandle_t xEventHandle, uint32_t uiOf
 	return TRC_EVENT_GET_RAW_DATA(xEventHandle, uiOffset, uiSize, ppvData);
 }
 
-/* Retrieves a payload pointer with an offset. Also verifies the size so it won't go outside payload buffer. */
 traceResult xTraceEventGetPayload(TraceEventHandle_t xEventHandle, uint32_t uiOffset, uint32_t uiSize, void** ppvData)
 {
 	/* This should never fail */
@@ -272,7 +263,6 @@ traceResult xTraceEventGetPayload(TraceEventHandle_t xEventHandle, uint32_t uiOf
 	return TRC_EVENT_GET_PAYLOAD(xEventHandle, uiOffset, uiSize, ppvData);
 }
 
-/* Get the amount of remaining payload. */
 traceResult xTraceEventPayloadRemaining(TraceEventHandle_t xEventHandle, uint32_t* puiValue)
 {
 	/* This should never fail */
@@ -290,7 +280,6 @@ traceResult xTraceEventPayloadRemaining(TraceEventHandle_t xEventHandle, uint32_
 	return TRC_EVENT_PAYLOAD_REMAINING(xEventHandle, puiValue);
 }
 
-/* Get the amount of used payload. */
 traceResult xTraceEventPayloadUsed(TraceEventHandle_t xEventHandle, uint32_t* puiValue)
 {
 	/* This should never fail */
@@ -308,7 +297,6 @@ traceResult xTraceEventPayloadUsed(TraceEventHandle_t xEventHandle, uint32_t* pu
 	return TRC_EVENT_PAYLOAD_USED(xEventHandle, puiValue);
 }
 
-/* Get the payload size. */
 traceResult xTraceEventPayloadSize(TraceEventHandle_t xEventHandle, uint32_t* puiValue)
 {
 	/* This should never fail */
@@ -326,7 +314,6 @@ traceResult xTraceEventPayloadSize(TraceEventHandle_t xEventHandle, uint32_t* pu
 	return TRC_EVENT_PAYLOAD_SIZE(xEventHandle, puiValue);
 }
 
-/* Adds a pointer as event payload */
 traceResult xTraceEventAddPointer(TraceEventHandle_t xEventHandle, void* pvAddress)
 {
 	/* This should never fail */
@@ -345,7 +332,6 @@ traceResult xTraceEventAddPointer(TraceEventHandle_t xEventHandle, void* pvAddre
 	return TRC_EVENT_ADD_POINTER(xEventHandle, pvAddress);
 }
 
-/* Adds a unsigned base type value as event payload */
 traceResult xTraceEventAddUnsignedBaseType(TraceEventHandle_t xEventHandle, TraceUnsignedBaseType_t uxValue)
 {
 	/* This should never fail */
@@ -364,7 +350,6 @@ traceResult xTraceEventAddUnsignedBaseType(TraceEventHandle_t xEventHandle, Trac
 	return TRC_EVENT_ADD_UNSIGNED_BASE_TYPE(xEventHandle, uxValue);
 }
 
-/* Adds an uint32_t as event payload */
 traceResult xTraceEventAdd32(TraceEventHandle_t xEventHandle, uint32_t value)
 {
 	/* This should never fail */
@@ -383,7 +368,6 @@ traceResult xTraceEventAdd32(TraceEventHandle_t xEventHandle, uint32_t value)
 	return TRC_EVENT_ADD_32(xEventHandle, value);
 }
 
-/* Adds an uint16_t as event payload */
 traceResult xTraceEventAdd16(TraceEventHandle_t xEventHandle, uint16_t value)
 {
 	/* This should never fail */
@@ -402,7 +386,6 @@ traceResult xTraceEventAdd16(TraceEventHandle_t xEventHandle, uint16_t value)
 	return TRC_EVENT_ADD_16(xEventHandle, value);
 }
 
-/* Adds an uint8_t as event payload */
 traceResult xTraceEventAdd8(TraceEventHandle_t xEventHandle, uint8_t value)
 {
 	/* This should never fail */

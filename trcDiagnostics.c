@@ -1,5 +1,5 @@
 /*
-* Trace Recorder for Tracealyzer v4.6.0(RC1)
+* Trace Recorder for Tracealyzer v4.6.0
 * Copyright 2021 Percepio AB
 * www.percepio.com
 *
@@ -154,7 +154,7 @@ traceResult xTraceDiagnosticsCheckStatus(void)
 
 	if (pxDiagnostics->metrics[TRC_DIAGNOSTICS_STACK_MONITOR_NO_SLOTS] > 0)
 	{
-		xTraceWarning(TRC_WARNING_EVENT_SIZE_TRUNCATED);
+		xTraceWarning(TRC_WARNING_STACKMON_NO_SLOTS);
 		pxDiagnostics->metrics[TRC_DIAGNOSTICS_STACK_MONITOR_NO_SLOTS] = 0;
 	}
 

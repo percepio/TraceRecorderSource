@@ -1,5 +1,5 @@
 /*
- * Trace Recorder for Tracealyzer v4.6.0(RC1)
+ * Trace Recorder for Tracealyzer v4.6.0
  * Copyright 2021 Percepio AB
  * www.percepio.com
  *
@@ -950,6 +950,8 @@ UINT _tx_timer_performance_info_get_orig(TX_TIMER *timer_ptr, ULONG *activates, 
 
 traceResult xTraceEventBeginRawOffline(uint32_t uiSize, TraceEventHandle_t* pxEventHandle) __attribute__((weak));
 traceResult xTraceEventBeginRawOffline_orig(uint32_t uiSize, TraceEventHandle_t* pxEventHandle) __attribute__((alias("xTraceEventBeginRawOffline")));
+traceResult xTraceEventEndOffline(TraceEventHandle_t xEventHandle) __attribute__((weak));
+traceResult xTraceEventEndOffline_orig(TraceEventHandle_t xEventHandle) __attribute__((alias("xTraceEventEndOffline")));
 
 #endif /* __inside_trcEvent */
 

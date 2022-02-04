@@ -1,5 +1,5 @@
 /*
- * Trace Recorder for Tracealyzer v4.6.0(RC1)
+ * Trace Recorder for Tracealyzer v4.6.0
  * Copyright 2021 Percepio AB
  * www.percepio.com
  *
@@ -182,7 +182,7 @@ TaskStackMonitorEntry_t tasksInStackMonitor[TRC_CFG_STACK_MONITOR_MAX_TASKS] TRC
 /*******************************************************************************
 * tasksNotIncluded
 *
-* The number of tasks that didn't fit in the stack monitor.
+* The number of tasks that did not fit in the stack monitor.
 ******************************************************************************/
 int tasksNotIncluded TRC_CFG_RECORDER_DATA_ATTRIBUTE;
 #endif /* defined(TRC_CFG_ENABLE_STACK_MONITOR) && (TRC_CFG_ENABLE_STACK_MONITOR == 1) && (TRC_CFG_SCHEDULING_ONLY == 0) */
@@ -199,25 +199,9 @@ int tasksNotIncluded TRC_CFG_RECORDER_DATA_ATTRIBUTE;
 RecorderDataType RecorderData TRC_CFG_RECORDER_DATA_ATTRIBUTE;
 #endif
 
-/*******************************************************************************
-* RecorderDataPtr
-*
-* Pointer to the main data structure, when in snapshot mode.
-******************************************************************************/
+/* Pointer to the main data structure, when in snapshot mode */
 RecorderDataType* RecorderDataPtr TRC_CFG_RECORDER_DATA_ATTRIBUTE;
 
-/*******************************************************************************
-* RecorderInitialized
-*
-* Makes sure the recorder data is only initialized once.
-*
-* NOTE: RecorderInitialized is only initialized to 0 if 
-* TRC_CFG_RECORDER_DATA_INIT is non-zero.
-* This will avoid issues where the recorder must be started before main(),
-* which can lead to RecorderInitialized be cleared by late initialization after
-* vTraceEnable(TRC_INIT) was called and assigned RecorderInitialized its'
-* value.
-******************************************************************************/
 #if (TRC_CFG_RECORDER_DATA_INIT != 0)
 uint32_t RecorderInitialized = 0;
 #else /* (TRC_CFG_RECORDER_DATA_INIT != 0) */
@@ -383,24 +367,11 @@ traceResult xTraceDisable(void)
 	return TRC_SUCCESS;
 }
 
-/*******************************************************************************
- * vTraceSetStopHook
- *
- * Sets a function to be called when the recorder is stopped. This can be used
- * to save the trace to a file system, if available. This is only implemented
- * for snapshot mode.
- ******************************************************************************/
 void vTraceSetStopHook(TRACE_STOP_HOOK stopHookFunction)
 {
 	vTraceStopHookPtr = stopHookFunction;
 }
 
-/*******************************************************************************
- * vTraceClear
- *
- * Resets the recorder. Only necessary if a restart is desired - this is not
- * needed in the startup initialization.
- ******************************************************************************/
 void vTraceClear(void)
 {
 	TRACE_ALLOC_CRITICAL_SECTION();
@@ -1837,9 +1808,9 @@ traceResult xTraceInitialize()
 
 #if ((!defined TRC_CFG_INCLUDE_READY_EVENTS) || (TRC_CFG_INCLUDE_READY_EVENTS == 1))
 
-void prvTraceSetReadyEventsEnabled(int status) 
+void prvTraceSetReadyEventsEnabled(uint32_t flag)
 {
-	readyEventsEnabled = status;
+	readyEventsEnabled = flag;
 }
 
 /*******************************************************************************

@@ -1,5 +1,5 @@
 /*
- * Trace Recorder for Tracealyzer v4.6.0(RC1)
+ * Trace Recorder for Tracealyzer v4.6.0
  * Copyright 2021 Percepio AB
  * www.percepio.com
  *
@@ -75,11 +75,12 @@ typedef struct TraceKernelPortDataBuffer
 } TraceKernelPortDataBuffer_t;
 
 /**
- * @brief Kernel port initialize callback.
+ * @internal Kernel port initialize callback.
  * 
  * This function is called by the recorder as part of its initialization phase.
  * 
- * @param pxBuffer Buffer
+ * @param[in] pxBuffer Buffer
+ * 
  * @retval TRC_FAIL Initialization failed
  * @retval TRC_SUCCESS Success
  */
@@ -98,8 +99,9 @@ traceResult xTraceKernelPortEnable(void);
 /**
  * @brief Get unused stack size for kernel port thread.
  * 
- * @param pvThread Thread
- * @param puxUnusedStack Destination variable
+ * @param[in] pvThread Thread
+ * @param[out] puxUnusedStack Unused stack
+ * 
  * @retval TRC_FAIL Failed to get size
  * @retval TRC_SUCCESS Success
  */
@@ -123,128 +125,128 @@ unsigned char xTraceKernelPortIsSchedulerSuspended(void);
 /**
  * @brief Sets kernel object name for display in Tracealyzer.
  * 
- * @param object Kernel object
- * @param name name
+ * @param[in] object Kernel object
+ * @param[in] name name
  */
 void vTraceSetKernelObjectName(void* object, const char* name);
 
 /**
  * @brief Sets Work Queue name for display in Tracealyzer.
  * 
- * @param object Work queue object
- * @param name name
+ * @param[in] object Work queue object
+ * @param[in] name name
  */
 void vTraceSetWorkQueueName(void* object, const char* name);
 
 /**
  * @brief Sets Heap name for display in Tracealyzer.
  * 
- * @param object Heap object
- * @param name name
+ * @param[in] object Heap object
+ * @param[in] name name
  */
 void vTraceSetHeapName(void* object, const char* name);
 
 /**
  * @brief Sets Semaphore name for display in Tracealyzer.
  * 
- * @param object Semaphore object
- * @param name name
+ * @param[in] object Semaphore object
+ * @param[in] name name
  */
 void vTraceSetSemaphoreName(void* object, const char* name);
 
 /**
  * @brief Sets Mutex name for display in Tracealyzer.
  * 
- * @param object Mutex object
- * @param name name
+ * @param[in] object Mutex object
+ * @param[in] name name
  */
 void vTraceSetMutexName(void* object, const char* name);
 
 /**
  * @brief Sets Condvar name for display in Tracealyzer.
  * 
- * @param object Condvar object
- * @param name name
+ * @param[in] object Condvar object
+ * @param[in] name name
  */
 void vTraceSetCondvarName(void* object, const char* name);
 
 /**
  * @brief Sets Queue name for display in Tracealyzer.
  * 
- * @param object Queue object
- * @param name name
+ * @param[in] object Queue object
+ * @param[in] name name
  */
 void vTraceSetQueueName(void* object, const char* name);
 
 /**
  * @brief Sets FIFO Queue name for display in Tracealyzer.
  * 
- * @param object FIFO Queue object
- * @param name name
+ * @param[in] object FIFO Queue object
+ * @param[in] name name
  */
 void vTraceSetFIFOQueueName(void* object, const char* name);
 
 /**
  * @brief Sets LIFO Queue name for display in Tracealyzer.
  * 
- * @param object LIFO Queue object
- * @param name name
+ * @param[in] object LIFO Queue object
+ * @param[in] name name
  */
 void vTraceSetLIFOQueueName(void* object, const char* name);
 
 /**
  * @brief Sets Stack name for display in Tracealyzer.
  * 
- * @param object Stack object
- * @param name name
+ * @param[in] object Stack object
+ * @param[in] name name
  */
 void vTraceSetStackName(void* object, const char* name);
 
 /**
  * @brief Sets Message Queue name for display in Tracealyzer.
  * 
- * @param object Message Queue object
- * @param name name
+ * @param[in] object Message Queue object
+ * @param[in] name name
  */
 void vTraceSetMessageQueueName(void* object, const char* name);
 
 /**
  * @brief Sets Mailbox name for display in Tracealyzer.
  * 
- * @param object Mailbox object
- * @param name name
+ * @param[in] object Mailbox object
+ * @param[in] name name
  */
 void vTraceSetMailboxName(void* object, const char* name);
 
 /**
  * @brief Sets Pipe name for display in Tracealyzer.
  * 
- * @param object Pipe object
- * @param name name
+ * @param[in] object Pipe object
+ * @param[in] name name
  */
 void vTraceSetPipeName(void* object, const char* name);
 
 /**
  * @brief Sets Memory Heap name for display in Tracealyzer.
  * 
- * @param object Memory Heap object
- * @param name name
+ * @param[in] object Memory Heap object
+ * @param[in] name name
  */
 void vTraceSetMemoryHeapName(void* object, const char* name);
 
 /**
  * @brief Sets Memory Slab name for display in Tracealyzer.
  * 
- * @param object Memory Slab object
- * @param name name
+ * @param[in] object Memory Slab object
+ * @param[in] name name
  */
 void vTraceSetMemorySlabName(void* object, const char* name);
 
 /**
  * @brief Sets Timer name for display in Tracealyzer.
  * 
- * @param object Timer object
- * @param name name
+ * @param[in] object Timer object
+ * @param[in] name name
  */
 void vTraceSetTimerName(void* object, const char* name);
 

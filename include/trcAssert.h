@@ -1,12 +1,16 @@
 /*
-* Percepio Trace Recorder for Tracealyzer v4.6.0(RC1)
+* Percepio Trace Recorder for Tracealyzer v4.6.0
 * Copyright 2021 Percepio AB
 * www.percepio.com
 *
 * SPDX-License-Identifier: Apache-2.0
-*
-* The interface for asserts.
 */
+
+/**
+ * @file 
+ * 
+ * @brief Public trace assert APIs.
+ */
 
 #ifndef TRC_ASSERT_H
 #define TRC_ASSERT_H
@@ -20,6 +24,12 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+/**
+ * @defgroup trace_assert_apis Trace Asserts APIs
+ * @ingroup trace_recorder_apis
+ * @{
+ */
 
 #ifndef TRC_CFG_USE_TRACE_ASSERT
 #error "TRC_CFG_USE_TRACE_ASSERT is not defined. Please define it in trcConfig.h"
@@ -47,18 +57,49 @@ typedef struct TraceAssertBuffer
 	uint8_t buffer[TRC_ASSERT_BUFFER_SIZE];
 } TraceAssertBuffer_t;
 
+/**
+ * @internal Initializes assert system
+ *
+ * @param[in] pxBuffer The assert data buffer
+ *
+ * @retval TRC_FAIL Failure
+ * @retval TRC_SUCCESS Success
+ */
 traceResult xTraceAssertInitialize(TraceAssertBuffer_t *pxBuffer);
 
-inline TraceBaseType_t prvTraceAssertCheckCondition(TraceBaseType_t condition)
-{
-	return (condition);
-}
-
+/**
+ * @internal Creates an assert
+ *
+ * @param[in] szFilePath File name
+ * @param[in] uxLineNumber Line number
+ *
+ * @retval TRC_FAIL Failure
+ * @retval TRC_SUCCESS Success
+ */
 void prvTraceAssertCreate(const char* szFilePath, TraceUnsignedBaseType_t uxLineNumber);
 
+/**
+ * @brief Retrieves the assert and line number
+ *
+ * @param[out] pxFileNameStringHandle File name string handle
+ * @param[out] puxLineNumber Line number
+ *
+ * @retval TRC_FAIL Failure
+ * @retval TRC_SUCCESS Success
+ */
 traceResult xTraceAssertGet(TraceStringHandle_t* pxFileNameStringHandle, TraceUnsignedBaseType_t* puxLineNumber);
 
-#else
+/**
+ * @brief Inlined condition check to get around some compiler warnings for unused variables.
+ *
+ * @param[in] condition The condition
+ */
+inline TraceBaseType_t prvTraceAssertCheckCondition(TraceBaseType_t condition)
+{
+	return condition;
+}
+
+#else /* ((TRC_CFG_USE_TRACE_ASSERT) == 1) */
 
 #define TRC_ASSERT(__condition) 
 
@@ -79,7 +120,9 @@ typedef struct TraceAssertBuffer
 
 #define xTraceAssertGet(pxFileNameStringHandle, puxLineNumber) ((void)pxFileNameStringHandle, (void)puxLineNumber, TRC_FAIL)
 
-#endif
+#endif /* ((TRC_CFG_USE_TRACE_ASSERT) == 1) */
+
+/** @} */
 
 #ifdef __cplusplus
 }
