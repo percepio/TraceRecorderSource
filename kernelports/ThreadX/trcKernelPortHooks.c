@@ -6,6 +6,27 @@ extern TX_THREAD *_tx_thread_current_ptr;
 extern TX_THREAD pxIdleTxThreadDummy;
 static TX_THREAD *pxLastRunningTxThread = TX_NULL;
 
+traceResult xTraceEventBeginRawOffline_orig(uint32_t uiSize, TraceEventHandle_t* pxEventHandle);
+traceResult xTraceEventEndOffline_orig(TraceEventHandle_t pxEventHandle);
+
+/* Original version of TRC_EVENT_BEGIN which uses xTraceEventBeginRawOffline_orig for the purpose
+ * of allowing interrupt locking for xTraceCheckThreadSwitch together with event posting. */
+#define TRC_EVENT_BEGIN_OFFLINE_ORIG(uiEventCode, uiPayloadSize, pxEventHandle) \
+	(xTraceIsRecorderEnabled() ? \
+		( \
+			(xTraceEventBeginRawOffline_orig(sizeof(TraceBaseEvent_t) + (uiPayloadSize), pxEventHandle)) == TRC_SUCCESS ? \
+			( \
+				pxTraceEventDataTable->coreEventData[TRC_CFG_GET_CURRENT_CORE()].eventCounter++, \
+				SET_BASE_EVENT_DATA((TraceBaseEvent_t*)(((TraceEventData_t*)*(pxEventHandle))->pvBlob), \
+					uiEventCode, \
+					(((TraceEventData_t*)*(pxEventHandle))->size - sizeof(TraceBaseEvent_t)) / sizeof(uint32_t), \
+					pxTraceEventDataTable->coreEventData[TRC_CFG_GET_CURRENT_CORE()].eventCounter), \
+				((TraceEventData_t*)*(pxEventHandle))->offset += sizeof(TraceBaseEvent_t), \
+				TRC_SUCCESS \
+			) : TRC_FAIL \
+		) : TRC_FAIL \
+	)
+
 void xTraceResetCurrentThread()
 {
 	pxLastRunningTxThread = TX_NULL;
@@ -24,9 +45,12 @@ void xTraceCheckThreadSwitch()
 
 		TraceEventHandle_t xTraceHandle;
 
-		if (xTraceEventBegin(PSF_EVENT_THREAD_SYSTEM_SUSPEND_SUCCESS, sizeof(void*), &xTraceHandle) == TRC_SUCCESS) {
+		/* Since the regular xTraceEventBegin and xTraceEventEnd are wrapped via CTI, which calls this
+		 * function, we have to use the original (non CTI wrapped) begin/end functions.
+		 */
+		if (TRC_EVENT_BEGIN_OFFLINE_ORIG(PSF_EVENT_THREAD_SYSTEM_SUSPEND_SUCCESS, sizeof(void*), &xTraceHandle) == TRC_SUCCESS) {
 			xTraceEventAddPointer(xTraceHandle, (void*)_tx_thread_execute_ptr);
-			xTraceEventEnd(xTraceHandle);
+			xTraceEventEndOffline_orig(xTraceHandle);
 		}
 	}
 
@@ -42,9 +66,12 @@ void xTraceCheckThreadSwitch()
 			/* There has been a thread switch */
 			TraceEventHandle_t xTraceHandle;
 
-			if (xTraceEventBegin(PSF_EVENT_TASK_POTENTIAL_SWITCH_RESULT, sizeof(void*), &xTraceHandle) == TRC_SUCCESS) {
+			/* Since the regular xTraceEventBegin and xTraceEventEnd are wrapped via CTI, which calls this
+			 * function, we have to use the original (non CTI wrapped) begin/end functions.
+			 */
+			if (TRC_EVENT_BEGIN_OFFLINE_ORIG(PSF_EVENT_TASK_POTENTIAL_SWITCH_RESULT, sizeof(void*), &xTraceHandle) == TRC_SUCCESS) {
 				xTraceEventAddPointer(xTraceHandle, (void*)pxCurrentTxThread);
-				xTraceEventEnd(xTraceHandle);
+				xTraceEventEndOffline_orig(xTraceHandle);
 			}
 		}
 	}

@@ -1,11 +1,15 @@
 /*
- * Percepio Trace Recorder for Tracealyzer v4.6.0(RC1)
+ * Percepio Trace Recorder for Tracealyzer v4.6.0
  * Copyright 2021 Percepio AB
  * www.percepio.com
  *
  * SPDX-License-Identifier: Apache-2.0
- *
- * The interface for the internal buffer.
+ */
+
+/**
+ * @file 
+ * 
+ * @brief Public internal event buffer APIs.
  */
 
 #ifndef TRC_INTERNAL_BUFFER_H
@@ -28,10 +32,16 @@ extern "C" {
 #endif
 
 /**
- * @brief Initializes the internal event buffer used by certain stream ports.
+ * @defgroup trace_internal_event_buffer_apis Trace Internal Event Buffer APIs
+ * @ingroup trace_recorder_apis
+ * @{
+ */
+
+/**
+ * @internal Initializes the internal trace event buffer used by certain stream ports.
  * 
- * @param puiBuffer Pointer to previously allocated memory buffer
- * @param uiSize Size of buffer
+ * @param[in] puiBuffer Pointer to previously allocated memory buffer
+ * @param[in] uiSize Size of buffer
  * 
  * @retval TRC_FAIL Failure
  * @retval TRC_SUCCESS Success
@@ -39,12 +49,11 @@ extern "C" {
 traceResult xTraceInternalEventBufferInitialize(uint8_t* puiBuffer, uint32_t uiSize);
 
 /**
- * @brief Pushes data to the internal buffer.
+ * @brief Pushes data to the internal trace event buffer.
  * 
- * @param pvData Pointer to data
- * @param uiSize Size of data
- * @param piBytesWritten Pointer to variable which the routine will write the number
- * of bytes that was pushed into the trace event buffer.
+ * @param[in] pvData Pointer to data
+ * @param[in] uiSize Size of data
+ * @param[out] piBytesWritten Bytes written.
  * 
  * @retval TRC_FAIL Failure
  * @retval TRC_SUCCESS Success
@@ -52,7 +61,7 @@ traceResult xTraceInternalEventBufferInitialize(uint8_t* puiBuffer, uint32_t uiS
 traceResult xTraceInternalEventBufferPush(void *pvData, uint32_t uiSize, int32_t *piBytesWritten);
 
 /**
- * @brief Transfers all internal event buffer data using the function 
+ * @brief Transfers all internal trace event buffer data using the function 
  * xTraceStreamPortWriteData(...) as defined in trcStreamPort.h.
  *
  * This function is intended to be called by the periodic TzCtrl task with a 
@@ -61,8 +70,7 @@ traceResult xTraceInternalEventBufferPush(void *pvData, uint32_t uiSize, int32_t
  * In case of errors from the streaming interface, it registers a warning
  * (TRC_WARNING_STREAM_PORT_WRITE) provided by xTraceErrorGetLast().
  * 
- * @param piBytesWritten Pointer to variable which the routine will write the number
- * of bytes that was pushed into the trace event buffer.
+ * @param[out] piBytesWritten Bytes written.
  * 
  * @retval TRC_FAIL Failure
  * @retval TRC_SUCCESS Success
@@ -70,12 +78,14 @@ traceResult xTraceInternalEventBufferPush(void *pvData, uint32_t uiSize, int32_t
 traceResult xTraceInternalEventBufferTransfer(int32_t *piBytesWritten);
 
 /**
- * @brief Clears all events in the internal event buffer.
+ * @brief Clears all trace events in the internal trace event buffer.
  * 
  * @retval TRC_FAIL Failure
  * @retval TRC_SUCCESS Success
  */
 traceResult xTraceInternalEventBufferClear(void);
+
+/** @} */
 
 #ifdef __cplusplus
 }

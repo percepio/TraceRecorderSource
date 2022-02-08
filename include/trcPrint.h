@@ -1,12 +1,16 @@
 /*
-* Percepio Trace Recorder for Tracealyzer v4.6.0(RC1)
+* Percepio Trace Recorder for Tracealyzer v4.6.0
 * Copyright 2021 Percepio AB
 * www.percepio.com
 *
 * SPDX-License-Identifier: Apache-2.0
-*
-* The interface for print.
 */
+
+/**
+ * @file 
+ * 
+ * @brief Public trace print APIs.
+ */
 
 #ifndef TRC_PRINT_H
 #define TRC_PRINT_H
@@ -22,22 +26,39 @@
 extern "C" {
 #endif
 
+/**
+ * @defgroup trace_print_apis Trace Print APIs
+ * @ingroup trace_recorder_apis
+ * @{
+ */
+
 #if (TRC_CFG_SCHEDULING_ONLY == 0) && (TRC_CFG_INCLUDE_USER_EVENTS == 1)
 
+/** @internal */
 #define TRC_PRINT_BUFFER_SIZE (sizeof(TraceStringHandle_t) + sizeof(TraceStringHandle_t))
 
+/**
+ * @internal Trace Print Buffer Structure
+ */
 typedef struct TracePrintBuffer
 {
 	uint32_t buffer[(TRC_PRINT_BUFFER_SIZE) / sizeof(uint32_t)];
 } TracePrintBuffer_t;
 
+/**
+ * @internal Initialize print trace system.
+ * 
+ * @param[in] pxBuffer Pointer to memory that will be used by the print
+ * trace system.
+ * 
+ * @retval TRC_FAIL Failure
+ * @retval TRC_SUCCESS Success
+ */
 traceResult xTracePrintInitialize(TracePrintBuffer_t* pxBuffer);
 
-/******************************************************************************
- * xTracePrint
- *
- * Generates "User Events", with unformatted text.
- *
+/**
+ * @brief Generate "User Events" with unformatted text.
+ * 
  * User Events can be used for very efficient application logging, and are shown
  * as yellow labels in the main trace view.
  *
@@ -56,30 +77,40 @@ traceResult xTracePrintInitialize(TracePrintBuffer_t* pxBuffer);
  *	 TraceStringHandle_t xChannel = xTraceStringRegister("MyChannel");
  *	 ...
  *	 xTracePrint(xChannel, "Hello World!");
- *
- ******************************************************************************/
+ * 
+ * @param[in] xChannel Channel.
+ * @param[in] szString String.
+ * 
+ * @retval TRC_FAIL Failure
+ * @retval TRC_SUCCESS Success
+ */
 traceResult xTracePrint(TraceStringHandle_t xChannel, const char* szString);
 
-/*******************************************************************************
-* xTraceConsoleChannelPrintF
-*
-* Wrapper for vTracePrint, using the default channel. Can be used as a drop-in
-* replacement for printf and similar functions, e.g. in a debug logging macro.
-*
-* Example:
-*
-*	 // Old: #define LogString debug_console_printf
-*
-*    // New, log to Tracealyzer instead:
-*	 #define LogString xTraceConsoleChannelPrintF
-*	 ...
-*	 LogString("My value is: %d", myValue);
-******************************************************************************/
+/**
+ * @brief Wrapper for vTracePrintF for printing to default channel.
+ * 
+ * Wrapper for vTracePrintF, using the default channel. Can be used as a drop-in
+ * replacement for printf and similar functions, e.g. in a debug logging macro.
+ * 
+ * Example:
+ * 	// Old: #define LogString debug_console_printf
+ * 	
+ *  // New, log to Tracealyzer instead:
+ *  #define LogString xTraceConsoleChannelPrintF
+ *  ...
+ *  LogString("My value is: %d", myValue);
+ * 
+ * @param[in] szFormat Format
+ * @param[in] ... 
+ * 
+ * @retval TRC_FAIL Failure
+ * @retval TRC_SUCCESS Success
+ */
 traceResult xTraceConsoleChannelPrintF(const char* szFormat, ...);
 
-/******************************************************************************
- * xTracePrintF
- *
+/**
+ * @brief Generates "User Events" with formatted text and data.
+ * 
  * Generates "User Events", with formatted text and data, similar to a "printf".
  * It is very fast since the actual formatting is done on the host side when the
  * trace is displayed.
@@ -121,17 +152,26 @@ traceResult xTraceConsoleChannelPrintF(const char* szFormat, ...);
  * including 8 byte for the base event fields and the format string. So with
  * one data argument, the maximum string length is 48 chars. If this is exceeded
  * the string is truncated (4 bytes at a time).
- *
- ******************************************************************************/
+ * 
+ * @param[in] xChannel Channel.
+ * @param[in] szFormat Format.
+ * @param[in] ... 
+ * 
+ * @retval TRC_FAIL Failure
+ * @retval TRC_SUCCESS Success
+ */
 traceResult xTracePrintF(TraceStringHandle_t xChannel, const char* szFormat, ...);
 
-/******************************************************************************
- * xTraceVPrintF
- *
- * xTracePrintF variant that accepts a va_list.
- * See xTraceVPrintF documentation for further details.
- *
- ******************************************************************************/
+/**
+ * @brief Generates "User Events" with formatted text and data.
+ * 
+ * @param[in] xChannel Channel.
+ * @param[in] szFormat Format.
+ * @param[in] xVL Variable list arguments.
+ * 
+ * @retval TRC_FAIL Failure
+ * @retval TRC_SUCCESS Success
+ */
 traceResult xTraceVPrintF(TraceStringHandle_t xChannel, const char* szFormat, va_list xVL);
 
 #else /* (TRC_CFG_SCHEDULING_ONLY == 0) && (TRC_CFG_INCLUDE_USER_EVENTS == 1) */
@@ -152,6 +192,8 @@ typedef struct TracePrintBuffer
 #define xTraceVPrintF(c, s, v) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_4((void)c, (void)s, (void)v, TRC_SUCCESS)
 
 #endif /* (TRC_CFG_SCHEDULING_ONLY == 0) && (TRC_CFG_INCLUDE_USER_EVENTS == 1) */
+
+/** @} */
 
 #ifdef __cplusplus
 }

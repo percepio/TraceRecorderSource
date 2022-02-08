@@ -1,5 +1,5 @@
 /*
- * Trace Recorder for Tracealyzer v4.6.0(RC1)
+ * Trace Recorder for Tracealyzer v4.6.0
  * Copyright 2021 Percepio AB
  * www.percepio.com
  *
@@ -39,7 +39,7 @@ TraceHeapHandle_t xSystemHeapHandle;
  * interface (assuming TRC_STREAM_PORT_USE_INTERNAL_BUFFER == 1) and for
  * receiving commands from Tracealyzer. Also does some diagnostics.
  *
- * @param _arg
+ * @param[in] _arg
  */
 void TzCtrlThreadEntry(ULONG _arg)
 {

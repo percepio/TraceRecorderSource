@@ -1,5 +1,5 @@
 /*
- * Trace Recorder for Tracealyzer v4.6.0(RC1)
+ * Trace Recorder for Tracealyzer v4.6.0
  * Copyright 2021 Percepio AB
  * www.percepio.com
  *
@@ -118,7 +118,6 @@ void xTraceTimerPerformanceSystemInfoGet(UINT uiTxEventCode);
 #undef TX_TRACE_IN_LINE_INSERT
 #define TX_TRACE_IN_LINE_INSERT(i, a, b, c, d, e) \
 	{ \
-		xTraceCheckThreadSwitch(); \
 		TRC_TG_##e(_##i)(i, a, b, c, d, e); \
 	}
 

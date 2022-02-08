@@ -1,12 +1,16 @@
 /*
-* Percepio Trace Recorder for Tracealyzer v4.6.0(RC1)
+* Percepio Trace Recorder for Tracealyzer v4.6.0
 * Copyright 2021 Percepio AB
 * www.percepio.com
 *
 * SPDX-License-Identifier: Apache-2.0
-*
-* The interface for the diagnostics.
 */
+
+/**
+ * @file 
+ * 
+ * @brief Public trace diagnostic APIs.
+ */
 
 #ifndef TRC_DIAGNOSTICS_H
 #define TRC_DIAGNOSTICS_H
@@ -37,14 +41,97 @@ typedef struct TraceDiagnosticsBuffer
 	uint8_t buffer[sizeof(TraceBaseType_t) * (TRC_DIAGNOSTICS_COUNT)];
 } TraceDiagnosticsBuffer_t;
 
+/**
+ * @internal Initialize diagnostics
+ *
+ * @param[in] pxBuffer Diagnostics buffer
+ *
+ * @retval TRC_FAIL Failure
+ * @retval TRC_SUCCESS Success
+ */
 traceResult xTraceDiagnosticsInitialize(TraceDiagnosticsBuffer_t* pxBuffer);
+
+/**
+ * @brief Retrieve diagnostics value
+ *
+ * @param[in] xType Diagnostics type
+ * @param[out] pxValue Pointer to value
+ *
+ * @retval TRC_FAIL Failure
+ * @retval TRC_SUCCESS Success
+ */
 traceResult xTraceDiagnosticsGet(TraceDiagnosticsType_t xType, TraceBaseType_t* pxValue);
+
+/**
+ * @brief Set diagnostics value
+ *
+ * @param[in] xType Diagnostics type
+ * @param[in] xValue Value
+ *
+ * @retval TRC_FAIL Failure
+ * @retval TRC_SUCCESS Success
+ */
 traceResult xTraceDiagnosticsSet(TraceDiagnosticsType_t xType, TraceBaseType_t xValue);
+
+/**
+ * @brief Add to diagnostics value
+ *
+ * @param[in] xType Diagnostics type
+ * @param[in] xValue Value
+ *
+ * @retval TRC_FAIL Failure
+ * @retval TRC_SUCCESS Success
+ */
 traceResult xTraceDiagnosticsAdd(TraceDiagnosticsType_t xType, TraceBaseType_t xValue);
+
+/**
+ * @brief Increase diagnostics value
+ *
+ * @param[in] xType Diagnostics type
+ *
+ * @retval TRC_FAIL Failure
+ * @retval TRC_SUCCESS Success
+ */
 traceResult xTraceDiagnosticsIncrease(TraceDiagnosticsType_t xType);
+
+/**
+ * @brief Decrease diagnostics value
+ *
+ * @param[in] xType Diagnostics type
+ *
+ * @retval TRC_FAIL Failure
+ * @retval TRC_SUCCESS Success
+ */
 traceResult xTraceDiagnosticsDecrease(TraceDiagnosticsType_t xType);
+
+/**
+ * @brief Set a new diagnostics value if higher than previous value
+ *
+ * @param[in] xType Dagnostics type
+ * @param[in] xValue Value
+ *
+ * @retval TRC_FAIL Failure
+ * @retval TRC_SUCCESS Success
+ */
 traceResult xTraceDiagnosticsSetIfHigher(TraceDiagnosticsType_t xType, TraceBaseType_t xValue);
+
+/**
+ * @brief Set a new diagnostics value if lower than previous value
+ *
+ * @param[in] xType Dagnostics type
+ * @param[in] xValue Value
+ *
+ * @retval TRC_FAIL Failure
+ * @retval TRC_SUCCESS Success
+ */
 traceResult xTraceDiagnosticsSetIfLower(TraceDiagnosticsType_t xType, TraceBaseType_t xValue);
+
+/**
+ * @brief Check the diagnostics status
+ *
+ * @retval TRC_FAIL Failure
+ * @retval TRC_SUCCESS Success
+ */
 traceResult xTraceDiagnosticsCheckStatus(void);
 
 #ifdef __cplusplus

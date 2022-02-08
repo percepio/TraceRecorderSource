@@ -1,5 +1,5 @@
 /*
- * Trace Recorder for Tracealyzer v4.6.0(RC1)
+ * Trace Recorder for Tracealyzer v4.6.0
  * Copyright 2021 Percepio AB
  * www.percepio.com
  *
@@ -35,11 +35,12 @@ traceResult prvTraceCDCReceive(void* data, uint32_t uiSize, int32_t* piBytesRece
 traceResult prvTraceCDCTransmit(void* pvData, uint32_t uiSize, int32_t* piBytesSent);
 
 /**
- * @brief Stream port initialize callback.
+ * @internal Stream port initialize callback.
  *
  * This function is called by the recorder as part of its initialization phase.
  *
- * @param pxBuffer Buffer
+ * @param[in] pxBuffer Buffer
+ * 
  * @retval TRC_FAIL Initialization failed
  * @retval TRC_SUCCESS Success
  */
@@ -48,8 +49,9 @@ traceResult xTraceStreamPortInitialize(TraceStreamPortBuffer_t* pxBuffer);
 /**
  * @brief Allocates data from the stream port.
  *
- * @param uiSize Allocation size
- * @param ppvData Allocation data pointer
+ * @param[in] uiSize Allocation size
+ * @param[out] ppvData Allocation data pointer
+ * 
  * @retval TRC_FAIL Allocate failed
  * @retval TRC_SUCCESS Success
  */
@@ -60,9 +62,10 @@ traceResult xTraceStreamPortInitialize(TraceStreamPortBuffer_t* pxBuffer);
  * stream port this data might be directly written to the stream port interface, buffered, or
  * something else.
  *
- * @param pvData Data to commit
- * @param uiSize Data to commit size
- * @param piBytesCommitted Bytes committed
+ * @param[in] pvData Data to commit
+ * @param[in] uiSize Data to commit size
+ * @param[out] piBytesCommitted Bytes committed
+ * 
  * @retval TRC_FAIL Commit failed
  * @retval TRC_SUCCESS Success
  */
@@ -71,9 +74,10 @@ traceResult xTraceStreamPortInitialize(TraceStreamPortBuffer_t* pxBuffer);
 /**
  * @brief Writes data through the stream port interface.
  *
- * @param pvData Data to write
- * @param uiSize Data to write size
- * @param piBytesWritten Bytes written
+ * @param[in] pvData Data to write
+ * @param[in] uiSize Data to write size
+ * @param[out] piBytesWritten Bytes written
+ * 
  * @retval TRC_FAIL Write failed
  * @retval TRC_SUCCESS Success
  */
@@ -82,9 +86,10 @@ traceResult xTraceStreamPortInitialize(TraceStreamPortBuffer_t* pxBuffer);
 /**
  * @brief Reads data through the stream port interface.
  *
- * @param pvData Destination data buffer
- * @param uiSize Destination data buffer size
- * @param piBytesRead Bytes read
+ * @param[in] pvData Destination data buffer
+ * @param[in] uiSize Destination data buffer size
+ * @param[out] piBytesRead Bytes read
+ * 
  * @retval TRC_FAIL Read failed
  * @retval TRC_SUCCESS Success
  */

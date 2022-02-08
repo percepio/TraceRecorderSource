@@ -1,5 +1,5 @@
 /*
-* Percepio Trace Recorder for Tracealyzer v4.6.0(RC1)
+* Percepio Trace Recorder for Tracealyzer v4.6.0
 * Copyright 2021 Percepio AB
 * www.percepio.com
 *
@@ -14,11 +14,6 @@
 
 #if (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING)
 
-/*******************************************************************************
-* xTraceStringRegister
-*
-* Stores a name for a user event channel, returns the handle.
-******************************************************************************/
 traceResult xTraceStringRegister(const char* szString, TraceStringHandle_t *pString)
 {
 	TraceEntryHandle_t xEntryHandle;
@@ -66,7 +61,6 @@ traceResult xTraceStringRegister(const char* szString, TraceStringHandle_t *pStr
 	return TRC_SUCCESS;
 }
 
-/* DEPRECATED */
 TraceStringHandle_t xTraceRegisterString(const char *name)
 {
 	TraceStringHandle_t trcStr = 0;

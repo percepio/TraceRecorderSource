@@ -1,5 +1,5 @@
 /*
-* Trace Recorder for Tracealyzer v4.6.0(RC1)
+* Trace Recorder for Tracealyzer v4.6.0
 * Copyright 2021 Percepio AB
 * www.percepio.com
 *
@@ -132,7 +132,6 @@ traceResult xTraceEntryCreate(TraceEntryHandle_t *pxEntryHandle)
 	return TRC_SUCCESS;
 }
 
-/* Deletes an entry from table */
 traceResult xTraceEntryDelete(TraceEntryHandle_t xEntryHandle)
 {
 	TraceEntryIndex_t xIndex;
@@ -202,7 +201,6 @@ traceResult xTraceEntryFind(void* pvAddress, TraceEntryHandle_t* pxEntryHandle)
 	return TRC_FAIL;
 }
 
-/* Saves a symbol in the entry */
 traceResult xTraceEntrySetSymbol(TraceEntryHandle_t xEntryHandle, const char* szSymbol)
 {
 	uint32_t i;
@@ -280,7 +278,6 @@ traceResult xTraceEntryCreateWithAddress(void* pvAddress, TraceEntryHandle_t* px
 	return TRC_ENTRY_CREATE_WITH_ADDRESS(pvAddress, pxEntryHandle);
 }
 
-/* Saves a symbol in the entry */
 traceResult xTraceEntrySetState(TraceEntryHandle_t xEntryHandle, uint32_t uiStateIndex, TraceUnsignedBaseType_t uxState)
 {
 	/* This should never fail */

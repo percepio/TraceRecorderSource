@@ -1,5 +1,5 @@
 /*
- * Trace Recorder for Tracealyzer v4.6.0(RC1)
+ * Trace Recorder for Tracealyzer v4.6.0
  * Copyright 2021 Percepio AB
  * www.percepio.com
  *
@@ -74,7 +74,7 @@ void xTraceHardwarePortInitCortexM()
 #endif /* (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING) */
 #endif /* ((TRC_CFG_HARDWARE_PORT == TRC_HARDWARE_PORT_ARM_Cortex_M) && (defined (__CORTEX_M) && (__CORTEX_M >= 0x03))) */
 
-#if ((TRC_CFG_HARDWARE_PORT == TRC_HARDWARE_PORT_ARM_CORTEX_A9) || (TRC_CFG_HARDWARE_PORT == TRC_HARDWARE_PORT_XILINX_ZyncUltraScaleR5))
+#if ((TRC_CFG_HARDWARE_PORT == TRC_HARDWARE_PORT_ARM_CORTEX_A9) || (TRC_CFG_HARDWARE_PORT == TRC_HARDWARE_PORT_XILINX_ZyncUltraScaleR5) || (TRC_CFG_HARDWARE_PORT == TRC_HARDWARE_PORT_CYCLONE_V_HPS))
 
 #define CS_TYPE_NONE 0
 #define CS_TYPE_TASK 1
@@ -86,13 +86,11 @@ void xTraceHardwarePortInitCortexM()
 int cortex_a9_r5_enter_critical(void)
 {
 	uint32_t cs_type = CS_TYPE_INVALID;
-	uint32_t uiTraceState;
 
-	xTraceStateGet(&uiTraceState);
     if ((prvGetCPSR() & 0x001F) == 0x13) // CSPR (ASPR) mode = SVC
     {
     	/* Executing in an ISR other than the context-switch (where interrupts might have been enabled, motivating a critical section). */
-    	if (xTraceKernelPortSetInterruptMask() == pdTRUE)
+    	if (ulPortSetInterruptMask() == pdTRUE)
     	{
     		cs_type = CS_TYPE_ISR_MASK_NOT_CHANGED;
     	}
@@ -101,15 +99,15 @@ int cortex_a9_r5_enter_critical(void)
     		cs_type = CS_TYPE_ISR_MASK_CHANGED;
     	}
     }
-    else if (uiTraceState == TRC_STATE_IN_TASKSWITCH)
+    else if (pxTraceRecorderData->uiTraceSystemState == TRC_STATE_IN_TASKSWITCH)
     {
     	// In the context-switch code. All interrupts are already masked here, so don't modify the mask.
     	cs_type = CS_TYPE_NONE;
     }
-    else if (uiTraceState != TRC_STATE_IN_TASKSWITCH)
+    else if (pxTraceRecorderData->uiTraceSystemState != TRC_STATE_IN_TASKSWITCH)
     {
     	// Not within ISR or task-switch context, use a regular critical section.
-    	xTraceKernelPortEnterCriticalSection();
+    	vPortEnterCritical();
     	cs_type = CS_TYPE_TASK;
     }
 
@@ -121,11 +119,11 @@ void cortex_a9_r5_exit_critical(int cs_type)
 	switch (cs_type)
 	{
 		case CS_TYPE_TASK:
-			xTraceKernelPortExitCriticalSection();
+			vPortExitCritical();
 			break;
 
 		case CS_TYPE_ISR_MASK_CHANGED:
-			xTraceKernelPortClearInterruptMask(pdFALSE);	// pdFALSE means it will reset the IRQ mask.
+			vPortClearInterruptMask(pdFALSE);	// pdFALSE means it will reset the IRQ mask.
 			break;
 
 		case CS_TYPE_ISR_MASK_NOT_CHANGED:

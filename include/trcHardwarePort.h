@@ -1,5 +1,5 @@
 /*
- * Trace Recorder for Tracealyzer v4.6.0(RC1)
+ * Trace Recorder for Tracealyzer v4.6.0
  * Copyright 2021 Percepio AB
  * www.percepio.com
  *
@@ -484,6 +484,40 @@ uint32_t uiTraceTimerGetValue(void);
 		unsigned long ret;
 		/* GCC-style assembly for getting the CPSR/APSR register, where the system execution mode is found. */
 		asm volatile (" mrs  %0, cpsr" : "=r" (ret) : /* no inputs */  );
+		return ret;
+	}
+	#else
+		#error "Only GCC Supported!"
+	#endif
+
+#elif (TRC_CFG_HARDWARE_PORT == TRC_HARDWARE_PORT_CYCLONE_V_HPS)
+	#include "alt_clock_manager.h"
+
+	extern int cortex_a9_r5_enter_critical(void);
+	extern void cortex_a9_r5_exit_critical(int irq_already_masked_at_enter);
+
+	#define TRACE_ALLOC_CRITICAL_SECTION() uint32_t __irq_mask_status;
+	#define TRACE_ENTER_CRITICAL_SECTION() { __irq_mask_status = cortex_a9_r5_enter_critical(); }
+	#define TRACE_EXIT_CRITICAL_SECTION() { cortex_a9_r5_exit_critical(__irq_mask_status); }
+
+	#define TRC_HWTC_TYPE							TRC_FREE_RUNNING_32BIT_INCR
+	#define TRC_HWTC_COUNT							*((uint32_t *)0xFFFEC200)
+	#define TRC_HWTC_PERIOD							0
+	#define TRC_HWTC_DIVISOR 						1
+	#define TRC_HWTC_FREQ_HZ						(({		\
+		uint32_t __freq;									\
+		alt_clk_freq_get( ALT_CLK_MPU_PERIPH, &__freq );	\
+		__freq;												\
+	}))
+	#define TRC_IRQ_PRIORITY_ORDER 					0
+
+	#ifdef __GNUC__
+	/* For Arm Cortex-A and Cortex-R in general. */
+	static inline uint32_t prvGetCPSR(void)
+	{
+		unsigned long ret;
+		/* GCC-style assembly for getting the CPSR/APSR register, where the system execution mode is found. */
+		__asm__ __volatile__(" mrs  %0, cpsr" : "=r" (ret) : /* no inputs */  );
 		return ret;
 	}
 	#else

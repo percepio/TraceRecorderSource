@@ -1,5 +1,5 @@
 /*
- * Trace Recorder for Tracealyzer v4.6.0(RC1)
+ * Trace Recorder for Tracealyzer v4.6.0
  * Copyright 2021 Percepio AB
  * www.percepio.com
  *
@@ -16,6 +16,21 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+/**
+ * @def TRC_CFG_RECORDER_MODE
+ * @brief Specify what recording mode to use. Snapshot means that the data is saved in
+ * an internal RAM buffer, for later upload. Streaming means that the data is
+ * transferred continuously to the host PC.
+ *
+ * For more information, see http://percepio.com/2016/10/05/rtos-tracing/
+ * and the Tracealyzer User Manual.
+ *
+ * Values:
+ * TRC_RECORDER_MODE_SNAPSHOT
+ * TRC_RECORDER_MODE_STREAMING
+ */
+#define TRC_CFG_RECORDER_MODE TRC_RECORDER_MODE_STREAMING
 
 /**
  * @def TRC_CFG_FREERTOS_VERSION
@@ -84,6 +99,15 @@ extern "C" {
  * Default value is 0 since dependent on stream_buffer.c (new in FreeRTOS v10)
  */
 #define TRC_CFG_INCLUDE_STREAM_BUFFER_EVENTS 1
+
+/**
+ * @def TRC_CFG_ACKNOWLEDGE_QUEUE_SET_SEND
+ * @brief When using FreeRTOS v10.3.0 or v10.3.1, please make sure that the trace
+ * point in prvNotifyQueueSetContainer() in queue.c is renamed from
+ * traceQUEUE_SEND to traceQUEUE_SET_SEND in order to tell them apart from
+ * other traceQUEUE_SEND trace points. Then set this to TRC_ACKNOWLEDGED.
+ */
+#define TRC_CFG_ACKNOWLEDGE_QUEUE_SET_SEND  0 /* TRC_ACKNOWLEDGED */
 
 #ifdef __cplusplus
 }

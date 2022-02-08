@@ -1,5 +1,5 @@
 /*
-* Percepio Trace Recorder for Tracealyzer v4.6.0(RC1)
+* Percepio Trace Recorder for Tracealyzer v4.6.0
 * Copyright 2021 Percepio AB
 * www.percepio.com
 *
@@ -16,9 +16,13 @@
 
 #if ((TRC_CFG_USE_TRACE_ASSERT) == 1)
 
-#define TRC_ASSERT_STATE_INDEX_LINE_NUMBER 0
+#if (defined(TRC_CFG_TEST_MODE) && (TRC_CFG_TEST_MODE) == 1)
 
 extern inline TraceBaseType_t prvTraceAssertCheckCondition(TraceBaseType_t condition);
+
+#endif
+
+#define TRC_ASSERT_STATE_INDEX_LINE_NUMBER 0
 
 typedef struct TraceAssertInfo
 {

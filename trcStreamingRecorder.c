@@ -1,5 +1,5 @@
 /*
- * Trace Recorder for Tracealyzer v4.6.0(RC1)
+ * Trace Recorder for Tracealyzer v4.6.0
  * Copyright 2021 Percepio AB
  * www.percepio.com
  *
@@ -47,6 +47,9 @@ typedef struct TraceCommandType_t
 
 /* Used to interpret the data format */
 #define TRACE_FORMAT_VERSION ((uint16_t)0x000A)
+
+/* Used to determine endian of data (big/little) */
+#define TRACE_PSF_ENDIANESS_IDENTIFIER ((uint32_t)0x50534600)
 
 #if (TRC_CFG_RECORDER_BUFFER_ALLOCATION == TRC_RECORDER_BUFFER_ALLOCATION_STATIC)
 static TraceRecorderData_t xRecorderData TRC_CFG_RECORDER_DATA_ATTRIBUTE;
@@ -249,8 +252,8 @@ traceResult xTraceHeaderInitialize(TraceHeaderBuffer_t *pxBuffer)
 	/* Lowest bit used for TRC_IRQ_PRIORITY_ORDER */
 	pxHeader->uiOptions = ((TRC_IRQ_PRIORITY_ORDER) << 0);
 
-	/* 3rd bit used for TRC_CFG_DEBUG_EXPECT */
-	pxHeader->uiOptions |= ((TRC_CFG_DEBUG_EXPECT) << 2);
+	/* 3rd bit used for TRC_CFG_TEST_MODE */
+	pxHeader->uiOptions |= ((TRC_CFG_TEST_MODE) << 2);
 
 	return TRC_SUCCESS;
 }
@@ -395,6 +398,16 @@ traceResult xTraceTzCtrl(void)
 	}
 
 	return TRC_SUCCESS;
+}
+
+void vTraceSetFilterGroup(uint16_t filterGroup)
+{
+	(void)filterGroup;
+}
+
+void vTraceSetFilterMask(uint16_t filterMask)
+{
+	(void)filterMask;
 }
 
 /******************************************************************************/
