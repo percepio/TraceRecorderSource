@@ -42,7 +42,7 @@ extern "C" {
  * See trcHardwarePort.h for available ports and information on how to
  * define your own port, if not already present.
  */
-#define TRC_CFG_HARDWARE_PORT TRC_HARDWARE_PORT_ARM_Cortex_M
+#define TRC_CFG_HARDWARE_PORT TRC_HARDWARE_PORT_NOT_SET
 
 /**
  * @def TRC_CFG_SCHEDULING_ONLY
@@ -311,7 +311,7 @@ extern "C" {
  * @brief Enable or disable debug asserts. Information regarding any assert that is
  * triggered will be in trcAssert.c.
  */
-#define TRC_CFG_USE_TRACE_ASSERT 1
+#define TRC_CFG_USE_TRACE_ASSERT 0
 
 #ifdef __cplusplus
 }

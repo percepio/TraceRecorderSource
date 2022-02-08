@@ -33,8 +33,8 @@ extern "C" {
 #include <trcKernelPortConfig.h>
 #include <trcTypes.h>
 
-#ifndef TRC_CFG_DEBUG_EXPECT
-#define TRC_CFG_DEBUG_EXPECT 1
+#ifndef TRC_CFG_TEST_MODE
+#define TRC_CFG_TEST_MODE 0
 #endif
 
 /* Unless defined by the kernel port, we assume there is no support for

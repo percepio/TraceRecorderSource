@@ -177,5 +177,6 @@
 #define TRC_HARDWARE_PORT_Win64							22	/*	Yes			FreeRTOS on Win64	*/
 #define TRC_HARDWARE_PORT_XMOS_XCOREAI                  23  /*  Yes         FreeRTOS SMP        */
 #define TRC_HARDWARE_PORT_RISCV_RV32I					24	/*	Yes			FreeRTOS			*/
+#define TRC_HARDWARE_PORT_CYCLONE_V_HPS					25  /*	Yes			FreeRTOS			*/
 
 #endif /* TRC_PORTDEFINES_H */

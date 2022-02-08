@@ -252,8 +252,8 @@ traceResult xTraceHeaderInitialize(TraceHeaderBuffer_t *pxBuffer)
 	/* Lowest bit used for TRC_IRQ_PRIORITY_ORDER */
 	pxHeader->uiOptions = ((TRC_IRQ_PRIORITY_ORDER) << 0);
 
-	/* 3rd bit used for TRC_CFG_DEBUG_EXPECT */
-	pxHeader->uiOptions |= ((TRC_CFG_DEBUG_EXPECT) << 2);
+	/* 3rd bit used for TRC_CFG_TEST_MODE */
+	pxHeader->uiOptions |= ((TRC_CFG_TEST_MODE) << 2);
 
 	return TRC_SUCCESS;
 }

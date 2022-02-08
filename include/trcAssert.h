@@ -47,8 +47,26 @@ extern "C" {
 
 #define TRC_ASSERT_CUSTOM_ON_FAIL_ALWAYS_EVALUATE TRC_ASSERT_CUSTOM_ON_FAIL
 
+#if (defined(TRC_CFG_TEST_MODE) && (TRC_CFG_TEST_MODE) == 1)
+
 /* Asserts that two types have an equal size. Condition passed to function to avoid compilers warning about unreachable code due to constant value. */
 #define TRC_ASSERT_EQUAL_SIZE(x, y) if (!prvTraceAssertCheckCondition((TraceBaseType_t)(sizeof(x) == sizeof(y)))) { prvTraceAssertCreate(__FILE__, __LINE__); return TRC_FAIL; }
+
+/**
+ * @brief Inlined condition check to get around some compiler warnings for unused variables.
+ *
+ * @param[in] condition The condition
+ */
+inline TraceBaseType_t prvTraceAssertCheckCondition(TraceBaseType_t condition)
+{
+	return condition;
+}
+
+#else
+
+#define TRC_ASSERT_EQUAL_SIZE(x, y) 
+
+#endif
 
 #define TRC_ASSERT_BUFFER_SIZE (sizeof(TraceEntryHandle_t))
 
@@ -88,16 +106,6 @@ void prvTraceAssertCreate(const char* szFilePath, TraceUnsignedBaseType_t uxLine
  * @retval TRC_SUCCESS Success
  */
 traceResult xTraceAssertGet(TraceStringHandle_t* pxFileNameStringHandle, TraceUnsignedBaseType_t* puxLineNumber);
-
-/**
- * @brief Inlined condition check to get around some compiler warnings for unused variables.
- *
- * @param[in] condition The condition
- */
-inline TraceBaseType_t prvTraceAssertCheckCondition(TraceBaseType_t condition)
-{
-	return condition;
-}
 
 #else /* ((TRC_CFG_USE_TRACE_ASSERT) == 1) */
 
