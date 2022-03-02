@@ -1,5 +1,5 @@
 /*
- * Trace Recorder for Tracealyzer v4.6.0
+ * Trace Recorder for Tracealyzer v4.6.2
  * Copyright 2021 Percepio AB
  * www.percepio.com
  *
@@ -327,10 +327,17 @@ traceResult xTraceKernelPortGetUnusedStack(void* pvTask, TraceUnsignedBaseType_t
  */
 #define TRACE_CPU_CLOCK_HZ configCPU_CLOCK_HZ /* Defined in "FreeRTOSConfig.h" */
 
+#if (TRC_CFG_RECORDER_BUFFER_ALLOCATION == TRC_RECORDER_BUFFER_ALLOCATION_DYNAMIC)
 /**
- * @internal Kernel specific malloc definition
+ * @internal Kernel port specific heap initialization
  */
-#define TRACE_MALLOC(size) pvPortMalloc(size) 	
+#define TRC_KERNEL_PORT_HEAP_INIT(size)
+
+/**
+ * @internal Kernel port specific heap malloc definition
+ */
+#define TRC_KERNEL_PORT_HEAP_MALLOC(size) pvPortMalloc(size)
+#endif /* (TRC_CFG_RECORDER_BUFFER_ALLOCATION == TRC_RECORDER_BUFFER_ALLOCATION_DYNAMIC) */
 
 #if (defined(configUSE_TIMERS) && (configUSE_TIMERS == 1))
 
@@ -2109,8 +2116,8 @@ TraceHeapHandle_t xTraceKernelPortGetSystemHeapHandle(void);
 #define PSF_EVENT_STATEMACHINE_CREATE						0xED
 #define PSF_EVENT_STATEMACHINE_STATECHANGE					0xEE
 
-#define PSF_EVENT_INTERVAL_CREATE							0xEF
-#define PSF_EVENT_INTERVAL_STATECHANGE						0xF0
+#define PSF_EVENT_INTERVAL_CHANNEL_CREATE					0xEF
+#define PSF_EVENT_INTERVAL_START							0xF0
 
 #define PSF_EVENT_EXTENSION_CREATE							0xF1
 
@@ -2122,7 +2129,10 @@ TraceHeapHandle_t xTraceKernelPortGetSystemHeapHandle(void);
 
 #define PSF_EVENT_MUTEX_TAKE_RECURSIVE_BLOCK				0xF6
 
-#define TRC_EVENT_LAST_ID									PSF_EVENT_COUNTER_LIMIT_EXCEEDED
+#define PSF_EVENT_INTERVAL_STOP								0xF7
+#define PSF_EVENT_INTERVAL_CHANNEL_SET_CREATE				0xF8
+
+#define TRC_EVENT_LAST_ID									PSF_EVENT_INTERVAL_CHANNEL_SET_CREATE
 
 /*** The trace macros for streaming ******************************************/
 

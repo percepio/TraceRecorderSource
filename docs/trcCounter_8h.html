@@ -26,7 +26,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Percepio Trace Recorder
-   &#160;<span id="projectnumber">v4.6.0</span>
+   &#160;<span id="projectnumber">v4.6.2</span>
    </div>
   </td>
  </tr>
@@ -83,6 +83,7 @@ $(document).ready(function(){initNavTree('trcCounter_8h.html',''); initResizable
 
 <div class="header">
   <div class="summary">
+<a href="#define-members">Macros</a> &#124;
 <a href="#func-members">Functions</a>  </div>
   <div class="headertitle">
 <div class="title">trcCounter.h File Reference</div>  </div>
@@ -95,6 +96,30 @@ $(document).ready(function(){initNavTree('trcCounter_8h.html',''); initResizable
 </div>
 <p><a href="trcCounter_8h_source.html">Go to the source code of this file.</a></p>
 <table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
+Macros</h2></td></tr>
+<tr class="memitem:ga4d812ffb5d2d1f54b8fd94bc5d8596d5"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__trace__counter__apis.html#ga4d812ffb5d2d1f54b8fd94bc5d8596d5">xTraceCounterAdd</a>(xCounterHandle,  xValue)&#160;&#160;&#160;<a class="el" href="group__trace__counter__apis.html#gaab9ced4239f659fbe9390187e05cbd4a">xTraceCounterSet</a>(xCounterHandle, (TraceBaseType_t)(xTraceEntryGetStateReturn((TraceEntryHandle_t)(xCounterHandle), TRC_COUNTER_VALUE_INDEX)) + (xValue))</td></tr>
+<tr class="memdesc:ga4d812ffb5d2d1f54b8fd94bc5d8596d5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Adds value to trace counter.  <a href="group__trace__counter__apis.html#ga4d812ffb5d2d1f54b8fd94bc5d8596d5">More...</a><br /></td></tr>
+<tr class="separator:ga4d812ffb5d2d1f54b8fd94bc5d8596d5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga0ac6b92f37a58f899fab057331c25f39"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__trace__counter__apis.html#ga0ac6b92f37a58f899fab057331c25f39">xTraceCounterGet</a>(xCounterHandle,  pxValue)&#160;&#160;&#160;xTraceEntryGetState((TraceEntryHandle_t)(xCounterHandle), TRC_COUNTER_VALUE_INDEX, (TraceUnsignedBaseType_t*)(pxValue))</td></tr>
+<tr class="memdesc:ga0ac6b92f37a58f899fab057331c25f39"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets trace counter value.  <a href="group__trace__counter__apis.html#ga0ac6b92f37a58f899fab057331c25f39">More...</a><br /></td></tr>
+<tr class="separator:ga0ac6b92f37a58f899fab057331c25f39"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga6374de3cf1de24d354ea095c75a54742"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__trace__counter__apis.html#ga6374de3cf1de24d354ea095c75a54742">xTraceCounterIncrease</a>(xCounterHandle)&#160;&#160;&#160;<a class="el" href="group__trace__counter__apis.html#ga4d812ffb5d2d1f54b8fd94bc5d8596d5">xTraceCounterAdd</a>(xCounterHandle, 1)</td></tr>
+<tr class="memdesc:ga6374de3cf1de24d354ea095c75a54742"><td class="mdescLeft">&#160;</td><td class="mdescRight">Increases trace counter value.  <a href="group__trace__counter__apis.html#ga6374de3cf1de24d354ea095c75a54742">More...</a><br /></td></tr>
+<tr class="separator:ga6374de3cf1de24d354ea095c75a54742"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaa9d39eb5516a05710a2db79cc7dcc181"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__trace__counter__apis.html#gaa9d39eb5516a05710a2db79cc7dcc181">xTraceCounterDecrease</a>(xCounterHandle)&#160;&#160;&#160;<a class="el" href="group__trace__counter__apis.html#ga4d812ffb5d2d1f54b8fd94bc5d8596d5">xTraceCounterAdd</a>(xCounterHandle, -1)</td></tr>
+<tr class="memdesc:gaa9d39eb5516a05710a2db79cc7dcc181"><td class="mdescLeft">&#160;</td><td class="mdescRight">Decreases trace counter value.  <a href="group__trace__counter__apis.html#gaa9d39eb5516a05710a2db79cc7dcc181">More...</a><br /></td></tr>
+<tr class="separator:gaa9d39eb5516a05710a2db79cc7dcc181"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga692a007ff950ec87f1988782ca1145c0"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__trace__counter__apis.html#ga692a007ff950ec87f1988782ca1145c0">xTraceCounterGetUpperLimit</a>(xCounterHandle,  pxValue)&#160;&#160;&#160;xTraceEntryGetState((TraceEntryHandle_t)(xCounterHandle), TRC_COUNTER_UPPER_LIMIT_INDEX, (TraceUnsignedBaseType_t*)(pxValue))</td></tr>
+<tr class="memdesc:ga692a007ff950ec87f1988782ca1145c0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets trace counter upper limit.  <a href="group__trace__counter__apis.html#ga692a007ff950ec87f1988782ca1145c0">More...</a><br /></td></tr>
+<tr class="separator:ga692a007ff950ec87f1988782ca1145c0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaba3f1e8fc86f08abb8451d7cb4503c76"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__trace__counter__apis.html#gaba3f1e8fc86f08abb8451d7cb4503c76">xTraceCounterGetLowerLimit</a>(xCounterHandle,  pxValue)&#160;&#160;&#160;xTraceEntryGetState((TraceEntryHandle_t)(xCounterHandle), TRC_COUNTER_LOWER_LIMIT_INDEX, (TraceUnsignedBaseType_t*)(pxValue))</td></tr>
+<tr class="memdesc:gaba3f1e8fc86f08abb8451d7cb4503c76"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets trace counter lower limit.  <a href="group__trace__counter__apis.html#gaba3f1e8fc86f08abb8451d7cb4503c76">More...</a><br /></td></tr>
+<tr class="separator:gaba3f1e8fc86f08abb8451d7cb4503c76"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gab04248a0d3ad6abe5e9a787b26091524"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__trace__counter__apis.html#gab04248a0d3ad6abe5e9a787b26091524">xTraceCounterGetName</a>(xCounterHandle,  pszName)&#160;&#160;&#160;xTraceEntryGetSymbol((TraceEntryHandle_t)(xCounterHandle), pszName)</td></tr>
+<tr class="memdesc:gab04248a0d3ad6abe5e9a787b26091524"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets trace counter name.  <a href="group__trace__counter__apis.html#gab04248a0d3ad6abe5e9a787b26091524">More...</a><br /></td></tr>
+<tr class="separator:gab04248a0d3ad6abe5e9a787b26091524"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
 <tr class="memitem:ga2e9567e1b12afeea68e415f46963c5ca"><td class="memItemLeft" align="right" valign="top">traceResult&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__trace__counter__apis.html#ga2e9567e1b12afeea68e415f46963c5ca">xTraceCounterSetCallback</a> (TraceCounterCallback_t xCallback)</td></tr>
@@ -103,30 +128,9 @@ Functions</h2></td></tr>
 <tr class="memitem:gabc5ffcf7218f9b9dfde860aa3f0f2632"><td class="memItemLeft" align="right" valign="top">traceResult&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__trace__counter__apis.html#gabc5ffcf7218f9b9dfde860aa3f0f2632">xTraceCounterCreate</a> (const char *szName, TraceBaseType_t xInitialValue, TraceBaseType_t xLowerLimit, TraceBaseType_t xUpperLimit, TraceCounterHandle_t *pxCounterHandle)</td></tr>
 <tr class="memdesc:gabc5ffcf7218f9b9dfde860aa3f0f2632"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates trace counter.  <a href="group__trace__counter__apis.html#gabc5ffcf7218f9b9dfde860aa3f0f2632">More...</a><br /></td></tr>
 <tr class="separator:gabc5ffcf7218f9b9dfde860aa3f0f2632"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gacca054c0133f2a65b5f28aaed66a74f0"><td class="memItemLeft" align="right" valign="top">traceResult&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__trace__counter__apis.html#gacca054c0133f2a65b5f28aaed66a74f0">xTraceCounterAdd</a> (TraceCounterHandle_t xCounterHandle, TraceBaseType_t xValue)</td></tr>
-<tr class="memdesc:gacca054c0133f2a65b5f28aaed66a74f0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Adds value to trace counter.  <a href="group__trace__counter__apis.html#gacca054c0133f2a65b5f28aaed66a74f0">More...</a><br /></td></tr>
-<tr class="separator:gacca054c0133f2a65b5f28aaed66a74f0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gaab9ced4239f659fbe9390187e05cbd4a"><td class="memItemLeft" align="right" valign="top">traceResult&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__trace__counter__apis.html#gaab9ced4239f659fbe9390187e05cbd4a">xTraceCounterSet</a> (TraceCounterHandle_t xCounterHandle, TraceBaseType_t xValue)</td></tr>
 <tr class="memdesc:gaab9ced4239f659fbe9390187e05cbd4a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets trace counter value.  <a href="group__trace__counter__apis.html#gaab9ced4239f659fbe9390187e05cbd4a">More...</a><br /></td></tr>
 <tr class="separator:gaab9ced4239f659fbe9390187e05cbd4a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gada503f21aa8114ef42b4e055933199af"><td class="memItemLeft" align="right" valign="top">traceResult&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__trace__counter__apis.html#gada503f21aa8114ef42b4e055933199af">xTraceCounterGet</a> (TraceCounterHandle_t xCounterHandle, TraceBaseType_t *pxValue)</td></tr>
-<tr class="memdesc:gada503f21aa8114ef42b4e055933199af"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets trace counter value.  <a href="group__trace__counter__apis.html#gada503f21aa8114ef42b4e055933199af">More...</a><br /></td></tr>
-<tr class="separator:gada503f21aa8114ef42b4e055933199af"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga0189f6362ae095a8cd045f8efcd5fa8a"><td class="memItemLeft" align="right" valign="top">traceResult&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__trace__counter__apis.html#ga0189f6362ae095a8cd045f8efcd5fa8a">xTraceCounterIncrease</a> (TraceCounterHandle_t xCounterHandle)</td></tr>
-<tr class="memdesc:ga0189f6362ae095a8cd045f8efcd5fa8a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Increases trace counter value.  <a href="group__trace__counter__apis.html#ga0189f6362ae095a8cd045f8efcd5fa8a">More...</a><br /></td></tr>
-<tr class="separator:ga0189f6362ae095a8cd045f8efcd5fa8a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gaa711fce63950a2b766c93f3a44ac27ff"><td class="memItemLeft" align="right" valign="top">traceResult&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__trace__counter__apis.html#gaa711fce63950a2b766c93f3a44ac27ff">xTraceCounterDecrease</a> (TraceCounterHandle_t xCounterHandle)</td></tr>
-<tr class="memdesc:gaa711fce63950a2b766c93f3a44ac27ff"><td class="mdescLeft">&#160;</td><td class="mdescRight">Decreases trace counter value.  <a href="group__trace__counter__apis.html#gaa711fce63950a2b766c93f3a44ac27ff">More...</a><br /></td></tr>
-<tr class="separator:gaa711fce63950a2b766c93f3a44ac27ff"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga3c3dac153046b50a3de7e9ddc3865ad6"><td class="memItemLeft" align="right" valign="top">traceResult&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__trace__counter__apis.html#ga3c3dac153046b50a3de7e9ddc3865ad6">xTraceCounterGetUpperLimit</a> (TraceCounterHandle_t xCounterHandle, TraceBaseType_t *pxValue)</td></tr>
-<tr class="memdesc:ga3c3dac153046b50a3de7e9ddc3865ad6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets trace counter upper limit.  <a href="group__trace__counter__apis.html#ga3c3dac153046b50a3de7e9ddc3865ad6">More...</a><br /></td></tr>
-<tr class="separator:ga3c3dac153046b50a3de7e9ddc3865ad6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga2abeccf3bc0a79ca4fecbd7395bab02d"><td class="memItemLeft" align="right" valign="top">traceResult&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__trace__counter__apis.html#ga2abeccf3bc0a79ca4fecbd7395bab02d">xTraceCounterGetLowerLimit</a> (TraceCounterHandle_t xCounterHandle, TraceBaseType_t *pxValue)</td></tr>
-<tr class="memdesc:ga2abeccf3bc0a79ca4fecbd7395bab02d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets trace counter lower limit.  <a href="group__trace__counter__apis.html#ga2abeccf3bc0a79ca4fecbd7395bab02d">More...</a><br /></td></tr>
-<tr class="separator:ga2abeccf3bc0a79ca4fecbd7395bab02d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gaf7c70923f13280fd449d5fef5b2f5efb"><td class="memItemLeft" align="right" valign="top">traceResult&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__trace__counter__apis.html#gaf7c70923f13280fd449d5fef5b2f5efb">xTraceCounterGetName</a> (TraceCounterHandle_t xCounterHandle, const char **pszName)</td></tr>
-<tr class="memdesc:gaf7c70923f13280fd449d5fef5b2f5efb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets trace counter name.  <a href="group__trace__counter__apis.html#gaf7c70923f13280fd449d5fef5b2f5efb">More...</a><br /></td></tr>
-<tr class="separator:gaf7c70923f13280fd449d5fef5b2f5efb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Public trace counter APIs. </p>

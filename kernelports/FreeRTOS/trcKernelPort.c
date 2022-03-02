@@ -1,5 +1,5 @@
 /*
- * Trace Recorder for Tracealyzer v4.6.0
+ * Trace Recorder for Tracealyzer v4.6.2
  * Copyright 2021 Percepio AB
  * www.percepio.com
  *
@@ -187,20 +187,9 @@ traceResult xTraceKernelPortInitialize(TraceKernelPortDataBuffer_t* pxBuffer)
 
 traceResult xTraceKernelPortEnable(void)
 {
-	HeapStats_t xHeapStats;
-	void* pvAlloc;
-	
 	if (pxKernelPortData->xSystemHeapHandle == 0)
 	{
-		/* Some magic to make sure the heap has been initialized! */
-		pvAlloc = pvPortMalloc(1);
-		if (pvAlloc != 0)
-		{
-			vPortFree(pvAlloc);
-		}
-
-		vPortGetHeapStats(&xHeapStats);
-		xTraceHeapCreate("System Heap", configTOTAL_HEAP_SIZE - xHeapStats.xAvailableHeapSpaceInBytes, configTOTAL_HEAP_SIZE - xHeapStats.xMinimumEverFreeBytesRemaining, configTOTAL_HEAP_SIZE, &pxKernelPortData->xSystemHeapHandle);
+		xTraceHeapCreate("System Heap", 0, 0, configTOTAL_HEAP_SIZE, &pxKernelPortData->xSystemHeapHandle);
 	}
 	
 	if (pxKernelPortData->xTzCtrlHandle == 0)

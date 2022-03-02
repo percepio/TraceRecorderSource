@@ -1,5 +1,5 @@
 /*
- * Trace Recorder for Tracealyzer v4.6.0
+ * Trace Recorder for Tracealyzer v4.6.2
  * Copyright 2021 Percepio AB
  * www.percepio.com
  *
@@ -259,6 +259,30 @@ void vTraceSetTimerName(void* object, const char* name);
 	#error "Tracerecorder is not compatible with Zephyr versions older than v2.6.0"
 #elif (((KERNEL_VERSION_MAJOR) == 2) && ((KERNEL_VERSION_MINOR) < 6))
 	#error "Tracerecorder is not compatible with Zephyr versions lower than v2.6.0"
+#endif
+
+/* Ensure that CONFIG_MEM_POOL has been set when the user selects dynamic
+ * allocation of the recorder buffer.
+ */
+#if (TRC_CFG_RECORDER_BUFFER_ALLOCATION == TRC_RECORDER_BUFFER_ALLOCATION_DYNAMIC)
+    /* While we could add CONFIG_KERNEL_MEM_POOL as a dependency for the 
+	 * dynamic allocation option, we have opted to output and error if 
+	 * the user have forgotten this since they also have to specify an
+	 * appropriate size for the kernel memory pool.
+	 */
+    #ifndef CONFIG_KERNEL_MEM_POOL
+        #error "Tracerecorder: You have choosen the TRC_RECORDER_BUFFER_ALLOCATION_DYNAMIC option without enabling KERNEL_MEM_POOL in Zephyr. Enable this option and allocate an appropriate size."
+    #endif
+
+	/**
+	 * @internal Kernel port specific heap initialization
+	 */
+	#define TRC_KERNEL_PORT_HEAP_INIT(size)
+
+	/**
+	 * @internal Kernel port specific heap malloc definition
+	 */
+	#define TRC_KERNEL_PORT_HEAP_MALLOC(size) k_malloc(size)
 #endif
 
 

@@ -1,5 +1,5 @@
 /*
-* Percepio Trace Recorder for Tracealyzer v4.6.0
+* Percepio Trace Recorder for Tracealyzer v4.6.2
 * Copyright 2021 Percepio AB
 * www.percepio.com
 *
@@ -47,7 +47,11 @@ typedef TraceUnsignedBaseType_t TraceExtensionHandle_t;
 
 typedef TraceUnsignedBaseType_t TraceHeapHandle_t;
 
-typedef TraceUnsignedBaseType_t TraceIntervalHandle_t;
+typedef TraceUnsignedBaseType_t TraceIntervalChannelSetHandle_t;
+
+typedef TraceUnsignedBaseType_t TraceIntervalChannelHandle_t;
+
+typedef TraceUnsignedBaseType_t TraceIntervalInstanceHandle_t;
 
 typedef TraceUnsignedBaseType_t TraceStateMachineHandle_t;
 

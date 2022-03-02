@@ -26,7 +26,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Percepio Trace Recorder
-   &#160;<span id="projectnumber">v4.6.0</span>
+   &#160;<span id="projectnumber">v4.6.2</span>
    </div>
   </td>
  </tr>
@@ -83,6 +83,7 @@ $(document).ready(function(){initNavTree('trcExtension_8h.html',''); initResizab
 
 <div class="header">
   <div class="summary">
+<a href="#define-members">Macros</a> &#124;
 <a href="#func-members">Functions</a>  </div>
   <div class="headertitle">
 <div class="title">trcExtension.h File Reference</div>  </div>
@@ -95,6 +96,12 @@ $(document).ready(function(){initNavTree('trcExtension_8h.html',''); initResizab
 </div>
 <p><a href="trcExtension_8h_source.html">Go to the source code of this file.</a></p>
 <table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
+Macros</h2></td></tr>
+<tr class="memitem:ga0e4ca1424c866797c717daaa117937a1"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__trace__extension__apis.html#ga0e4ca1424c866797c717daaa117937a1">xTraceExtensionGetEventId</a>(xExtensionHandle,  uiLocalEventId)&#160;&#160;&#160;((uint32_t)xTraceEntryGetStateReturn((TraceEntryHandle_t)(xExtensionHandle), TRC_EXTENSION_STATE_INDEX_BASE_EVENT_ID) + (uiLocalEventId))</td></tr>
+<tr class="memdesc:ga0e4ca1424c866797c717daaa117937a1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns extension event id.  <a href="group__trace__extension__apis.html#ga0e4ca1424c866797c717daaa117937a1">More...</a><br /></td></tr>
+<tr class="separator:ga0e4ca1424c866797c717daaa117937a1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
 <tr class="memitem:ga358cdec30d87e1659cbb5dc551c5c310"><td class="memItemLeft" align="right" valign="top">traceResult&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__trace__extension__apis.html#ga358cdec30d87e1659cbb5dc551c5c310">xTraceExtensionCreate</a> (const char *szName, uint8_t uiMajor, uint8_t uiMinor, uint16_t uiPatch, uint32_t uiEventCount, TraceExtensionHandle_t *pxExtensionHandle)</td></tr>
@@ -103,9 +110,6 @@ Functions</h2></td></tr>
 <tr class="memitem:ga9c1bab5acbdfd9d0d825de688cfc635b"><td class="memItemLeft" align="right" valign="top">traceResult&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__trace__extension__apis.html#ga9c1bab5acbdfd9d0d825de688cfc635b">xTraceExtensionGetBaseEventId</a> (TraceExtensionHandle_t xExtensionHandle, uint32_t *puiBaseEventId)</td></tr>
 <tr class="memdesc:ga9c1bab5acbdfd9d0d825de688cfc635b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets extension base event id.  <a href="group__trace__extension__apis.html#ga9c1bab5acbdfd9d0d825de688cfc635b">More...</a><br /></td></tr>
 <tr class="separator:ga9c1bab5acbdfd9d0d825de688cfc635b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga84d971c753b497cf5f12e762a3f631a3"><td class="memItemLeft" align="right" valign="top">traceResult&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__trace__extension__apis.html#ga84d971c753b497cf5f12e762a3f631a3">xTraceExtensionGetEventId</a> (TraceExtensionHandle_t xExtensionHandle, uint32_t uiLocalEventId, uint32_t *puiGlobalEventId)</td></tr>
-<tr class="memdesc:ga84d971c753b497cf5f12e762a3f631a3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets extension event id.  <a href="group__trace__extension__apis.html#ga84d971c753b497cf5f12e762a3f631a3">More...</a><br /></td></tr>
-<tr class="separator:ga84d971c753b497cf5f12e762a3f631a3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gae8fbcb9415c4b62b395923ad9d716ddd"><td class="memItemLeft" align="right" valign="top">traceResult&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__trace__extension__apis.html#gae8fbcb9415c4b62b395923ad9d716ddd">xTraceExtensionGetConfigName</a> (TraceExtensionHandle_t xExtensionHandle, const char **pszName)</td></tr>
 <tr class="memdesc:gae8fbcb9415c4b62b395923ad9d716ddd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets extension configuration name.  <a href="group__trace__extension__apis.html#gae8fbcb9415c4b62b395923ad9d716ddd">More...</a><br /></td></tr>
 <tr class="separator:gae8fbcb9415c4b62b395923ad9d716ddd"><td class="memSeparator" colspan="2">&#160;</td></tr>

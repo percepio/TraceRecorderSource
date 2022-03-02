@@ -1,5 +1,5 @@
 /*
-* Trace Recorder for Tracealyzer v4.6.0
+* Trace Recorder for Tracealyzer v4.6.2
 * Copyright 2021 Percepio AB
 * www.percepio.com
 *
@@ -24,8 +24,11 @@ traceResult xTraceTimestampInitialize(TraceTimestampBuffer_t *pxBuffer)
 	TRC_ASSERT(pxBuffer != 0);
 
 	pxTraceTimestamp = (TraceTimestamp_t*)pxBuffer;
+
+	/* These will be set when tracing is enabled */
 	pxTraceTimestamp->frequency = 0;
-	pxTraceTimestamp->period = TRC_HWTC_PERIOD;
+	pxTraceTimestamp->period = 0;
+
 	pxTraceTimestamp->osTickHz = TRC_TICK_RATE_HZ;
 	pxTraceTimestamp->osTickCount = 0;
 	pxTraceTimestamp->wraparounds = 0;

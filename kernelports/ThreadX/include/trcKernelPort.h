@@ -1,5 +1,5 @@
 /*
- * Trace Recorder for Tracealyzer v4.6.0
+ * Trace Recorder for Tracealyzer v4.6.2
  * Copyright 2021 Percepio AB
  * www.percepio.com
  *
@@ -77,6 +77,20 @@ extern "C" {
 #define TraceKernelPortTaskHandle_t TX_THREAD
 
 extern TraceHeapHandle_t xSystemHeapHandle;
+
+#if (TRC_CFG_RECORDER_BUFFER_ALLOCATION == TRC_RECORDER_BUFFER_ALLOCATION_DYNAMIC)
+#error "Dynamic allocation mode isn't supported for ThreadX, there is no system heap to allocate from. Use custom allocation mode to map trace buffer to your own heap."
+
+/**
+ * @internal Kernel port specific heap initialization
+ */
+#define TRC_KERNEL_PORT_HEAP_INIT(size)
+
+/**
+ * @internal Kernel port specific heap malloc definition
+ */
+#define TRC_KERNEL_PORT_HEAP_MALLOC(size) TX_NULL
+#endif /* (TRC_CFG_RECORDER_BUFFER_ALLOCATION == TRC_RECORDER_BUFFER_ALLOCATION_DYNAMIC) */
 
 /**
  * @brief A structure representing the kernel port buffer.

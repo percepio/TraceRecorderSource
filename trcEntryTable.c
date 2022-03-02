@@ -1,5 +1,5 @@
 /*
-* Trace Recorder for Tracealyzer v4.6.0
+* Trace Recorder for Tracealyzer v4.6.2
 * Copyright 2021 Percepio AB
 * www.percepio.com
 *
@@ -362,6 +362,11 @@ traceResult xTraceEntryGetState(TraceEntryHandle_t xEntryHandle, uint32_t uiStat
 	TRC_ASSERT(VALIDATE_ENTRY_HANDLE(xEntryHandle));
 
 	return TRC_ENTRY_GET_STATE(xEntryHandle, uiStateIndex, puxState);
+}
+
+TraceUnsignedBaseType_t xTraceEntryGetStateReturn(TraceEntryHandle_t xEntryHandle, uint32_t uiStateIndex)
+{
+	return TRC_ENTRY_GET_STATE_RETURN(xEntryHandle, uiStateIndex);
 }
 
 traceResult xTraceEntryGetOptions(TraceEntryHandle_t xEntryHandle, uint32_t *puiOptions)

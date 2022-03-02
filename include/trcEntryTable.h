@@ -1,5 +1,5 @@
 /*
-* Percepio Trace Recorder for Tracealyzer v4.6.0
+* Percepio Trace Recorder for Tracealyzer v4.6.2
 * Copyright 2021 Percepio AB
 * www.percepio.com
 *
@@ -38,6 +38,7 @@ extern "C" {
 #define TRC_ENTRY_GET_ADDRESS(xEntryHandle, ppvAddress) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_2(*(ppvAddress) = ((TraceEntry_t*)(xEntryHandle))->pvAddress, TRC_SUCCESS)
 #define TRC_ENTRY_GET_SYMBOL(xEntryHandle, pszSymbol) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_2(*(pszSymbol) = ((TraceEntry_t*)(xEntryHandle))->szSymbol, TRC_SUCCESS)
 #define TRC_ENTRY_GET_STATE(xEntryHandle, uiStateIndex, puxState) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_2(*(puxState) = ((TraceEntry_t*)(xEntryHandle))->xStates[uiStateIndex], TRC_SUCCESS)
+#define TRC_ENTRY_GET_STATE_RETURN(xEntryHandle, uiStateIndex) (((TraceEntry_t*)(xEntryHandle))->xStates[uiStateIndex])
 #define TRC_ENTRY_GET_OPTIONS(xEntryHandle, puiOptions) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_2(*(puiOptions) = ((TraceEntry_t*)(xEntryHandle))->uiOptions, TRC_SUCCESS)
 
 #define TRC_ENTRY_TABLE_SLOTS (TRC_CFG_ENTRY_SLOTS)
@@ -220,6 +221,16 @@ traceResult xTraceEntryGetSymbol(TraceEntryHandle_t xEntryHandle, const char** p
 traceResult xTraceEntryGetState(TraceEntryHandle_t xEntryHandle, uint32_t uiStateIndex, TraceUnsignedBaseType_t *puxState);
 
 /**
+ * @internal Returns state for trace entry.
+ *
+ * @param[in] xEntryHandle Pointer to initialized trace entry handle.
+ * @param[in] uiStateIndex State index (< TRC_ENTRY_TABLE_STATE_COUNT).
+ *
+ * @returns State
+ */
+TraceUnsignedBaseType_t xTraceEntryGetStateReturn(TraceEntryHandle_t xEntryHandle, uint32_t uiStateIndex);
+
+/**
  * @brief Gets options for trace entry.
  * 
  * @param[in] xEntryHandle Pointer to initialized trace entry handle.
@@ -241,6 +252,7 @@ traceResult xTraceEntryGetOptions(TraceEntryHandle_t xEntryHandle, uint32_t *pui
 #define xTraceEntryGetAddress TRC_ENTRY_GET_ADDRESS
 #define xTraceEntryGetSymbol TRC_ENTRY_GET_SYMBOL
 #define xTraceEntryGetState TRC_ENTRY_GET_STATE
+#define xTraceEntryGetStateReturn TRC_ENTRY_GET_STATE_RETURN
 #define xTraceEntryGetOptions TRC_ENTRY_GET_OPTIONS
 
 #endif /* ((TRC_CFG_USE_TRACE_ASSERT) == 1) */

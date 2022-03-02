@@ -1,5 +1,5 @@
 /*
-* Trace Recorder for Tracealyzer v4.6.0
+* Trace Recorder for Tracealyzer v4.6.2
 * Copyright 2021 Percepio AB
 * www.percepio.com
 *
@@ -24,10 +24,6 @@ uint32_t uiTraceNextFreeExtensionEventId = TRC_EXTENSION_BASE_EVENT_ID;
 			((0x000000FF & (_minor)) << 16) | \
 			((0x0000FFFF & (_patch)) << 0) \
 		)
-
-#define TRC_EXTENSION_STATE_INDEX_VERSION 0
-#define TRC_EXTENSION_STATE_INDEX_BASE_EVENT_ID 1
-#define TRC_EXTENSION_STATE_INDEX_EVENT_COUNT 2
 
 /* TODO: INITIALIZE */
 
@@ -70,21 +66,6 @@ traceResult xTraceExtensionGetBaseEventId(TraceExtensionHandle_t xExtensionHandl
 	TRC_ASSERT_ALWAYS_EVALUATE(xTraceEntryGetState((TraceEntryHandle_t)xExtensionHandle, TRC_EXTENSION_STATE_INDEX_BASE_EVENT_ID, &uxBaseEventId) == TRC_SUCCESS);
 
 	*puiBaseEventId = (uint32_t)uxBaseEventId;
-
-	return TRC_SUCCESS;
-}
-
-traceResult xTraceExtensionGetEventId(TraceExtensionHandle_t xExtensionHandle, uint32_t uiLocalEventId, uint32_t *puiGlobalEventId)
-{
-	TraceUnsignedBaseType_t uxBaseEventId;
-
-	/* This should never fail */
-	TRC_ASSERT(puiGlobalEventId != 0);
-	
-	/* This should never fail */
-	TRC_ASSERT_ALWAYS_EVALUATE(xTraceEntryGetState((TraceEntryHandle_t)xExtensionHandle, TRC_EXTENSION_STATE_INDEX_BASE_EVENT_ID, &uxBaseEventId) == TRC_SUCCESS);
-
-	*puiGlobalEventId = (uint32_t)uxBaseEventId + uiLocalEventId;
 
 	return TRC_SUCCESS;
 }

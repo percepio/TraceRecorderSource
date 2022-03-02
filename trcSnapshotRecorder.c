@@ -1,5 +1,5 @@
 /*
- * Trace Recorder for Tracealyzer v4.6.0
+ * Trace Recorder for Tracealyzer v4.6.2
  * Copyright 2021 Percepio AB
  * www.percepio.com
  *
@@ -1695,7 +1695,11 @@ traceResult xTraceInitialize()
 #if (TRC_CFG_RECORDER_BUFFER_ALLOCATION == TRC_RECORDER_BUFFER_ALLOCATION_STATIC)
 	RecorderDataPtr = &RecorderData;
 #elif (TRC_CFG_RECORDER_BUFFER_ALLOCATION == TRC_RECORDER_BUFFER_ALLOCATION_DYNAMIC)
-	RecorderDataPtr = (RecorderDataType*)TRACE_MALLOC(sizeof(RecorderDataType));
+	/* Initialize heap */
+	TRC_KERNEL_PORT_HEAP_INIT(sizeof(RecorderDataType));
+
+	/* Allocate data */
+	RecorderDataPtr = (RecorderDataType*)TRC_KERNEL_PORT_HEAP_MALLOC(sizeof(RecorderDataType));
 	if (!RecorderDataPtr)
 	{
 		prvTraceError("Failed allocating recorder buffer!");

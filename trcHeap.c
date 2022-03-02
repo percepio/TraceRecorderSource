@@ -1,5 +1,5 @@
 /*
-* Percepio Trace Recorder for Tracealyzer v4.6.0
+* Percepio Trace Recorder for Tracealyzer v4.6.2
 * Copyright 2021 Percepio AB
 * www.percepio.com
 *
@@ -16,31 +16,15 @@
 
 #if (TRC_USE_HEAPS == 1)
 
-#define TRC_HEAP_STATE_INDEX_CURRENT		0
-#define TRC_HEAP_STATE_INDEX_HIGHWATERMARK	1
-#define TRC_HEAP_STATE_INDEX_MAX			2
-
 traceResult xTraceHeapCreate(const char *szName, TraceUnsignedBaseType_t uxCurrent, TraceUnsignedBaseType_t uxHighWaterMark, TraceUnsignedBaseType_t uxMax, TraceHeapHandle_t *pxHeapHandle)
 {
-	TraceObjectHandle_t xObjectHandle;
 	TraceUnsignedBaseType_t uxStates[3];
-
-	/* This should never fail */
-	TRC_ASSERT(pxHeapHandle != 0);
 
 	uxStates[TRC_HEAP_STATE_INDEX_CURRENT] = uxCurrent;
 	uxStates[TRC_HEAP_STATE_INDEX_HIGHWATERMARK] = uxHighWaterMark;
 	uxStates[TRC_HEAP_STATE_INDEX_MAX] = uxMax;
 
-	/* We need to check this */
-	if (xTraceObjectRegisterInternal(PSF_EVENT_HEAP_CREATE, 0, szName, 3, uxStates, TRC_ENTRY_OPTION_HEAP, &xObjectHandle) == TRC_FAIL)
-	{
-		return TRC_FAIL;
-	}
-
-	*pxHeapHandle = (TraceHeapHandle_t)xObjectHandle;
-
-	return TRC_SUCCESS;
+	return xTraceObjectRegisterInternal(PSF_EVENT_HEAP_CREATE, 0, szName, 3, uxStates, TRC_ENTRY_OPTION_HEAP, (TraceObjectHandle_t*)pxHeapHandle);
 }
 
 traceResult xTraceHeapAlloc(TraceHeapHandle_t xHeapHandle, void *pvAddress, TraceUnsignedBaseType_t uxSize)
@@ -117,39 +101,6 @@ traceResult xTraceHeapFree(TraceHeapHandle_t xHeapHandle, void *pvAddress, Trace
 		xTraceEventAddUnsignedBaseType(xEventHandle, uxSize);
 		xTraceEventEnd(xEventHandle);
 	}
-
-	return TRC_SUCCESS;
-}
-
-traceResult xTraceHeapGetCurrent(TraceHeapHandle_t xHeapHandle, TraceUnsignedBaseType_t *puxCurrent)
-{
-	/* This should never fail */
-	TRC_ASSERT(xHeapHandle != 0);
-
-	/* This should never fail */
-	TRC_ASSERT_ALWAYS_EVALUATE(xTraceEntryGetState(xHeapHandle, TRC_HEAP_STATE_INDEX_CURRENT, puxCurrent) == TRC_SUCCESS);
-
-	return TRC_SUCCESS;
-}
-
-traceResult xTraceHeapGetHighWaterMark(TraceHeapHandle_t xHeapHandle, TraceUnsignedBaseType_t *puxHighWaterMark)
-{
-	/* This should never fail */
-	TRC_ASSERT(xHeapHandle != 0);
-
-	/* This should never fail */
-	TRC_ASSERT_ALWAYS_EVALUATE(xTraceEntryGetState(xHeapHandle, TRC_HEAP_STATE_INDEX_HIGHWATERMARK, puxHighWaterMark) == TRC_SUCCESS);
-
-	return TRC_SUCCESS;
-}
-
-traceResult xTraceHeapGetMax(TraceHeapHandle_t xHeapHandle, TraceUnsignedBaseType_t *puxMax)
-{
-	/* This should never fail */
-	TRC_ASSERT(xHeapHandle != 0);
-
-	/* This should never fail */
-	TRC_ASSERT_ALWAYS_EVALUATE(xTraceEntryGetState(xHeapHandle, TRC_HEAP_STATE_INDEX_MAX, puxMax) == TRC_SUCCESS);
 
 	return TRC_SUCCESS;
 }

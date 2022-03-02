@@ -1,5 +1,5 @@
 /*
- * Trace Recorder for Tracealyzer v4.6.0
+ * Trace Recorder for Tracealyzer v4.6.2
  * Copyright 2021 Percepio AB
  * www.percepio.com
  *
@@ -13,6 +13,10 @@
 #if (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING)
 
 #if (TRC_USE_TRACEALYZER_RECORDER == 1)
+
+#ifndef TRC_KERNEL_PORT_HEAP_INIT
+#define TRC_KERNEL_PORT_HEAP_INIT(__size) 
+#endif
 
 typedef struct TraceHeader
 {
@@ -132,7 +136,11 @@ traceResult xTraceInitialize(void)
 	}
 
 #if (TRC_CFG_RECORDER_BUFFER_ALLOCATION == TRC_RECORDER_BUFFER_ALLOCATION_DYNAMIC)
-	pxRecorderData = TRC_MALLOC(sizeof(TraceRecorderData_t));
+	/* Initialize heap */
+	TRC_KERNEL_PORT_HEAP_INIT(sizeof(TraceRecorderData_t));
+
+	/* Allocate data */
+	pxTraceRecorderData = TRC_KERNEL_PORT_HEAP_MALLOC(sizeof(TraceRecorderData_t));
 #endif
 
 	/* These are set on init so they aren't overwritten by late initialization values. */
@@ -417,6 +425,7 @@ void vTraceSetFilterMask(uint16_t filterMask)
 static void prvSetRecorderEnabled(void)
 {
 	uint32_t timestampFrequency = 0;
+	uint32_t timestampPeriod = 0;
 	
 	TRACE_ALLOC_CRITICAL_SECTION();
 	
@@ -426,11 +435,17 @@ static void prvSetRecorderEnabled(void)
 	}
 
 	xTraceTimestampGetFrequency(&timestampFrequency);
-	/* If not overridden using 	xTraceTimestampSetFrequency(...), use default value */
+	/* If not overridden using xTraceTimestampSetFrequency(...), use default value */
 	if (timestampFrequency == 0)
 	{
-		timestampFrequency = TRC_HWTC_FREQ_HZ;
-		xTraceTimestampSetFrequency(timestampFrequency);
+		xTraceTimestampSetFrequency((TraceUnsignedBaseType_t)(TRC_HWTC_FREQ_HZ));
+	}
+
+	xTraceTimestampGetPeriod(&timestampPeriod);
+	/* If not overridden using xTraceTimestampSetPeriod(...), use default value */
+	if (timestampPeriod == 0)
+	{
+		xTraceTimestampSetPeriod((TraceUnsignedBaseType_t)(TRC_HWTC_PERIOD));
 	}
 
 	TRACE_ENTER_CRITICAL_SECTION();

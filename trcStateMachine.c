@@ -1,5 +1,5 @@
 /*
-* Trace Recorder for Tracealyzer v4.6.0
+* Trace Recorder for Tracealyzer v4.6.2
 * Copyright 2021 Percepio AB
 * www.percepio.com
 *
@@ -65,7 +65,6 @@ traceResult xTraceStateMachineStateCreate(TraceStateMachineHandle_t xStateMachin
 traceResult xTraceStateMachineSetState(TraceStateMachineHandle_t xStateMachineHandle, TraceStateMachineStateHandle_t xStateHandle)
 {
 	TraceEventHandle_t xEventHandle = 0;
-	TraceUnsignedBaseType_t uxStateMachine;
 	
 	/* This should never fail */
 	TRC_ASSERT(xStateMachineHandle != 0);
@@ -73,12 +72,9 @@ traceResult xTraceStateMachineSetState(TraceStateMachineHandle_t xStateMachineHa
 	/* This should never fail */
 	TRC_ASSERT(xStateHandle != 0);
 
-	/* This should never fail */
-	TRC_ASSERT_ALWAYS_EVALUATE(xTraceEntryGetState((TraceEntryHandle_t)xStateHandle, TRC_STATE_MACHINE_INDEX, &uxStateMachine) == TRC_SUCCESS);
-
 	/* Verify that this state machine state was meant to be used with this state machine */
 	/* This should never fail */
-	TRC_ASSERT(xStateMachineHandle == (TraceStateMachineHandle_t)uxStateMachine);
+	TRC_ASSERT(xStateMachineHandle == (TraceStateMachineHandle_t)xTraceEntryGetStateReturn((TraceEntryHandle_t)xStateHandle, TRC_STATE_MACHINE_INDEX));
 
 	/* This should never fail */
 	TRC_ASSERT_ALWAYS_EVALUATE(xTraceEntrySetState((TraceEntryHandle_t)xStateMachineHandle, TRC_STATE_MACHINE_STATE_INDEX, (TraceUnsignedBaseType_t)xStateHandle) == TRC_SUCCESS);

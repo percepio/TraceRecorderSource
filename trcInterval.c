@@ -1,5 +1,5 @@
 /*
-* Trace Recorder for Tracealyzer v4.6.0
+* Trace Recorder for Tracealyzer v4.6.2
 * Copyright 2021 Percepio AB
 * www.percepio.com
 *
@@ -14,68 +14,86 @@
 
 #if (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING)
 
-#define TRC_INTERVAL_STATE_INDEX 0
-
-traceResult xTraceIntervalCreate(const char *szName, TraceIntervalHandle_t *pxIntervalHandle)
+traceResult xTraceIntervalChannelSetCreate(const char* szName, TraceIntervalChannelSetHandle_t* pxIntervalChannelSetHandle)
 {
 	TraceObjectHandle_t xObjectHandle;
 
 	/* This should never fail */
-	TRC_ASSERT(pxIntervalHandle != 0);
+	TRC_ASSERT(pxIntervalChannelSetHandle != 0);
 
 	/* We need to check this */
-	if (xTraceObjectRegister(PSF_EVENT_INTERVAL_CREATE, 0, szName, 0, &xObjectHandle) == TRC_FAIL)
+	if (xTraceObjectRegister(PSF_EVENT_INTERVAL_CHANNEL_SET_CREATE, 0, szName, 0, &xObjectHandle) == TRC_FAIL)
 	{
 		return TRC_FAIL;
 	}
 
 	/* This should never fail */
-	TRC_ASSERT_ALWAYS_EVALUATE(xTraceEntrySetOptions((TraceEntryHandle_t)xObjectHandle, TRC_ENTRY_OPTION_INTERVAL) == TRC_SUCCESS);
+	TRC_ASSERT_ALWAYS_EVALUATE(xTraceEntrySetOptions((TraceEntryHandle_t)xObjectHandle, TRC_ENTRY_OPTION_INTERVAL_CHANNEL_SET) == TRC_SUCCESS);
 
-	*pxIntervalHandle = (TraceIntervalHandle_t)xObjectHandle;
+	*pxIntervalChannelSetHandle = (TraceIntervalChannelSetHandle_t)xObjectHandle;
+
+	return TRC_SUCCESS;
+}
+
+traceResult xTraceIntervalChannelCreate(const char *szName, TraceIntervalChannelSetHandle_t xIntervalChannelSetHandle, TraceIntervalChannelHandle_t *pxIntervalChannelHandle)
+{
+	TraceObjectHandle_t xObjectHandle;
+
+	/* This should never fail */
+	TRC_ASSERT(pxIntervalChannelHandle != 0);
+
+	/* This should never fail */
+	TRC_ASSERT(xIntervalChannelSetHandle != 0);
+
+	/* We need to check this */
+	if (xTraceObjectRegister(PSF_EVENT_INTERVAL_CHANNEL_CREATE, 0, szName, xIntervalChannelSetHandle, &xObjectHandle) == TRC_FAIL)
+	{
+		return TRC_FAIL;
+	}
+
+	/* This should never fail */
+	TRC_ASSERT_ALWAYS_EVALUATE(xTraceEntrySetOptions((TraceEntryHandle_t)xObjectHandle, TRC_ENTRY_OPTION_INTERVAL_CHANNEL) == TRC_SUCCESS);
+
+	*pxIntervalChannelHandle = (TraceIntervalChannelHandle_t)xObjectHandle;
 	
 	return TRC_SUCCESS;
 }
 
-traceResult xTraceIntervalStart(TraceIntervalHandle_t xIntervalHandle)
+traceResult xTraceIntervalStart(TraceIntervalChannelHandle_t xIntervalChannelHandle, TraceUnsignedBaseType_t uxValue, TraceIntervalInstanceHandle_t *pxIntervalInstanceHandle)
 {
 	TraceEventHandle_t xEventHandle = 0;
-	
-	/* This should never fail */
-	TRC_ASSERT_ALWAYS_EVALUATE(xTraceEntrySetState((TraceEntryHandle_t)xIntervalHandle, TRC_INTERVAL_STATE_INDEX, 1) == TRC_SUCCESS);
+
+	TRC_ASSERT(xIntervalChannelHandle != 0);
+
+	TRC_ASSERT_ALWAYS_EVALUATE(xTraceTimestampGet((uint32_t*)pxIntervalInstanceHandle) == TRC_SUCCESS);
 
 	/* We need to check this */
-	if (xTraceEventBegin(PSF_EVENT_INTERVAL_STATECHANGE, sizeof(void*) + sizeof(uint32_t), &xEventHandle) == TRC_SUCCESS)
+	if (xTraceEventBegin(PSF_EVENT_INTERVAL_START, sizeof(void*) + sizeof(TraceUnsignedBaseType_t) + sizeof(TraceUnsignedBaseType_t), &xEventHandle) == TRC_SUCCESS)
 	{
-		xTraceEventAddPointer(xEventHandle, (void*)xIntervalHandle);
-		xTraceEventAdd32(xEventHandle, 1);
+		xTraceEventAddPointer(xEventHandle, (void*)xIntervalChannelHandle);
+		xTraceEventAddUnsignedBaseType(xEventHandle, (TraceUnsignedBaseType_t)*pxIntervalInstanceHandle);
+		xTraceEventAddUnsignedBaseType(xEventHandle, uxValue);
 		xTraceEventEnd(xEventHandle);
 	}
 
 	return TRC_SUCCESS;
 }
 
-traceResult xTraceIntervalStop(TraceIntervalHandle_t xIntervalHandle)
+traceResult xTraceIntervalStop(TraceIntervalChannelHandle_t xIntervalChannelHandle, TraceIntervalInstanceHandle_t xIntervalInstanceHandle)
 {
 	TraceEventHandle_t xEventHandle = 0;
-	
-	/* This should never fail */
-	TRC_ASSERT_ALWAYS_EVALUATE(xTraceEntrySetState((TraceEntryHandle_t)xIntervalHandle, TRC_INTERVAL_STATE_INDEX, 0) == TRC_SUCCESS);
+
+	TRC_ASSERT(xIntervalChannelHandle != 0);
 
 	/* We need to check this */
-	if (xTraceEventBegin(PSF_EVENT_INTERVAL_STATECHANGE, sizeof(void*) + sizeof(uint32_t), &xEventHandle) == TRC_SUCCESS)
+	if (xTraceEventBegin(PSF_EVENT_INTERVAL_STOP, sizeof(void*) + sizeof(TraceUnsignedBaseType_t), &xEventHandle) == TRC_SUCCESS)
 	{
-		xTraceEventAddPointer(xEventHandle, (void*)xIntervalHandle);
-		xTraceEventAdd32(xEventHandle, 0);
+		xTraceEventAddPointer(xEventHandle, (void*)xIntervalChannelHandle);
+		xTraceEventAddUnsignedBaseType(xEventHandle, (TraceUnsignedBaseType_t)xIntervalInstanceHandle);
 		xTraceEventEnd(xEventHandle);
 	}
 	
 	return TRC_SUCCESS;
-}
-
-traceResult xTraceIntervalGetState(TraceIntervalHandle_t xIntervalHandle, TraceUnsignedBaseType_t *puxState)
-{
-	return xTraceEntryGetState((TraceEntryHandle_t)xIntervalHandle, TRC_INTERVAL_STATE_INDEX, puxState);
 }
 
 #endif /* (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING) */

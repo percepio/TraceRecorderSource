@@ -1,5 +1,5 @@
 /*
- * Trace Recorder for Tracealyzer v4.6.0
+ * Trace Recorder for Tracealyzer v4.6.2
  * Copyright 2021 Percepio AB
  * www.percepio.com
  *
@@ -12,27 +12,6 @@
 #include <kernel.h>
 #include <string.h>
 #include <trcRecorder.h>
-
-
-/* Ensure that CONFIG_MEM_POOL has been set when the user selects dynamic
- * allocation of the recorder buffer.
- */
-#if (TRC_CFG_RECORDER_BUFFER_ALLOCATION == TRC_RECORDER_BUFFER_ALLOCATION_DYNAMIC)
-    /* While we could add CONFIG_KERNEL_MEM_POOL as a dependency for the 
-	 * dynamic allocation option, we have opted to output and error if 
-	 * the user have forgotten this since they also have to specify an
-	 * appropriate size for the kernel memory pool.
-	 */
-    #ifndef CONFIG_KERNEL_MEM_POOL
-        #error "Tracerecorder: You have choosen the TRC_RECORDER_BUFFER_ALLOCATION_DYNAMIC option without enabling KERNEL_MEM_POOL in Zephyr. Enable this option and allocate an appropriate size."
-    #endif
-
-    #if !defined(CONFIG_HEAP_MEM_POOL_SIZE) || ((CONFIG_HEAP_MEM_POOL_SIZE) < ((TRC_CFG_RTT_BUFFER_SIZE_UP) + (TRC_CFG_RTT_BUFFER_SIZE_DOWN)))
-        #error "Tracerecorder: You have choosen the TRC_RECORDER_BUFFER_ALLOCATION_DYNAMIC option without allocating enough memory for the KERNEL_MEM_POOL in Zephyr"
-    #endif
-
-    #define TRC_PORT_MALLOC(size) k_malloc(size)
-#endif
 
 
 /* Generic Zephyr system heap handle */

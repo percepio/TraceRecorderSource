@@ -1,5 +1,5 @@
 /*
-* Percepio Trace Recorder for Tracealyzer v4.6.0
+* Percepio Trace Recorder for Tracealyzer v4.6.2
 * Copyright 2021 Percepio AB
 * www.percepio.com
 *
@@ -24,6 +24,10 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+#define TRC_EXTENSION_STATE_INDEX_VERSION 0
+#define TRC_EXTENSION_STATE_INDEX_BASE_EVENT_ID 1
+#define TRC_EXTENSION_STATE_INDEX_EVENT_COUNT 2
 
 /**
  * @defgroup trace_extension_apis Trace Extension APIs
@@ -58,27 +62,25 @@ traceResult xTraceExtensionCreate(const char *szName, uint8_t uiMajor, uint8_t u
 traceResult xTraceExtensionGetBaseEventId(TraceExtensionHandle_t xExtensionHandle, uint32_t *puiBaseEventId);
 
 /**
- * @brief Gets extension event id.
+ * @brief Gets extension configuration name.
+ *
+ * @param[in] xExtensionHandle Pointer to initialized extension handle.
+ * @param[out] pszName Name.
+ *
+ * @retval TRC_FAIL Failure
+ * @retval TRC_SUCCESS Success
+ */
+traceResult xTraceExtensionGetConfigName(TraceExtensionHandle_t xExtensionHandle, const char** pszName);
+
+/**
+ * @brief Returns extension event id.
  * 
  * @param[in] xExtensionHandle Pointer to initialized extension handle.
  * @param[in] uiLocalEventId Local event id.
- * @param[out] puiGlobalEventId Global event id.
  * 
- * @retval TRC_FAIL Failure
- * @retval TRC_SUCCESS Success
+ * @returns Extension event id
  */
-traceResult xTraceExtensionGetEventId(TraceExtensionHandle_t xExtensionHandle, uint32_t uiLocalEventId, uint32_t *puiGlobalEventId);
-
-/**
- * @brief Gets extension configuration name.
- * 
- * @param[in] xExtensionHandle Pointer to initialized extension handle.
- * @param[out] pszName Name.
- * 
- * @retval TRC_FAIL Failure
- * @retval TRC_SUCCESS Success
- */
-traceResult xTraceExtensionGetConfigName(TraceExtensionHandle_t xExtensionHandle, const char **pszName);
+#define xTraceExtensionGetEventId(xExtensionHandle, uiLocalEventId) ((uint32_t)xTraceEntryGetStateReturn((TraceEntryHandle_t)(xExtensionHandle), TRC_EXTENSION_STATE_INDEX_BASE_EVENT_ID) + (uiLocalEventId))
 
 /** @} */
 

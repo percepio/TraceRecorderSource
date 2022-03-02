@@ -1,5 +1,5 @@
 /*
-* Percepio Trace Recorder for Tracealyzer v4.6.0
+* Percepio Trace Recorder for Tracealyzer v4.6.2
 * Copyright 2021 Percepio AB
 * www.percepio.com
 *
@@ -20,7 +20,6 @@
 #define TRC_SEND_NAME_ONLY_ON_DELETE 0
 #endif
 
-traceResult prvTraceObjectSendState(uint32_t uiEventCode, void* pvObject, TraceUnsignedBaseType_t uxState);
 traceResult prvTraceObjectSendNameEvent(void* pvObject, const char* szName);
 
 traceResult xTraceObjectRegisterInternal(uint32_t uiEventCode, void* pvObject, const char* szName, TraceUnsignedBaseType_t uxStateCount, TraceUnsignedBaseType_t uxStates[], TraceUnsignedBaseType_t uxOptions, TraceObjectHandle_t* pxObjectHandle)
@@ -58,6 +57,8 @@ traceResult xTraceObjectRegisterInternal(uint32_t uiEventCode, void* pvObject, c
 
 			return TRC_FAIL;
 		}
+
+		TRC_ASSERT_ALWAYS_EVALUATE(xTraceEntryGetAddress(xEntryHandle, &pvObject) == TRC_SUCCESS);
 	}
 
 	for (i = 0; i < uxStateCount; i++)
@@ -83,14 +84,13 @@ traceResult xTraceObjectRegisterInternal(uint32_t uiEventCode, void* pvObject, c
 
 	/* Send the create event, if possible */
 	/*We need to check this */
-	if (xTraceEventBegin(uiEventCode, sizeof(void*) + uxStateCount * sizeof(TraceUnsignedBaseType_t) + sizeof(TraceUnsignedBaseType_t), &xEventHandle) == TRC_SUCCESS)
+	if (xTraceEventBegin(uiEventCode, sizeof(void*) + uxStateCount * sizeof(TraceUnsignedBaseType_t), &xEventHandle) == TRC_SUCCESS)
 	{
 		xTraceEventAddPointer(xEventHandle, pvObject);
 		for (i = 0; i < uxStateCount; i++)
 		{
 			xTraceEventAddUnsignedBaseType(xEventHandle, uxStates[i]);
 		}
-		xTraceEventAddUnsignedBaseType(xEventHandle, uxOptions);
 		xTraceEventEnd(xEventHandle);
 	}
 
@@ -99,62 +99,14 @@ traceResult xTraceObjectRegisterInternal(uint32_t uiEventCode, void* pvObject, c
 
 traceResult xTraceObjectRegister(uint32_t uiEventCode, void *pvObject, const char* szName, TraceUnsignedBaseType_t uxState, TraceObjectHandle_t *pxObjectHandle)
 {
-	TraceEntryHandle_t xEntryHandle;
-
-	TRACE_ALLOC_CRITICAL_SECTION();
-
-	/* This should never fail */
-	TRC_ASSERT(pxObjectHandle != 0);
-
-	TRACE_ENTER_CRITICAL_SECTION();
-
-	if (pvObject != 0)
-	{
-		/* An address was supplied */
-		if (xTraceEntryCreateWithAddress(pvObject, &xEntryHandle) == TRC_FAIL)
-		{
-			TRACE_EXIT_CRITICAL_SECTION();
-
-			return TRC_FAIL;
-		}
-	}
-	else
-	{
-		/* No address was supplied */
-		if (xTraceEntryCreate(&xEntryHandle) == TRC_FAIL)
-		{
-			TRACE_EXIT_CRITICAL_SECTION();
-
-			return TRC_FAIL;
-		}
-	}
-
-	/* This should never fail */
-	TRC_ASSERT_ALWAYS_EVALUATE(xTraceEntrySetState(xEntryHandle, 0, uxState) == TRC_SUCCESS);
-
-	*pxObjectHandle = (TraceObjectHandle_t)xEntryHandle;
-
-	TRACE_EXIT_CRITICAL_SECTION();
-
-	if (szName != 0 && szName[0] != 0)
-	{
-		/* Not a null or empty string */
-		/* This will set the symbol and create an event for it */
-		/* This should never fail */
-		TRC_ASSERT_ALWAYS_EVALUATE(xTraceObjectSetName((TraceObjectHandle_t)xEntryHandle, szName) == TRC_SUCCESS);
-	}
-
-	/* Send the create event, if possible */
-	/* This should never fail */
-	TRC_ASSERT_ALWAYS_EVALUATE(prvTraceObjectSendState(uiEventCode, pvObject, uxState) == TRC_SUCCESS);
-
-	return TRC_SUCCESS;
+	return xTraceObjectRegisterInternal(uiEventCode, pvObject, szName, 1, &uxState, 0, pxObjectHandle);
 }
 
 traceResult xTraceObjectUnregister(TraceObjectHandle_t xObjectHandle, uint32_t uiEventCode, TraceUnsignedBaseType_t uxState)
 {
 	void* pvObject;
 	const char *szName;
+	TraceEventHandle_t xEventHandle = 0;
 
 	/* This should never fail */
 	TRC_ASSERT_ALWAYS_EVALUATE(xTraceEntryGetAddress((TraceEntryHandle_t)xObjectHandle, &pvObject) == TRC_SUCCESS);
@@ -169,8 +121,12 @@ traceResult xTraceObjectUnregister(TraceObjectHandle_t xObjectHandle, uint32_t u
 #endif /* (TRC_SEND_NAME_ONLY_ON_DELETE == 1) */
 
 	/* Send the delete event, if possible */
-	/* This should never fail */
-	TRC_ASSERT_ALWAYS_EVALUATE(prvTraceObjectSendState(uiEventCode, pvObject, uxState) == TRC_SUCCESS);
+	if (xTraceEventBegin(uiEventCode, sizeof(void*) + sizeof(TraceUnsignedBaseType_t), &xEventHandle) == TRC_SUCCESS)
+	{
+		xTraceEventAddPointer(xEventHandle, pvObject);
+		xTraceEventAddUnsignedBaseType(xEventHandle, uxState);
+		xTraceEventEnd(xEventHandle);
+	}
 
 	return xTraceEntryDelete(xObjectHandle);
 }
@@ -301,20 +257,6 @@ traceResult xTraceObjectSetOptionsWithoutHandle(void* pvObject, uint32_t uiMask)
 	TRACE_EXIT_CRITICAL_SECTION();
 
 	return xResult;
-}
-
-traceResult prvTraceObjectSendState(uint32_t uiEventCode, void* pvObject, TraceUnsignedBaseType_t uxState)
-{
-	TraceEventHandle_t xEventHandle = 0;
-
-	if (xTraceEventBegin(uiEventCode, sizeof(void*) + sizeof(TraceUnsignedBaseType_t), &xEventHandle) == TRC_SUCCESS)
-	{
-		xTraceEventAddPointer(xEventHandle, pvObject);
-		xTraceEventAddUnsignedBaseType(xEventHandle, uxState);
-		xTraceEventEnd(xEventHandle);
-	}
-
-	return TRC_SUCCESS;
 }
 
 traceResult prvTraceObjectSendNameEvent(void* pvObject, const char* szName)

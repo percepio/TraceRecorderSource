@@ -1,5 +1,5 @@
 /*
- * Trace Recorder for Tracealyzer v4.6.0
+ * Trace Recorder for Tracealyzer v4.6.2
  * Copyright 2021 Percepio AB
  * www.percepio.com
  *
@@ -99,12 +99,20 @@ int cortex_a9_r5_enter_critical(void)
     		cs_type = CS_TYPE_ISR_MASK_CHANGED;
     	}
     }
+#if (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING)
     else if (pxTraceRecorderData->uiTraceSystemState == TRC_STATE_IN_TASKSWITCH)
+#else
+	else if (uiTraceSystemState == TRC_STATE_IN_TASKSWITCH)
+#endif
     {
     	// In the context-switch code. All interrupts are already masked here, so don't modify the mask.
     	cs_type = CS_TYPE_NONE;
     }
+#if (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING)
     else if (pxTraceRecorderData->uiTraceSystemState != TRC_STATE_IN_TASKSWITCH)
+#else
+	else if (uiTraceSystemState != TRC_STATE_IN_TASKSWITCH)
+#endif
     {
     	// Not within ISR or task-switch context, use a regular critical section.
     	vPortEnterCritical();

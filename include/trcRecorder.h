@@ -1,5 +1,5 @@
 /*
- * Trace Recorder for Tracealyzer v4.6.0
+ * Trace Recorder for Tracealyzer v4.6.2
  * Copyright 2021 Percepio AB
  * www.percepio.com
  *
@@ -136,17 +136,19 @@ typedef struct TraceHeaderBuffer
 #include <trcObject.h>
 #include <trcPrint.h>
 #include <trcHeap.h>
-#include <trcStateMachine.h>
 #include <trcExtension.h>
-#include <trcInterval.h>
 #include <trcUtility.h>
 #include <trcStackMonitor.h>
 #include <trcInternalEventBuffer.h>
 #include <trcDiagnostics.h>
 #include <trcAssert.h>
-#include <trcCounter.h>
 
 #endif /* (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING) */
+
+/* These includes offer functionality for Streaming mode only, but they are included here in order to avoid compilation errors */
+#include <trcInterval.h>
+#include <trcStateMachine.h>
+#include <trcCounter.h>
 
 #if (TRC_USE_TRACEALYZER_RECORDER == 1)
 

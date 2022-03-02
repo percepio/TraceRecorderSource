@@ -26,7 +26,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Percepio Trace Recorder
-   &#160;<span id="projectnumber">v4.6.0</span>
+   &#160;<span id="projectnumber">v4.6.2</span>
    </div>
   </td>
  </tr>
@@ -83,12 +83,19 @@ $(document).ready(function(){initNavTree('group__trace__extension__apis.html',''
 
 <div class="header">
   <div class="summary">
+<a href="#define-members">Macros</a> &#124;
 <a href="#func-members">Functions</a>  </div>
   <div class="headertitle">
 <div class="title">Trace Extension APIs<div class="ingroups"><a class="el" href="group__trace__recorder__apis.html">Trace Recorder APIs</a></div></div>  </div>
 </div><!--header-->
 <div class="contents">
 <table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
+Macros</h2></td></tr>
+<tr class="memitem:ga0e4ca1424c866797c717daaa117937a1"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__trace__extension__apis.html#ga0e4ca1424c866797c717daaa117937a1">xTraceExtensionGetEventId</a>(xExtensionHandle,  uiLocalEventId)&#160;&#160;&#160;((uint32_t)xTraceEntryGetStateReturn((TraceEntryHandle_t)(xExtensionHandle), TRC_EXTENSION_STATE_INDEX_BASE_EVENT_ID) + (uiLocalEventId))</td></tr>
+<tr class="memdesc:ga0e4ca1424c866797c717daaa117937a1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns extension event id.  <a href="group__trace__extension__apis.html#ga0e4ca1424c866797c717daaa117937a1">More...</a><br /></td></tr>
+<tr class="separator:ga0e4ca1424c866797c717daaa117937a1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
 <tr class="memitem:ga358cdec30d87e1659cbb5dc551c5c310"><td class="memItemLeft" align="right" valign="top">traceResult&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__trace__extension__apis.html#ga358cdec30d87e1659cbb5dc551c5c310">xTraceExtensionCreate</a> (const char *szName, uint8_t uiMajor, uint8_t uiMinor, uint16_t uiPatch, uint32_t uiEventCount, TraceExtensionHandle_t *pxExtensionHandle)</td></tr>
@@ -97,14 +104,50 @@ Functions</h2></td></tr>
 <tr class="memitem:ga9c1bab5acbdfd9d0d825de688cfc635b"><td class="memItemLeft" align="right" valign="top">traceResult&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__trace__extension__apis.html#ga9c1bab5acbdfd9d0d825de688cfc635b">xTraceExtensionGetBaseEventId</a> (TraceExtensionHandle_t xExtensionHandle, uint32_t *puiBaseEventId)</td></tr>
 <tr class="memdesc:ga9c1bab5acbdfd9d0d825de688cfc635b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets extension base event id.  <a href="group__trace__extension__apis.html#ga9c1bab5acbdfd9d0d825de688cfc635b">More...</a><br /></td></tr>
 <tr class="separator:ga9c1bab5acbdfd9d0d825de688cfc635b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga84d971c753b497cf5f12e762a3f631a3"><td class="memItemLeft" align="right" valign="top">traceResult&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__trace__extension__apis.html#ga84d971c753b497cf5f12e762a3f631a3">xTraceExtensionGetEventId</a> (TraceExtensionHandle_t xExtensionHandle, uint32_t uiLocalEventId, uint32_t *puiGlobalEventId)</td></tr>
-<tr class="memdesc:ga84d971c753b497cf5f12e762a3f631a3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets extension event id.  <a href="group__trace__extension__apis.html#ga84d971c753b497cf5f12e762a3f631a3">More...</a><br /></td></tr>
-<tr class="separator:ga84d971c753b497cf5f12e762a3f631a3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gae8fbcb9415c4b62b395923ad9d716ddd"><td class="memItemLeft" align="right" valign="top">traceResult&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__trace__extension__apis.html#gae8fbcb9415c4b62b395923ad9d716ddd">xTraceExtensionGetConfigName</a> (TraceExtensionHandle_t xExtensionHandle, const char **pszName)</td></tr>
 <tr class="memdesc:gae8fbcb9415c4b62b395923ad9d716ddd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets extension configuration name.  <a href="group__trace__extension__apis.html#gae8fbcb9415c4b62b395923ad9d716ddd">More...</a><br /></td></tr>
 <tr class="separator:gae8fbcb9415c4b62b395923ad9d716ddd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<h2 class="groupheader">Macro Definition Documentation</h2>
+<a id="ga0e4ca1424c866797c717daaa117937a1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga0e4ca1424c866797c717daaa117937a1">&#9670;&nbsp;</a></span>xTraceExtensionGetEventId</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define xTraceExtensionGetEventId</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">xExtensionHandle, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">uiLocalEventId&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td>&#160;&#160;&#160;((uint32_t)xTraceEntryGetStateReturn((TraceEntryHandle_t)(xExtensionHandle), TRC_EXTENSION_STATE_INDEX_BASE_EVENT_ID) + (uiLocalEventId))</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Returns extension event id. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">xExtensionHandle</td><td>Pointer to initialized extension handle. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">uiLocalEventId</td><td>Local event id.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Extension event id </dd></dl>
+
+</div>
+</div>
 <h2 class="groupheader">Function Documentation</h2>
 <a id="ga358cdec30d87e1659cbb5dc551c5c310"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ga358cdec30d87e1659cbb5dc551c5c310">&#9670;&nbsp;</a></span>xTraceExtensionCreate()</h2>
@@ -253,57 +296,6 @@ Functions</h2></td></tr>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">xExtensionHandle</td><td>Pointer to initialized extension handle. </td></tr>
     <tr><td class="paramdir">[out]</td><td class="paramname">pszName</td><td>Name.</td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="retval"><dt>Return values</dt><dd>
-  <table class="retval">
-    <tr><td class="paramname">TRC_FAIL</td><td>Failure </td></tr>
-    <tr><td class="paramname">TRC_SUCCESS</td><td>Success </td></tr>
-  </table>
-  </dd>
-</dl>
-
-</div>
-</div>
-<a id="ga84d971c753b497cf5f12e762a3f631a3"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga84d971c753b497cf5f12e762a3f631a3">&#9670;&nbsp;</a></span>xTraceExtensionGetEventId()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">traceResult xTraceExtensionGetEventId </td>
-          <td>(</td>
-          <td class="paramtype">TraceExtensionHandle_t&#160;</td>
-          <td class="paramname"><em>xExtensionHandle</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">uint32_t&#160;</td>
-          <td class="paramname"><em>uiLocalEventId</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">uint32_t *&#160;</td>
-          <td class="paramname"><em>puiGlobalEventId</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Gets extension event id. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">xExtensionHandle</td><td>Pointer to initialized extension handle. </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">uiLocalEventId</td><td>Local event id. </td></tr>
-    <tr><td class="paramdir">[out]</td><td class="paramname">puiGlobalEventId</td><td>Global event id.</td></tr>
   </table>
   </dd>
 </dl>

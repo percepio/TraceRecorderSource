@@ -26,7 +26,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Percepio Trace Recorder
-   &#160;<span id="projectnumber">v4.6.0</span>
+   &#160;<span id="projectnumber">v4.6.2</span>
    </div>
   </td>
  </tr>
@@ -83,6 +83,7 @@ $(document).ready(function(){initNavTree('trcInterval_8h.html',''); initResizabl
 
 <div class="header">
   <div class="summary">
+<a href="#define-members">Macros</a> &#124;
 <a href="#func-members">Functions</a>  </div>
   <div class="headertitle">
 <div class="title">trcInterval.h File Reference</div>  </div>
@@ -95,20 +96,26 @@ $(document).ready(function(){initNavTree('trcInterval_8h.html',''); initResizabl
 </div>
 <p><a href="trcInterval_8h_source.html">Go to the source code of this file.</a></p>
 <table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
+Macros</h2></td></tr>
+<tr class="memitem:gace44148737e5a86e3dc0978dad7846ad"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__trace__interval__apis.html#gace44148737e5a86e3dc0978dad7846ad">xTraceIntervalGetState</a>(xIntervalChannelHandle,  puxState)&#160;&#160;&#160;xTraceEntryGetState((TraceEntryHandle_t)(xIntervalChannelHandle), TRC_INTERVAL_CHANNEL_SET_INDEX, puxState)</td></tr>
+<tr class="memdesc:gace44148737e5a86e3dc0978dad7846ad"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets trace interval channel state.  <a href="group__trace__interval__apis.html#gace44148737e5a86e3dc0978dad7846ad">More...</a><br /></td></tr>
+<tr class="separator:gace44148737e5a86e3dc0978dad7846ad"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:ga493546758c3b9120112a8678d60d829c"><td class="memItemLeft" align="right" valign="top">traceResult&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__trace__interval__apis.html#ga493546758c3b9120112a8678d60d829c">xTraceIntervalCreate</a> (const char *szName, TraceIntervalHandle_t *pxIntervalHandle)</td></tr>
-<tr class="memdesc:ga493546758c3b9120112a8678d60d829c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates trace interval.  <a href="group__trace__interval__apis.html#ga493546758c3b9120112a8678d60d829c">More...</a><br /></td></tr>
-<tr class="separator:ga493546758c3b9120112a8678d60d829c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gabfec609db86b625be155859c3165d7b3"><td class="memItemLeft" align="right" valign="top">traceResult&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__trace__interval__apis.html#gabfec609db86b625be155859c3165d7b3">xTraceIntervalStart</a> (TraceIntervalHandle_t xIntervalHandle)</td></tr>
-<tr class="memdesc:gabfec609db86b625be155859c3165d7b3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Starts trace interval.  <a href="group__trace__interval__apis.html#gabfec609db86b625be155859c3165d7b3">More...</a><br /></td></tr>
-<tr class="separator:gabfec609db86b625be155859c3165d7b3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga09a5ea06848901f447732a1361bfd662"><td class="memItemLeft" align="right" valign="top">traceResult&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__trace__interval__apis.html#ga09a5ea06848901f447732a1361bfd662">xTraceIntervalStop</a> (TraceIntervalHandle_t xIntervalHandle)</td></tr>
-<tr class="memdesc:ga09a5ea06848901f447732a1361bfd662"><td class="mdescLeft">&#160;</td><td class="mdescRight">Stops trace interval.  <a href="group__trace__interval__apis.html#ga09a5ea06848901f447732a1361bfd662">More...</a><br /></td></tr>
-<tr class="separator:ga09a5ea06848901f447732a1361bfd662"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gaace0f467dcda24946765870ee0763c16"><td class="memItemLeft" align="right" valign="top">traceResult&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__trace__interval__apis.html#gaace0f467dcda24946765870ee0763c16">xTraceIntervalGetState</a> (TraceIntervalHandle_t xIntervalHandle, uint32_t *puxState)</td></tr>
-<tr class="memdesc:gaace0f467dcda24946765870ee0763c16"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets trace interval state.  <a href="group__trace__interval__apis.html#gaace0f467dcda24946765870ee0763c16">More...</a><br /></td></tr>
-<tr class="separator:gaace0f467dcda24946765870ee0763c16"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga2c063328c943bd5ea5204c9e0ede0d92"><td class="memItemLeft" align="right" valign="top">traceResult&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__trace__interval__apis.html#ga2c063328c943bd5ea5204c9e0ede0d92">xTraceIntervalChannelSetCreate</a> (const char *szName, TraceIntervalChannelSetHandle_t *pxIntervalChannelSetHandle)</td></tr>
+<tr class="memdesc:ga2c063328c943bd5ea5204c9e0ede0d92"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates trace interval channel set.  <a href="group__trace__interval__apis.html#ga2c063328c943bd5ea5204c9e0ede0d92">More...</a><br /></td></tr>
+<tr class="separator:ga2c063328c943bd5ea5204c9e0ede0d92"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga8da416874dad91a32ba16169ddff0f2b"><td class="memItemLeft" align="right" valign="top">traceResult&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__trace__interval__apis.html#ga8da416874dad91a32ba16169ddff0f2b">xTraceIntervalChannelCreate</a> (const char *szName, TraceIntervalChannelSetHandle_t xIntervalChannelSetHandle, TraceIntervalChannelHandle_t *pxIntervalChannelHandle)</td></tr>
+<tr class="memdesc:ga8da416874dad91a32ba16169ddff0f2b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates trace interval channel.  <a href="group__trace__interval__apis.html#ga8da416874dad91a32ba16169ddff0f2b">More...</a><br /></td></tr>
+<tr class="separator:ga8da416874dad91a32ba16169ddff0f2b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga73cc0d9d3d2e2f20ecfbd97692474cad"><td class="memItemLeft" align="right" valign="top">traceResult&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__trace__interval__apis.html#ga73cc0d9d3d2e2f20ecfbd97692474cad">xTraceIntervalStart</a> (TraceIntervalChannelHandle_t xIntervalChannelHandle, TraceUnsignedBaseType_t uxValue, TraceIntervalInstanceHandle_t *pxIntervalInstanceHandle)</td></tr>
+<tr class="memdesc:ga73cc0d9d3d2e2f20ecfbd97692474cad"><td class="mdescLeft">&#160;</td><td class="mdescRight">Starts trace interval instance.  <a href="group__trace__interval__apis.html#ga73cc0d9d3d2e2f20ecfbd97692474cad">More...</a><br /></td></tr>
+<tr class="separator:ga73cc0d9d3d2e2f20ecfbd97692474cad"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gacc8dc6b0c53429b9e5d6d65999f323d5"><td class="memItemLeft" align="right" valign="top">traceResult&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__trace__interval__apis.html#gacc8dc6b0c53429b9e5d6d65999f323d5">xTraceIntervalStop</a> (TraceIntervalChannelHandle_t xIntervalChannelHandle, TraceIntervalInstanceHandle_t xIntervalInstanceHandle)</td></tr>
+<tr class="memdesc:gacc8dc6b0c53429b9e5d6d65999f323d5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Stops trace interval instance.  <a href="group__trace__interval__apis.html#gacc8dc6b0c53429b9e5d6d65999f323d5">More...</a><br /></td></tr>
+<tr class="separator:gacc8dc6b0c53429b9e5d6d65999f323d5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Public trace interval APIs. </p>

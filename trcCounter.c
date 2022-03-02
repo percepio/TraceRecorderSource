@@ -1,5 +1,5 @@
 /*
-* Trace Recorder for Tracealyzer v4.6.0
+* Trace Recorder for Tracealyzer v4.6.2
 * Copyright 2021 Percepio AB
 * www.percepio.com
 *
@@ -13,10 +13,6 @@
 #if (TRC_USE_TRACEALYZER_RECORDER == 1)
 
 #if (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING)
-
-#define TRC_COUNTER_VALUE_INDEX 0
-#define TRC_COUNTER_LOWER_LIMIT_INDEX 1
-#define TRC_COUNTER_UPPER_LIMIT_INDEX 2
 
 static TraceCounterCallback_t xCallbackFunction;
 
@@ -44,9 +40,9 @@ traceResult xTraceCounterCreate(const char *szName, TraceBaseType_t xInitialValu
 
 	TRC_ASSERT(xInitialValue >= xLowerLimit && xInitialValue <= xUpperLimit);
 
-	uxStates[TRC_COUNTER_VALUE_INDEX] = xInitialValue;
-	uxStates[TRC_COUNTER_LOWER_LIMIT_INDEX] = xLowerLimit;
-	uxStates[TRC_COUNTER_UPPER_LIMIT_INDEX] = xUpperLimit;
+	uxStates[TRC_COUNTER_VALUE_INDEX] = (TraceUnsignedBaseType_t)xInitialValue;
+	uxStates[TRC_COUNTER_LOWER_LIMIT_INDEX] = (TraceUnsignedBaseType_t)xLowerLimit;
+	uxStates[TRC_COUNTER_UPPER_LIMIT_INDEX] = (TraceUnsignedBaseType_t)xUpperLimit;
 
 	/* We need to check this */
 	if (xTraceObjectRegisterInternal(PSF_EVENT_COUNTER_CREATE, 0, szName, 3, uxStates, TRC_ENTRY_OPTION_COUNTER, &xObjectHandle) == TRC_FAIL)
@@ -54,32 +50,8 @@ traceResult xTraceCounterCreate(const char *szName, TraceBaseType_t xInitialValu
 		return TRC_FAIL;
 	}
 
-	*pxCounterHandle = (TraceIntervalHandle_t)xObjectHandle;
+	*pxCounterHandle = (TraceCounterHandle_t)xObjectHandle;
 	
-	return TRC_SUCCESS;
-}
-
-traceResult xTraceCounterIncrease(TraceCounterHandle_t xCounterHandle)
-{
-	return xTraceCounterAdd(xCounterHandle, 1);
-}
-traceResult xTraceCounterDecrease(TraceCounterHandle_t xCounterHandle)
-{
-	return xTraceCounterAdd(xCounterHandle, -1);
-}
-
-traceResult xTraceCounterAdd(TraceCounterHandle_t xCounterHandle, TraceBaseType_t xValue)
-{
-	TraceBaseType_t xCurrent;
-
-	TRC_ASSERT(xTraceIsComponentInitialized(TRC_RECORDER_COMPONENT_COUNTER));
-
-	/* This should never fail */
-	TRC_ASSERT_ALWAYS_EVALUATE(xTraceCounterGet(xCounterHandle, &xCurrent) == TRC_SUCCESS);
-
-	/* This should never fail */
-	TRC_ASSERT_ALWAYS_EVALUATE(xTraceCounterSet(xCounterHandle, xCurrent + xValue) == TRC_SUCCESS);
-
 	return TRC_SUCCESS;
 }
 
@@ -98,55 +70,26 @@ traceResult xTraceCounterSet(TraceCounterHandle_t xCounterHandle, TraceBaseType_
 	if (xTraceEventBegin(PSF_EVENT_COUNTER_CHANGE, sizeof(void*) + sizeof(uint32_t), &xEventHandle) == TRC_SUCCESS)
 	{
 		xTraceEventAddPointer(xEventHandle, (void*)xCounterHandle);
-		xTraceEventAdd32(xEventHandle, (TraceUnsignedBaseType_t)xValue);
+		xTraceEventAdd32(xEventHandle, (uint32_t)xValue);
 		xTraceEventEnd(xEventHandle);
 	}
 
-	/* This should never fail */
+	/* These should never fail */
 	TRC_ASSERT_ALWAYS_EVALUATE(xTraceCounterGetLowerLimit(xCounterHandle, &xLowerLimit) == TRC_SUCCESS);
-
-	if (xValue < xLowerLimit)
-	{
-		xCallbackFunction(xCounterHandle);
-	}
-
-	/* This should never fail */
 	TRC_ASSERT_ALWAYS_EVALUATE(xTraceCounterGetUpperLimit(xCounterHandle, &xUpperLimit) == TRC_SUCCESS);
 
-	if (xValue > xUpperLimit)
+	if (xValue < xLowerLimit || xValue > xUpperLimit)
 	{
+		if (xTraceEventBegin(PSF_EVENT_COUNTER_LIMIT_EXCEEDED, sizeof(void*), &xEventHandle) == TRC_SUCCESS)
+		{
+			xTraceEventAddPointer(xEventHandle, (void*)xCounterHandle);
+			xTraceEventEnd(xEventHandle);
+		}
+
 		xCallbackFunction(xCounterHandle);
 	}
 
 	return TRC_SUCCESS;
-}
-
-traceResult xTraceCounterGet(TraceCounterHandle_t xCounterHandle, TraceBaseType_t* pxValue)
-{
-	TRC_ASSERT(xTraceIsComponentInitialized(TRC_RECORDER_COMPONENT_COUNTER));
-
-	return xTraceEntryGetState((TraceEntryHandle_t)xCounterHandle, TRC_COUNTER_VALUE_INDEX, (TraceUnsignedBaseType_t*)pxValue);
-}
-
-traceResult xTraceCounterGetUpperLimit(TraceCounterHandle_t xCounterHandle, TraceBaseType_t* pxValue)
-{
-	TRC_ASSERT(xTraceIsComponentInitialized(TRC_RECORDER_COMPONENT_COUNTER));
-
-	return xTraceEntryGetState((TraceEntryHandle_t)xCounterHandle, TRC_COUNTER_UPPER_LIMIT_INDEX, (TraceUnsignedBaseType_t*)pxValue);
-}
-
-traceResult xTraceCounterGetLowerLimit(TraceCounterHandle_t xCounterHandle, TraceBaseType_t* pxValue)
-{
-	TRC_ASSERT(xTraceIsComponentInitialized(TRC_RECORDER_COMPONENT_COUNTER));
-
-	return xTraceEntryGetState((TraceEntryHandle_t)xCounterHandle, TRC_COUNTER_LOWER_LIMIT_INDEX, (TraceUnsignedBaseType_t*)pxValue);
-}
-
-traceResult xTraceCounterGetName(TraceCounterHandle_t xCounterHandle, const char** pszName)
-{
-	TRC_ASSERT(xTraceIsComponentInitialized(TRC_RECORDER_COMPONENT_COUNTER));
-
-	return xTraceEntryGetSymbol((TraceEntryHandle_t)xCounterHandle, pszName);
 }
 
 #endif /* (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING) */
