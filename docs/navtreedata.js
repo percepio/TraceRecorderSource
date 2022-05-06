@@ -53,7 +53,7 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 "FreeRTOS_2config_2trcKernelPortConfig_8h_source.html",
-"group__trace__object__apis.html#ga3af120096177146ff9c25668ec8a53dc"
+"group__trace__object__apis.html#ga304a75a1c8a64e02b0f8fe2355305555"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

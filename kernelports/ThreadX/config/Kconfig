@@ -4,7 +4,7 @@
 menu "RTOS Specific"
     visible if n
 config PERCEPIO_TRC_CFG_RECORDER_RTOS_THREADX
-    bool "Zephyr"
+    bool "ThreadX"
     default y
 
 # ThreadX does not support the classic snapshot format, only streaming

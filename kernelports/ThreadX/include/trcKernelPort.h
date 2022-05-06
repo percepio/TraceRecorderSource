@@ -1,5 +1,5 @@
 /*
- * Trace Recorder for Tracealyzer v4.6.2
+ * Trace Recorder for Tracealyzer v4.6.3
  * Copyright 2021 Percepio AB
  * www.percepio.com
  *
@@ -210,11 +210,18 @@ void vTraceSetMessageBufferName(void* object, const char* name);
 #define PSF_EVENT_MALLOC_FAILED 									0
 #define PSF_EVENT_FREE												0
 #define PSF_EVENT_FREE_FAILED 										0
+#define PSF_EVENT_INTERVAL_CHANNEL_CREATE							0
+#define PSF_EVENT_INTERVAL_CHANNEL_SET_CREATE						0
 #define PSF_EVENT_INTERVAL_CREATE									0
 #define PSF_EVENT_INTERVAL_STATECHANGE								0
+#define PSF_EVENT_INTERVAL_CHANNEL_CREATE							0
+#define PSF_EVENT_INTERVAL_CHANNEL_SET_CREATE						0
+#define PSF_EVENT_INTERVAL_START									0
+#define PSF_EVENT_INTERVAL_STOP										0
 #define PSF_EVENT_TASK_DELETE										PSF_EVENT_THREAD_DELETE_SUCCESS
 #define PSF_EVENT_COUNTER_CREATE									0
 #define PSF_EVENT_COUNTER_CHANGE									0
+#define PSF_EVENT_COUNTER_LIMIT_EXCEEDED							0
 #define PSF_EVENT_EXTENSION_CREATE									0
 #define PSF_EVENT_HEAP_CREATE										0
 

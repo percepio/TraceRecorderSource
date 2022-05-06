@@ -1,5 +1,5 @@
 /*
- * Trace Recorder for Tracealyzer v4.6.2
+ * Trace Recorder for Tracealyzer v4.6.3
  * Copyright 2021 Percepio AB
  * www.percepio.com
  *
@@ -64,12 +64,12 @@
 
 #if (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING)
 
-typedef struct TraceStreamPortFile
+typedef struct TraceStreamPortITM
 {
 	uint8_t buffer[sizeof(TraceUnsignedBaseType_t)];
-} TraceStreamPortFile_t;
+} TraceStreamPortITM_t;
 
-static TraceStreamPortFile_t* pxStreamPortFile;
+static TraceStreamPortITM_t* pxStreamPortITM;
 
 /* This will be set by the debugger when there is data to be read */
 volatile int32_t tz_host_command_bytes_to_read = 0;
@@ -147,11 +147,16 @@ traceResult prvTraceItmRead(void* ptrData, uint32_t uiSize, int32_t* piBytesRead
 
 traceResult xTraceStreamPortInitialize(TraceStreamPortBuffer_t* pxBuffer)
 {
-	TRC_ASSERT_EQUAL_SIZE(TraceStreamPortBuffer_t, TraceStreamPortFile_t);
+	TRC_ASSERT_EQUAL_SIZE(TraceStreamPortBuffer_t, TraceStreamPortITM_t);
 
 	TRC_ASSERT(pxBuffer != 0);
 
-	pxStreamPortFile = (TraceStreamPortFile_t*)pxBuffer;
+	pxStreamPortITM = (TraceStreamPortITM_t*)pxBuffer;
+
+	/* pxStreamPortITM isn't used, but is required for the initialization
+	 * of the streamport, this removes any warning about assigned but
+	 * never used. */
+	(void)pxStreamPortITM; 
 
 	return TRC_SUCCESS;
 }

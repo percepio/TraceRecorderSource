@@ -1,5 +1,5 @@
 /*
-* Percepio Trace Recorder for Tracealyzer v4.6.2
+* Percepio Trace Recorder for Tracealyzer v4.6.3
 * Copyright 2021 Percepio AB
 * www.percepio.com
 *
@@ -151,8 +151,60 @@ traceResult xTraceCounterSet(TraceCounterHandle_t xCounterHandle, TraceBaseType_
 }
 #endif
 
-#endif /* (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING) */
+#else
 
-#endif /* (TRC_USE_TRACEALYZER_RECORDER == 1) */
+/**
+ * @brief Disabled by TRC_CFG_RECORDER_MODE
+ */
+#define xTraceCounterSetCallback(__xCallback) ((void)(__xCallback), TRC_SUCCESS)
 
-#endif /* TRC_COUNTER_H */
+/**
+ * @brief Disabled by TRC_CFG_RECORDER_MODE
+ */
+#define xTraceCounterCreate(__szName, __xInitialValue, __xLowerLimit, __xUpperLimit, __pxCounterHandle) ((void)(__szName), (void)(__xInitialValue), (void)(__xLowerLimit), (void)(__xUpperLimit), *(__pxCounterHandle) = 0, TRC_SUCCESS)
+
+/**
+ * @brief Disabled by TRC_CFG_RECORDER_MODE
+ */
+#define xTraceCounterAdd(__xCounterHandle, __xValue) ((void)(__xCounterHandle), (void)(__xValue), TRC_SUCCESS)
+
+/**
+ * @brief Disabled by TRC_CFG_RECORDER_MODE
+ */
+#define xTraceCounterSet(__xCounterHandle, __xValue) ((void)(__xCounterHandle), (void)(__xValue), TRC_SUCCESS)
+
+/**
+ * @brief Disabled by TRC_CFG_RECORDER_MODE
+ */
+#define xTraceCounterGet(__xCounterHandle, __pxValue) ((void)(__xCounterHandle), *(__pxValue) = 0, TRC_SUCCESS)
+
+/**
+ * @brief Disabled by TRC_CFG_RECORDER_MODE
+ */
+#define xTraceCounterIncrease(__xCounterHandle) ((void)(__xCounterHandle), TRC_SUCCESS)
+
+/**
+ * @brief Disabled by TRC_CFG_RECORDER_MODE
+ */
+#define xTraceCounterDecrease(__xCounterHandle) ((void)(__xCounterHandle), TRC_SUCCESS)
+
+/**
+ * @brief Disabled by TRC_CFG_RECORDER_MODE
+ */
+#define xTraceCounterGetUpperLimit(__xCounterHandle, __pxValue) ((void)(__xCounterHandle), *(__pxValue) = 0, TRC_SUCCESS)
+
+/**
+ * @brief Disabled by TRC_CFG_RECORDER_MODE
+ */
+#define xTraceCounterGetLowerLimit(__xCounterHandle, __pxValue) ((void)(__xCounterHandle), *(__pxValue) = 0, TRC_SUCCESS)
+
+/**
+ * @brief Disabled by TRC_CFG_RECORDER_MODE
+ */
+#define xTraceCounterGetName(__xCounterHandle, __pszName) ((void)(__xCounterHandle), *(__pszName) = "N/A", TRC_SUCCESS)
+
+#endif
+
+#endif
+
+#endif

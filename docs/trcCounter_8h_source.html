@@ -26,7 +26,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Percepio Trace Recorder
-   &#160;<span id="projectnumber">v4.6.2</span>
+   &#160;<span id="projectnumber">v4.6.3</span>
    </div>
   </td>
  </tr>
@@ -87,7 +87,7 @@ $(document).ready(function(){initNavTree('trcCounter_8h_source.html',''); initRe
 </div><!--header-->
 <div class="contents">
 <a href="trcCounter_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">/*</span></div>
-<div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="comment">* Percepio Trace Recorder for Tracealyzer v4.6.2</span></div>
+<div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="comment">* Percepio Trace Recorder for Tracealyzer v4.6.3</span></div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="comment">* Copyright 2021 Percepio AB</span></div>
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="comment">* www.percepio.com</span></div>
 <div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="comment">*</span></div>
@@ -135,11 +135,33 @@ $(document).ready(function(){initNavTree('trcCounter_8h_source.html',''); initRe
 <div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160;}</div>
 <div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160;<span class="preprocessor">#endif</span></div>
 <div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160; </div>
-<div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING) */</span><span class="preprocessor"></span></div>
+<div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160;<span class="preprocessor">#else</span></div>
 <div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160; </div>
-<div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* (TRC_USE_TRACEALYZER_RECORDER == 1) */</span><span class="preprocessor"></span></div>
-<div class="line"><a name="l00157"></a><span class="lineno">  157</span>&#160; </div>
-<div class="line"><a name="l00158"></a><span class="lineno">  158</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* TRC_COUNTER_H */</span><span class="preprocessor"></span></div>
+<div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160;<span class="preprocessor">#define xTraceCounterSetCallback(__xCallback) ((void)(__xCallback), TRC_SUCCESS)</span></div>
+<div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160; </div>
+<div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160;<span class="preprocessor">#define xTraceCounterCreate(__szName, __xInitialValue, __xLowerLimit, __xUpperLimit, __pxCounterHandle) ((void)(__szName), (void)(__xInitialValue), (void)(__xLowerLimit), (void)(__xUpperLimit), *(__pxCounterHandle) = 0, TRC_SUCCESS)</span></div>
+<div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160; </div>
+<div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160;<span class="preprocessor">#define xTraceCounterAdd(__xCounterHandle, __xValue) ((void)(__xCounterHandle), (void)(__xValue), TRC_SUCCESS)</span></div>
+<div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160; </div>
+<div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160;<span class="preprocessor">#define xTraceCounterSet(__xCounterHandle, __xValue) ((void)(__xCounterHandle), (void)(__xValue), TRC_SUCCESS)</span></div>
+<div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160; </div>
+<div class="line"><a name="l00179"></a><span class="lineno">  179</span>&#160;<span class="preprocessor">#define xTraceCounterGet(__xCounterHandle, __pxValue) ((void)(__xCounterHandle), *(__pxValue) = 0, TRC_SUCCESS)</span></div>
+<div class="line"><a name="l00180"></a><span class="lineno">  180</span>&#160; </div>
+<div class="line"><a name="l00184"></a><span class="lineno">  184</span>&#160;<span class="preprocessor">#define xTraceCounterIncrease(__xCounterHandle) ((void)(__xCounterHandle), TRC_SUCCESS)</span></div>
+<div class="line"><a name="l00185"></a><span class="lineno">  185</span>&#160; </div>
+<div class="line"><a name="l00189"></a><span class="lineno">  189</span>&#160;<span class="preprocessor">#define xTraceCounterDecrease(__xCounterHandle) ((void)(__xCounterHandle), TRC_SUCCESS)</span></div>
+<div class="line"><a name="l00190"></a><span class="lineno">  190</span>&#160; </div>
+<div class="line"><a name="l00194"></a><span class="lineno">  194</span>&#160;<span class="preprocessor">#define xTraceCounterGetUpperLimit(__xCounterHandle, __pxValue) ((void)(__xCounterHandle), *(__pxValue) = 0, TRC_SUCCESS)</span></div>
+<div class="line"><a name="l00195"></a><span class="lineno">  195</span>&#160; </div>
+<div class="line"><a name="l00199"></a><span class="lineno">  199</span>&#160;<span class="preprocessor">#define xTraceCounterGetLowerLimit(__xCounterHandle, __pxValue) ((void)(__xCounterHandle), *(__pxValue) = 0, TRC_SUCCESS)</span></div>
+<div class="line"><a name="l00200"></a><span class="lineno">  200</span>&#160; </div>
+<div class="line"><a name="l00204"></a><span class="lineno">  204</span>&#160;<span class="preprocessor">#define xTraceCounterGetName(__xCounterHandle, __pszName) ((void)(__xCounterHandle), *(__pszName) = &quot;N/A&quot;, TRC_SUCCESS)</span></div>
+<div class="line"><a name="l00205"></a><span class="lineno">  205</span>&#160; </div>
+<div class="line"><a name="l00206"></a><span class="lineno">  206</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00207"></a><span class="lineno">  207</span>&#160; </div>
+<div class="line"><a name="l00208"></a><span class="lineno">  208</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00209"></a><span class="lineno">  209</span>&#160; </div>
+<div class="line"><a name="l00210"></a><span class="lineno">  210</span>&#160;<span class="preprocessor">#endif</span></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <div class="ttc" id="agroup__trace__counter__apis_html_gaab9ced4239f659fbe9390187e05cbd4a"><div class="ttname"><a href="group__trace__counter__apis.html#gaab9ced4239f659fbe9390187e05cbd4a">xTraceCounterSet</a></div><div class="ttdeci">traceResult xTraceCounterSet(TraceCounterHandle_t xCounterHandle, TraceBaseType_t xValue)</div><div class="ttdoc">Sets trace counter value.</div><div class="ttdef"><b>Definition:</b> trcCounter.c:58</div></div>

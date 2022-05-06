@@ -1,5 +1,5 @@
 /*
- * Trace Recorder for Tracealyzer v4.6.2
+ * Trace Recorder for Tracealyzer v4.6.3
  * Copyright 2021 Percepio AB
  * www.percepio.com
  *
@@ -555,6 +555,26 @@ void sys_trace_k_thread_sched_wakeup(struct k_thread *thread) {
 
 void sys_trace_k_thread_sched_abort(struct k_thread *thread) {
 	TraceEventHandle_t xTraceHandle;
+	TraceEntryHandle_t xEntryHandle;
+
+	TRACE_ALLOC_CRITICAL_SECTION();
+	TRACE_ENTER_CRITICAL_SECTION();
+
+	/* Fetch entry handle */
+	if (xTraceEntryFind((void*)thread, &xEntryHandle) == TRC_FAIL)
+	{
+		TRACE_EXIT_CRITICAL_SECTION();
+		return;
+	}
+	
+	/* Delete entry */
+	if (xTraceEntryDelete(xEntryHandle) == TRC_FAIL)
+	{
+		TRACE_EXIT_CRITICAL_SECTION();
+		return;
+	}
+
+	TRACE_EXIT_CRITICAL_SECTION();
 
 	/* Remove thread from stack monitor */
 	xTraceStackMonitorRemove((void*)thread);
@@ -3214,16 +3234,38 @@ void sys_trace_k_timer_status_sync_exit(struct k_timer *timer, uint32_t result) 
 /* Syscall trace function definitions */
 void sys_trace_syscall_enter(uint32_t id, const char *name) {
 	TraceEventHandle_t xTraceHandle;
+	uint32_t uiRemainingBytes = 0;
+	uint32_t uiNull = 0;
 
-	if (xTraceEventBegin(PSF_EVENT_SYSTEM_SYSCALL_ENTER, 0, &xTraceHandle) == TRC_SUCCESS) {
+	if (xTraceEventBegin(PSF_EVENT_SYSTEM_SYSCALL_ENTER, sizeof(uint32_t) + strlen(name), &xTraceHandle) == TRC_SUCCESS) {
+		xTraceEventAdd32(xTraceHandle, id);
+
+		/* Add name */
+		xTraceEventAddData(xTraceHandle, (void*)name, strlen(name));
+
+		/* Events are 4-bytes aligned, pad remainder of data */
+		xTraceEventPayloadRemaining(xTraceHandle, &uiRemainingBytes);
+		xTraceEventAddData(xTraceHandle, (void*)&uiNull, uiRemainingBytes);
+
 		xTraceEventEnd(xTraceHandle);
 	}
 }
 
 void sys_trace_syscall_exit(uint32_t id, const char *name) {
 	TraceEventHandle_t xTraceHandle;
+	uint32_t uiRemainingBytes = 0;
+	uint32_t uiNull = 0;
 	
-	if (xTraceEventBegin(PSF_EVENT_SYSTEM_SYSCALL_EXIT, 0, &xTraceHandle) == TRC_SUCCESS) {
+	if (xTraceEventBegin(PSF_EVENT_SYSTEM_SYSCALL_EXIT, sizeof(uint32_t) + strlen(name), &xTraceHandle) == TRC_SUCCESS) {
+		xTraceEventAdd32(xTraceHandle, id);
+		
+		/* Add name */
+		xTraceEventAddData(xTraceHandle, (void*)name, strlen(name));
+
+		/* Events are 4-bytes aligned, pad remainder of data */
+		xTraceEventPayloadRemaining(xTraceHandle, &uiRemainingBytes);
+		xTraceEventAddData(xTraceHandle, (void*)&uiNull, uiRemainingBytes);
+
 		xTraceEventEnd(xTraceHandle);
 	}
 }

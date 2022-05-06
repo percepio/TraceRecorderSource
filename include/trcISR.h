@@ -1,5 +1,5 @@
 /*
-* Percepio Trace Recorder for Tracealyzer v4.6.2
+* Percepio Trace Recorder for Tracealyzer v4.6.3
 * Copyright 2021 Percepio AB
 * www.percepio.com
 *
@@ -219,8 +219,8 @@ TraceISRHandle_t xTraceSetISRProperties(const char* szName, uint32_t uiPriority)
 }
 #endif
 
-#endif /* (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING) */
+#endif
 
-#endif /* (TRC_USE_TRACEALYZER_RECORDER == 1) */
+#endif
 
-#endif /* TRC_ISR_H */
+#endif

@@ -1,5 +1,5 @@
 /*
- * Trace Recorder for Tracealyzer v4.6.2
+ * Trace Recorder for Tracealyzer v4.6.3
  * Copyright 2021 Percepio AB
  * www.percepio.com
  *
@@ -66,7 +66,10 @@ typedef uint16_t traceHandle;
 #else /* (TRC_CFG_USE_16BIT_OBJECT_HANDLES == 1) */
 typedef uint8_t traceHandle;
 #endif /* (TRC_CFG_USE_16BIT_OBJECT_HANDLES == 1) */
-	
+
+#undef TraceISRHandle_t
+#define TraceISRHandle_t traceHandle
+
 #include <trcHardwarePort.h>
 #include <trcKernelPort.h>
 
@@ -104,7 +107,8 @@ typedef uint8_t traceHandle;
 #endif
 
 /* Backwards compatibility */
-typedef TraceISRHandle_t traceHandle;
+#undef traceHandle
+#define traceHandle TraceISRHandle_t
 
 /* Maximum event size */
 #define TRC_MAX_BLOB_SIZE (16 * sizeof(uint32_t))
@@ -378,6 +382,90 @@ void prvReportStackUsage(void);
 #define prvReportStackUsage()
 
 #endif /* defined (TRC_CFG_ENABLE_STACK_MONITOR) && (TRC_CFG_ENABLE_STACK_MONITOR == 1) && (TRC_CFG_SCHEDULING_ONLY == 0) */
+
+/**
+ * @internal Deprecated - Registers an ISR
+ */
+traceHandle xTraceSetISRProperties(const char* szName, uint8_t uiPriority);
+
+/**
+ * @brief
+ *
+ * Registers an ISR.
+ *
+ * Example:
+ *	 #define PRIO_ISR_TIMER1 3 // the hardware priority of the interrupt
+ *	 ...
+ *	 TraceISRHandle_t Timer1Handle;
+ *	 xTraceISRRegister("ISRTimer1", PRIO_ISR_TIMER1, &Timer1Handle);
+ *
+ * @param[in] szName ISR name
+ * @param[in] uiPriority ISR priority
+ * @param[in] pxISRHandle 
+ *
+ * @retval TRC_FAIL Failure
+ * @retval TRC_SUCCESS Success
+ */
+traceResult xTraceISRRegister(const char* szName, uint32_t uiPriority, TraceISRHandle_t* pxISRHandle);
+
+/**
+ * @brief
+ *
+ * Registers the beginning of an Interrupt Service Routine, using a TraceISRHandle_t
+ * provided by xTraceISRRegister.
+ *
+ * Example:
+ *	 #define PRIO_ISR_TIMER1 3 // the hardware priority of the interrupt
+ *	 ...
+ *	 TraceISRHandle_t Timer1Handle;
+ *	 xTraceISRRegister("ISRTimer1", PRIO_ISR_TIMER1, &Timer1Handle);
+ *	 ...
+ *	 void ISR_handler()
+ *	 {
+ *		 xTraceISRBegin(Timer1Handle);
+ *		 ...
+ *		 xTraceISREnd(0);
+ *	 }
+ *
+ * @param[in] xHandle Handle for the previously registered ISR
+ * 
+ * @retval TRC_FAIL Failure
+ * @retval TRC_SUCCESS Success
+ */
+traceResult xTraceISRBegin(TraceISRHandle_t xHandle);
+
+#define vTraceStoreISRBegin(__handle) (void)xTraceISRBegin((TraceISRHandle_t)(__handle))
+
+/**
+ * @brief
+ *
+ * Registers the end of an Interrupt Service Routine.
+ *
+ * The parameter pendingISR indicates if the interrupt has requested a
+ * task-switch (= 1), e.g., by signaling a semaphore. Otherwise (= 0) the
+ * interrupt is assumed to return to the previous context.
+ *
+ * Example:
+ *	 #define PRIO_ISR_TIMER1 3 // the hardware priority of the interrupt
+ *	 ...
+ *	 TraceISRHandle_t Timer1Handle;
+ *	 xTraceISRRegister("ISRTimer1", PRIO_ISR_TIMER1, &Timer1Handle);
+ *	 ...
+ *	 void ISR_handler()
+ *	 {
+ *		 xTraceISRBegin(Timer1Handle);
+ *		 ...
+ *		 xTraceISREnd(0);
+ *	 }
+ *
+ * @param[in] pendingISR Flag that indicates whether an ISR is pending
+ * 
+ * @retval TRC_FAIL Failure
+ * @retval TRC_SUCCESS Success
+ */
+traceResult xTraceISREnd(int pendingISR);
+
+#define vTraceStoreISREnd(__pendingISR) (void)xTraceISREnd(__pendingISR)
 
 /**
  * @brief Query if recorder is enabled

@@ -1,5 +1,5 @@
 /*
- * Trace Recorder for Tracealyzer v4.6.2
+ * Trace Recorder for Tracealyzer v4.6.3
  * Copyright 2021 Percepio AB
  * www.percepio.com
  *
@@ -21,8 +21,11 @@ extern "C" {
  * @def TRC_CFG_CPU_CLOCK_HZ
  * @brief Board CPU clock frequency in Hz.
  */
-#define TRC_CFG_CPU_CLOCK_HZ 600000000
+#define TRC_CFG_CPU_CLOCK_HZ 0
 
+#if(TRC_CFG_CPU_CLOCK_HZ == 0)
+#error "TRC_CFG_CPU_CLOCK_HZ needs to be set to the CPU frequency."
+#endif
 /**
  * @def TRC_CFG_USE_GCC_STATEMENT_EXPR
  * @brief Enable/Disable the use of GCC statement expressions in the

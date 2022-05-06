@@ -136,7 +136,7 @@ config PERCEPIO_TRC_CFG_INCLUDE_USER_EVENTS
     default y
     help
       If this is disabled, all code related to User Events is excluded in order 
-      to reduce code size. Any attempts of storing User Events are then silently
+      to reduce code size. Any attempts to store User Events are then silently
       ignored.
       
       User Events are application-generated events, like "printf" but for the 
@@ -308,11 +308,11 @@ config PERCEPIO_TRC_CFG_RECORDER_DATA_INIT
   int "Data Init"
   default 1
   help
-    Macro which states wether the recorder data should have an initial value.
+    Macro that states wether the recorder data should have an initial value.
     
     In very specific cases where traced objects are created before main(),
     the recorder will need to be started even before that. In these cases,
-    the recorder data would be initialized by vTraceEnable(PERCEPIO_TRC_INIT) but could
+    the recorder data would be initialized by xTraceInitialize() but could
     then later be overwritten by the initialization value.
     If this is an issue for you, set PERCEPIO_TRC_CFG_RECORDER_DATA_INIT to 0.
     The following code can then be used before any traced objects are created:
@@ -340,13 +340,13 @@ choice PERCEPIO_TRC_CFG_SNAPSHOT_MODE
 	prompt "Snapshot Mode"
 	default PERCEPIO_TRC_SNAPSHOT_MODE_RING_BUFFER
 	help
-	  With PERCEPIO_TRC_CFG_SNAPSHOT_MODE_RING_BUFFER set to PERCEPIO_TRC_CFG_SNAPSHOT_MODE_RING_BUFFER, the
+	  With PERCEPIO_TRC_CFG_SNAPSHOT_MODE set to PERCEPIO_TRC_CFG_SNAPSHOT_MODE_RING_BUFFER, the
 	  events are stored in a ring buffer, i.e., where the oldest events are
 	  overwritten when the buffer becomes full. This allows you to get the last
 	  events leading up to an interesting state, e.g., an error, without having
 	  to store the whole run since startup.
 	  
-	  When PERCEPIO_TRC_CFG_SNAPSHOT_MODE_RING_BUFFER is PERCEPIO_TRC_SNAPSHOT_MODE_STOP_WHEN_FULL, the
+	  When PERCEPIO_TRC_CFG_SNAPSHOT is PERCEPIO_TRC_SNAPSHOT_MODE_STOP_WHEN_FULL, the
 	  recording is stopped when the buffer becomes full. This is useful for
 	  recording events following a specific state, e.g., the startup sequence.
 		
@@ -389,7 +389,7 @@ config PERCEPIO_TRC_CFG_SYMBOL_TABLE_SIZE
 	default 800
 	help
 	  This defines the capacity of the symbol table, in bytes. This symbol table
-	  stores User Events labels and names of deleted tasks, queues, or other kernel
+	  stores User Event labels and names of deleted tasks, queues, or other kernel
 	  objects. If you don't use User Events or delete any kernel
 	  objects you set this to a very low value. The minimum recommended value is 4.
 	  A size of zero (0) is not allowed since a zero-sized array may result in a
@@ -403,7 +403,7 @@ config PERCEPIO_TRC_CFG_HEAP_SIZE_BELOW_16M
 	  An integer constant that can be used to reduce the buffer usage of memory
 	  allocation events (malloc/free). This value should be 1 if the heap size is
 	  below 16 MB (2^24 byte), and you can live with reported addresses showing the
-	  lower 24 bits only. If 0, you get the full 32-bit addresses.
+	  lower 24 bits only. If set to 0, you get the full 32-bit addresses.
 	
 config PERCEPIO_TRC_CFG_USE_IMPLICIT_IFE_RULES
 	bool "Use Implicit IFE Rules"
@@ -413,7 +413,7 @@ config PERCEPIO_TRC_CFG_USE_IMPLICIT_IFE_RULES
 	  Events (IFEs), produced either by default rules or calls to the recorder
 	  functions vTraceInstanceFinishedNow and vTraceInstanceFinishedNext.
 	  
-	  If PERCEPIO_TRC_CFG_USE_IMPLICIT_IFE_RULES is one (1), the default IFE rules is
+	  If PERCEPIO_TRC_CFG_USE_IMPLICIT_IFE_RULES is one (1), the default IFE rules are
 	  used, resulting in a "typical" grouping of events into instances.
 	  If these rules don't give appropriate instances in your case, you can
 	  override the default rules using vTraceInstanceFinishedNow/Next for one
@@ -511,7 +511,7 @@ config PERCEPIO_TRC_CFG_SEPARATE_USER_EVENT_BUFFER_SIZE
 	default 200
 	help
 	  This defines the capacity of the user event buffer (UB), in number of slots.
-	  A single user event can use multiple slots, depending on the arguments.
+	  A single user event can use multiple slots, depending on its arguments.
 	
 config PERCEPIO_TRC_CFG_UB_CHANNELS
 	int "User Event Buffer Channels"
@@ -545,7 +545,7 @@ config PERCEPIO_TRC_CFG_ENTRY_SLOTS
 
       If this value is too small, not all symbol names will be stored and the
       trace display will be affected. In that case, there will be warnings
-      (as User Events) from TzCtrl task, that monitors this.
+      (logged as User Events) from the TzCtrl task, which monitors this.
 
 config PERCEPIO_TRC_CFG_ENTRY_SYMBOL_MAX_LENGTH
 	int "Symbol Max Length"
@@ -560,7 +560,7 @@ config PERCEPIO_TRC_CFG_ENTRY_SYMBOL_MAX_LENGTH
 
       If longer symbol names are used, they will be truncated by the recorder,
       which will affect the trace display. In that case, there will be warnings
-      (as User Events) from TzCtrl task, that monitors this.
+      (logged as User Events) from the TzCtrl task, which monitors this.
 endmenu # "Streaming Config"
 
 endif # PERCEPIO_TRC_RECORDER_MODE_STREAMING

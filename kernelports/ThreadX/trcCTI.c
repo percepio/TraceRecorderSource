@@ -1,5 +1,5 @@
 /*
- * Trace Recorder for Tracealyzer v4.6.2
+ * Trace Recorder for Tracealyzer v4.6.3
  * Copyright 2021 Percepio AB
  * www.percepio.com
  *
@@ -1964,7 +1964,7 @@ traceResult xTraceISREnd(TraceBaseType_t uxIsTaskSwitchRequired)
 	return xResult;
 }
 
-static TRACE_ALLOC_CRITICAL_SECTION();
+static TRACE_ALLOC_CRITICAL_SECTION()
 
 traceResult xTraceEventBeginRawOffline(uint32_t uiSize, TraceEventHandle_t* pxEventHandle)
 {

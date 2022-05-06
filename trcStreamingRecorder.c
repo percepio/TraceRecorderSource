@@ -1,5 +1,5 @@
 /*
- * Trace Recorder for Tracealyzer v4.6.2
+ * Trace Recorder for Tracealyzer v4.6.3
  * Copyright 2021 Percepio AB
  * www.percepio.com
  *
@@ -502,9 +502,6 @@ static void prvTraceStoreHeader(void)
 static void prvTraceStoreTimestampInfo(void)
 {
 	TraceEventHandle_t xEventHandle;
-	uint32_t timestampFrequency = 0;
-
-	xTraceTimestampGetFrequency(&timestampFrequency);
 
 	if (xTraceEventBeginRawOfflineBlocking(sizeof(TraceTimestampBuffer_t), &xEventHandle) == TRC_SUCCESS)
 	{

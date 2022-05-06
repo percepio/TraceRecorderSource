@@ -1,5 +1,5 @@
 /*
-* Percepio Trace Recorder for Tracealyzer v4.6.2
+* Percepio Trace Recorder for Tracealyzer v4.6.3
 * Copyright 2021 Percepio AB
 * www.percepio.com
 *
@@ -34,12 +34,12 @@
 		} \
 	}
 
-#if (defined(TRC_CFG_USE_GCC_STATEMENT_EXPR) && TRC_CFG_USE_GCC_STATEMENT_EXPR == 1) || __GNUC__
-	#define TRC_COMMA_EXPR_TO_STATEMENT_EXPR_1(e1)					({e1;})
-	#define TRC_COMMA_EXPR_TO_STATEMENT_EXPR_2(e1, e2)				({e1; e2;})
-	#define TRC_COMMA_EXPR_TO_STATEMENT_EXPR_3(e1, e2, e3)			({e1; e2; e3;})
-	#define TRC_COMMA_EXPR_TO_STATEMENT_EXPR_4(e1, e2, e3, e4)		({e1; e2; e3; e4;})
-	#define TRC_COMMA_EXPR_TO_STATEMENT_EXPR_5(e1, e2, e3, e4, e5)	({e1; e2; e3; e4; e5;})
+#if (defined(TRC_CFG_USE_GCC_STATEMENT_EXPR) && TRC_CFG_USE_GCC_STATEMENT_EXPR == 1) || __GNUC__ || __IAR_SYSTEMS_ICC__ || __TI_ARM__
+	#define TRC_COMMA_EXPR_TO_STATEMENT_EXPR_1(e1)					__extension__({e1;})
+	#define TRC_COMMA_EXPR_TO_STATEMENT_EXPR_2(e1, e2)				__extension__({e1; e2;})
+	#define TRC_COMMA_EXPR_TO_STATEMENT_EXPR_3(e1, e2, e3)			__extension__({e1; e2; e3;})
+	#define TRC_COMMA_EXPR_TO_STATEMENT_EXPR_4(e1, e2, e3, e4)		__extension__({e1; e2; e3; e4;})
+	#define TRC_COMMA_EXPR_TO_STATEMENT_EXPR_5(e1, e2, e3, e4, e5)	__extension__({e1; e2; e3; e4; e5;})
 #else
 	#define TRC_COMMA_EXPR_TO_STATEMENT_EXPR_1(e1)					(e1)
 	#define TRC_COMMA_EXPR_TO_STATEMENT_EXPR_2(e1, e2)				(e1, e2)

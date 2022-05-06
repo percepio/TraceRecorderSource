@@ -1,5 +1,5 @@
 /*
-* Percepio Trace Recorder for Tracealyzer v4.6.2
+* Percepio Trace Recorder for Tracealyzer v4.6.3
 * Copyright 2021 Percepio AB
 * www.percepio.com
 *
@@ -97,22 +97,27 @@ traceResult xTraceIntervalStop(TraceIntervalChannelHandle_t xIntervalChannelHand
 /**
  * @brief Disabled by TRC_CFG_RECORDER_MODE
  */
-#define xTraceIntervalCreate(szName, pxIntervalHandle) ((void)(szName), *(pxIntervalHandle) = 0)
+#define xTraceIntervalChannelSetCreate(__szName, __pxIntervalChannelSetHandle) ((void)(__szName), *(__pxIntervalChannelSetHandle) = 0, TRC_SUCCESS)
 
 /**
  * @brief Disabled by TRC_CFG_RECORDER_MODE
  */
-#define xTraceIntervalStart(xIntervalHandle, uxValue, pxIntervalInstanceHandle) ((void)(xIntervalHandle), (void)(uxValue), *(pxIntervalInstanceHandle) = 0)
+#define xTraceIntervalChannelCreate(__szName, __xIntervalChannelSetHandle, __pxIntervalChannelHandle) ((void)(__szName), (void)(__xIntervalChannelSetHandle), *(__pxIntervalChannelHandle) = 0, TRC_SUCCESS)
+
+/**
+ * @brief Disabled by TRC_CFG_RECORDER_MODE
+ */
+#define xTraceIntervalStart(__xIntervalHandle, __uxValue, __pxIntervalInstanceHandle) ((void)(__xIntervalHandle), (void)(__uxValue), *(__pxIntervalInstanceHandle) = 0, TRC_SUCCESS)
 
  /**
   * @brief Disabled by TRC_CFG_RECORDER_MODE
   */
-#define xTraceIntervalStop(xIntervalHandle, xIntervalInstanceHandle) ((void)(xIntervalHandle), (void)(xIntervalInstanceHandle))
+#define xTraceIntervalStop(__xIntervalHandle, __xIntervalInstanceHandle) ((void)(__xIntervalHandle), (void)(__xIntervalInstanceHandle), TRC_SUCCESS)
 
 /**
  * @brief Disabled by TRC_CFG_RECORDER_MODE
  */
-#define xTraceIntervalGetState(xIntervalHandle, puxState) ((void)(xIntervalHandle), *(puxState) = 0)
+#define xTraceIntervalGetState(__xIntervalHandle, __puxState) ((void)(__xIntervalHandle), *(__puxState) = 0, TRC_SUCCESS)
 
 #endif
 

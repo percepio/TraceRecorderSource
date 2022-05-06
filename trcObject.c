@@ -1,5 +1,5 @@
 /*
-* Percepio Trace Recorder for Tracealyzer v4.6.2
+* Percepio Trace Recorder for Tracealyzer v4.6.3
 * Copyright 2021 Percepio AB
 * www.percepio.com
 *
@@ -104,9 +104,12 @@ traceResult xTraceObjectRegister(uint32_t uiEventCode, void *pvObject, const cha
 
 traceResult xTraceObjectUnregister(TraceObjectHandle_t xObjectHandle, uint32_t uiEventCode, TraceUnsignedBaseType_t uxState)
 {
-	void* pvObject;
-	const char *szName;
+	void* pvObject = 0;
+	const char *szName = 0;
 	TraceEventHandle_t xEventHandle = 0;
+
+	/* If asserts are disabled this variable will not get used, this stops warnings. */
+	(void)szName;
 
 	/* This should never fail */
 	TRC_ASSERT_ALWAYS_EVALUATE(xTraceEntryGetAddress((TraceEntryHandle_t)xObjectHandle, &pvObject) == TRC_SUCCESS);
@@ -133,7 +136,10 @@ traceResult xTraceObjectUnregister(TraceObjectHandle_t xObjectHandle, uint32_t u
 
 traceResult xTraceObjectSetName(TraceObjectHandle_t xObjectHandle, const char* szName)
 {
-	void* pvObject;
+	void* pvObject = 0;
+
+    /* If asserts are disabled this variable will not get used, this stops warnings. */
+	(void)pvObject;
 
 	if (szName == 0)
 	{

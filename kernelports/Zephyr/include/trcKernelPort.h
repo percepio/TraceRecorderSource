@@ -1,5 +1,5 @@
 /*
- * Trace Recorder for Tracealyzer v4.6.2
+ * Trace Recorder for Tracealyzer v4.6.3
  * Copyright 2021 Percepio AB
  * www.percepio.com
  *
@@ -44,7 +44,7 @@ extern "C" {
  * @def TRC_PLATFORM_CFG_MINOR
  * @brief Minor release version for recorder.
  */
-#define TRC_PLATFORM_CFG_MINOR 0
+#define TRC_PLATFORM_CFG_MINOR 1
 
 /**
  * @def TRC_PLATFORM_CFG_PATCH
@@ -303,9 +303,14 @@ void vTraceSetTimerName(void* object, const char* name);
 #define PSF_EVENT_STATEMACHINE_CREATE						0x0
 #define PSF_EVENT_STATEMACHINE_STATECHANGE					0x0
 #define PSF_EVENT_INTERVAL_CREATE							0x0
+#define PSF_EVENT_INTERVAL_CHANNEL_CREATE					0x0
+#define PSF_EVENT_INTERVAL_CHANNEL_SET_CREATE				0x0
 #define PSF_EVENT_INTERVAL_STATECHANGE						0x0
+#define PSF_EVENT_INTERVAL_START							0x0
+#define PSF_EVENT_INTERVAL_STOP								0x0
 #define PSF_EVENT_COUNTER_CREATE							0x0
 #define PSF_EVENT_COUNTER_CHANGE							0x0
+#define PSF_EVENT_COUNTER_LIMIT_EXCEEDED					0x0
 
 #define PSF_EVENT_MALLOC_FAILED 							0x0
 #define PSF_EVENT_FREE_FAILED 								0x0

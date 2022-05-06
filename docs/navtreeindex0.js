@@ -1,6 +1,7 @@
 var NAVTREEINDEX0 =
 {
 "FreeRTOS_2config_2trcKernelPortConfig_8h_source.html":[5,0,3,0,0,0],
+"FreeRTOS_2config_2trcKernelPortSnapshotConfig_8h_source.html":[5,0,3,0,0,1],
 "FreeRTOS_2config_2trcKernelPortStreamingConfig_8h_source.html":[5,0,3,0,0,2],
 "FreeRTOS_2include_2trcKernelPort_8h_source.html":[5,0,3,0,1,2],
 "SEGGER__RTT_8h_source.html":[5,0,4,2,1,0],
@@ -11,7 +12,8 @@ var NAVTREEINDEX0 =
 "TraceRecorderInit_8h_source.html":[5,0,1,0,0,0],
 "Usage-example.html":[6,0],
 "Zephyr_2config_2trcKernelPortConfig_8h_source.html":[5,0,3,2,0,1],
-"Zephyr_2config_2trcKernelPortStreamingConfig_8h_source.html":[5,0,3,2,0,2],
+"Zephyr_2config_2trcKernelPortSnapshotConfig_8h_source.html":[5,0,3,2,0,2],
+"Zephyr_2config_2trcKernelPortStreamingConfig_8h_source.html":[5,0,3,2,0,3],
 "Zephyr_2include_2trcKernelPort_8h_source.html":[5,0,3,2,1,1],
 "annotated.html":[4,0],
 "aws__secure__sockets_8tzext_8h_source.html":[5,0,3,0,1,0],
@@ -247,7 +249,5 @@ var NAVTREEINDEX0 =
 "group__trace__object__apis.html#ga21b7803f059e9b3cf2d5528249ecb20d":[5,0,2,15,7],
 "group__trace__object__apis.html#ga21b7803f059e9b3cf2d5528249ecb20d":[3,0,11,7],
 "group__trace__object__apis.html#ga220a4f45a6eea6d71779535ed38305b6":[5,0,2,15,0],
-"group__trace__object__apis.html#ga220a4f45a6eea6d71779535ed38305b6":[3,0,11,0],
-"group__trace__object__apis.html#ga304a75a1c8a64e02b0f8fe2355305555":[5,0,2,15,12],
-"group__trace__object__apis.html#ga304a75a1c8a64e02b0f8fe2355305555":[3,0,11,12]
+"group__trace__object__apis.html#ga220a4f45a6eea6d71779535ed38305b6":[3,0,11,0]
 };

@@ -1,5 +1,5 @@
 /*
-* Percepio Trace Recorder for Tracealyzer v4.6.2
+* Percepio Trace Recorder for Tracealyzer v4.6.3
 * Copyright 2021 Percepio AB
 * www.percepio.com
 *
@@ -25,7 +25,7 @@ TraceEventDataTable_t *pxTraceEventDataTable;
 
 int32_t DUMMY_iTraceBytesCommitted;
 
-TRACE_ALLOC_CRITICAL_SECTION();
+TRACE_ALLOC_CRITICAL_SECTION()
 
 traceResult xTraceEventInitialize(TraceEventDataBuffer_t* pxBuffer)
 {
@@ -154,6 +154,10 @@ traceResult xTraceEventEndOffline(TraceEventHandle_t xEventHandle)
 	TRC_ASSERT(((TraceEventData_t*)xEventHandle)->pvBlob != 0);
 
 	xTraceStreamPortCommit(((TraceEventData_t*)xEventHandle)->pvBlob, ((TraceEventData_t*)xEventHandle)->size, &iBytesCommitted);
+
+	/* We need to use iBytesCommitted for the above call but do not use the value,
+	 * remove potential warnings */
+	(void)iBytesCommitted;
 
 	RESET_EVENT_DATA((TraceEventData_t*)xEventHandle);
 

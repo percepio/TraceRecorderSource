@@ -9,8 +9,8 @@
  * Read more at http://percepio.com/2016/10/05/rtos-tracing/
  */
 
-#ifndef TRC_KERNEL_PORT_STREAMING_CONFIG_H
-#define TRC_KERNEL_PORT_STREAMING_CONFIG_H
+#ifndef TRC_KERNEL_PORT_SNAPSHOT_CONFIG_H
+#define TRC_KERNEL_PORT_SNAPSHOT_CONFIG_H
 
 #ifdef __cplusplus
 extern "C" {
@@ -20,4 +20,4 @@ extern "C" {
 }
 #endif
 
-#endif /* TRC_KERNEL_PORT_STREAMING_CONFIG_H */
+#endif /* TRC_KERNEL_PORT_SNAPSHOT_CONFIG_H */

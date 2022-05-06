@@ -1,5 +1,5 @@
 /*
- * Trace Recorder for Tracealyzer v4.6.2
+ * Trace Recorder for Tracealyzer v4.6.3
  * Copyright 2021 Percepio AB
  * www.percepio.com
  *
@@ -634,58 +634,34 @@ traceResult xTraceTaskInstanceFinishedNow(void)
 
 #if (TRC_CFG_INCLUDE_ISR_TRACING == 1)
 
-/*******************************************************************************
- * xTraceSetISRProperties
- *
- * Stores a name and priority level for an Interrupt Service Routine, to allow
- * for better visualization. Returns a traceHandle used by vTraceStoreISRBegin. 
- *
- * Example:
- *	 #define PRIO_ISR_TIMER1 3 // the hardware priority of the interrupt
- *	 ...
- *	 traceHandle Timer1Handle = xTraceSetISRProperties("ISRTimer1", PRIO_ISR_TIMER1);
- *	 ...
- *	 void ISR_handler()
- *	 {
- *		 vTraceStoreISRBegin(Timer1Handle);
- *		 ...
- *		 vTraceStoreISREnd(0);
- *	 }
- ******************************************************************************/
- traceHandle xTraceSetISRProperties(const char* name, uint8_t priority)
+traceResult xTraceISRRegister(const char* szName, uint32_t uiPriority, TraceISRHandle_t* pxISRHandle)
 {
-	static traceHandle handle = 0;	
-	TRACE_ASSERT(RecorderDataPtr != 0, "Recorder not initialized, call vTraceEnable() first!", (traceHandle)0);
-	TRACE_ASSERT(handle <= RecorderDataPtr->ObjectPropertyTable.NumberOfObjectsPerClass[TRACE_CLASS_ISR], "xTraceSetISRProperties: Invalid value for handle", 0);
-	TRACE_ASSERT(name != 0, "xTraceSetISRProperties: name == NULL", 0);
+	static TraceISRHandle_t xISRHandle = 0;
 
-	handle++;
+	TRACE_ASSERT(RecorderDataPtr != 0, "Recorder not initialized, call vTraceEnable() first!", TRC_FAIL);
+	TRACE_ASSERT(xISRHandle <= RecorderDataPtr->ObjectPropertyTable.NumberOfObjectsPerClass[TRACE_CLASS_ISR], "xTraceSetISRProperties: Invalid value for handle", TRC_FAIL);
+	TRACE_ASSERT(szName != 0, "xTraceSetISRProperties: name == NULL", TRC_FAIL);
 
-	prvTraceSetObjectName(TRACE_CLASS_ISR, handle, name);
-	prvTraceSetPriorityProperty(TRACE_CLASS_ISR, handle, priority);
-	
-	return handle;
+	xISRHandle++;
+
+	prvTraceSetObjectName(TRACE_CLASS_ISR, xISRHandle, szName);
+	prvTraceSetPriorityProperty(TRACE_CLASS_ISR, xISRHandle, uiPriority);
+
+	*pxISRHandle = xISRHandle;
+
+	return TRC_SUCCESS;
 }
 
-/*******************************************************************************
- * vTraceStoreISRBegin
- *
- * Registers the beginning of an Interrupt Service Routine, using a traceHandle
- * provided by xTraceSetISRProperties.
- *
- * Example:
- *	 #define PRIO_ISR_TIMER1 3 // the hardware priority of the interrupt
- *	 ...
- *	 traceHandle Timer1Handle = xTraceSetISRProperties("ISRTimer1", PRIO_ISR_TIMER1);
- *	 ...
- *	 void ISR_handler()
- *	 {
- *		 vTraceStoreISRBegin(Timer1Handle);
- *		 ...
- *		 vTraceStoreISREnd(0);
- *	 }
- ******************************************************************************/
-void vTraceStoreISRBegin(traceHandle handle)
+ traceHandle xTraceSetISRProperties(const char* szName, uint8_t uiPriority)
+{
+	 TraceISRHandle_t xISRHandle;
+
+	 xTraceISRRegister(szName, uiPriority, &xISRHandle);
+
+	return xISRHandle;
+}
+
+traceResult xTraceISRBegin(TraceISRHandle_t handle)
 {
 	TRACE_ALLOC_CRITICAL_SECTION();
 
@@ -702,16 +678,17 @@ void vTraceStoreISRBegin(traceHandle handle)
 		* PRIMASK register to avoid this issue.
 		*************************************************************************/
 		prvTraceError("vTraceStoreISRBegin - recorder busy! See code comment.");
-		return;
+		return TRC_FAIL;
 	}
+
 	trcCRITICAL_SECTION_BEGIN();
 	
 	if (RecorderDataPtr->recorderActive && handle_of_last_logged_task)
 	{
 		uint16_t dts4;
 		
-		TRACE_ASSERT(handle != 0, "vTraceStoreISRBegin: Invalid ISR handle (NULL)", TRC_UNUSED);		
-		TRACE_ASSERT(handle <= RecorderDataPtr->ObjectPropertyTable.NumberOfObjectsPerClass[TRACE_CLASS_ISR], "vTraceStoreISRBegin: Invalid ISR handle (> NISR)", TRC_UNUSED);
+		TRACE_ASSERT(handle != 0, "vTraceStoreISRBegin: Invalid ISR handle (NULL)", TRC_FAIL);		
+		TRACE_ASSERT(handle <= RecorderDataPtr->ObjectPropertyTable.NumberOfObjectsPerClass[TRACE_CLASS_ISR], "vTraceStoreISRBegin: Invalid ISR handle (> NISR)", TRC_FAIL);
 		
 		dts4 = (uint16_t)prvTraceGetDTS(0xFFFF);
 
@@ -739,32 +716,13 @@ void vTraceStoreISRBegin(traceHandle handle)
 			}
 		}
 	}
+
 	trcCRITICAL_SECTION_END();
+
+	return TRC_SUCCESS;
 }
 
-/*******************************************************************************
- * vTraceStoreISREnd
- *
- * Registers the end of an Interrupt Service Routine.
- *
- * The parameter pendingISR indicates if the interrupt has requested a
- * task-switch (= 1), e.g., by signaling a semaphore. Otherwise (= 0) the 
- * interrupt is assumed to return to the previous context.
- *
- * Example:
- *	 #define PRIO_OF_ISR_TIMER1 3 // the hardware priority of the interrupt
- *	 traceHandle traceHandleIsrTimer1 = 0; // The ID set by the recorder
- *	 ...
- *	 traceHandleIsrTimer1 = xTraceSetISRProperties("ISRTimer1", PRIO_OF_ISR_TIMER1);
- *	 ...
- *	 void ISR_handler()
- *	 {
- *		 vTraceStoreISRBegin(traceHandleIsrTimer1);
- *		 ...
- *		 vTraceStoreISREnd(0);
- *	 }
- ******************************************************************************/
-void vTraceStoreISREnd(int pendingISR)
+traceResult xTraceISREnd(int pendingISR)
 {
 	TSEvent* ts;
 	uint16_t dts5;
@@ -774,7 +732,7 @@ void vTraceStoreISREnd(int pendingISR)
 
 	if (! RecorderDataPtr->recorderActive ||  ! handle_of_last_logged_task)
 	{
-		return;
+		return TRC_SUCCESS;
 	}
 
 	if (recorder_busy)
@@ -790,16 +748,17 @@ void vTraceStoreISREnd(int pendingISR)
 		* PRIMASK register to avoid this issue.
 		*************************************************************************/
 		prvTraceError("vTraceStoreISREnd - recorder busy! See code comment.");
-		return;
+		return TRC_FAIL;
 	}
 	
 	if (nISRactive == 0)
 	{
 		prvTraceError("Unmatched call to vTraceStoreISREnd (nISRactive == 0, expected > 0)");
-		return;
+		return TRC_FAIL;
 	}
 
 	trcCRITICAL_SECTION_BEGIN();
+
 	isPendingContextSwitch |= pendingISR;	/* Is there a pending context switch right now? If so, we will not create an event since we will get an event when that context switch is executed. */
 	nISRactive--;
 	if (nISRactive > 0)
@@ -829,6 +788,8 @@ void vTraceStoreISREnd(int pendingISR)
 	}
 
 	trcCRITICAL_SECTION_END();
+
+	return TRC_SUCCESS;
 }
 
 #else

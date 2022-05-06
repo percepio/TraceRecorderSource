@@ -1,5 +1,5 @@
 /*
-* Percepio Trace Recorder for Tracealyzer v4.6.2
+* Percepio Trace Recorder for Tracealyzer v4.6.3
 * Copyright 2021 Percepio AB
 * www.percepio.com
 *
@@ -107,11 +107,11 @@ traceResult xTraceTaskSwitch(void *pvTask, TraceUnsignedBaseType_t uxPriority)
 	traceResult xResult = TRC_FAIL;
 	TraceEventHandle_t xEventHandle = 0;
 	void* pvCurrent = 0;
+
+	TRACE_ALLOC_CRITICAL_SECTION();
 	
 	(void)pvTask;
 	(void)uxPriority;
-
-	TRACE_ALLOC_CRITICAL_SECTION();
 
 	if (xTraceIsRecorderEnabled() == 0)
 	{

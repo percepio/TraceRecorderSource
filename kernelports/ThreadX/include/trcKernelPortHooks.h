@@ -1,5 +1,5 @@
 /*
- * Trace Recorder for Tracealyzer v4.6.2
+ * Trace Recorder for Tracealyzer v4.6.3
  * Copyright 2021 Percepio AB
  * www.percepio.com
  *
@@ -134,6 +134,7 @@ void xTraceTimerPerformanceSystemInfoGet(UINT uiTxEventCode);
 #define TRC_TG_TX_TRACE_INTERNAL_EVENTS(i) TRC_TP##i
 #define TRC_TG_TX_TRACE_INTERRUPT_CONTROL_EVENT(i) TRC_TP##i
 #define TRC_TG_TX_TRACE_USER_EVENTS(i) TRC_TP_TX_TRACE_USER_EVENT
+#define TRC_TG_filter(i)
 
 
 #define TRC_TP_TX_TRACE_ISR_ENTER(i, a, b, c, d, e)												xTraceISREnterHook(i, b)
