@@ -11,7 +11,7 @@
 #ifndef TRC_KERNEL_PORT_H
 #define TRC_KERNEL_PORT_H
 
-#include <kernel.h>
+#include <zephyr/kernel.h>
 #include <version.h>
 #include <trcRecorder.h>
 

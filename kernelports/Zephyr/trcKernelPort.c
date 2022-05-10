@@ -8,8 +8,8 @@
  * The Zephyr specific parts of the trace recorder
  */
 
-#include <init.h>
-#include <kernel.h>
+#include <zephyr/init.h>
+#include <zephyr/kernel.h>
 #include <string.h>
 #include <trcRecorder.h>
 
