@@ -1,5 +1,5 @@
 /*
- * Trace Recorder for Tracealyzer v4.6.3
+ * Trace Recorder for Tracealyzer v4.6.4
  * Copyright 2021 Percepio AB
  * www.percepio.com
  *
@@ -9,8 +9,8 @@
 #ifndef _TRACE_TRACERECORDER_H
 #define _TRACE_TRACERECORDER_H
 
-#include <kernel.h>
-#include <init.h>
+#include <zephyr/kernel.h>
+#include <zephyr/init.h>
 #include <trcRecorder.h>
 
 

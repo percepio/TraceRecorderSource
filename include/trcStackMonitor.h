@@ -1,5 +1,5 @@
 /*
-* Percepio Trace Recorder SDK for Tracealyzer v4.6.3
+* Percepio Trace Recorder SDK for Tracealyzer v4.6.4
 * Copyright 2021 Percepio AB
 * www.percepio.com
 *

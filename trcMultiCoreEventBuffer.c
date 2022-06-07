@@ -1,5 +1,5 @@
 /*
-* Percepio Trace Recorder for Tracealyzer v4.6.3
+* Percepio Trace Recorder for Tracealyzer v4.6.4
 * Copyright 2021 Percepio AB
 * www.percepio.com
 *
@@ -18,6 +18,7 @@ traceResult xTraceMultiCoreEventBufferInitialize(TraceMultiCoreEventBuffer_t* px
 	uint8_t* puiBuffer, uint32_t uiSize)
 {
 	uint32_t i;
+	uint32_t uiBufferSizePerCore;
 
 	/* This should never fail */
 	TRC_ASSERT(pxTraceMultiCoreEventBuffer != 0);
@@ -25,7 +26,7 @@ traceResult xTraceMultiCoreEventBufferInitialize(TraceMultiCoreEventBuffer_t* px
 	/* This should never fail */
 	TRC_ASSERT(puiBuffer != 0);
 
-	uint32_t uiBufferSizePerCore = uiSize / TRC_CFG_CORE_COUNT;
+	uiBufferSizePerCore = uiSize / TRC_CFG_CORE_COUNT;
 
 	/* This should never fail */
 	TRC_ASSERT(uiBufferSizePerCore != 0);

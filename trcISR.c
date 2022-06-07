@@ -1,5 +1,5 @@
 /*
-* Percepio Trace Recorder for Tracealyzer v4.6.3
+* Percepio Trace Recorder for Tracealyzer v4.6.4
 * Copyright 2021 Percepio AB
 * www.percepio.com
 *
@@ -109,6 +109,7 @@ traceResult xTraceISRRegister(const char* szName, uint32_t uiPriority, TraceISRH
 traceResult xTraceISRBegin(TraceISRHandle_t xISRHandle)
 {
 	TraceEventHandle_t xEventHandle = 0;
+	TraceISRCoreInfo_t* pxCoreInfo;
 	TRACE_ALLOC_CRITICAL_SECTION();
 
 	(void)xEventHandle;
@@ -121,7 +122,7 @@ traceResult xTraceISRBegin(TraceISRHandle_t xISRHandle)
 	/* We are at the start of a possible ISR chain.
 	 * No context switches should have been triggered now.
 	 */
-	TraceISRCoreInfo_t* pxCoreInfo = &pxTraceISRInfo->coreInfos[TRC_CFG_GET_CURRENT_CORE()];
+	pxCoreInfo = &pxTraceISRInfo->coreInfos[TRC_CFG_GET_CURRENT_CORE()];
 	
 	if (pxCoreInfo->stackIndex == -1)
 	{
@@ -159,6 +160,7 @@ traceResult xTraceISRBegin(TraceISRHandle_t xISRHandle)
 traceResult xTraceISREnd(TraceBaseType_t xIsTaskSwitchRequired)
 {
 	TraceEventHandle_t xEventHandle = 0;
+	TraceISRCoreInfo_t* pxCoreInfo;
 	TRACE_ALLOC_CRITICAL_SECTION();
 
 	(void)xEventHandle;
@@ -168,7 +170,7 @@ traceResult xTraceISREnd(TraceBaseType_t xIsTaskSwitchRequired)
 
 	TRACE_ENTER_CRITICAL_SECTION();
 	
-	TraceISRCoreInfo_t* pxCoreInfo = &pxTraceISRInfo->coreInfos[TRC_CFG_GET_CURRENT_CORE()];
+	pxCoreInfo = &pxTraceISRInfo->coreInfos[TRC_CFG_GET_CURRENT_CORE()];
 
 	/* Is there a pending task-switch? (perhaps from an earlier ISR) */
 	pxCoreInfo->isPendingContextSwitch |= xIsTaskSwitchRequired;

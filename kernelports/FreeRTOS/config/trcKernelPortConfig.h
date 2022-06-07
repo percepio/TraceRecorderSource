@@ -1,5 +1,5 @@
 /*
- * Trace Recorder for Tracealyzer v4.6.3
+ * Trace Recorder for Tracealyzer v4.6.4
  * Copyright 2021 Percepio AB
  * www.percepio.com
  *
@@ -56,7 +56,7 @@ extern "C" {
  * TRC_FREERTOS_VERSION_10_4_0				If using FreeRTOS v10.4.0
  * TRC_FREERTOS_VERSION_10_4_1				If using FreeRTOS v10.4.1 or later
  */
-#define TRC_CFG_FREERTOS_VERSION TRC_FREERTOS_VERSION_10_4_1
+#define TRC_CFG_FREERTOS_VERSION FREERTOS_VERSION_NOT_SET
 
 /**
  * @def TRC_CFG_INCLUDE_EVENT_GROUP_EVENTS

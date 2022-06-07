@@ -1,5 +1,5 @@
 /*
- * Trace Recorder for Tracealyzer v4.6.3
+ * Trace Recorder for Tracealyzer v4.6.4
  * Copyright 2021 Percepio AB
  * www.percepio.com
  *
@@ -92,6 +92,10 @@ extern "C" {
 #define TRC_KERNEL_PORT_BUFFER_SIZE (sizeof(TraceHeapHandle_t) + sizeof(void*))
 #elif (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_SNAPSHOT)
 #define TRC_KERNEL_PORT_BUFFER_SIZE (sizeof(TraceUnsignedBaseType_t))
+#endif
+
+#if (TRC_CFG_FREERTOS_VERSION == FREERTOS_VERSION_NOT_SET)
+#error "Please set TRC_CFG_FREERTOS_VERSION in trcKernelPortConfig.h to the FreeRTOS version used."
 #endif
 
 /**

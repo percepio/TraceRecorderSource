@@ -1,5 +1,5 @@
 /*
- * Trace Recorder for Tracealyzer v4.6.3
+ * Trace Recorder for Tracealyzer v4.6.4
  * Copyright 2021 Percepio AB
  * www.percepio.com
  *
@@ -144,7 +144,7 @@ TraceHeapHandle_t xTraceKernelPortGetSystemHeapHandle(void)
 traceResult xTraceKernelPortGetUnusedStack(void* pvThread, TraceUnsignedBaseType_t* puxUnusedStack)
 {
 #ifdef TX_ENABLE_STACK_CHECKING
-	*puxUnusedStack = ((TX_THREAD*)pvThread)->tx_thread_stack_highest_ptr - ((TX_THREAD*)pvThread)->tx_thread_stack_start;
+	*puxUnusedStack = (char*)((TX_THREAD*)pvThread)->tx_thread_stack_highest_ptr - (char*)((TX_THREAD*)pvThread)->tx_thread_stack_start;
 #else
 	(void)pvThread;
 	*puxUnusedStack = 0;
