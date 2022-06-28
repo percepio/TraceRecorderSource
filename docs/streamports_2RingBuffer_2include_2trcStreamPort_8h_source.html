@@ -26,7 +26,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Percepio Trace Recorder
-   &#160;<span id="projectnumber">v4.6.4</span>
+   &#160;<span id="projectnumber">v4.6.5</span>
    </div>
   </td>
  </tr>
@@ -87,7 +87,7 @@ $(document).ready(function(){initNavTree('streamports_2RingBuffer_2include_2trcS
 </div><!--header-->
 <div class="contents">
 <div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">/*</span></div>
-<div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="comment">* Trace Recorder for Tracealyzer v4.6.4</span></div>
+<div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="comment">* Trace Recorder for Tracealyzer v4.6.5</span></div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="comment">* Copyright 2021 Percepio AB</span></div>
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="comment">* www.percepio.com</span></div>
 <div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="comment">*</span></div>
@@ -157,15 +157,15 @@ $(document).ready(function(){initNavTree('streamports_2RingBuffer_2include_2trcS
 <div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160; </div>
 <div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;traceResult xTraceStreamPortCommit(<span class="keywordtype">void</span>* pvData, uint32_t uiSize, int32_t* piBytesCommitted);</div>
 <div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160; </div>
-<div class="line"><a name="l00145"></a><span class="lineno">  145</span>&#160;<span class="preprocessor">#define xTraceStreamPortWriteData(pvData, uiSize, piBytesWritten) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_4((void)pvData, (void)uiSize, (void)piBytesWritten, TRC_SUCCESS)</span></div>
+<div class="line"><a name="l00145"></a><span class="lineno">  145</span>&#160;<span class="preprocessor">#define xTraceStreamPortWriteData(pvData, uiSize, piBytesWritten) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_4((void)(pvData), (void)(uiSize), (void)(piBytesWritten), TRC_SUCCESS)</span></div>
 <div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160; </div>
-<div class="line"><a name="l00157"></a><span class="lineno">  157</span>&#160;<span class="preprocessor">#define xTraceStreamPortReadData(pvData, uiSize, piBytesRead) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_4((void)pvData, (void)uiSize, (void)piBytesRead, TRC_SUCCESS)</span></div>
+<div class="line"><a name="l00157"></a><span class="lineno">  157</span>&#160;<span class="preprocessor">#define xTraceStreamPortReadData(pvData, uiSize, piBytesRead) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_4((void)(pvData), (void)(uiSize), (void)(piBytesRead), TRC_SUCCESS)</span></div>
 <div class="line"><a name="l00158"></a><span class="lineno">  158</span>&#160; </div>
 <div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160;<span class="preprocessor">#define xTraceStreamPortOnEnable(uiStartOption) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_2((void)(uiStartOption), TRC_SUCCESS)</span></div>
 <div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160; </div>
 <div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160;<span class="preprocessor">#define xTraceStreamPortOnDisable() TRC_COMMA_EXPR_TO_STATEMENT_EXPR_1(TRC_SUCCESS)</span></div>
 <div class="line"><a name="l00176"></a><span class="lineno">  176</span>&#160; </div>
-<div class="line"><a name="l00183"></a><span class="lineno">  183</span>&#160;traceResult xTraceStreamPortOnTraceBegin();</div>
+<div class="line"><a name="l00183"></a><span class="lineno">  183</span>&#160;traceResult xTraceStreamPortOnTraceBegin(<span class="keywordtype">void</span>);</div>
 <div class="line"><a name="l00184"></a><span class="lineno">  184</span>&#160; </div>
 <div class="line"><a name="l00191"></a><span class="lineno">  191</span>&#160;<span class="preprocessor">#define xTraceStreamPortOnTraceEnd() TRC_COMMA_EXPR_TO_STATEMENT_EXPR_1(TRC_SUCCESS)</span></div>
 <div class="line"><a name="l00192"></a><span class="lineno">  192</span>&#160; </div>

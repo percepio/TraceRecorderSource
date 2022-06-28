@@ -1,5 +1,5 @@
 /*
- * Trace Recorder for Tracealyzer v4.6.4
+ * Trace Recorder for Tracealyzer v4.6.5
  * Copyright 2021 Percepio AB
  * www.percepio.com
  *
@@ -118,6 +118,14 @@ traceResult xTraceStreamPortWriteData(void* pvData, uint32_t uiSize, int32_t* pi
  * @retval TRC_SUCCESS Success
  */
 traceResult xTraceStreamPortReadData(void* pvData, uint32_t uiSize, int32_t* piBytesRead);
+
+#define xTraceStreamPortOnEnable(uiStartOption) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_2((void)(uiStartOption), TRC_SUCCESS)
+
+#define xTraceStreamPortOnDisable() TRC_COMMA_EXPR_TO_STATEMENT_EXPR_1(TRC_SUCCESS)
+
+#define xTraceStreamPortOnTraceBegin() TRC_COMMA_EXPR_TO_STATEMENT_EXPR_1(TRC_SUCCESS)
+
+#define xTraceStreamPortOnTraceEnd() TRC_COMMA_EXPR_TO_STATEMENT_EXPR_1(TRC_SUCCESS)
 
 #ifdef __cplusplus
 }

@@ -26,7 +26,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Percepio Trace Recorder
-   &#160;<span id="projectnumber">v4.6.4</span>
+   &#160;<span id="projectnumber">v4.6.5</span>
    </div>
   </td>
  </tr>
@@ -87,7 +87,7 @@ $(document).ready(function(){initNavTree('FreeRTOS_2include_2trcKernelPort_8h_so
 </div><!--header-->
 <div class="contents">
 <div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">/*</span></div>
-<div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="comment"> * Trace Recorder for Tracealyzer v4.6.4</span></div>
+<div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="comment"> * Trace Recorder for Tracealyzer v4.6.5</span></div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="comment"> * Copyright 2021 Percepio AB</span></div>
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="comment"> * www.percepio.com</span></div>
 <div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="comment"> *</span></div>
@@ -199,11 +199,11 @@ $(document).ready(function(){initNavTree('FreeRTOS_2include_2trcKernelPort_8h_so
 <div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160; </div>
 <div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160;<span class="keywordtype">unsigned</span> <span class="keywordtype">char</span> xTraceKernelPortIsSchedulerSuspended(<span class="keywordtype">void</span>);</div>
 <div class="line"><a name="l00144"></a><span class="lineno">  144</span>&#160; </div>
-<div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160;<span class="preprocessor">#define TRC_KERNEL_PORT_ALLOC_CRITICAL_SECTION() </span></div>
+<div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160;<span class="preprocessor">#define TRC_KERNEL_PORT_ALLOC_CRITICAL_SECTION() TraceUnsignedBaseType_t TRACE_ALLOC_CRITICAL_SECTION_NAME;</span></div>
 <div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160; </div>
-<div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160;<span class="preprocessor">#define TRC_KERNEL_PORT_ENTER_CRITICAL_SECTION() portENTER_CRITICAL()</span></div>
+<div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160;<span class="preprocessor">#define TRC_KERNEL_PORT_ENTER_CRITICAL_SECTION() TRACE_ALLOC_CRITICAL_SECTION_NAME = 0; portENTER_CRITICAL()</span></div>
 <div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160; </div>
-<div class="line"><a name="l00158"></a><span class="lineno">  158</span>&#160;<span class="preprocessor">#define TRC_KERNEL_PORT_EXIT_CRITICAL_SECTION() portEXIT_CRITICAL()</span></div>
+<div class="line"><a name="l00158"></a><span class="lineno">  158</span>&#160;<span class="preprocessor">#define TRC_KERNEL_PORT_EXIT_CRITICAL_SECTION() (void)TRACE_ALLOC_CRITICAL_SECTION_NAME; portEXIT_CRITICAL()</span></div>
 <div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160; </div>
 <div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160;<span class="preprocessor">#define TRC_KERNEL_PORT_SET_INTERRUPT_MASK() ((TraceBaseType_t)portSET_INTERRUPT_MASK_FROM_ISR())</span></div>
 <div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160; </div>

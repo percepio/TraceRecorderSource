@@ -1,5 +1,5 @@
 /*
-* Percepio Trace Recorder for Tracealyzer v4.6.4
+* Percepio Trace Recorder for Tracealyzer v4.6.5
 * Copyright 2021 Percepio AB
 * www.percepio.com
 *
@@ -24,8 +24,6 @@
 TraceEventDataTable_t *pxTraceEventDataTable;
 
 int32_t DUMMY_iTraceBytesCommitted;
-
-TRACE_ALLOC_CRITICAL_SECTION()
 
 traceResult xTraceEventInitialize(TraceEventDataBuffer_t* pxBuffer)
 {
@@ -59,7 +57,10 @@ traceResult xTraceEventInitialize(TraceEventDataBuffer_t* pxBuffer)
 traceResult xTraceEventBeginRawOffline(uint32_t uiSize, TraceEventHandle_t* pxEventHandle)
 {
 	TraceEventData_t* pxEventData;
+	TraceCoreEventData_t* pxCoreEventData;
 	int32_t ISR_nesting;
+
+	TRACE_ALLOC_CRITICAL_SECTION();
 
 	/* We need to check this */
 	if (!xTraceIsComponentInitialized(TRC_RECORDER_COMPONENT_EVENT))
@@ -72,10 +73,15 @@ traceResult xTraceEventBeginRawOffline(uint32_t uiSize, TraceEventHandle_t* pxEv
 
 	TRACE_ENTER_CRITICAL_SECTION();
 
+	pxCoreEventData = &pxTraceEventDataTable->coreEventData[TRC_CFG_GET_CURRENT_CORE()];
+
+	/* We backup the local variable to the CORE specific variable */
+	pxCoreEventData->TRACE_ALLOC_CRITICAL_SECTION_NAME = TRACE_ALLOC_CRITICAL_SECTION_NAME;
+
 	xTraceISRGetCurrentNesting(&ISR_nesting);
 
 	/* We add 1 since xTraceISRGetCurrentNesting(...) returns -1 if no ISR is active */
-	pxEventData = &pxTraceEventDataTable->coreEventData[TRC_CFG_GET_CURRENT_CORE()].eventData[ISR_nesting + 1];
+	pxEventData = &pxCoreEventData->eventData[ISR_nesting + 1];
 
 	/* This should never fail */
 	TRC_ASSERT_CUSTOM_ON_FAIL(pxEventData->pvBlob == 0, TRACE_EXIT_CRITICAL_SECTION(); return TRC_FAIL; );
@@ -101,8 +107,11 @@ traceResult xTraceEventBeginRawOffline(uint32_t uiSize, TraceEventHandle_t* pxEv
 traceResult xTraceEventBeginRawOfflineBlocking(uint32_t uiSize, TraceEventHandle_t* pxEventHandle)
 {
 	TraceEventData_t* pxEventData;
+	TraceCoreEventData_t* pxCoreEventData;
 	int32_t ISR_nesting;
 	uint32_t uiAttempts = 0;
+
+	TRACE_ALLOC_CRITICAL_SECTION();
 
 	/* We need to check this */
 	if (!xTraceIsComponentInitialized(TRC_RECORDER_COMPONENT_EVENT))
@@ -114,6 +123,11 @@ traceResult xTraceEventBeginRawOfflineBlocking(uint32_t uiSize, TraceEventHandle
 	TRC_ASSERT(pxEventHandle != 0);
 
 	TRACE_ENTER_CRITICAL_SECTION();
+
+	pxCoreEventData = &pxTraceEventDataTable->coreEventData[TRC_CFG_GET_CURRENT_CORE()];
+
+	/* We backup the local variable to the CORE specific variable */
+	pxCoreEventData->TRACE_ALLOC_CRITICAL_SECTION_NAME = TRACE_ALLOC_CRITICAL_SECTION_NAME;
 
 	xTraceGetCurrentISRNesting(&ISR_nesting);
 
@@ -142,24 +156,33 @@ traceResult xTraceEventBeginRawOfflineBlocking(uint32_t uiSize, TraceEventHandle
 
 traceResult xTraceEventEndOffline(TraceEventHandle_t xEventHandle)
 {
+	TraceEventData_t* pxEventData = (TraceEventData_t*)xEventHandle;
+	TraceCoreEventData_t* pxCoreEventData;
 	int32_t iBytesCommitted;
 
-	/* This should never fail */
-	TRC_ASSERT(xTraceIsComponentInitialized(TRC_RECORDER_COMPONENT_EVENT));
+	TRACE_ALLOC_CRITICAL_SECTION()
+
+	pxCoreEventData = &pxTraceEventDataTable->coreEventData[TRC_CFG_GET_CURRENT_CORE()];
+
+	/* We restore the CORE specific variable to the local variable before any EXIT */
+	TRACE_ALLOC_CRITICAL_SECTION_NAME = pxCoreEventData->TRACE_ALLOC_CRITICAL_SECTION_NAME;
 
 	/* This should never fail */
-	TRC_ASSERT(xEventHandle != 0);
+	TRC_ASSERT_CUSTOM_ON_FAIL(xTraceIsComponentInitialized(TRC_RECORDER_COMPONENT_EVENT), TRACE_EXIT_CRITICAL_SECTION(); return TRC_FAIL; );
 
 	/* This should never fail */
-	TRC_ASSERT(((TraceEventData_t*)xEventHandle)->pvBlob != 0);
+	TRC_ASSERT_CUSTOM_ON_FAIL(pxEventData != 0, TRACE_EXIT_CRITICAL_SECTION(); return TRC_FAIL; );
 
-	xTraceStreamPortCommit(((TraceEventData_t*)xEventHandle)->pvBlob, ((TraceEventData_t*)xEventHandle)->size, &iBytesCommitted);
+	/* This should never fail */
+	TRC_ASSERT_CUSTOM_ON_FAIL(pxEventData->pvBlob != 0, TRACE_EXIT_CRITICAL_SECTION(); return TRC_FAIL; );
+
+	xTraceStreamPortCommit(pxEventData->pvBlob, pxEventData->size, &iBytesCommitted);
 
 	/* We need to use iBytesCommitted for the above call but do not use the value,
 	 * remove potential warnings */
 	(void)iBytesCommitted;
 
-	RESET_EVENT_DATA((TraceEventData_t*)xEventHandle);
+	RESET_EVENT_DATA(pxEventData);
 
 	TRACE_EXIT_CRITICAL_SECTION();
 
@@ -169,13 +192,24 @@ traceResult xTraceEventEndOffline(TraceEventHandle_t xEventHandle)
 traceResult xTraceEventEndOfflineBlocking(TraceEventHandle_t xEventHandle)
 {
 	TraceEventData_t* pxEventData = (TraceEventData_t*)xEventHandle;
+	TraceCoreEventData_t* pxCoreEventData;
 	int32_t iBytesCommitted;
 
-	/* This should never fail */
-	TRC_ASSERT(xTraceIsComponentInitialized(TRC_RECORDER_COMPONENT_EVENT));
+	TRACE_ALLOC_CRITICAL_SECTION()
+
+	pxCoreEventData = &pxTraceEventDataTable->coreEventData[TRC_CFG_GET_CURRENT_CORE()];
+
+	/* We restore the CORE specific variable to the local variable before any EXIT */
+	TRACE_ALLOC_CRITICAL_SECTION_NAME = pxCoreEventData->TRACE_ALLOC_CRITICAL_SECTION_NAME;
 
 	/* This should never fail */
-	TRC_ASSERT(pxEventData != 0);
+	TRC_ASSERT_CUSTOM_ON_FAIL(xTraceIsComponentInitialized(TRC_RECORDER_COMPONENT_EVENT), TRACE_EXIT_CRITICAL_SECTION(); return TRC_FAIL; );
+
+	/* This should never fail */
+	TRC_ASSERT_CUSTOM_ON_FAIL(pxEventData != 0, TRACE_EXIT_CRITICAL_SECTION(); return TRC_FAIL; );
+
+	/* This should never fail */
+	TRC_ASSERT_CUSTOM_ON_FAIL(pxEventData->pvBlob != 0, TRACE_EXIT_CRITICAL_SECTION(); return TRC_FAIL; );
 
 	while (pxEventData->size > 0)
 	{

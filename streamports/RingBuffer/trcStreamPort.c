@@ -1,5 +1,5 @@
 /*
-* Trace Recorder for Tracealyzer v4.6.4
+* Trace Recorder for Tracealyzer v4.6.5
 * Copyright 2021 Percepio AB
 * www.percepio.com
 *
@@ -120,7 +120,7 @@ traceResult xTraceStreamPortCommit(void* pvData, uint32_t uiSize, int32_t* piByt
 	return TRC_SUCCESS;
 }
 
-traceResult xTraceStreamPortOnTraceBegin()
+traceResult xTraceStreamPortOnTraceBegin(void)
 {
 	return xTraceMultiCoreEventBufferClear(&pxStreamPortData->xMultiCoreEventBuffer);
 }

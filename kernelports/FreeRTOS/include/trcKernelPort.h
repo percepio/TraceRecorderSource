@@ -1,5 +1,5 @@
 /*
- * Trace Recorder for Tracealyzer v4.6.4
+ * Trace Recorder for Tracealyzer v4.6.5
  * Copyright 2021 Percepio AB
  * www.percepio.com
  *
@@ -145,17 +145,17 @@ unsigned char xTraceKernelPortIsSchedulerSuspended(void);
 /**
  * @brief Kernel specific way to properly allocate critical sections
  */
-#define TRC_KERNEL_PORT_ALLOC_CRITICAL_SECTION() 
+#define TRC_KERNEL_PORT_ALLOC_CRITICAL_SECTION() TraceUnsignedBaseType_t TRACE_ALLOC_CRITICAL_SECTION_NAME;
 
 /**
  * @brief Kernel specific way to properly allocate critical sections
  */
-#define TRC_KERNEL_PORT_ENTER_CRITICAL_SECTION() portENTER_CRITICAL()
+#define TRC_KERNEL_PORT_ENTER_CRITICAL_SECTION() TRACE_ALLOC_CRITICAL_SECTION_NAME = 0; portENTER_CRITICAL()
 
 /**
  * @brief Kernel specific way to properly allocate critical sections
  */
-#define TRC_KERNEL_PORT_EXIT_CRITICAL_SECTION() portEXIT_CRITICAL()
+#define TRC_KERNEL_PORT_EXIT_CRITICAL_SECTION() (void)TRACE_ALLOC_CRITICAL_SECTION_NAME; portEXIT_CRITICAL()
 
 /**
 * @brief Kernel specific way to set interrupt mask

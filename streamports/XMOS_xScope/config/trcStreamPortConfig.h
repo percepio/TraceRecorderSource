@@ -1,5 +1,5 @@
 /*
- * Trace Recorder for Tracealyzer v4.6.4
+ * Trace Recorder for Tracealyzer v4.6.5
  * Copyright 2021 Percepio AB
  * www.percepio.com
  *
@@ -18,7 +18,7 @@ extern "C" {
 /* This define will determine whether to use the internal buffer or not.
 If file writing creates additional trace events (i.e. it uses semaphores or mutexes),
 then the internal buffer must be enabled to avoid infinite recursion. */
-#define TRC_CFG_STREAM_PORT_USE_INTERNAL_BUFFER 1
+#define TRC_CFG_STREAM_PORT_USE_INTERNAL_BUFFER 0
 
 /**
 * @def TRC_CFG_INTERNAL_BUFFER_SIZE

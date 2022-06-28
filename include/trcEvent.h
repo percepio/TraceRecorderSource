@@ -1,5 +1,5 @@
 /*
-* Percepio Trace Recorder for Tracealyzer v4.6.4
+* Percepio Trace Recorder for Tracealyzer v4.6.5
 * Copyright 2021 Percepio AB
 * www.percepio.com
 *
@@ -201,6 +201,7 @@ typedef struct TraceCoreEventData
 {
 	TraceEventData_t eventData[(TRC_CFG_MAX_ISR_NESTING)+1];	/**< */
 	uint32_t eventCounter;										/**< */
+	TRACE_ALLOC_CRITICAL_SECTION()
 } TraceCoreEventData_t;
 
 /** 

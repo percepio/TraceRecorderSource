@@ -26,7 +26,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Percepio Trace Recorder
-   &#160;<span id="projectnumber">v4.6.4</span>
+   &#160;<span id="projectnumber">v4.6.5</span>
    </div>
   </td>
  </tr>
@@ -87,7 +87,7 @@ $(document).ready(function(){initNavTree('trcEvent_8h_source.html',''); initResi
 </div><!--header-->
 <div class="contents">
 <a href="trcEvent_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">/*</span></div>
-<div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="comment">* Percepio Trace Recorder for Tracealyzer v4.6.4</span></div>
+<div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="comment">* Percepio Trace Recorder for Tracealyzer v4.6.5</span></div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="comment">* Copyright 2021 Percepio AB</span></div>
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="comment">* www.percepio.com</span></div>
 <div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="comment">*</span></div>
@@ -217,115 +217,116 @@ $(document).ready(function(){initNavTree('trcEvent_8h_source.html',''); initResi
 <div class="line"><a name="l00201"></a><span class="lineno">  201</span>&#160;{</div>
 <div class="line"><a name="l00202"></a><span class="lineno">  202</span>&#160;    TraceEventData_t eventData[(TRC_CFG_MAX_ISR_NESTING)+1];    </div>
 <div class="line"><a name="l00203"></a><span class="lineno">  203</span>&#160;    uint32_t eventCounter;                                      </div>
-<div class="line"><a name="l00204"></a><span class="lineno">  204</span>&#160;} TraceCoreEventData_t;</div>
-<div class="line"><a name="l00205"></a><span class="lineno">  205</span>&#160; </div>
-<div class="line"><a name="l00209"></a><span class="lineno">  209</span>&#160;<span class="keyword">typedef</span> <span class="keyword">struct </span>TraceEventDataTable</div>
-<div class="line"><a name="l00210"></a><span class="lineno">  210</span>&#160;{</div>
-<div class="line"><a name="l00211"></a><span class="lineno">  211</span>&#160;    TraceCoreEventData_t coreEventData[TRC_CFG_CORE_COUNT]; </div>
-<div class="line"><a name="l00212"></a><span class="lineno">  212</span>&#160;} TraceEventDataTable_t;</div>
-<div class="line"><a name="l00213"></a><span class="lineno">  213</span>&#160; </div>
-<div class="line"><a name="l00214"></a><span class="lineno">  214</span>&#160;<span class="preprocessor">#define TRC_EVENT_DATA_BUFFER_SIZE (sizeof(TraceEventDataTable_t))</span></div>
-<div class="line"><a name="l00215"></a><span class="lineno">  215</span>&#160; </div>
-<div class="line"><a name="l00219"></a><span class="lineno">  219</span>&#160;<span class="keyword">typedef</span> <span class="keyword">struct </span>TraceEventDataBuffer</div>
-<div class="line"><a name="l00220"></a><span class="lineno">  220</span>&#160;{</div>
-<div class="line"><a name="l00221"></a><span class="lineno">  221</span>&#160;    uint8_t buffer[TRC_EVENT_DATA_BUFFER_SIZE]; </div>
-<div class="line"><a name="l00222"></a><span class="lineno">  222</span>&#160;} TraceEventDataBuffer_t;</div>
-<div class="line"><a name="l00223"></a><span class="lineno">  223</span>&#160; </div>
-<div class="line"><a name="l00224"></a><span class="lineno">  224</span>&#160;<span class="keyword">extern</span> TraceEventDataTable_t* pxTraceEventDataTable;</div>
-<div class="line"><a name="l00225"></a><span class="lineno">  225</span>&#160; </div>
-<div class="line"><a name="l00235"></a><span class="lineno">  235</span>&#160;traceResult xTraceEventInitialize(TraceEventDataBuffer_t* pxBuffer);</div>
-<div class="line"><a name="l00236"></a><span class="lineno">  236</span>&#160; </div>
-<div class="line"><a name="l00246"></a><span class="lineno"><a class="line" href="group__trace__event__apis.html#ga1eaeee020d1b909219740c6742fc0f6e">  246</a></span>&#160;traceResult <a class="code" href="group__trace__event__apis.html#ga3d104209d01e4e1ac2fce7a1c7ebfa69">xTraceEventGetSize</a>(<span class="keywordtype">void</span>* pvAddress, uint32_t* puiSize);</div>
-<div class="line"><a name="l00247"></a><span class="lineno">  247</span>&#160; </div>
-<div class="line"><a name="l00260"></a><span class="lineno">  260</span>&#160;traceResult xTraceEventBeginRawOffline(uint32_t uiSize, TraceEventHandle_t* pxEventHandle);</div>
-<div class="line"><a name="l00261"></a><span class="lineno">  261</span>&#160; </div>
-<div class="line"><a name="l00274"></a><span class="lineno">  274</span>&#160;traceResult xTraceEventBeginRawOfflineBlocking(uint32_t uiSize, TraceEventHandle_t* pxEventHandle);</div>
-<div class="line"><a name="l00275"></a><span class="lineno">  275</span>&#160; </div>
-<div class="line"><a name="l00288"></a><span class="lineno">  288</span>&#160;<span class="preprocessor">#define xTraceEventBeginOffline TRC_EVENT_BEGIN_OFFLINE</span></div>
-<div class="line"><a name="l00289"></a><span class="lineno">  289</span>&#160; </div>
-<div class="line"><a name="l00302"></a><span class="lineno">  302</span>&#160;<span class="preprocessor">#define xTraceEventBegin(uiEventCode, uiTotalPayloadSize, pxEventHandle) \</span></div>
-<div class="line"><a name="l00303"></a><span class="lineno"><a class="line" href="group__trace__event__apis.html#gac506caaa70d385e64cd0e4fa2ad80a04">  303</a></span>&#160;<span class="preprocessor">    (xTraceIsRecorderEnabled() ? xTraceEventBeginOffline(uiEventCode, uiTotalPayloadSize, pxEventHandle) : TRC_FAIL)</span></div>
-<div class="line"><a name="l00304"></a><span class="lineno">  304</span>&#160; </div>
-<div class="line"><a name="l00316"></a><span class="lineno">  316</span>&#160;traceResult xTraceEventEndOffline(TraceEventHandle_t xEventHandle);</div>
-<div class="line"><a name="l00317"></a><span class="lineno">  317</span>&#160; </div>
-<div class="line"><a name="l00328"></a><span class="lineno">  328</span>&#160;traceResult xTraceEventEndOfflineBlocking(TraceEventHandle_t xEventHandle);</div>
-<div class="line"><a name="l00329"></a><span class="lineno">  329</span>&#160; </div>
-<div class="line"><a name="l00341"></a><span class="lineno">  341</span>&#160;<span class="preprocessor">#define xTraceEventEnd(xEventHandle) \</span></div>
-<div class="line"><a name="l00342"></a><span class="lineno"><a class="line" href="group__trace__event__apis.html#ga3e4d4ace59b52e5c2e80d34b40329917">  342</a></span>&#160;<span class="preprocessor">    (xTraceIsRecorderEnabled() == 0 ? TRC_FAIL : xTraceEventEndOffline(xEventHandle))</span></div>
-<div class="line"><a name="l00343"></a><span class="lineno">  343</span>&#160; </div>
-<div class="line"><a name="l00354"></a><span class="lineno">  354</span>&#160;traceResult <a class="code" href="group__trace__event__apis.html#ga267a02441bc42d8467836072593a8ad9">xTraceEventAddData</a>(TraceEventHandle_t xEventHandle, <span class="keywordtype">void</span>* pvData, uint32_t uiSize);</div>
-<div class="line"><a name="l00355"></a><span class="lineno">  355</span>&#160; </div>
-<div class="line"><a name="l00356"></a><span class="lineno">  356</span>&#160;<span class="preprocessor">#if ((TRC_CFG_USE_TRACE_ASSERT) == 1)</span></div>
-<div class="line"><a name="l00357"></a><span class="lineno">  357</span>&#160; </div>
-<div class="line"><a name="l00372"></a><span class="lineno">  372</span>&#160;traceResult <a class="code" href="group__trace__event__apis.html#ga55e1fd2058f3507101ac46238cfe350d">xTraceEventGetRawData</a>(TraceEventHandle_t xEventHandle, uint32_t uiOffset, uint32_t uiSize, <span class="keywordtype">void</span>** ppvData);</div>
-<div class="line"><a name="l00373"></a><span class="lineno">  373</span>&#160; </div>
-<div class="line"><a name="l00388"></a><span class="lineno">  388</span>&#160;traceResult <a class="code" href="group__trace__event__apis.html#gae0399574efecfbcdb1d92aa176c597f4">xTraceEventGetPayload</a>(TraceEventHandle_t xEventHandle, uint32_t uiOffset, uint32_t uiSize, <span class="keywordtype">void</span>** ppvData);</div>
-<div class="line"><a name="l00389"></a><span class="lineno">  389</span>&#160; </div>
-<div class="line"><a name="l00399"></a><span class="lineno">  399</span>&#160;traceResult <a class="code" href="group__trace__event__apis.html#gac2fe59add1d55f013879ee7d88503f25">xTraceEventPayloadRemaining</a>(TraceEventHandle_t xEventHandle, uint32_t* puiValue);</div>
-<div class="line"><a name="l00400"></a><span class="lineno">  400</span>&#160; </div>
-<div class="line"><a name="l00410"></a><span class="lineno">  410</span>&#160;traceResult <a class="code" href="group__trace__event__apis.html#ga7664fb00364a4a1165dc23074ef698bc">xTraceEventPayloadUsed</a>(TraceEventHandle_t xEventHandle, uint32_t* puiValue);</div>
-<div class="line"><a name="l00411"></a><span class="lineno">  411</span>&#160; </div>
-<div class="line"><a name="l00421"></a><span class="lineno">  421</span>&#160;traceResult <a class="code" href="group__trace__event__apis.html#gaf49b771de784ae6be526dcd1b851d77e">xTraceEventPayloadSize</a>(TraceEventHandle_t xEventHandle, uint32_t* puiValue);</div>
-<div class="line"><a name="l00422"></a><span class="lineno">  422</span>&#160; </div>
-<div class="line"><a name="l00432"></a><span class="lineno">  432</span>&#160;traceResult <a class="code" href="group__trace__event__apis.html#ga441b595058d45b79be4fe6e7ea4f1507">xTraceEventAddUnsignedBaseType</a>(TraceEventHandle_t xEventHandle, TraceUnsignedBaseType_t uxValue);</div>
-<div class="line"><a name="l00433"></a><span class="lineno">  433</span>&#160; </div>
-<div class="line"><a name="l00443"></a><span class="lineno">  443</span>&#160;traceResult xTraceEventAddPointer(TraceEventHandle_t xEventHandle, <span class="keywordtype">void</span> *pvAddress);</div>
-<div class="line"><a name="l00444"></a><span class="lineno">  444</span>&#160; </div>
-<div class="line"><a name="l00454"></a><span class="lineno">  454</span>&#160;traceResult <a class="code" href="group__trace__event__apis.html#ga12fc28f1cd94b5167e0c1c541e2bc123">xTraceEventAdd32</a>(TraceEventHandle_t xEventHandle, uint32_t value);</div>
-<div class="line"><a name="l00455"></a><span class="lineno">  455</span>&#160; </div>
-<div class="line"><a name="l00465"></a><span class="lineno">  465</span>&#160;traceResult <a class="code" href="group__trace__event__apis.html#ga117fda02be14d7344c32d80a16a16776">xTraceEventAdd16</a>(TraceEventHandle_t xEventHandle, uint16_t value);</div>
-<div class="line"><a name="l00466"></a><span class="lineno">  466</span>&#160; </div>
-<div class="line"><a name="l00476"></a><span class="lineno">  476</span>&#160;traceResult <a class="code" href="group__trace__event__apis.html#ga848f7f80ed87213c0c1d9f74bed0dba5">xTraceEventAdd8</a>(TraceEventHandle_t xEventHandle, uint8_t value);</div>
-<div class="line"><a name="l00477"></a><span class="lineno">  477</span>&#160; </div>
-<div class="line"><a name="l00478"></a><span class="lineno">  478</span>&#160;<span class="preprocessor">#else </span><span class="comment">/* ((TRC_CFG_USE_TRACE_ASSERT) == 1) */</span><span class="preprocessor"></span></div>
-<div class="line"><a name="l00479"></a><span class="lineno">  479</span>&#160; </div>
-<div class="line"><a name="l00489"></a><span class="lineno">  489</span>&#160;<span class="preprocessor">#define xTraceEventGetSize(pvAddress, puiSize) (*(uint32_t*)(puiSize) = sizeof(TraceBaseEvent_t) + (TRC_EVENT_GET_PARAM_COUNT(((TraceBaseEvent_t*)(pvAddress))-&gt;EventID)) * sizeof(uint32_t), TRC_SUCCESS)</span></div>
-<div class="line"><a name="l00490"></a><span class="lineno"><a class="line" href="group__trace__event__apis.html#ga3d104209d01e4e1ac2fce7a1c7ebfa69">  490</a></span>&#160; </div>
-<div class="line"><a name="l00505"></a><span class="lineno">  505</span>&#160;<span class="preprocessor">#define xTraceEventGetRawData TRC_EVENT_GET_RAW_DATA</span></div>
-<div class="line"><a name="l00506"></a><span class="lineno"><a class="line" href="group__trace__event__apis.html#ga55e1fd2058f3507101ac46238cfe350d">  506</a></span>&#160; </div>
-<div class="line"><a name="l00521"></a><span class="lineno">  521</span>&#160;<span class="preprocessor">#define xTraceEventGetPayload TRC_EVENT_GET_PAYLOAD</span></div>
-<div class="line"><a name="l00522"></a><span class="lineno"><a class="line" href="group__trace__event__apis.html#gae0399574efecfbcdb1d92aa176c597f4">  522</a></span>&#160; </div>
-<div class="line"><a name="l00532"></a><span class="lineno">  532</span>&#160;<span class="preprocessor">#define xTraceEventPayloadRemaining TRC_EVENT_PAYLOAD_REMAINING</span></div>
-<div class="line"><a name="l00533"></a><span class="lineno"><a class="line" href="group__trace__event__apis.html#gac2fe59add1d55f013879ee7d88503f25">  533</a></span>&#160; </div>
-<div class="line"><a name="l00543"></a><span class="lineno">  543</span>&#160;<span class="preprocessor">#define xTraceEventPayloadUsed TRC_EVENT_PAYLOAD_USED</span></div>
-<div class="line"><a name="l00544"></a><span class="lineno"><a class="line" href="group__trace__event__apis.html#ga7664fb00364a4a1165dc23074ef698bc">  544</a></span>&#160; </div>
-<div class="line"><a name="l00554"></a><span class="lineno">  554</span>&#160;<span class="preprocessor">#define xTraceEventPayloadSize TRC_EVENT_PAYLOAD_SIZE</span></div>
-<div class="line"><a name="l00555"></a><span class="lineno"><a class="line" href="group__trace__event__apis.html#gaf49b771de784ae6be526dcd1b851d77e">  555</a></span>&#160; </div>
-<div class="line"><a name="l00556"></a><span class="lineno">  556</span>&#160;<span class="comment">/* Adds a pointer as event payload with no errors checks */</span></div>
-<div class="line"><a name="l00557"></a><span class="lineno">  557</span>&#160;<span class="preprocessor">#define xTraceEventAddPointer TRC_EVENT_ADD_POINTER</span></div>
-<div class="line"><a name="l00558"></a><span class="lineno">  558</span>&#160; </div>
-<div class="line"><a name="l00568"></a><span class="lineno">  568</span>&#160;<span class="preprocessor">#define xTraceEventAddUnsignedBaseType TRC_EVENT_ADD_UNSIGNED_BASE_TYPE</span></div>
-<div class="line"><a name="l00569"></a><span class="lineno"><a class="line" href="group__trace__event__apis.html#ga441b595058d45b79be4fe6e7ea4f1507">  569</a></span>&#160; </div>
-<div class="line"><a name="l00579"></a><span class="lineno">  579</span>&#160;<span class="preprocessor">#define xTraceEventAdd32 TRC_EVENT_ADD_32</span></div>
-<div class="line"><a name="l00580"></a><span class="lineno"><a class="line" href="group__trace__event__apis.html#ga12fc28f1cd94b5167e0c1c541e2bc123">  580</a></span>&#160; </div>
-<div class="line"><a name="l00590"></a><span class="lineno">  590</span>&#160;<span class="preprocessor">#define xTraceEventAdd16 TRC_EVENT_ADD_16</span></div>
-<div class="line"><a name="l00591"></a><span class="lineno"><a class="line" href="group__trace__event__apis.html#ga117fda02be14d7344c32d80a16a16776">  591</a></span>&#160; </div>
-<div class="line"><a name="l00601"></a><span class="lineno">  601</span>&#160;<span class="preprocessor">#define xTraceEventAdd8 TRC_EVENT_ADD_8</span></div>
-<div class="line"><a name="l00602"></a><span class="lineno"><a class="line" href="group__trace__event__apis.html#ga848f7f80ed87213c0c1d9f74bed0dba5">  602</a></span>&#160; </div>
-<div class="line"><a name="l00603"></a><span class="lineno">  603</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* ((TRC_CFG_USE_TRACE_ASSERT) == 1) */</span><span class="preprocessor"></span></div>
-<div class="line"><a name="l00604"></a><span class="lineno">  604</span>&#160; </div>
-<div class="line"><a name="l00607"></a><span class="lineno">  607</span>&#160;<span class="preprocessor">#ifdef __cplusplus</span></div>
-<div class="line"><a name="l00608"></a><span class="lineno">  608</span>&#160;}</div>
-<div class="line"><a name="l00609"></a><span class="lineno">  609</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00610"></a><span class="lineno">  610</span>&#160; </div>
-<div class="line"><a name="l00611"></a><span class="lineno">  611</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING) */</span><span class="preprocessor"></span></div>
-<div class="line"><a name="l00612"></a><span class="lineno">  612</span>&#160; </div>
-<div class="line"><a name="l00613"></a><span class="lineno">  613</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* (TRC_USE_TRACEALYZER_RECORDER == 1) */</span><span class="preprocessor"></span></div>
-<div class="line"><a name="l00614"></a><span class="lineno">  614</span>&#160; </div>
-<div class="line"><a name="l00615"></a><span class="lineno">  615</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* TRC_EVENT_H */</span><span class="preprocessor"></span></div>
+<div class="line"><a name="l00204"></a><span class="lineno">  204</span>&#160;    TRACE_ALLOC_CRITICAL_SECTION()</div>
+<div class="line"><a name="l00205"></a><span class="lineno">  205</span>&#160;} TraceCoreEventData_t;</div>
+<div class="line"><a name="l00206"></a><span class="lineno">  206</span>&#160; </div>
+<div class="line"><a name="l00210"></a><span class="lineno">  210</span>&#160;<span class="keyword">typedef</span> <span class="keyword">struct </span>TraceEventDataTable</div>
+<div class="line"><a name="l00211"></a><span class="lineno">  211</span>&#160;{</div>
+<div class="line"><a name="l00212"></a><span class="lineno">  212</span>&#160;    TraceCoreEventData_t coreEventData[TRC_CFG_CORE_COUNT]; </div>
+<div class="line"><a name="l00213"></a><span class="lineno">  213</span>&#160;} TraceEventDataTable_t;</div>
+<div class="line"><a name="l00214"></a><span class="lineno">  214</span>&#160; </div>
+<div class="line"><a name="l00215"></a><span class="lineno">  215</span>&#160;<span class="preprocessor">#define TRC_EVENT_DATA_BUFFER_SIZE (sizeof(TraceEventDataTable_t))</span></div>
+<div class="line"><a name="l00216"></a><span class="lineno">  216</span>&#160; </div>
+<div class="line"><a name="l00220"></a><span class="lineno">  220</span>&#160;<span class="keyword">typedef</span> <span class="keyword">struct </span>TraceEventDataBuffer</div>
+<div class="line"><a name="l00221"></a><span class="lineno">  221</span>&#160;{</div>
+<div class="line"><a name="l00222"></a><span class="lineno">  222</span>&#160;    uint8_t buffer[TRC_EVENT_DATA_BUFFER_SIZE]; </div>
+<div class="line"><a name="l00223"></a><span class="lineno">  223</span>&#160;} TraceEventDataBuffer_t;</div>
+<div class="line"><a name="l00224"></a><span class="lineno">  224</span>&#160; </div>
+<div class="line"><a name="l00225"></a><span class="lineno">  225</span>&#160;<span class="keyword">extern</span> TraceEventDataTable_t* pxTraceEventDataTable;</div>
+<div class="line"><a name="l00226"></a><span class="lineno">  226</span>&#160; </div>
+<div class="line"><a name="l00236"></a><span class="lineno">  236</span>&#160;traceResult xTraceEventInitialize(TraceEventDataBuffer_t* pxBuffer);</div>
+<div class="line"><a name="l00237"></a><span class="lineno">  237</span>&#160; </div>
+<div class="line"><a name="l00247"></a><span class="lineno"><a class="line" href="group__trace__event__apis.html#ga1eaeee020d1b909219740c6742fc0f6e">  247</a></span>&#160;traceResult <a class="code" href="group__trace__event__apis.html#ga3d104209d01e4e1ac2fce7a1c7ebfa69">xTraceEventGetSize</a>(<span class="keywordtype">void</span>* pvAddress, uint32_t* puiSize);</div>
+<div class="line"><a name="l00248"></a><span class="lineno">  248</span>&#160; </div>
+<div class="line"><a name="l00261"></a><span class="lineno">  261</span>&#160;traceResult xTraceEventBeginRawOffline(uint32_t uiSize, TraceEventHandle_t* pxEventHandle);</div>
+<div class="line"><a name="l00262"></a><span class="lineno">  262</span>&#160; </div>
+<div class="line"><a name="l00275"></a><span class="lineno">  275</span>&#160;traceResult xTraceEventBeginRawOfflineBlocking(uint32_t uiSize, TraceEventHandle_t* pxEventHandle);</div>
+<div class="line"><a name="l00276"></a><span class="lineno">  276</span>&#160; </div>
+<div class="line"><a name="l00289"></a><span class="lineno">  289</span>&#160;<span class="preprocessor">#define xTraceEventBeginOffline TRC_EVENT_BEGIN_OFFLINE</span></div>
+<div class="line"><a name="l00290"></a><span class="lineno">  290</span>&#160; </div>
+<div class="line"><a name="l00303"></a><span class="lineno">  303</span>&#160;<span class="preprocessor">#define xTraceEventBegin(uiEventCode, uiTotalPayloadSize, pxEventHandle) \</span></div>
+<div class="line"><a name="l00304"></a><span class="lineno"><a class="line" href="group__trace__event__apis.html#gac506caaa70d385e64cd0e4fa2ad80a04">  304</a></span>&#160;<span class="preprocessor">    (xTraceIsRecorderEnabled() ? xTraceEventBeginOffline(uiEventCode, uiTotalPayloadSize, pxEventHandle) : TRC_FAIL)</span></div>
+<div class="line"><a name="l00305"></a><span class="lineno">  305</span>&#160; </div>
+<div class="line"><a name="l00317"></a><span class="lineno">  317</span>&#160;traceResult xTraceEventEndOffline(TraceEventHandle_t xEventHandle);</div>
+<div class="line"><a name="l00318"></a><span class="lineno">  318</span>&#160; </div>
+<div class="line"><a name="l00329"></a><span class="lineno">  329</span>&#160;traceResult xTraceEventEndOfflineBlocking(TraceEventHandle_t xEventHandle);</div>
+<div class="line"><a name="l00330"></a><span class="lineno">  330</span>&#160; </div>
+<div class="line"><a name="l00342"></a><span class="lineno">  342</span>&#160;<span class="preprocessor">#define xTraceEventEnd(xEventHandle) \</span></div>
+<div class="line"><a name="l00343"></a><span class="lineno"><a class="line" href="group__trace__event__apis.html#ga3e4d4ace59b52e5c2e80d34b40329917">  343</a></span>&#160;<span class="preprocessor">    (xTraceIsRecorderEnabled() == 0 ? TRC_FAIL : xTraceEventEndOffline(xEventHandle))</span></div>
+<div class="line"><a name="l00344"></a><span class="lineno">  344</span>&#160; </div>
+<div class="line"><a name="l00355"></a><span class="lineno">  355</span>&#160;traceResult <a class="code" href="group__trace__event__apis.html#ga267a02441bc42d8467836072593a8ad9">xTraceEventAddData</a>(TraceEventHandle_t xEventHandle, <span class="keywordtype">void</span>* pvData, uint32_t uiSize);</div>
+<div class="line"><a name="l00356"></a><span class="lineno">  356</span>&#160; </div>
+<div class="line"><a name="l00357"></a><span class="lineno">  357</span>&#160;<span class="preprocessor">#if ((TRC_CFG_USE_TRACE_ASSERT) == 1)</span></div>
+<div class="line"><a name="l00358"></a><span class="lineno">  358</span>&#160; </div>
+<div class="line"><a name="l00373"></a><span class="lineno">  373</span>&#160;traceResult <a class="code" href="group__trace__event__apis.html#ga55e1fd2058f3507101ac46238cfe350d">xTraceEventGetRawData</a>(TraceEventHandle_t xEventHandle, uint32_t uiOffset, uint32_t uiSize, <span class="keywordtype">void</span>** ppvData);</div>
+<div class="line"><a name="l00374"></a><span class="lineno">  374</span>&#160; </div>
+<div class="line"><a name="l00389"></a><span class="lineno">  389</span>&#160;traceResult <a class="code" href="group__trace__event__apis.html#gae0399574efecfbcdb1d92aa176c597f4">xTraceEventGetPayload</a>(TraceEventHandle_t xEventHandle, uint32_t uiOffset, uint32_t uiSize, <span class="keywordtype">void</span>** ppvData);</div>
+<div class="line"><a name="l00390"></a><span class="lineno">  390</span>&#160; </div>
+<div class="line"><a name="l00400"></a><span class="lineno">  400</span>&#160;traceResult <a class="code" href="group__trace__event__apis.html#gac2fe59add1d55f013879ee7d88503f25">xTraceEventPayloadRemaining</a>(TraceEventHandle_t xEventHandle, uint32_t* puiValue);</div>
+<div class="line"><a name="l00401"></a><span class="lineno">  401</span>&#160; </div>
+<div class="line"><a name="l00411"></a><span class="lineno">  411</span>&#160;traceResult <a class="code" href="group__trace__event__apis.html#ga7664fb00364a4a1165dc23074ef698bc">xTraceEventPayloadUsed</a>(TraceEventHandle_t xEventHandle, uint32_t* puiValue);</div>
+<div class="line"><a name="l00412"></a><span class="lineno">  412</span>&#160; </div>
+<div class="line"><a name="l00422"></a><span class="lineno">  422</span>&#160;traceResult <a class="code" href="group__trace__event__apis.html#gaf49b771de784ae6be526dcd1b851d77e">xTraceEventPayloadSize</a>(TraceEventHandle_t xEventHandle, uint32_t* puiValue);</div>
+<div class="line"><a name="l00423"></a><span class="lineno">  423</span>&#160; </div>
+<div class="line"><a name="l00433"></a><span class="lineno">  433</span>&#160;traceResult <a class="code" href="group__trace__event__apis.html#ga441b595058d45b79be4fe6e7ea4f1507">xTraceEventAddUnsignedBaseType</a>(TraceEventHandle_t xEventHandle, TraceUnsignedBaseType_t uxValue);</div>
+<div class="line"><a name="l00434"></a><span class="lineno">  434</span>&#160; </div>
+<div class="line"><a name="l00444"></a><span class="lineno">  444</span>&#160;traceResult xTraceEventAddPointer(TraceEventHandle_t xEventHandle, <span class="keywordtype">void</span> *pvAddress);</div>
+<div class="line"><a name="l00445"></a><span class="lineno">  445</span>&#160; </div>
+<div class="line"><a name="l00455"></a><span class="lineno">  455</span>&#160;traceResult <a class="code" href="group__trace__event__apis.html#ga12fc28f1cd94b5167e0c1c541e2bc123">xTraceEventAdd32</a>(TraceEventHandle_t xEventHandle, uint32_t value);</div>
+<div class="line"><a name="l00456"></a><span class="lineno">  456</span>&#160; </div>
+<div class="line"><a name="l00466"></a><span class="lineno">  466</span>&#160;traceResult <a class="code" href="group__trace__event__apis.html#ga117fda02be14d7344c32d80a16a16776">xTraceEventAdd16</a>(TraceEventHandle_t xEventHandle, uint16_t value);</div>
+<div class="line"><a name="l00467"></a><span class="lineno">  467</span>&#160; </div>
+<div class="line"><a name="l00477"></a><span class="lineno">  477</span>&#160;traceResult <a class="code" href="group__trace__event__apis.html#ga848f7f80ed87213c0c1d9f74bed0dba5">xTraceEventAdd8</a>(TraceEventHandle_t xEventHandle, uint8_t value);</div>
+<div class="line"><a name="l00478"></a><span class="lineno">  478</span>&#160; </div>
+<div class="line"><a name="l00479"></a><span class="lineno">  479</span>&#160;<span class="preprocessor">#else </span><span class="comment">/* ((TRC_CFG_USE_TRACE_ASSERT) == 1) */</span><span class="preprocessor"></span></div>
+<div class="line"><a name="l00480"></a><span class="lineno">  480</span>&#160; </div>
+<div class="line"><a name="l00490"></a><span class="lineno">  490</span>&#160;<span class="preprocessor">#define xTraceEventGetSize(pvAddress, puiSize) (*(uint32_t*)(puiSize) = sizeof(TraceBaseEvent_t) + (TRC_EVENT_GET_PARAM_COUNT(((TraceBaseEvent_t*)(pvAddress))-&gt;EventID)) * sizeof(uint32_t), TRC_SUCCESS)</span></div>
+<div class="line"><a name="l00491"></a><span class="lineno"><a class="line" href="group__trace__event__apis.html#ga3d104209d01e4e1ac2fce7a1c7ebfa69">  491</a></span>&#160; </div>
+<div class="line"><a name="l00506"></a><span class="lineno">  506</span>&#160;<span class="preprocessor">#define xTraceEventGetRawData TRC_EVENT_GET_RAW_DATA</span></div>
+<div class="line"><a name="l00507"></a><span class="lineno"><a class="line" href="group__trace__event__apis.html#ga55e1fd2058f3507101ac46238cfe350d">  507</a></span>&#160; </div>
+<div class="line"><a name="l00522"></a><span class="lineno">  522</span>&#160;<span class="preprocessor">#define xTraceEventGetPayload TRC_EVENT_GET_PAYLOAD</span></div>
+<div class="line"><a name="l00523"></a><span class="lineno"><a class="line" href="group__trace__event__apis.html#gae0399574efecfbcdb1d92aa176c597f4">  523</a></span>&#160; </div>
+<div class="line"><a name="l00533"></a><span class="lineno">  533</span>&#160;<span class="preprocessor">#define xTraceEventPayloadRemaining TRC_EVENT_PAYLOAD_REMAINING</span></div>
+<div class="line"><a name="l00534"></a><span class="lineno"><a class="line" href="group__trace__event__apis.html#gac2fe59add1d55f013879ee7d88503f25">  534</a></span>&#160; </div>
+<div class="line"><a name="l00544"></a><span class="lineno">  544</span>&#160;<span class="preprocessor">#define xTraceEventPayloadUsed TRC_EVENT_PAYLOAD_USED</span></div>
+<div class="line"><a name="l00545"></a><span class="lineno"><a class="line" href="group__trace__event__apis.html#ga7664fb00364a4a1165dc23074ef698bc">  545</a></span>&#160; </div>
+<div class="line"><a name="l00555"></a><span class="lineno">  555</span>&#160;<span class="preprocessor">#define xTraceEventPayloadSize TRC_EVENT_PAYLOAD_SIZE</span></div>
+<div class="line"><a name="l00556"></a><span class="lineno"><a class="line" href="group__trace__event__apis.html#gaf49b771de784ae6be526dcd1b851d77e">  556</a></span>&#160; </div>
+<div class="line"><a name="l00557"></a><span class="lineno">  557</span>&#160;<span class="comment">/* Adds a pointer as event payload with no errors checks */</span></div>
+<div class="line"><a name="l00558"></a><span class="lineno">  558</span>&#160;<span class="preprocessor">#define xTraceEventAddPointer TRC_EVENT_ADD_POINTER</span></div>
+<div class="line"><a name="l00559"></a><span class="lineno">  559</span>&#160; </div>
+<div class="line"><a name="l00569"></a><span class="lineno">  569</span>&#160;<span class="preprocessor">#define xTraceEventAddUnsignedBaseType TRC_EVENT_ADD_UNSIGNED_BASE_TYPE</span></div>
+<div class="line"><a name="l00570"></a><span class="lineno"><a class="line" href="group__trace__event__apis.html#ga441b595058d45b79be4fe6e7ea4f1507">  570</a></span>&#160; </div>
+<div class="line"><a name="l00580"></a><span class="lineno">  580</span>&#160;<span class="preprocessor">#define xTraceEventAdd32 TRC_EVENT_ADD_32</span></div>
+<div class="line"><a name="l00581"></a><span class="lineno"><a class="line" href="group__trace__event__apis.html#ga12fc28f1cd94b5167e0c1c541e2bc123">  581</a></span>&#160; </div>
+<div class="line"><a name="l00591"></a><span class="lineno">  591</span>&#160;<span class="preprocessor">#define xTraceEventAdd16 TRC_EVENT_ADD_16</span></div>
+<div class="line"><a name="l00592"></a><span class="lineno"><a class="line" href="group__trace__event__apis.html#ga117fda02be14d7344c32d80a16a16776">  592</a></span>&#160; </div>
+<div class="line"><a name="l00602"></a><span class="lineno">  602</span>&#160;<span class="preprocessor">#define xTraceEventAdd8 TRC_EVENT_ADD_8</span></div>
+<div class="line"><a name="l00603"></a><span class="lineno"><a class="line" href="group__trace__event__apis.html#ga848f7f80ed87213c0c1d9f74bed0dba5">  603</a></span>&#160; </div>
+<div class="line"><a name="l00604"></a><span class="lineno">  604</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* ((TRC_CFG_USE_TRACE_ASSERT) == 1) */</span><span class="preprocessor"></span></div>
+<div class="line"><a name="l00605"></a><span class="lineno">  605</span>&#160; </div>
+<div class="line"><a name="l00608"></a><span class="lineno">  608</span>&#160;<span class="preprocessor">#ifdef __cplusplus</span></div>
+<div class="line"><a name="l00609"></a><span class="lineno">  609</span>&#160;}</div>
+<div class="line"><a name="l00610"></a><span class="lineno">  610</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00611"></a><span class="lineno">  611</span>&#160; </div>
+<div class="line"><a name="l00612"></a><span class="lineno">  612</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING) */</span><span class="preprocessor"></span></div>
+<div class="line"><a name="l00613"></a><span class="lineno">  613</span>&#160; </div>
+<div class="line"><a name="l00614"></a><span class="lineno">  614</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* (TRC_USE_TRACEALYZER_RECORDER == 1) */</span><span class="preprocessor"></span></div>
+<div class="line"><a name="l00615"></a><span class="lineno">  615</span>&#160; </div>
+<div class="line"><a name="l00616"></a><span class="lineno">  616</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* TRC_EVENT_H */</span><span class="preprocessor"></span></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
-<div class="ttc" id="agroup__trace__event__apis_html_ga848f7f80ed87213c0c1d9f74bed0dba5"><div class="ttname"><a href="group__trace__event__apis.html#ga848f7f80ed87213c0c1d9f74bed0dba5">xTraceEventAdd8</a></div><div class="ttdeci">#define xTraceEventAdd8</div><div class="ttdoc">Adds an uint8_t as trace event payload.</div><div class="ttdef"><b>Definition:</b> trcEvent.h:601</div></div>
-<div class="ttc" id="agroup__trace__event__apis_html_ga55e1fd2058f3507101ac46238cfe350d"><div class="ttname"><a href="group__trace__event__apis.html#ga55e1fd2058f3507101ac46238cfe350d">xTraceEventGetRawData</a></div><div class="ttdeci">#define xTraceEventGetRawData</div><div class="ttdoc">Gets trace event data pointer with an offset.</div><div class="ttdef"><b>Definition:</b> trcEvent.h:505</div></div>
-<div class="ttc" id="agroup__trace__event__apis_html_ga441b595058d45b79be4fe6e7ea4f1507"><div class="ttname"><a href="group__trace__event__apis.html#ga441b595058d45b79be4fe6e7ea4f1507">xTraceEventAddUnsignedBaseType</a></div><div class="ttdeci">#define xTraceEventAddUnsignedBaseType</div><div class="ttdoc">Adds an unsigned base type value as trace event payload.</div><div class="ttdef"><b>Definition:</b> trcEvent.h:568</div></div>
-<div class="ttc" id="agroup__trace__event__apis_html_ga12fc28f1cd94b5167e0c1c541e2bc123"><div class="ttname"><a href="group__trace__event__apis.html#ga12fc28f1cd94b5167e0c1c541e2bc123">xTraceEventAdd32</a></div><div class="ttdeci">#define xTraceEventAdd32</div><div class="ttdoc">Adds an uint32_t as trace event payload.</div><div class="ttdef"><b>Definition:</b> trcEvent.h:579</div></div>
-<div class="ttc" id="agroup__trace__event__apis_html_gaf49b771de784ae6be526dcd1b851d77e"><div class="ttname"><a href="group__trace__event__apis.html#gaf49b771de784ae6be526dcd1b851d77e">xTraceEventPayloadSize</a></div><div class="ttdeci">#define xTraceEventPayloadSize</div><div class="ttdoc">Gets trace event payload size.</div><div class="ttdef"><b>Definition:</b> trcEvent.h:554</div></div>
-<div class="ttc" id="agroup__trace__event__apis_html_ga267a02441bc42d8467836072593a8ad9"><div class="ttname"><a href="group__trace__event__apis.html#ga267a02441bc42d8467836072593a8ad9">xTraceEventAddData</a></div><div class="ttdeci">traceResult xTraceEventAddData(TraceEventHandle_t xEventHandle, void *pvData, uint32_t uiSize)</div><div class="ttdoc">Adds data to event payload.</div><div class="ttdef"><b>Definition:</b> trcEvent.c:196</div></div>
-<div class="ttc" id="agroup__trace__event__apis_html_ga117fda02be14d7344c32d80a16a16776"><div class="ttname"><a href="group__trace__event__apis.html#ga117fda02be14d7344c32d80a16a16776">xTraceEventAdd16</a></div><div class="ttdeci">#define xTraceEventAdd16</div><div class="ttdoc">Adds an uint16_t as trace event payload.</div><div class="ttdef"><b>Definition:</b> trcEvent.h:590</div></div>
-<div class="ttc" id="agroup__trace__event__apis_html_gac2fe59add1d55f013879ee7d88503f25"><div class="ttname"><a href="group__trace__event__apis.html#gac2fe59add1d55f013879ee7d88503f25">xTraceEventPayloadRemaining</a></div><div class="ttdeci">#define xTraceEventPayloadRemaining</div><div class="ttdoc">Gets the amount of remaining trace event payload.</div><div class="ttdef"><b>Definition:</b> trcEvent.h:532</div></div>
-<div class="ttc" id="agroup__trace__event__apis_html_gae0399574efecfbcdb1d92aa176c597f4"><div class="ttname"><a href="group__trace__event__apis.html#gae0399574efecfbcdb1d92aa176c597f4">xTraceEventGetPayload</a></div><div class="ttdeci">#define xTraceEventGetPayload</div><div class="ttdoc">Gets trace event payload pointer with an offset.</div><div class="ttdef"><b>Definition:</b> trcEvent.h:521</div></div>
-<div class="ttc" id="agroup__trace__event__apis_html_ga7664fb00364a4a1165dc23074ef698bc"><div class="ttname"><a href="group__trace__event__apis.html#ga7664fb00364a4a1165dc23074ef698bc">xTraceEventPayloadUsed</a></div><div class="ttdeci">#define xTraceEventPayloadUsed</div><div class="ttdoc">Gets the amount of used trace event payload.</div><div class="ttdef"><b>Definition:</b> trcEvent.h:543</div></div>
-<div class="ttc" id="agroup__trace__event__apis_html_ga3d104209d01e4e1ac2fce7a1c7ebfa69"><div class="ttname"><a href="group__trace__event__apis.html#ga3d104209d01e4e1ac2fce7a1c7ebfa69">xTraceEventGetSize</a></div><div class="ttdeci">#define xTraceEventGetSize(pvAddress, puiSize)</div><div class="ttdoc">Gets trace event size.</div><div class="ttdef"><b>Definition:</b> trcEvent.h:489</div></div>
+<div class="ttc" id="agroup__trace__event__apis_html_ga848f7f80ed87213c0c1d9f74bed0dba5"><div class="ttname"><a href="group__trace__event__apis.html#ga848f7f80ed87213c0c1d9f74bed0dba5">xTraceEventAdd8</a></div><div class="ttdeci">#define xTraceEventAdd8</div><div class="ttdoc">Adds an uint8_t as trace event payload.</div><div class="ttdef"><b>Definition:</b> trcEvent.h:602</div></div>
+<div class="ttc" id="agroup__trace__event__apis_html_ga55e1fd2058f3507101ac46238cfe350d"><div class="ttname"><a href="group__trace__event__apis.html#ga55e1fd2058f3507101ac46238cfe350d">xTraceEventGetRawData</a></div><div class="ttdeci">#define xTraceEventGetRawData</div><div class="ttdoc">Gets trace event data pointer with an offset.</div><div class="ttdef"><b>Definition:</b> trcEvent.h:506</div></div>
+<div class="ttc" id="agroup__trace__event__apis_html_ga441b595058d45b79be4fe6e7ea4f1507"><div class="ttname"><a href="group__trace__event__apis.html#ga441b595058d45b79be4fe6e7ea4f1507">xTraceEventAddUnsignedBaseType</a></div><div class="ttdeci">#define xTraceEventAddUnsignedBaseType</div><div class="ttdoc">Adds an unsigned base type value as trace event payload.</div><div class="ttdef"><b>Definition:</b> trcEvent.h:569</div></div>
+<div class="ttc" id="agroup__trace__event__apis_html_ga12fc28f1cd94b5167e0c1c541e2bc123"><div class="ttname"><a href="group__trace__event__apis.html#ga12fc28f1cd94b5167e0c1c541e2bc123">xTraceEventAdd32</a></div><div class="ttdeci">#define xTraceEventAdd32</div><div class="ttdoc">Adds an uint32_t as trace event payload.</div><div class="ttdef"><b>Definition:</b> trcEvent.h:580</div></div>
+<div class="ttc" id="agroup__trace__event__apis_html_gaf49b771de784ae6be526dcd1b851d77e"><div class="ttname"><a href="group__trace__event__apis.html#gaf49b771de784ae6be526dcd1b851d77e">xTraceEventPayloadSize</a></div><div class="ttdeci">#define xTraceEventPayloadSize</div><div class="ttdoc">Gets trace event payload size.</div><div class="ttdef"><b>Definition:</b> trcEvent.h:555</div></div>
+<div class="ttc" id="agroup__trace__event__apis_html_ga267a02441bc42d8467836072593a8ad9"><div class="ttname"><a href="group__trace__event__apis.html#ga267a02441bc42d8467836072593a8ad9">xTraceEventAddData</a></div><div class="ttdeci">traceResult xTraceEventAddData(TraceEventHandle_t xEventHandle, void *pvData, uint32_t uiSize)</div><div class="ttdoc">Adds data to event payload.</div><div class="ttdef"><b>Definition:</b> trcEvent.c:230</div></div>
+<div class="ttc" id="agroup__trace__event__apis_html_ga117fda02be14d7344c32d80a16a16776"><div class="ttname"><a href="group__trace__event__apis.html#ga117fda02be14d7344c32d80a16a16776">xTraceEventAdd16</a></div><div class="ttdeci">#define xTraceEventAdd16</div><div class="ttdoc">Adds an uint16_t as trace event payload.</div><div class="ttdef"><b>Definition:</b> trcEvent.h:591</div></div>
+<div class="ttc" id="agroup__trace__event__apis_html_gac2fe59add1d55f013879ee7d88503f25"><div class="ttname"><a href="group__trace__event__apis.html#gac2fe59add1d55f013879ee7d88503f25">xTraceEventPayloadRemaining</a></div><div class="ttdeci">#define xTraceEventPayloadRemaining</div><div class="ttdoc">Gets the amount of remaining trace event payload.</div><div class="ttdef"><b>Definition:</b> trcEvent.h:533</div></div>
+<div class="ttc" id="agroup__trace__event__apis_html_gae0399574efecfbcdb1d92aa176c597f4"><div class="ttname"><a href="group__trace__event__apis.html#gae0399574efecfbcdb1d92aa176c597f4">xTraceEventGetPayload</a></div><div class="ttdeci">#define xTraceEventGetPayload</div><div class="ttdoc">Gets trace event payload pointer with an offset.</div><div class="ttdef"><b>Definition:</b> trcEvent.h:522</div></div>
+<div class="ttc" id="agroup__trace__event__apis_html_ga7664fb00364a4a1165dc23074ef698bc"><div class="ttname"><a href="group__trace__event__apis.html#ga7664fb00364a4a1165dc23074ef698bc">xTraceEventPayloadUsed</a></div><div class="ttdeci">#define xTraceEventPayloadUsed</div><div class="ttdoc">Gets the amount of used trace event payload.</div><div class="ttdef"><b>Definition:</b> trcEvent.h:544</div></div>
+<div class="ttc" id="agroup__trace__event__apis_html_ga3d104209d01e4e1ac2fce7a1c7ebfa69"><div class="ttname"><a href="group__trace__event__apis.html#ga3d104209d01e4e1ac2fce7a1c7ebfa69">xTraceEventGetSize</a></div><div class="ttdeci">#define xTraceEventGetSize(pvAddress, puiSize)</div><div class="ttdoc">Gets trace event size.</div><div class="ttdef"><b>Definition:</b> trcEvent.h:490</div></div>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>

@@ -1,5 +1,5 @@
 /*
-* Trace Recorder for Tracealyzer v4.6.4
+* Trace Recorder for Tracealyzer v4.6.5
 * Copyright 2021 Percepio AB
 * www.percepio.com
 *
@@ -142,7 +142,7 @@ traceResult xTraceStreamPortCommit(void* pvData, uint32_t uiSize, int32_t* piByt
  * @retval TRC_FAIL Write failed
  * @retval TRC_SUCCESS Success
  */
-#define xTraceStreamPortWriteData(pvData, uiSize, piBytesWritten) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_4((void)pvData, (void)uiSize, (void)piBytesWritten, TRC_SUCCESS)
+#define xTraceStreamPortWriteData(pvData, uiSize, piBytesWritten) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_4((void)(pvData), (void)(uiSize), (void)(piBytesWritten), TRC_SUCCESS)
 
 /**
  * @brief Reads data through the stream port interface.
@@ -154,7 +154,7 @@ traceResult xTraceStreamPortCommit(void* pvData, uint32_t uiSize, int32_t* piByt
  * @retval TRC_FAIL Read failed
  * @retval TRC_SUCCESS Success
  */
-#define xTraceStreamPortReadData(pvData, uiSize, piBytesRead) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_4((void)pvData, (void)uiSize, (void)piBytesRead, TRC_SUCCESS)
+#define xTraceStreamPortReadData(pvData, uiSize, piBytesRead) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_4((void)(pvData), (void)(uiSize), (void)(piBytesRead), TRC_SUCCESS)
 
 /**
  * @brief Callback for when recorder is enabled
@@ -180,7 +180,7 @@ traceResult xTraceStreamPortCommit(void* pvData, uint32_t uiSize, int32_t* piByt
  * @retval TRC_FAIL Read failed
  * @retval TRC_SUCCESS Success
  */
-traceResult xTraceStreamPortOnTraceBegin();
+traceResult xTraceStreamPortOnTraceBegin(void);
 
 /**
  * @brief Callback for when tracing ends

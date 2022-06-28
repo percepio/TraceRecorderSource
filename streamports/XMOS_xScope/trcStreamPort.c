@@ -1,5 +1,5 @@
 /*
- * Trace Recorder for Tracealyzer v4.6.4
+ * Trace Recorder for Tracealyzer v4.6.5
  * Copyright 2021 Percepio AB
  * www.percepio.com
  *
@@ -20,7 +20,7 @@ typedef struct TraceStreamPortXS {
 #if (TRC_USE_INTERNAL_BUFFER == 1)
 	uint8_t uiBufferInternal[TRC_STREAM_PORT_INTERNAL_BUFFER_SIZE];
 #endif
-	uint8_t uiBuffer[4];
+	uint8_t uiBuffer[8];
 } TraceStreamPortXS_t;
 
 static TraceStreamPortXS_t* pxStreamPortXS;
