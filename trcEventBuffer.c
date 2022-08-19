@@ -1,5 +1,5 @@
 /*
-* Percepio Trace Recorder for Tracealyzer v4.6.5
+* Percepio Trace Recorder for Tracealyzer v4.6.6
 * Copyright 2021 Percepio AB
 * www.percepio.com
 *
@@ -217,21 +217,32 @@ traceResult xTraceEventBufferTransfer(TraceEventBuffer_t* pxTraceEventBuffer, in
 	/* Check if we can do a direct write or if we have to handle wrapping */
 	if (uiHead > uiTail)
 	{
+		/* No wrapping */
 		xTraceStreamPortWriteData(&pxTraceEventBuffer->puiBuffer[uiTail], (uiHead - uiTail), &iBytesWritten);
-
-		pxTraceEventBuffer->uiTail = uiHead;
 	}
 	else
 	{
+		/* Wrapping */
 		xTraceStreamPortWriteData(&pxTraceEventBuffer->puiBuffer[uiTail], (pxTraceEventBuffer->uiSize - uiTail), &iBytesWritten);
+		
+		if (iBytesWritten == (int32_t)(pxTraceEventBuffer->uiSize - uiTail))
+		{
+			/* Everything written, do the rest as well */
+			
+			/* uiTail is moved to start of buffer */
+			pxTraceEventBuffer->uiTail = 0;
 
-		iSumBytesWritten += iBytesWritten;
-
-		xTraceStreamPortWriteData(pxTraceEventBuffer->puiBuffer, uiHead, &iBytesWritten);
-
-		pxTraceEventBuffer->uiTail = uiHead;
+			iSumBytesWritten += iBytesWritten;
+			
+			iBytesWritten = 0;
+			
+			xTraceStreamPortWriteData(&pxTraceEventBuffer->puiBuffer[0], uiHead, &iBytesWritten);
+		}
 	}
-
+	
+	/* Move tail */
+	pxTraceEventBuffer->uiTail += iBytesWritten;
+	
 	iSumBytesWritten += iBytesWritten;
 
 	*piBytesWritten = iSumBytesWritten;
