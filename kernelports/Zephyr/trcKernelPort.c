@@ -180,9 +180,8 @@ void vTraceSetTimerName(void* object, const char* name)
  * 
  * @param[in] arg
  */
-static int tracelyzer_pre_kernel_init(const struct device *arg)
+static int tracelyzer_pre_kernel_init(void)
 {
-	ARG_UNUSED(arg);
 
 #ifdef CONFIG_PERCEPIO_TRC_START_MODE_START
 	xTraceEnable(TRC_START);
@@ -204,9 +203,8 @@ static int tracelyzer_pre_kernel_init(const struct device *arg)
  * 
  * @param[in] arg
  */
-static int tracealyzer_post_kernel_init(const struct device *arg)
+static int tracealyzer_post_kernel_init(void)
 {
-	ARG_UNUSED(arg);
 
 	/* Create controller task */
 	k_thread_create(&pxKernelPortData->xTzCtrlHandle, TzCtrl_thread_stack,
