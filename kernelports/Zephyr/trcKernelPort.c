@@ -1,6 +1,6 @@
 /*
- * Trace Recorder for Tracealyzer v4.6.6
- * Copyright 2021 Percepio AB
+ * Trace Recorder for Tracealyzer v4.7.0
+ * Copyright 2023 Percepio AB
  * www.percepio.com
  *
  * SPDX-License-Identifier: Apache-2.0
@@ -23,6 +23,9 @@ static TraceISRHandle_t xHandleISR;
 
 /* Trace recorder controll thread stack */
 static K_THREAD_STACK_DEFINE(TzCtrl_thread_stack, (TRC_CFG_CTRL_TASK_STACK_SIZE));
+
+/* Forward declarations */
+traceResult prvTraceObjectSendNameEvent(void* pvObject, const char* szName, uint32_t uiLength);
 
 
 /**
@@ -54,7 +57,7 @@ typedef struct TraceKernelPortData
 	TraceKernelPortTaskHandle_t xTzCtrlHandle;
 } TraceKernelPortData_t;
 
-static TraceKernelPortData_t* pxKernelPortData;
+static TraceKernelPortData_t* pxKernelPortData TRC_CFG_RECORDER_DATA_ATTRIBUTE;
 
 traceResult xTraceKernelPortInitialize(TraceKernelPortDataBuffer_t* pxBuffer)
 {
@@ -245,10 +248,8 @@ void sys_trace_k_thread_foreach_enter(k_thread_user_cb_t user_cb, void *user_dat
 void sys_trace_k_thread_foreach_exit(k_thread_user_cb_t user_cb, void *user_data) {
 	TraceEventHandle_t xTraceHandle;
 
-	if (xTraceEventBegin(PSF_EVENT_THREAD_FOREACH_EXIT, sizeof(void*) + sizeof(void*),
+	if (xTraceEventBegin(PSF_EVENT_THREAD_FOREACH_EXIT, 0,
 		&xTraceHandle) == TRC_SUCCESS) {
-		xTraceEventAddPointer(xTraceHandle, user_cb);
-		xTraceEventAddPointer(xTraceHandle, user_data);
 		xTraceEventEnd(xTraceHandle);
 	}
 }
@@ -267,10 +268,8 @@ void sys_trace_k_thread_foreach_unlocked_enter(k_thread_user_cb_t user_cb, void 
 void sys_trace_k_thread_foreach_unlocked_exit(k_thread_user_cb_t user_cb, void *user_data) {
 	TraceEventHandle_t xTraceHandle;
 
-	if (xTraceEventBegin(PSF_EVENT_THREAD_FOREACH_UNLOCKED_EXIT, sizeof(void*) + sizeof(void*),
+	if (xTraceEventBegin(PSF_EVENT_THREAD_FOREACH_UNLOCKED_EXIT, 0,
 		&xTraceHandle) == TRC_SUCCESS) {
-		xTraceEventAddPointer(xTraceHandle, user_cb);
-		xTraceEventAddPointer(xTraceHandle, user_data);
 		xTraceEventEnd(xTraceHandle);
 	}
 }
@@ -306,7 +305,7 @@ void sys_trace_k_thread_create(struct k_thread *thread, size_t stack_size, int p
 	}
 
 #ifdef CONFIG_THREAD_NAME
-	if (thread->name != NULL && strlen(thread->name) > 0) {
+	if (strlen(thread->name) > 0) {
 		xTraceObjectSetName(xEntryHandle, thread->name);
 	}
 #endif
@@ -354,15 +353,14 @@ void sys_trace_k_thread_join_exit(struct k_thread *thread, k_timeout_t timeout, 
 
 	if (ret == 0) {
 		xTraceResult = xTraceEventBegin(PSF_EVENT_THREAD_JOIN_SUCCESS,
-			sizeof(void*) + sizeof(uint32_t) + sizeof(uint32_t), &xTraceHandle);
+			sizeof(void*) + sizeof(uint32_t), &xTraceHandle);
 	} else {
 		xTraceResult = xTraceEventBegin(PSF_EVENT_THREAD_JOIN_TIMEOUT,
-			sizeof(void*) + sizeof(uint32_t) + sizeof(uint32_t), &xTraceHandle);
+			sizeof(void*) + sizeof(uint32_t), &xTraceHandle);
 	}
 
 	if (xTraceResult == TRC_SUCCESS) {
 		xTraceEventAddPointer(xTraceHandle, (void*)thread);
-		xTraceEventAdd32(xTraceHandle, timeout.ticks);
 		xTraceEventAdd32(xTraceHandle, ret);
 		xTraceEventEnd(xTraceHandle);
 	}
@@ -380,9 +378,8 @@ void sys_trace_k_thread_sleep_enter(k_timeout_t timeout) {
 void sys_trace_k_thread_sleep_exit(k_timeout_t timeout, int ret) {
 	TraceEventHandle_t xTraceHandle;
 
-	if (xTraceEventBegin(PSF_EVENT_THREAD_SLEEP_EXIT, sizeof(uint32_t) + sizeof(uint32_t),
+	if (xTraceEventBegin(PSF_EVENT_THREAD_SLEEP_EXIT, sizeof(uint32_t),
 		&xTraceHandle) == TRC_SUCCESS) {
-		xTraceEventAdd32(xTraceHandle, timeout.ticks);
 		xTraceEventAdd32(xTraceHandle, ret);
 		xTraceEventEnd(xTraceHandle);
 	}
@@ -400,8 +397,7 @@ void sys_trace_k_thread_msleep_enter(int32_t ms) {
 void sys_trace_k_thread_msleep_exit(int32_t ms, int ret) {
 	TraceEventHandle_t xTraceHandle;
 
-	if (xTraceEventBegin(PSF_EVENT_THREAD_MSLEEP_EXIT, sizeof(uint32_t), &xTraceHandle) == TRC_SUCCESS) {
-		xTraceEventAdd32(xTraceHandle, ms);
+	if (xTraceEventBegin(PSF_EVENT_THREAD_MSLEEP_EXIT, 0, &xTraceHandle) == TRC_SUCCESS) {
 		xTraceEventEnd(xTraceHandle);
 	}
 }
@@ -418,9 +414,8 @@ void sys_trace_k_thread_usleep_enter(int32_t us) {
 void sys_trace_k_thread_usleep_exit(int32_t us, int ret) {
 	TraceEventHandle_t xTraceHandle;
 
-	if (xTraceEventBegin(PSF_EVENT_THREAD_USLEEP_EXIT, sizeof(uint32_t) + sizeof(uint32_t),
+	if (xTraceEventBegin(PSF_EVENT_THREAD_USLEEP_EXIT, sizeof(uint32_t),
 		&xTraceHandle) == TRC_SUCCESS) {
-		xTraceEventAdd32(xTraceHandle, us);
 		xTraceEventAdd32(xTraceHandle, ret);
 		xTraceEventEnd(xTraceHandle);
 	}
@@ -439,9 +434,8 @@ void sys_trace_k_thread_busy_wait_enter(uint32_t usec_to_wait) {
 void sys_trace_k_thread_busy_wait_exit(uint32_t usec_to_wait) {
 	TraceEventHandle_t xTraceHandle;
 
-	if (xTraceEventBegin(PSF_EVENT_THREAD_BUSY_WAIT_EXIT, sizeof(uint32_t),
+	if (xTraceEventBegin(PSF_EVENT_THREAD_BUSY_WAIT_EXIT, 0,
 		&xTraceHandle) == TRC_SUCCESS) {
-		xTraceEventAdd32(xTraceHandle, usec_to_wait);
 		xTraceEventEnd(xTraceHandle);
 	}
 }
@@ -557,6 +551,10 @@ void sys_trace_k_thread_sched_abort(struct k_thread *thread) {
 	TraceEventHandle_t xTraceHandle;
 	TraceEntryHandle_t xEntryHandle;
 
+#if (TRC_SEND_NAME_ONLY_ON_DELETE == 1)
+	uint32_t uiNameLength;
+#endif
+
 	TRACE_ALLOC_CRITICAL_SECTION();
 	TRACE_ENTER_CRITICAL_SECTION();
 
@@ -566,6 +564,15 @@ void sys_trace_k_thread_sched_abort(struct k_thread *thread) {
 		TRACE_EXIT_CRITICAL_SECTION();
 		return;
 	}
+
+#if (TRC_SEND_NAME_ONLY_ON_DELETE == 1)
+	if (strlen(thread->name) > 0) {
+		/* Send name event because this is a delete */
+		for (uiNameLength = 0; (thread->name[uiNameLength] != 0) && (uiNameLength < 128); uiNameLength++) {}
+
+		prvTraceObjectSendNameEvent(thread, thread->name, uiNameLength);
+	}
+#endif /* (TRC_SEND_NAME_ONLY_ON_DELETE == 1) */
 	
 	/* Delete entry */
 	if (xTraceEntryDelete(xEntryHandle) == TRC_FAIL)
@@ -712,10 +719,9 @@ void sys_trace_k_work_flush_blocking(struct k_work *work, struct k_work_sync *sy
 void sys_trace_k_work_flush_exit(struct k_work *work, struct k_work_sync *sync, bool ret) {
 	TraceEventHandle_t xTraceHandle;
 
-	if (xTraceEventBegin(PSF_EVENT_WORK_FLUSH_SUCCESS, sizeof(void*) + sizeof(void*) + sizeof(uint32_t),
+	if (xTraceEventBegin(PSF_EVENT_WORK_FLUSH_SUCCESS, sizeof(void*) + sizeof(uint32_t),
 		&xTraceHandle) == TRC_SUCCESS) {
 		xTraceEventAddPointer(xTraceHandle, (void*)work);
-		xTraceEventAddPointer(xTraceHandle, (void*)sync);
 		xTraceEventAdd32(xTraceHandle, ret);
 		xTraceEventEnd(xTraceHandle);
 	}
@@ -789,13 +795,9 @@ void sys_trace_k_work_queue_start_exit(struct k_work_q *queue, k_thread_stack_t 
 	TraceEventHandle_t xTraceHandle;
 
 	if (xTraceEventBegin(PSF_EVENT_WORK_QUEUE_START_SUCCESS, 
-		sizeof(void*) + sizeof(void*) + sizeof(uint32_t) + sizeof(uint32_t) + sizeof(void*),
+		sizeof(void*),
 		&xTraceHandle) == TRC_SUCCESS) {
 		xTraceEventAddPointer(xTraceHandle, (void*)queue);
-		xTraceEventAddPointer(xTraceHandle, (void*)stack);
-		xTraceEventAdd32(xTraceHandle, stack_size);
-		xTraceEventAdd32(xTraceHandle, prio);
-		xTraceEventAddPointer(xTraceHandle, (void*)cfg);
 		xTraceEventEnd(xTraceHandle);
 	}
 }
@@ -817,15 +819,14 @@ void sys_trace_k_work_queue_drain_exit(struct k_work_q *queue, bool plug, int re
 
 	if (ret >= 0) {
 		xTraceResult = xTraceEventBegin(PSF_EVENT_WORK_QUEUE_DRAIN_SUCCESS,
-			sizeof(void*) + sizeof(uint32_t) + sizeof(uint32_t), &xTraceHandle);
+			sizeof(void*) + sizeof(uint32_t), &xTraceHandle);
 	} else {
 		xTraceResult = xTraceEventBegin(PSF_EVENT_WORK_QUEUE_DRAIN_FAILURE,
-			sizeof(void*) + sizeof(uint32_t) + sizeof(uint32_t), &xTraceHandle);
+			sizeof(void*) + sizeof(uint32_t), &xTraceHandle);
 	}
 
 	if (xTraceResult == TRC_SUCCESS) {
 		xTraceEventAddPointer(xTraceHandle, (void*)queue);
-		xTraceEventAdd32(xTraceHandle, plug);
 		xTraceEventAdd32(xTraceHandle, ret);
 		xTraceEventEnd(xTraceHandle);
 	}
@@ -916,17 +917,15 @@ void sys_trace_k_work_schedule_exit(struct k_work_delayable *dwork, k_timeout_t 
 	
 	if (ret == 0 || ret == 1) {
 		if (xTraceEventBegin(PSF_EVENT_DWORK_SCHEDULE_SUCCESS,
-			sizeof(void*) + sizeof(uint32_t) + sizeof(uint32_t), &xTraceHandle) == TRC_SUCCESS) {
+			sizeof(void*) + sizeof(uint32_t), &xTraceHandle) == TRC_SUCCESS) {
 			xTraceEventAddPointer(xTraceHandle, (void*)dwork);
-			xTraceEventAdd32(xTraceHandle, delay.ticks);
 			xTraceEventAdd32(xTraceHandle, ret);
 			xTraceEventEnd(xTraceHandle);
 		}
 	} else {
 		if (xTraceEventBegin(PSF_EVENT_DWORK_SCHEDULE_FAILURE,
-			sizeof(void*) + sizeof(uint32_t) + sizeof(uint32_t), &xTraceHandle) == TRC_SUCCESS) {
+			sizeof(void*) + sizeof(uint32_t), &xTraceHandle) == TRC_SUCCESS) {
 			xTraceEventAddPointer(xTraceHandle, (void*)dwork);
-			xTraceEventAdd32(xTraceHandle, delay.ticks);
 			xTraceEventAdd32(xTraceHandle, ret);
 			xTraceEventEnd(xTraceHandle);
 		}
@@ -976,17 +975,15 @@ void sys_trace_k_work_reschedule_exit(struct k_work_delayable *dwork, k_timeout_
 
 	if (ret == 0 || ret == 1 || ret == 2) {
 		if (xTraceEventBegin(PSF_EVENT_DWORK_RESCHEDULE_SUCCESS,
-			sizeof(void*) + sizeof(uint32_t) + sizeof(uint32_t), &xTraceHandle) == TRC_SUCCESS) {
+			sizeof(void*) + sizeof(uint32_t), &xTraceHandle) == TRC_SUCCESS) {
 			xTraceEventAddPointer(xTraceHandle, (void*)dwork);
-			xTraceEventAdd32(xTraceHandle, delay.ticks);
 			xTraceEventAdd32(xTraceHandle, ret);
 			xTraceEventEnd(xTraceHandle);
 		}
 	} else {
 		if (xTraceEventBegin(PSF_EVENT_DWORK_RESCHEDULE_FAILURE,
-			sizeof(void*) + sizeof(uint32_t) + sizeof(uint32_t), &xTraceHandle) == TRC_SUCCESS) {
+			sizeof(void*) + sizeof(uint32_t), &xTraceHandle) == TRC_SUCCESS) {
 			xTraceEventAddPointer(xTraceHandle, (void*)dwork);
-			xTraceEventAdd32(xTraceHandle, delay.ticks);
 			xTraceEventAdd32(xTraceHandle, ret);
 			xTraceEventEnd(xTraceHandle);
 		}
@@ -1007,10 +1004,9 @@ void sys_trace_k_work_flush_delayable_enter(struct k_work_delayable *dwork, stru
 void sys_trace_k_work_flush_delayable_exit(struct k_work_delayable *dwork, struct k_work_sync *sync, bool ret) {
 	TraceEventHandle_t xTraceHandle;
 
-	if (xTraceEventBegin(PSF_EVENT_DWORK_FLUSH_SUCCESS, sizeof(void*) + sizeof(void*) + sizeof(uint32_t),
+	if (xTraceEventBegin(PSF_EVENT_DWORK_FLUSH_SUCCESS, sizeof(void*) + sizeof(uint32_t),
 		&xTraceHandle) == TRC_SUCCESS) {
 		xTraceEventAddPointer(xTraceHandle, (void*)dwork);
-		xTraceEventAddPointer(xTraceHandle, (void*)sync);
 		xTraceEventAdd32(xTraceHandle, ret);
 		xTraceEventEnd(xTraceHandle);
 	}
@@ -1045,9 +1041,8 @@ void sys_trace_cancel_delayable_sync_exit(struct k_work_delayable *dwork, struct
 	TraceEventHandle_t xTraceHandle;
 
 	if (xTraceEventBegin(PSF_EVENT_DWORK_CANCEL_DELAYABLE_SYNC_SUCCESS,
-		sizeof(void*) + sizeof(void*) + sizeof(uint32_t), &xTraceHandle) == TRC_SUCCESS) {
+		sizeof(void*) + sizeof(uint32_t), &xTraceHandle) == TRC_SUCCESS) {
 		xTraceEventAddPointer(xTraceHandle, (void*)dwork);
-		xTraceEventAddPointer(xTraceHandle, (void*)sync);
 		xTraceEventAdd32(xTraceHandle, ret);
 		xTraceEventEnd(xTraceHandle);
 	}
@@ -1069,10 +1064,9 @@ void sys_trace_k_work_poll_init_enter(struct k_work_poll *work, k_work_handler_t
 void sys_trace_k_work_poll_init_exit(struct k_work_poll *work, k_work_handler_t handler) {
 	TraceEventHandle_t xTraceHandle;
 
-	if (xTraceEventBegin(PSF_EVENT_PWORK_INIT_EXIT, sizeof(void*) + sizeof(void*),
+	if (xTraceEventBegin(PSF_EVENT_PWORK_INIT_EXIT, sizeof(void*),
 		&xTraceHandle) == TRC_SUCCESS) {
 		xTraceEventAddPointer(xTraceHandle, (void*)work);
-		xTraceEventAddPointer(xTraceHandle, (void*)handler);
 		xTraceEventEnd(xTraceHandle);
 	}
 }
@@ -1102,20 +1096,17 @@ void sys_trace_k_work_poll_submit_to_queue_exit(struct k_work_q *work_q, struct 
 
 	if (ret == 0) {
 		xTraceResult = xTraceEventBegin(PSF_EVENT_PWORK_SUBMIT_TO_QUEUE_SUCCESS,
-			sizeof(void*) + sizeof(void*) + sizeof(void*) + sizeof(uint32_t) + sizeof(uint32_t) + sizeof(uint32_t),
+			sizeof(void*) + sizeof(void*) + sizeof(uint32_t),
 			&xTraceHandle);
 	} else {
 		xTraceResult = xTraceEventBegin(PSF_EVENT_PWORK_SUBMIT_TO_QUEUE_FAILURE,
-			sizeof(void*) + sizeof(void*) + sizeof(void*) + sizeof(uint32_t) + sizeof(uint32_t) + sizeof(uint32_t),
+			sizeof(void*) + sizeof(void*) + sizeof(uint32_t),
 			&xTraceHandle);
 	}
 
 	if (xTraceResult == TRC_SUCCESS) {
 		xTraceEventAddPointer(xTraceHandle, (void*)work_q);
 		xTraceEventAddPointer(xTraceHandle, (void*)work);
-		xTraceEventAddPointer(xTraceHandle, (void*)events);
-		xTraceEventAdd32(xTraceHandle, num_events);
-		xTraceEventAdd32(xTraceHandle, timeout.ticks);
 		xTraceEventAdd32(xTraceHandle, ret);
 		xTraceEventEnd(xTraceHandle);
 	}
@@ -1141,19 +1132,16 @@ void sys_trace_k_work_poll_submit_exit(struct k_work_poll *work, struct k_poll_e
 
 	if (ret == 0) {
 		xTraceResult = xTraceEventBegin(PSF_EVENT_PWORK_SUBMIT_SUCCESS, 
-			sizeof(void*) + sizeof(void*) + sizeof(uint32_t) + sizeof(uint32_t) + sizeof(uint32_t),
+			sizeof(void*) + sizeof(uint32_t),
 		&xTraceHandle);
 	} else {
 		xTraceResult = xTraceEventBegin(PSF_EVENT_PWORK_SUBMIT_FAILURE,
-			sizeof(void*) + sizeof(void*) + sizeof(uint32_t) + sizeof(uint32_t) + sizeof(uint32_t),
+			sizeof(void*) + sizeof(uint32_t),
 		&xTraceHandle);
 	}
 
 	if (xTraceResult == TRC_SUCCESS) {
 		xTraceEventAddPointer(xTraceHandle, (void*)work);
-		xTraceEventAddPointer(xTraceHandle, (void*)events);
-		xTraceEventAdd32(xTraceHandle, num_events);
-		xTraceEventAdd32(xTraceHandle, timeout.ticks);
 		xTraceEventAdd32(xTraceHandle, ret);
 		xTraceEventEnd(xTraceHandle);
 	}
@@ -1221,16 +1209,14 @@ void sys_trace_k_poll_api_event_poll_exit(struct k_poll_event *events, int num_e
 
 	if (ret == 0) {
 		xTraceResult = xTraceEventBegin(PSF_EVENT_POLL_POLL_SUCCESS,
-			sizeof(void*) + sizeof(uint32_t) + sizeof(uint32_t) + sizeof(uint32_t), &xTraceHandle);
+			sizeof(void*) + sizeof(uint32_t), &xTraceHandle);
 	} else {
 		xTraceResult = xTraceEventBegin(PSF_EVENT_POLL_POLL_FAILURE,
-			sizeof(void*) + sizeof(uint32_t) + sizeof(uint32_t) + sizeof(uint32_t), &xTraceHandle);
+			sizeof(void*) + sizeof(uint32_t), &xTraceHandle);
 	}
 
 	if (xTraceResult == TRC_SUCCESS) {
 		xTraceEventAddPointer(xTraceHandle, (void*)events);
-		xTraceEventAdd32(xTraceHandle, num_events);
-		xTraceEventAdd32(xTraceHandle, timeout.ticks);
 		xTraceEventAdd32(xTraceHandle, ret);
 		xTraceEventEnd(xTraceHandle);
 	}
@@ -1345,15 +1331,14 @@ void sys_trace_k_sem_take_exit(struct k_sem *sem, k_timeout_t timeout, int ret) 
 
 	if (ret == 0) {
 		xTraceResult = xTraceEventBegin(PSF_EVENT_SEMAPHORE_TAKE_SUCCESS,
-			sizeof(void*) + sizeof(uint32_t) + sizeof(uint32_t) + sizeof(uint32_t), &xTraceHandle);
+			sizeof(void*) + sizeof(uint32_t) + sizeof(uint32_t), &xTraceHandle);
 	} else {
 		xTraceResult = xTraceEventBegin(PSF_EVENT_SEMAPHORE_TAKE_FAILED,
-			sizeof(void*) + sizeof(uint32_t) + sizeof(uint32_t) + sizeof(uint32_t), &xTraceHandle);
+			sizeof(void*) + sizeof(uint32_t) + sizeof(uint32_t), &xTraceHandle);
 	}
 
 	if (xTraceResult == TRC_SUCCESS) {
 		xTraceEventAddPointer(xTraceHandle, (void*)sem);
-		xTraceEventAdd32(xTraceHandle, timeout.ticks);
 		xTraceEventAdd32(xTraceHandle, sem->count);
 		xTraceEventAdd32(xTraceHandle, ret);
 		xTraceEventEnd(xTraceHandle);
@@ -1402,15 +1387,14 @@ void sys_trace_k_mutex_lock_exit(struct k_mutex *mutex, k_timeout_t timeout, int
 
 	if (ret == 0) {
 		xTraceResult = xTraceEventBegin(PSF_EVENT_MUTEX_TAKE_SUCCESS, 
-			sizeof(void*) + sizeof(uint32_t) + sizeof(uint32_t), &xTraceHandle);
+			sizeof(void*) + sizeof(uint32_t), &xTraceHandle);
 	} else {
 		xTraceResult = xTraceEventBegin(PSF_EVENT_MUTEX_TAKE_FAILED,
-			sizeof(void*) + sizeof(uint32_t) + sizeof(uint32_t), &xTraceHandle);
+			sizeof(void*) + sizeof(uint32_t), &xTraceHandle);
 	}
 
 	if (xTraceResult == TRC_SUCCESS) {
 		xTraceEventAddPointer(xTraceHandle, (void*)mutex);
-		xTraceEventAdd32(xTraceHandle, timeout.ticks);
 		xTraceEventAdd32(xTraceHandle, ret);
 		xTraceEventEnd(xTraceHandle);
 	}
@@ -1514,18 +1498,17 @@ void sys_trace_k_condvar_wait_exit(struct k_condvar *condvar, struct k_mutex *mu
 
 	if (ret == 0) {
 		xTraceResult = xTraceEventBegin(PSF_EVENT_CONDVAR_WAIT_SUCCESS,
-			sizeof(void*) + sizeof(void*) + sizeof(uint32_t) + sizeof(uint32_t),
+			sizeof(void*) + sizeof(void*) + sizeof(uint32_t),
 			&xTraceHandle);
 	} else {
 		xTraceResult = xTraceEventBegin(PSF_EVENT_CONDVAR_WAIT_FAILURE,
-			sizeof(void*) + sizeof(void*) + sizeof(uint32_t) + sizeof(uint32_t),
+			sizeof(void*) + sizeof(void*) + sizeof(uint32_t),
 			&xTraceHandle);
 	}
 
 	if (xTraceResult == TRC_SUCCESS) {
 		xTraceEventAddPointer(xTraceHandle, (void*)condvar);
 		xTraceEventAddPointer(xTraceHandle, (void*)mutex);
-		xTraceEventAdd32(xTraceHandle, timeout.ticks);
 		xTraceEventAdd32(xTraceHandle, ret);
 		xTraceEventEnd(xTraceHandle);
 	}
@@ -1585,15 +1568,14 @@ void sys_trace_k_queue_queue_insert_exit(struct k_queue *queue, bool alloc, void
 
 	if (ret == 0) {
 		xTraceResult = xTraceEventBegin(PSF_EVENT_QUEUE_QUEUE_INSERT_SUCCESS,
-			sizeof(void*) + sizeof(void*) + sizeof(uint32_t), &xTraceHandle);
+			sizeof(void*) + sizeof(uint32_t), &xTraceHandle);
 	} else {
 		xTraceResult = xTraceEventBegin(PSF_EVENT_QUEUE_QUEUE_INSERT_FAILURE,
-			sizeof(void*) + sizeof(void*) + sizeof(uint32_t), &xTraceHandle);
+			sizeof(void*) + sizeof(uint32_t), &xTraceHandle);
 	}
 
 	if (xTraceResult == TRC_SUCCESS) {
 		xTraceEventAddPointer(xTraceHandle, (void*)queue);
-		xTraceEventAddPointer(xTraceHandle, (void*)data);
 		xTraceEventAdd32(xTraceHandle, ret);
 		xTraceEventEnd(xTraceHandle);
 	}
@@ -1630,15 +1612,14 @@ void sys_trace_k_queue_alloc_append_exit(struct k_queue *queue, void *data, int 
 
 	if (ret == 0) {
 		xTraceResult = xTraceEventBegin(PSF_EVENT_QUEUE_ALLOC_APPEND_SUCCESS,
-			sizeof(void*) + sizeof(void*) + sizeof(uint32_t), &xTraceHandle);
+			sizeof(void*) + sizeof(uint32_t), &xTraceHandle);
 	} else {
 		xTraceResult = xTraceEventBegin(PSF_EVENT_QUEUE_ALLOC_APPEND_FAILURE,
-			sizeof(void*) + sizeof(void*) + sizeof(uint32_t), &xTraceHandle);
+			sizeof(void*) + sizeof(uint32_t), &xTraceHandle);
 	}
 
 	if (xTraceResult == TRC_SUCCESS) {
 		xTraceEventAddPointer(xTraceHandle, (void*)queue);
-		xTraceEventAddPointer(xTraceHandle, (void*)data);
 		xTraceEventAdd32(xTraceHandle, ret);
 		xTraceEventEnd(xTraceHandle);
 	}
@@ -1675,15 +1656,14 @@ void sys_trace_k_queue_alloc_prepend_exit(struct k_queue *queue, void *data, int
 
 	if (ret == 0) {
 		xTraceResult = xTraceEventBegin(PSF_EVENT_QUEUE_ALLOC_PREPEND_SUCCESS,
-			sizeof(void*) + sizeof(void*) + sizeof(uint32_t), &xTraceHandle);
+			sizeof(void*) + sizeof(uint32_t), &xTraceHandle);
 	} else {
 		xTraceResult = xTraceEventBegin(PSF_EVENT_QUEUE_ALLOC_PREPEND_FAILURE,
-			sizeof(void*) + sizeof(void*) + sizeof(uint32_t), &xTraceHandle);
+			sizeof(void*) + sizeof(uint32_t), &xTraceHandle);
 	}
 
 	if (xTraceResult == TRC_SUCCESS) {
 		xTraceEventAddPointer(xTraceHandle, (void*)queue);
-		xTraceEventAddPointer(xTraceHandle, (void*)data);
 		xTraceEventAdd32(xTraceHandle, ret);
 		xTraceEventEnd(xTraceHandle);
 	}
@@ -1752,15 +1732,14 @@ void sys_trace_k_queue_merge_slist_exit(struct k_queue *queue, sys_slist_t *list
 
 	if (ret == 0) {
 		xTraceResult = xTraceEventBegin(PSF_EVENT_QUEUE_MERGE_SLIST_SUCCESS,
-			sizeof(void*) + sizeof(void*) + sizeof(uint32_t), &xTraceHandle);
+			sizeof(void*) + sizeof(uint32_t), &xTraceHandle);
 	} else {
 		xTraceResult = xTraceEventBegin(PSF_EVENT_QUEUE_MERGE_SLIST_FAILURE,
-			sizeof(void*) + sizeof(void*) + sizeof(uint32_t), &xTraceHandle);
+			sizeof(void*) + sizeof(uint32_t), &xTraceHandle);
 	}
 
 	if (xTraceResult == TRC_SUCCESS) {
 		xTraceEventAddPointer(xTraceHandle, (void*)queue);
-		xTraceEventAddPointer(xTraceHandle, (void*)list);
 		xTraceEventAdd32(xTraceHandle, ret);
 		xTraceEventEnd(xTraceHandle);
 	}
@@ -1783,15 +1762,14 @@ void sys_trace_k_queue_get_exit(struct k_queue *queue, k_timeout_t timeout, void
 
 	if (ret != NULL) {
 		xTraceResult = xTraceEventBegin(PSF_EVENT_QUEUE_GET_SUCCESS,
-		sizeof(void*) + sizeof(uint32_t) + sizeof(void*), &xTraceHandle);
+		sizeof(void*) + sizeof(void*), &xTraceHandle);
 	} else {
 		xTraceResult = xTraceEventBegin(PSF_EVENT_QUEUE_GET_TIMEOUT,
-			sizeof(void*) + sizeof(uint32_t) + sizeof(void*), &xTraceHandle);
+			sizeof(void*) + sizeof(void*), &xTraceHandle);
 	}
 
 	if (xTraceResult == TRC_SUCCESS) {
 		xTraceEventAddPointer(xTraceHandle, (void*)queue);
-		xTraceEventAdd32(xTraceHandle, timeout.ticks);
 		xTraceEventAddPointer(xTraceHandle, (void*)ret);
 		xTraceEventEnd(xTraceHandle);
 	}
@@ -1814,15 +1792,14 @@ void sys_trace_k_queue_remove_exit(struct k_queue *queue, void *data, bool ret) 
 
 	if (ret) {
 		xTraceResult = xTraceEventBegin(PSF_EVENT_QUEUE_REMOVE_SUCCESS,
-			sizeof(void*) + sizeof(void*) + sizeof(uint32_t), &xTraceHandle);
+			sizeof(void*) + sizeof(uint32_t), &xTraceHandle);
 	} else {
 		xTraceResult = xTraceEventBegin(PSF_EVENT_QUEUE_REMOVE_FAILURE,
-			sizeof(void*) + sizeof(void*) + sizeof(uint32_t), &xTraceHandle);
+			sizeof(void*) + sizeof(uint32_t), &xTraceHandle);
 	}
 
 	if (xTraceResult == TRC_SUCCESS) {
 		xTraceEventAddPointer(xTraceHandle, (void*)queue);
-		xTraceEventAddPointer(xTraceHandle, (void*)data);
 		xTraceEventAdd32(xTraceHandle, ret);
 		xTraceEventEnd(xTraceHandle);
 	}
@@ -1845,15 +1822,14 @@ void sys_trace_k_queue_unique_append_exit(struct k_queue *queue, void *data, boo
 
 	if (ret) {
 		xTraceResult = xTraceEventBegin(PSF_EVENT_QUEUE_UNIQUE_APPEND_SUCCESS,
-			sizeof(void*) + sizeof(void*) + sizeof(uint32_t), &xTraceHandle);
+			sizeof(void*) + sizeof(uint32_t), &xTraceHandle);
 	} else {
 		xTraceResult = xTraceEventBegin(PSF_EVENT_QUEUE_UNIQUE_APPEND_FAILURE,
-			sizeof(void*) + sizeof(void*) + sizeof(uint32_t), &xTraceHandle);
+			sizeof(void*) + sizeof(uint32_t), &xTraceHandle);
 	}
 
 	if (xTraceResult == TRC_SUCCESS) {
 		xTraceEventAddPointer(xTraceHandle, (void*)queue);
-		xTraceEventAddPointer(xTraceHandle, (void*)data);
 		xTraceEventAdd32(xTraceHandle, ret);
 		xTraceEventEnd(xTraceHandle);
 	}
@@ -1958,15 +1934,14 @@ void sys_trace_k_fifo_alloc_put_exit(struct k_fifo *fifo, void *data, int ret) {
 
 	if (ret == 0) {
 		xTraceResult = xTraceEventBegin(PSF_EVENT_FIFO_ALLOC_PUT_SUCCESS,
-			sizeof(void*) + sizeof(void*) + sizeof(uint32_t), &xTraceHandle);
+			sizeof(void*) + sizeof(uint32_t), &xTraceHandle);
 	} else {
 		xTraceResult = xTraceEventBegin(PSF_EVENT_FIFO_ALLOC_PUT_FAILURE,
-			sizeof(void*) + sizeof(void*) + sizeof(uint32_t), &xTraceHandle);
+			sizeof(void*) + sizeof(uint32_t), &xTraceHandle);
 	}
 
 	if (xTraceResult == TRC_SUCCESS) {
 		xTraceEventAddPointer(xTraceHandle, (void*)fifo);
-		xTraceEventAddPointer(xTraceHandle, (void*)data);
 		xTraceEventAdd32(xTraceHandle, ret);
 		xTraceEventEnd(xTraceHandle);
 	}
@@ -2035,15 +2010,14 @@ void sys_trace_k_fifo_get_exit(struct k_fifo *fifo, k_timeout_t timeout, void *r
 
 	if (ret != NULL) {
 		xTraceResult = xTraceEventBegin(PSF_EVENT_FIFO_GET_SUCCESS,
-			sizeof(void*) + sizeof(uint32_t) + sizeof(void*), &xTraceHandle);
+			sizeof(void*) + sizeof(void*), &xTraceHandle);
 	} else {
 		xTraceResult = xTraceEventBegin(PSF_EVENT_FIFO_GET_FAILURE,
-			sizeof(void*) + sizeof(uint32_t) + sizeof(void*), &xTraceHandle);
+			sizeof(void*) + sizeof(void*), &xTraceHandle);
 	}
 
 	if (xTraceResult == TRC_SUCCESS) {
 		xTraceEventAddPointer(xTraceHandle, (void*)fifo);
-		xTraceEventAdd32(xTraceHandle, timeout.ticks);
 		xTraceEventAddPointer(xTraceHandle, (void*)ret);
 		xTraceEventEnd(xTraceHandle);
 	}
@@ -2148,15 +2122,14 @@ void sys_trace_k_lifo_alloc_put_exit(struct k_lifo *lifo, void *data, int ret) {
 
 	if (ret == 0) {
 		xTraceResult = xTraceEventBegin(PSF_EVENT_LIFO_ALLOC_PUT_SUCCESS,
-			sizeof(void*) + sizeof(void*) + sizeof(uint32_t), &xTraceHandle);
+			sizeof(void*) + sizeof(uint32_t), &xTraceHandle);
 	} else {
 		xTraceResult = xTraceEventBegin(PSF_EVENT_LIFO_ALLOC_PUT_FAILURE,
-			sizeof(void*) + sizeof(void*) + sizeof(uint32_t), &xTraceHandle);
+			sizeof(void*) + sizeof(uint32_t), &xTraceHandle);
 	}
 
 	if (xTraceResult == TRC_SUCCESS) {
 		xTraceEventAddPointer(xTraceHandle, (void*)lifo);
-		xTraceEventAddPointer(xTraceHandle, (void*)data);
 		xTraceEventAdd32(xTraceHandle, ret);
 		xTraceEventEnd(xTraceHandle);
 	}
@@ -2179,15 +2152,14 @@ void sys_trace_k_lifo_get_exit(struct k_lifo *lifo, k_timeout_t timeout, void *r
 
 	if (ret != NULL) {
 		xTraceResult = xTraceEventBegin(PSF_EVENT_LIFO_GET_SUCCESS,
-			sizeof(void*) + sizeof(uint32_t) + sizeof(void*), &xTraceHandle);
+			sizeof(void*) + sizeof(void*), &xTraceHandle);
 	} else {
 		xTraceResult = xTraceEventBegin(PSF_EVENT_LIFO_GET_FAILURE,
-			sizeof(void*) + sizeof(uint32_t) + sizeof(void*), &xTraceHandle);
+			sizeof(void*) + sizeof(void*), &xTraceHandle);
 	}
 	
 	if (xTraceResult == TRC_SUCCESS) {
 		xTraceEventAddPointer(xTraceHandle, (void*)lifo);
-		xTraceEventAdd32(xTraceHandle, timeout.ticks);
 		xTraceEventAddPointer(xTraceHandle, (void*)ret);
 		xTraceEventEnd(xTraceHandle);
 	}
@@ -2224,15 +2196,14 @@ void sys_trace_k_stack_alloc_init_exit(struct k_stack *stack, uint32_t num_entri
 
 	if (ret == 0) {
 		xTraceResult = xTraceEventBegin(PSF_EVENT_STACK_ALLOC_INIT_SUCCESS,
-			sizeof(void*) + sizeof(uint32_t) + sizeof(uint32_t), &xTraceHandle);
+			sizeof(void*) + sizeof(uint32_t), &xTraceHandle);
 	} else {
 		xTraceResult = xTraceEventBegin(PSF_EVENT_STACK_ALLOC_INIT_FAILURE,
-			sizeof(void*) + sizeof(uint32_t) + sizeof(uint32_t), &xTraceHandle);
+			sizeof(void*) + sizeof(uint32_t), &xTraceHandle);
 	}
 
 	if (xTraceResult == TRC_SUCCESS) {
 		xTraceEventAddPointer(xTraceHandle, (void*)stack);
-		xTraceEventAdd32(xTraceHandle, num_entries);
 		xTraceEventAdd32(xTraceHandle, ret);
 		xTraceEventEnd(xTraceHandle);
 	}
@@ -2283,15 +2254,14 @@ void sys_trace_k_stack_push_exit(struct k_stack *stack, stack_data_t data, int r
 
 	if (ret == 0) {
 		xTraceResult = xTraceEventBegin(PSF_EVENT_STACK_PUSH_SUCCESS,
-			sizeof(void*) + sizeof(void*) + sizeof(uint32_t), &xTraceHandle);
+			sizeof(void*) + sizeof(uint32_t), &xTraceHandle);
 	} else {
 		xTraceResult = xTraceEventBegin(PSF_EVENT_STACK_PUSH_FAILURE,
-			sizeof(void*) + sizeof(void*) + sizeof(uint32_t), &xTraceHandle);
+			sizeof(void*) + sizeof(uint32_t), &xTraceHandle);
 	}
 
 	if (xTraceResult == TRC_SUCCESS) {
 		xTraceEventAddPointer(xTraceHandle, (void*)stack);
-		xTraceEventAddPointer(xTraceHandle, (void*)data);
 		xTraceEventAdd32(xTraceHandle, ret);
 		xTraceEventEnd(xTraceHandle);
 	}
@@ -2315,16 +2285,14 @@ void sys_trace_k_stack_pop_exit(struct k_stack *stack, stack_data_t *data, k_tim
 
 	if (ret == 0) {
 		xTraceResult = xTraceEventBegin(PSF_EVENT_STACK_POP_SUCCESS,
-			sizeof(void*) + sizeof(void*) + sizeof(uint32_t) + sizeof(uint32_t), &xTraceHandle);
+			sizeof(void*) + sizeof(uint32_t), &xTraceHandle);
 	} else {
 		xTraceResult = xTraceEventBegin(PSF_EVENT_STACK_POP_FAILURE,
-			sizeof(void*) + sizeof(void*) + sizeof(uint32_t) + sizeof(uint32_t), &xTraceHandle);
+			sizeof(void*) + sizeof(uint32_t), &xTraceHandle);
 	}
 
 	if (xTraceResult == TRC_SUCCESS) {
 		xTraceEventAddPointer(xTraceHandle, (void*)stack);
-		xTraceEventAddPointer(xTraceHandle, (void*)data);
-		xTraceEventAdd32(xTraceHandle, timeout.ticks);
 		xTraceEventAdd32(xTraceHandle, ret);
 		xTraceEventEnd(xTraceHandle);
 	}
@@ -2364,16 +2332,14 @@ void sys_trace_k_msgq_alloc_init_exit(struct k_msgq *msgq, size_t msg_size, uint
 
 	if (ret == 0) {
 		xTraceResult = xTraceEventBegin(PSF_EVENT_MESSAGEQUEUE_ALLOC_INIT_SUCCESS,
-			sizeof(void*) + sizeof(uint32_t) + sizeof(uint32_t) + sizeof(uint32_t), &xTraceHandle);
+			sizeof(void*) + sizeof(uint32_t), &xTraceHandle);
 	} else {
 		xTraceResult = xTraceEventBegin(PSF_EVENT_MESSAGEQUEUE_ALLOC_INIT_TIMEOUT,
-			sizeof(void*) + sizeof(uint32_t) + sizeof(uint32_t) + sizeof(uint32_t), &xTraceHandle);
+			sizeof(void*) + sizeof(uint32_t), &xTraceHandle);
 	}
 
 	if (xTraceResult == TRC_SUCCESS) {
 		xTraceEventAddPointer(xTraceHandle, (void*)msgq);
-		xTraceEventAdd32(xTraceHandle, (uint32_t)msg_size);
-		xTraceEventAdd32(xTraceHandle, (uint32_t)max_msgs);
 		xTraceEventAdd32(xTraceHandle, ret);
 		xTraceEventEnd(xTraceHandle);
 	}
@@ -2428,16 +2394,14 @@ void sys_trace_k_msgq_put_exit(struct k_msgq *msgq, const void *data, k_timeout_
 
 	if (ret == 0) {
 		xTraceResult = xTraceEventBegin(PSF_EVENT_MESSAGEQUEUE_PUT_SUCCESS,
-			sizeof(void*) + sizeof(void*) + sizeof(uint32_t) + sizeof(uint32_t), &xTraceHandle);
+			sizeof(void*) + sizeof(uint32_t), &xTraceHandle);
 	} else {
 		xTraceResult = xTraceEventBegin(PSF_EVENT_MESSAGEQUEUE_PUT_TIMEOUT,
-			sizeof(void*) + sizeof(void*) + sizeof(uint32_t) + sizeof(uint32_t), &xTraceHandle);
+			sizeof(void*) + sizeof(uint32_t), &xTraceHandle);
 	}
 
 	if (xTraceResult == TRC_SUCCESS) {
 		xTraceEventAddPointer(xTraceHandle, (void*)msgq);
-		xTraceEventAddPointer(xTraceHandle, (void*)data);
-		xTraceEventAdd32(xTraceHandle, timeout.ticks);
 		xTraceEventAdd32(xTraceHandle, ret);
 		xTraceEventEnd(xTraceHandle);
 	}
@@ -2464,16 +2428,14 @@ void sys_trace_k_msgq_get_exit(struct k_msgq *msgq, const void *data, k_timeout_
 
 	if (ret == 0) {
 		xTraceResult = xTraceEventBegin(PSF_EVENT_MESSAGEQUEUE_GET_SUCCESS,
-			sizeof(void*) + sizeof(void*) + sizeof(uint32_t) + sizeof(uint32_t), &xTraceHandle);
+			sizeof(void*) + sizeof(uint32_t), &xTraceHandle);
 	} else {
 		xTraceResult = xTraceEventBegin(PSF_EVENT_MESSAGEQUEUE_GET_TIMEOUT,
-			sizeof(void*) + sizeof(void*) + sizeof(uint32_t) + sizeof(uint32_t), &xTraceHandle);
+			sizeof(void*) + sizeof(uint32_t), &xTraceHandle);
 	}
 
 	if (xTraceResult == TRC_SUCCESS) {
 		xTraceEventAddPointer(xTraceHandle, (void*)msgq);
-		xTraceEventAddPointer(xTraceHandle, (void*)data);
-		xTraceEventAdd32(xTraceHandle, timeout.ticks);
 		xTraceEventAdd32(xTraceHandle, ret);
 		xTraceEventEnd(xTraceHandle);
 	}
@@ -2540,16 +2502,14 @@ void sys_trace_k_mbox_message_put_exit(struct k_mbox *mbox, struct k_mbox_msg *t
 
 	if (ret == 0) {
 		xTraceResult = xTraceEventBegin(PSF_EVENT_MAILBOX_MESSAGE_PUT_SUCCESS,
-			sizeof(void*) + sizeof(void*) + sizeof(uint32_t) + sizeof(uint32_t), &xTraceHandle);
+			sizeof(void*) + sizeof(uint32_t), &xTraceHandle);
 	} else {
 		xTraceResult = xTraceEventBegin(PSF_EVENT_MAILBOX_MESSAGE_PUT_FAILURE,
-			sizeof(void*) + sizeof(void*) + sizeof(uint32_t) + sizeof(uint32_t), &xTraceHandle);
+			sizeof(void*) + sizeof(uint32_t), &xTraceHandle);
 	}
 
 	if (xTraceResult == TRC_SUCCESS) {
 		xTraceEventAddPointer(xTraceHandle, (void*)mbox);
-		xTraceEventAddPointer(xTraceHandle, (void*)tx_msg);
-		xTraceEventAdd32(xTraceHandle, timeout.ticks);
 		xTraceEventAdd32(xTraceHandle, ret);
 		xTraceEventEnd(xTraceHandle);
 	}
@@ -2573,16 +2533,14 @@ void sys_trace_k_mbox_put_exit(struct k_mbox *mbox, struct k_mbox_msg *tx_msg, k
 
 	if (ret == 0) {
 		xTraceResult = xTraceEventBegin(PSF_EVENT_MAILBOX_PUT_SUCCESS,
-			sizeof(void*) + sizeof(void*) + sizeof(uint32_t) + sizeof(uint32_t), &xTraceHandle);
+			sizeof(void*) + sizeof(uint32_t), &xTraceHandle);
 	} else {
 		xTraceResult = xTraceEventBegin(PSF_EVENT_MAILBOX_PUT_FAILURE,
-			sizeof(void*) + sizeof(void*) + sizeof(uint32_t) + sizeof(uint32_t), &xTraceHandle);
+			sizeof(void*) + sizeof(uint32_t), &xTraceHandle);
 	}
 
 	if (xTraceResult == TRC_SUCCESS) {
 		xTraceEventAddPointer(xTraceHandle, (void*)mbox);
-		xTraceEventAddPointer(xTraceHandle, (void*)tx_msg);
-		xTraceEventAdd32(xTraceHandle, timeout.ticks);
 		xTraceEventAdd32(xTraceHandle, ret);
 		xTraceEventEnd(xTraceHandle);
 	}
@@ -2633,19 +2591,16 @@ void sys_trace_k_mbox_get_exit(struct k_mbox *mbox, struct k_mbox_msg *rx_msg, v
 
 	if (ret == 0) {
 		xTraceResult = xTraceEventBegin(PSF_EVENT_MAILBOX_GET_SUCCESS,
-		sizeof(void*) + sizeof(void*) + sizeof(void*) + sizeof(uint32_t) + sizeof(uint32_t),
+		sizeof(void*) + sizeof(uint32_t),
 		&xTraceHandle);
 	} else {
 		xTraceResult = xTraceEventBegin(PSF_EVENT_MAILBOX_GET_TIMEOUT,
-		sizeof(void*) + sizeof(void*) + sizeof(void*) + sizeof(uint32_t) + sizeof(uint32_t),
+		sizeof(void*) + sizeof(uint32_t),
 		&xTraceHandle);
 	}
 
 	if (xTraceResult == TRC_SUCCESS) {
 		xTraceEventAddPointer(xTraceHandle, (void*)mbox);
-		xTraceEventAddPointer(xTraceHandle, (void*)rx_msg);
-		xTraceEventAddPointer(xTraceHandle, (void*)buffer);
-		xTraceEventAdd32(xTraceHandle, timeout.ticks);
 		xTraceEventAdd32(xTraceHandle, ret);
 		xTraceEventEnd(xTraceHandle);
 	}
@@ -2722,15 +2677,14 @@ void sys_trace_k_pipe_alloc_init_exit(struct k_pipe *pipe, size_t size, int ret)
 
 	if (ret == 0) {
 		xTraceResult = xTraceEventBegin(PSF_EVENT_PIPE_ALLOC_INIT_SUCCESS,
-			sizeof(void*) + sizeof(uint32_t) + sizeof(uint32_t), &xTraceHandle);
+			sizeof(void*) + sizeof(uint32_t), &xTraceHandle);
 	} else {
 		xTraceResult = xTraceEventBegin(PSF_EVENT_PIPE_ALLOC_INIT_FAILURE,
-			sizeof(void*) + sizeof(uint32_t) + sizeof(uint32_t), &xTraceHandle);
+			sizeof(void*) + sizeof(uint32_t), &xTraceHandle);
 	}
 
 	if (xTraceResult == TRC_SUCCESS) {
 		xTraceEventAddPointer(xTraceHandle, (void*)pipe);
-		xTraceEventAdd32(xTraceHandle, (uint32_t)size);
 		xTraceEventAdd32(xTraceHandle, ret);
 		xTraceEventEnd(xTraceHandle);
 	}
@@ -2762,21 +2716,16 @@ void sys_trace_k_pipe_put_exit(struct k_pipe *pipe, void *data, size_t bytes_to_
 
 	if (ret == 0) {
 		xTraceResult = xTraceEventBegin(PSF_EVENT_PIPE_PUT_SUCCESS,
-			sizeof(void*) + sizeof(void*) + sizeof(uint32_t) + sizeof(void*) + sizeof(uint32_t) + sizeof(uint32_t) + sizeof(uint32_t),
+			sizeof(void*) + sizeof(uint32_t),
 			&xTraceHandle);
 	} else {
 		xTraceResult = xTraceEventBegin(PSF_EVENT_PIPE_PUT_TIMEOUT,
-			sizeof(void*) + sizeof(void*) + sizeof(uint32_t) + sizeof(void*) + sizeof(uint32_t) + sizeof(uint32_t) + sizeof(uint32_t),
+			sizeof(void*) + sizeof(uint32_t),
 			&xTraceHandle);
 	}
 
 	if (xTraceResult == TRC_SUCCESS) {
 		xTraceEventAddPointer(xTraceHandle, (void*)pipe);
-		xTraceEventAddPointer(xTraceHandle, (void*)data);
-		xTraceEventAdd32(xTraceHandle, (uint32_t)bytes_to_write);
-		xTraceEventAddPointer(xTraceHandle, (void*)bytes_written);
-		xTraceEventAdd32(xTraceHandle, (uint32_t)min_xfer);
-		xTraceEventAdd32(xTraceHandle, timeout.ticks);
 		xTraceEventAdd32(xTraceHandle, ret);
 		xTraceEventEnd(xTraceHandle);
 	}
@@ -2808,21 +2757,16 @@ void sys_trace_k_pipe_get_exit(struct k_pipe *pipe, void *data, size_t bytes_to_
 
 	if (ret == 0) {
 		xTraceResult = xTraceEventBegin(PSF_EVENT_PIPE_GET_SUCCESS,
-			sizeof(void*) + sizeof(void*) + sizeof(uint32_t) + sizeof(void*) + sizeof(uint32_t) + sizeof(uint32_t) + sizeof(uint32_t),
+			sizeof(void*) + sizeof(uint32_t),
 			&xTraceHandle);
 	} else {
 		xTraceResult = xTraceEventBegin(PSF_EVENT_PIPE_GET_TIMEOUT,
-			sizeof(void*) + sizeof(void*) + sizeof(uint32_t) + sizeof(void*) + sizeof(uint32_t) + sizeof(uint32_t) + sizeof(uint32_t),
+			sizeof(void*) + sizeof(uint32_t),
 			&xTraceHandle);
 	}
 
 	if (xTraceResult == TRC_SUCCESS) {
 		xTraceEventAddPointer(xTraceHandle, (void*)pipe);
-		xTraceEventAddPointer(xTraceHandle, (void*)data);
-		xTraceEventAdd32(xTraceHandle, (uint32_t)bytes_to_read);
-		xTraceEventAddPointer(xTraceHandle, (void*)bytes_read);
-		xTraceEventAdd32(xTraceHandle, (uint32_t)min_xfer);
-		xTraceEventAdd32(xTraceHandle, timeout.ticks);
 		xTraceEventAdd32(xTraceHandle, ret);
 		xTraceEventEnd(xTraceHandle);
 	}
@@ -2846,12 +2790,9 @@ void sys_trace_k_pipe_block_put_exit(struct k_pipe *pipe, struct k_mem_block *bl
 	TraceEventHandle_t xTraceHandle;
 
 	if (xTraceEventBegin(PSF_EVENT_PIPE_BLOCK_PUT_EXIT,
-		sizeof(void*) + sizeof(void*) + sizeof(uint32_t) + sizeof(void*),
+		sizeof(void*),
 		&xTraceHandle) == TRC_SUCCESS) {
 		xTraceEventAddPointer(xTraceHandle, (void*)pipe);
-		xTraceEventAddPointer(xTraceHandle, (void*)block);
-		xTraceEventAdd32(xTraceHandle, (uint32_t)size);
-		xTraceEventAddPointer(xTraceHandle, (void*)sem);
 		xTraceEventEnd(xTraceHandle);
 	}
 }
@@ -2888,16 +2829,14 @@ void sys_trace_k_heap_alloc_exit(struct k_heap *h, size_t bytes, k_timeout_t tim
 
 	if (ret != NULL) {
 		xTraceResult = xTraceEventBegin(PSF_EVENT_KHEAP_ALLOC_SUCCESS,
-			sizeof(void*) + sizeof(uint32_t) + sizeof(uint32_t) + sizeof(void*), &xTraceHandle);
+			sizeof(void*) + sizeof(void*), &xTraceHandle);
 	} else {
 		xTraceResult = xTraceEventBegin(PSF_EVENT_KHEAP_ALLOC_FAILURE,
-			sizeof(void*) + sizeof(uint32_t) + sizeof(uint32_t) + sizeof(void*), &xTraceHandle);
+			sizeof(void*) + sizeof(void*), &xTraceHandle);
 	}
 
 	if (xTraceResult == TRC_SUCCESS) {
 		xTraceEventAddPointer(xTraceHandle, (void*)h);
-		xTraceEventAdd32(xTraceHandle, bytes);
-		xTraceEventAdd32(xTraceHandle, timeout.ticks);
 		xTraceEventAddPointer(xTraceHandle, (void*)ret);
 		xTraceEventEnd(xTraceHandle);
 	}
@@ -2931,19 +2870,17 @@ void sys_trace_k_heap_aligned_alloc_exit(struct k_heap *h, size_t bytes, k_timeo
 	 */
 	if (ret == NULL && K_TIMEOUT_EQ(timeout, K_FOREVER)) {
 		xTraceResult = xTraceEventBegin(PSF_EVENT_KHEAP_ALIGNED_ALLOC_FAILURE,
-			sizeof(void*) + sizeof(uint32_t) + sizeof(uint32_t) + sizeof(void*), &xTraceHandle);
+			sizeof(void*) + sizeof(void*), &xTraceHandle);
 	} else if (ret == NULL) {
 		xTraceResult = xTraceEventBegin(PSF_EVENT_KHEAP_ALIGNED_ALLOC_FAILURE,
-			sizeof(void*) + sizeof(uint32_t) + sizeof(uint32_t) + sizeof(void*), &xTraceHandle);
+			sizeof(void*) + sizeof(void*), &xTraceHandle);
 	} else {
 		xTraceResult = xTraceEventBegin(PSF_EVENT_KHEAP_ALIGNED_ALLOC_SUCCESS,
-			sizeof(void*) + sizeof(uint32_t) + sizeof(uint32_t) + sizeof(void*), &xTraceHandle);
+			sizeof(void*) + sizeof(void*), &xTraceHandle);
 	}
 
 	if (xTraceResult == TRC_SUCCESS) {
 		xTraceEventAddPointer(xTraceHandle, (void*)h);
-		xTraceEventAdd32(xTraceHandle, (uint32_t)bytes);
-		xTraceEventAdd32(xTraceHandle, timeout.ticks);
 		xTraceEventAddPointer(xTraceHandle, (void*)ret);
 		xTraceEventEnd(xTraceHandle);
 	}
@@ -2978,16 +2915,14 @@ void sys_trace_k_heap_sys_k_aligned_alloc_exit(struct k_heap *h, size_t align, s
 
 	if (ret != NULL) {
 		xTraceResult = xTraceEventBegin(PSF_EVENT_KHEAP_SYS_ALIGNED_ALLOC_SUCCESS,
-			sizeof(void*) + sizeof(uint32_t) + sizeof(uint32_t) + sizeof(void*), &xTraceHandle);
+			sizeof(void*) + sizeof(void*), &xTraceHandle);
 	} else {
 		xTraceResult = xTraceEventBegin(PSF_EVENT_KHEAP_SYS_ALIGNED_ALLOC_FAILURE,
-			sizeof(void*) + sizeof(uint32_t) + sizeof(uint32_t) + sizeof(void*), &xTraceHandle);
+			sizeof(void*) + sizeof(void*), &xTraceHandle);
 	}
 
 	if (xTraceResult == TRC_SUCCESS) {
 		xTraceEventAddPointer(xTraceHandle, (void*)h);
-		xTraceEventAdd32(xTraceHandle, align);
-		xTraceEventAdd32(xTraceHandle, size);
 		xTraceEventAddPointer(xTraceHandle, (void*)ret);
 		xTraceEventEnd(xTraceHandle);
 	}
@@ -3010,15 +2945,14 @@ void sys_trace_k_heap_sys_k_malloc_exit(struct k_heap *h, size_t size, void *ret
 
 	if (ret != NULL) {
 		xTraceResult = xTraceEventBegin(PSF_EVENT_KHEAP_SYS_MALLOC_SUCCESS,
-			sizeof(void*) + sizeof(uint32_t) + sizeof(void*), &xTraceHandle);
+			sizeof(void*) + sizeof(void*), &xTraceHandle);
 	} else {
 		xTraceResult = xTraceEventBegin(PSF_EVENT_KHEAP_SYS_MALLOC_FAILURE,
-			sizeof(void*) + sizeof(uint32_t) + sizeof(void*), &xTraceHandle);
+			sizeof(void*) + sizeof(void*), &xTraceHandle);
 	}
 
 	if (xTraceResult == TRC_SUCCESS) {
 		xTraceEventAddPointer(xTraceHandle, (void*)h);
-		xTraceEventAdd32(xTraceHandle, size);
 		xTraceEventAddPointer(xTraceHandle, (void*)ret);
 		xTraceEventEnd(xTraceHandle);
 	}
@@ -3068,16 +3002,14 @@ void sys_trace_k_heap_sys_k_calloc_exit(struct k_heap *h, size_t nmemb, size_t s
 
 	if (ret != NULL) {
 		xTraceResult = xTraceEventBegin(PSF_EVENT_KHEAP_SYS_CALLOC_SUCCESS,
-			sizeof(void*) + sizeof(uint32_t) + sizeof(uint32_t) + sizeof(void*), &xTraceHandle);
+			sizeof(void*) + sizeof(void*), &xTraceHandle);
 	} else {
 		xTraceResult = xTraceEventBegin(PSF_EVENT_KHEAP_SYS_CALLOC_FAILURE,
-			sizeof(void*) + sizeof(uint32_t) + sizeof(uint32_t) + sizeof(void*), &xTraceHandle);
+			sizeof(void*) + sizeof(void*), &xTraceHandle);
 	}
 
 	if (xTraceResult == TRC_SUCCESS) {
 		xTraceEventAddPointer(xTraceHandle, (void*)h);
-		xTraceEventAdd32(xTraceHandle, nmemb);
-		xTraceEventAdd32(xTraceHandle, size);
 		xTraceEventAddPointer(xTraceHandle, (void*)ret);
 		xTraceEventEnd(xTraceHandle);
 	}
@@ -3234,8 +3166,6 @@ void sys_trace_k_timer_status_sync_exit(struct k_timer *timer, uint32_t result) 
 /* Syscall trace function definitions */
 void sys_trace_syscall_enter(uint32_t id, const char *name) {
 	TraceEventHandle_t xTraceHandle;
-	uint32_t uiRemainingBytes = 0;
-	uint32_t uiNull = 0;
 
 	if (xTraceEventBegin(PSF_EVENT_SYSTEM_SYSCALL_ENTER, sizeof(uint32_t) + strlen(name), &xTraceHandle) == TRC_SUCCESS) {
 		xTraceEventAdd32(xTraceHandle, id);
@@ -3243,29 +3173,14 @@ void sys_trace_syscall_enter(uint32_t id, const char *name) {
 		/* Add name */
 		xTraceEventAddData(xTraceHandle, (void*)name, strlen(name));
 
-		/* Events are 4-bytes aligned, pad remainder of data */
-		xTraceEventPayloadRemaining(xTraceHandle, &uiRemainingBytes);
-		xTraceEventAddData(xTraceHandle, (void*)&uiNull, uiRemainingBytes);
-
 		xTraceEventEnd(xTraceHandle);
 	}
 }
 
 void sys_trace_syscall_exit(uint32_t id, const char *name) {
 	TraceEventHandle_t xTraceHandle;
-	uint32_t uiRemainingBytes = 0;
-	uint32_t uiNull = 0;
 	
-	if (xTraceEventBegin(PSF_EVENT_SYSTEM_SYSCALL_EXIT, sizeof(uint32_t) + strlen(name), &xTraceHandle) == TRC_SUCCESS) {
-		xTraceEventAdd32(xTraceHandle, id);
-		
-		/* Add name */
-		xTraceEventAddData(xTraceHandle, (void*)name, strlen(name));
-
-		/* Events are 4-bytes aligned, pad remainder of data */
-		xTraceEventPayloadRemaining(xTraceHandle, &uiRemainingBytes);
-		xTraceEventAddData(xTraceHandle, (void*)&uiNull, uiRemainingBytes);
-
+	if (xTraceEventBegin(PSF_EVENT_SYSTEM_SYSCALL_EXIT, 0, &xTraceHandle) == TRC_SUCCESS) {
 		xTraceEventEnd(xTraceHandle);
 	}
 }

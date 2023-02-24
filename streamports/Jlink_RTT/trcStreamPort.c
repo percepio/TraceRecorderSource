@@ -1,6 +1,6 @@
 /*
- * Trace Recorder for Tracealyzer v4.6.6
- * Copyright 2021 Percepio AB
+ * Trace Recorder for Tracealyzer v4.7.0
+ * Copyright 2023 Percepio AB
  * www.percepio.com
  *
  * SPDX-License-Identifier: Apache-2.0
@@ -20,15 +20,7 @@
 
 #if (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING)
 
-typedef struct TraceStreamPortRTT {
-#if (TRC_USE_INTERNAL_BUFFER == 1)
-	uint8_t bufferInternal[TRC_STREAM_PORT_INTERNAL_BUFFER_SIZE];
-#endif
-	uint8_t bufferUp[TRC_STREAM_PORT_RTT_UP_BUFFER_SIZE];
-	uint8_t bufferDown[TRC_STREAM_PORT_RTT_DOWN_BUFFER_SIZE];
-} TraceStreamPortRTT_t;
-
-static TraceStreamPortRTT_t* pxStreamPortRTT;
+static TraceStreamPortBuffer_t* pxStreamPortRTT TRC_CFG_RECORDER_DATA_ATTRIBUTE;
 
 traceResult xTraceStreamPortInitialize(TraceStreamPortBuffer_t* pxBuffer)
 {
@@ -39,7 +31,7 @@ traceResult xTraceStreamPortInitialize(TraceStreamPortBuffer_t* pxBuffer)
 		return TRC_FAIL;
 	}
 
-	pxStreamPortRTT = (TraceStreamPortRTT_t*)pxBuffer;
+	pxStreamPortRTT = (TraceStreamPortBuffer_t*)pxBuffer;
 
 #if (TRC_USE_INTERNAL_BUFFER == 1)
 	return xTraceInternalEventBufferInitialize(pxStreamPortRTT->bufferInternal, sizeof(pxStreamPortRTT->bufferInternal));
@@ -53,8 +45,15 @@ traceResult xTraceStreamPortOnEnable(uint32_t uiStartOption)
 	(void)uiStartOption;
 
 	/* Configure the RTT buffers */
-	SEGGER_RTT_ConfigUpBuffer(TRC_CFG_STREAM_PORT_RTT_UP_BUFFER_INDEX, "TzData", pxStreamPortRTT->bufferUp, sizeof(pxStreamPortRTT->bufferUp), TRC_CFG_STREAM_PORT_RTT_MODE);
-	SEGGER_RTT_ConfigDownBuffer(TRC_CFG_STREAM_PORT_RTT_DOWN_BUFFER_INDEX, "TzCtrl", pxStreamPortRTT->bufferDown, sizeof(pxStreamPortRTT->bufferDown), TRC_CFG_STREAM_PORT_RTT_MODE);
+	if (SEGGER_RTT_ConfigUpBuffer(TRC_CFG_STREAM_PORT_RTT_UP_BUFFER_INDEX, "TzData", pxStreamPortRTT->bufferUp, sizeof(pxStreamPortRTT->bufferUp), TRC_CFG_STREAM_PORT_RTT_MODE) < 0)
+	{
+		return TRC_FAIL;
+	}
+
+	if (SEGGER_RTT_ConfigDownBuffer(TRC_CFG_STREAM_PORT_RTT_DOWN_BUFFER_INDEX, "TzCtrl", pxStreamPortRTT->bufferDown, sizeof(pxStreamPortRTT->bufferDown), TRC_CFG_STREAM_PORT_RTT_MODE) < 0)
+	{
+		return TRC_FAIL;
+	}
 
 	return TRC_SUCCESS;
 }

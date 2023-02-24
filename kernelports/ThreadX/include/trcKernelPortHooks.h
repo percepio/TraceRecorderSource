@@ -1,6 +1,6 @@
 /*
- * Trace Recorder for Tracealyzer v4.6.6
- * Copyright 2021 Percepio AB
+ * Trace Recorder for Tracealyzer v4.7.0
+ * Copyright 2023 Percepio AB
  * www.percepio.com
  *
  * SPDX-License-Identifier: Apache-2.0
@@ -122,15 +122,26 @@ void xTraceTimerPerformanceSystemInfoGet(UINT uiTxEventCode);
 	}
 
 /* Trace macro group to hook mapping helpers */
+#if (!TRC_CFG_SCHEDULING_ONLY)
 #define TRC_TG_TX_TRACE_BLOCK_POOL_EVENTS(i) TRC_TP##i
 #define TRC_TG_TX_TRACE_BYTE_POOL_EVENTS(i) TRC_TP##i
 #define TRC_TG_TX_TRACE_EVENT_FLAGS_EVENTS(i) TRC_TP##i
 #define TRC_TG_TX_TRACE_MUTEX_EVENTS(i) TRC_TP##i
 #define TRC_TG_TX_TRACE_QUEUE_EVENTS(i) TRC_TP##i
 #define TRC_TG_TX_TRACE_SEMAPHORE_EVENTS(i) TRC_TP##i
-#define TRC_TG_TX_TRACE_THREAD_EVENTS(i) TRC_TP##i
 #define TRC_TG_TX_TRACE_TIME_EVENTS(i) TRC_TP##i
 #define TRC_TG_TX_TRACE_TIMER_EVENTS(i) TRC_TP##i
+#else
+#define TRC_TG_TX_TRACE_BLOCK_POOL_EVENTS(i)
+#define TRC_TG_TX_TRACE_BYTE_POOL_EVENTS(i)
+#define TRC_TG_TX_TRACE_EVENT_FLAGS_EVENTS(i)
+#define TRC_TG_TX_TRACE_MUTEX_EVENTS(i)
+#define TRC_TG_TX_TRACE_QUEUE_EVENTS(i)
+#define TRC_TG_TX_TRACE_SEMAPHORE_EVENTS(i)
+#define TRC_TG_TX_TRACE_TIME_EVENTS(i)
+#define TRC_TG_TX_TRACE_TIMER_EVENTS(i)
+#endif
+#define TRC_TG_TX_TRACE_THREAD_EVENTS(i) TRC_TP##i
 #define TRC_TG_TX_TRACE_INTERNAL_EVENTS(i) TRC_TP##i
 #define TRC_TG_TX_TRACE_INTERRUPT_CONTROL_EVENT(i) TRC_TP##i
 #define TRC_TG_TX_TRACE_USER_EVENTS(i) TRC_TP_TX_TRACE_USER_EVENT

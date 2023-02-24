@@ -1,6 +1,6 @@
 /*
-* Trace Recorder for Tracealyzer v4.6.6
-* Copyright 2021 Percepio AB
+* Trace Recorder for Tracealyzer v4.7.0
+* Copyright 2023 Percepio AB
 * www.percepio.com
 *
 * SPDX-License-Identifier: Apache-2.0
@@ -14,18 +14,19 @@
 
 #if (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING)
 
-#define TRC_STATE_MACHINE_STATE_INDEX 0
-#define TRC_STATE_MACHINE_INDEX 0
+#define TRC_STATE_MACHINE_STATE_INDEX 0u
+#define TRC_STATE_MACHINE_INDEX 0u
 
+/*cstat !MISRAC2004-6.3 !MISRAC2012-Dir-4.6_a Suppress basic char type usage*/
 traceResult xTraceStateMachineCreate(const char *szName, TraceStateMachineHandle_t *pxStateMachineHandle)
 {
 	TraceObjectHandle_t xObjectHandle;
 
 	/* This should never fail */
-	TRC_ASSERT(pxStateMachineHandle != 0);
+	TRC_ASSERT(pxStateMachineHandle != (void*)0);
 
 	/* We need to check this */
-	if (xTraceObjectRegister(PSF_EVENT_STATEMACHINE_CREATE , 0, szName, 0, &xObjectHandle) == TRC_FAIL)
+	if (xTraceObjectRegister(PSF_EVENT_STATEMACHINE_CREATE , (void*)0, szName, 0u, &xObjectHandle) == TRC_FAIL)
 	{
 		return TRC_FAIL;
 	}
@@ -38,6 +39,7 @@ traceResult xTraceStateMachineCreate(const char *szName, TraceStateMachineHandle
 	return TRC_SUCCESS;
 }
 
+/*cstat !MISRAC2004-6.3 !MISRAC2012-Dir-4.6_a Suppress basic char type usage*/
 traceResult xTraceStateMachineStateCreate(TraceStateMachineHandle_t xStateMachineHandle, const char* szName, TraceStateMachineStateHandle_t* pxStateHandle)
 {
 	TraceObjectHandle_t xObjectHandle;
@@ -46,10 +48,10 @@ traceResult xTraceStateMachineStateCreate(TraceStateMachineHandle_t xStateMachin
 	TRC_ASSERT(xStateMachineHandle != 0);
 
 	/* This should never fail */
-	TRC_ASSERT(pxStateHandle != 0);
+	TRC_ASSERT(pxStateHandle != (void*)0);
 
 	/* We need to check this */
-	if (xTraceObjectRegister(PSF_EVENT_STATEMACHINE_STATE_CREATE, 0, szName, (TraceUnsignedBaseType_t)xStateMachineHandle, &xObjectHandle) == TRC_FAIL)
+	if (xTraceObjectRegister(PSF_EVENT_STATEMACHINE_STATE_CREATE, (void*)0, szName, (TraceUnsignedBaseType_t)xStateMachineHandle, &xObjectHandle) == TRC_FAIL) /*cstat !MISRAC2004-11.3 !MISRAC2012-Rule-11.4 Suppress conversion from pointer to integer check*/
 	{
 		return TRC_FAIL;
 	}
@@ -64,8 +66,6 @@ traceResult xTraceStateMachineStateCreate(TraceStateMachineHandle_t xStateMachin
 
 traceResult xTraceStateMachineSetState(TraceStateMachineHandle_t xStateMachineHandle, TraceStateMachineStateHandle_t xStateHandle)
 {
-	TraceEventHandle_t xEventHandle = 0;
-	
 	/* This should never fail */
 	TRC_ASSERT(xStateMachineHandle != 0);
 
@@ -77,15 +77,9 @@ traceResult xTraceStateMachineSetState(TraceStateMachineHandle_t xStateMachineHa
 	TRC_ASSERT(xStateMachineHandle == (TraceStateMachineHandle_t)xTraceEntryGetStateReturn((TraceEntryHandle_t)xStateHandle, TRC_STATE_MACHINE_INDEX));
 
 	/* This should never fail */
-	TRC_ASSERT_ALWAYS_EVALUATE(xTraceEntrySetState((TraceEntryHandle_t)xStateMachineHandle, TRC_STATE_MACHINE_STATE_INDEX, (TraceUnsignedBaseType_t)xStateHandle) == TRC_SUCCESS);
+	TRC_ASSERT_ALWAYS_EVALUATE(xTraceEntrySetState((TraceEntryHandle_t)xStateMachineHandle, TRC_STATE_MACHINE_STATE_INDEX, (TraceUnsignedBaseType_t)xStateHandle) == TRC_SUCCESS); /*cstat !MISRAC2004-11.3 !MISRAC2012-Rule-11.4 Suppress conversion from pointer to integer check*/
 
-	/* We need to check this */
-	if (xTraceEventBegin(PSF_EVENT_STATEMACHINE_STATECHANGE, sizeof(void*) + sizeof(void*), &xEventHandle) == TRC_SUCCESS)
-	{
-		xTraceEventAddPointer(xEventHandle, (void*)xStateMachineHandle);
-		xTraceEventAddPointer(xEventHandle, (void*)xStateHandle);
-		xTraceEventEnd(xEventHandle);
-	}
+	(void)xTraceEventCreate2(PSF_EVENT_STATEMACHINE_STATECHANGE, (TraceUnsignedBaseType_t)xStateMachineHandle, (TraceUnsignedBaseType_t)xStateHandle); /*cstat !MISRAC2004-11.3 !MISRAC2012-Rule-11.4 Suppress conversion from pointer to integer check*/
 
 	return TRC_SUCCESS;
 }

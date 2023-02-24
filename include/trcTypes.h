@@ -1,6 +1,6 @@
 /*
-* Percepio Trace Recorder for Tracealyzer v4.6.6
-* Copyright 2021 Percepio AB
+* Percepio Trace Recorder for Tracealyzer v4.7.0
+* Copyright 2023 Percepio AB
 * www.percepio.com
 *
 * SPDX-License-Identifier: Apache-2.0
@@ -31,35 +31,45 @@ typedef TRC_UNSIGNED_BASE_TYPE TraceUnsignedBaseType_t;
 
 typedef TRC_BASE_TYPE TraceBaseType_t;
 
+#if (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING)
+typedef void* TraceHandleBaseType_t;
+#else
+typedef TraceUnsignedBaseType_t TraceHandleBaseType_t;
+#endif
+
 typedef TraceUnsignedBaseType_t traceResult;
 
-typedef TraceUnsignedBaseType_t TraceEventHandle_t;
+typedef TraceHandleBaseType_t TraceEventHandle_t;
 
-typedef TraceUnsignedBaseType_t TraceISRHandle_t;
+typedef TraceHandleBaseType_t TraceISRHandle_t;
 
-typedef TraceUnsignedBaseType_t TraceEntryHandle_t;
+typedef TraceHandleBaseType_t TraceEntryHandle_t;
 
-typedef TraceUnsignedBaseType_t TraceTaskHandle_t;
+typedef TraceHandleBaseType_t TraceTaskHandle_t;
 
-typedef TraceUnsignedBaseType_t TraceObjectHandle_t;
+typedef TraceHandleBaseType_t TraceObjectHandle_t;
 
-typedef TraceUnsignedBaseType_t TraceExtensionHandle_t;
+typedef TraceHandleBaseType_t TraceExtensionHandle_t;
 
-typedef TraceUnsignedBaseType_t TraceHeapHandle_t;
+typedef TraceHandleBaseType_t TraceHeapHandle_t;
 
-typedef TraceUnsignedBaseType_t TraceIntervalChannelSetHandle_t;
+typedef TraceHandleBaseType_t TraceIntervalChannelSetHandle_t;
 
-typedef TraceUnsignedBaseType_t TraceIntervalChannelHandle_t;
+typedef TraceHandleBaseType_t TraceIntervalChannelHandle_t;
 
-typedef TraceUnsignedBaseType_t TraceIntervalInstanceHandle_t;
+typedef TraceHandleBaseType_t TraceIntervalInstanceHandle_t;
 
-typedef TraceUnsignedBaseType_t TraceStateMachineHandle_t;
+typedef TraceHandleBaseType_t TraceStateMachineHandle_t;
 
-typedef TraceUnsignedBaseType_t TraceStateMachineStateHandle_t;
+typedef TraceHandleBaseType_t TraceStateMachineStateHandle_t;
 
-typedef TraceUnsignedBaseType_t TraceStringHandle_t;
+typedef TraceHandleBaseType_t TraceStringHandle_t;
 
-typedef TraceUnsignedBaseType_t TraceCounterHandle_t;
+typedef TraceHandleBaseType_t TraceCounterHandle_t;
+
+typedef TraceHandleBaseType_t TraceRunnableHandle_t;
+
+typedef TraceHandleBaseType_t TraceRunnableStaticSetHandle_t;
 
 typedef void (*TraceCounterCallback_t)(TraceCounterHandle_t xCounterHandle);
 

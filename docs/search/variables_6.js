@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['wraparounds_349',['wraparounds',['../structTraceTimestamp.html#af6ac1c0f317df3fe0091edfb923caf2e',1,'TraceTimestamp']]]
+  ['type_0',['type',['../structTraceTimestampData.html#a48de9426193337c796e7d71bd13c48bb',1,'TraceTimestampData']]]
 ];

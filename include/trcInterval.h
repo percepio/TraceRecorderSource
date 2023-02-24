@@ -1,6 +1,6 @@
 /*
-* Percepio Trace Recorder for Tracealyzer v4.6.6
-* Copyright 2021 Percepio AB
+* Percepio Trace Recorder for Tracealyzer v4.7.0
+* Copyright 2023 Percepio AB
 * www.percepio.com
 *
 * SPDX-License-Identifier: Apache-2.0
@@ -25,7 +25,7 @@ extern "C" {
 
 #include <trcTypes.h>
 
-#define TRC_INTERVAL_CHANNEL_SET_INDEX 0
+#define TRC_INTERVAL_CHANNEL_SET_INDEX 0u
 
 /**
  * @defgroup trace_interval_apis Trace Interval APIs

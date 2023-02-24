@@ -1,12 +1,12 @@
 var indexSectionsWithContent =
 {
-  0: "dfloprtuvwx",
-  1: "t",
+  0: "dfhiloprstuvwx",
+  1: "ost",
   2: "t",
-  3: "vx",
-  4: "floptuw",
+  3: "puvx",
+  4: "fhiloptuw",
   5: "t",
-  6: "pvx",
+  6: "ptvx",
   7: "t",
   8: "dlr"
 };

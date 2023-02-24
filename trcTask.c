@@ -1,6 +1,6 @@
 /*
-* Percepio Trace Recorder for Tracealyzer v4.6.6
-* Copyright 2021 Percepio AB
+* Percepio Trace Recorder for Tracealyzer v4.7.0
+* Copyright 2023 Percepio AB
 * www.percepio.com
 *
 * SPDX-License-Identifier: Apache-2.0
@@ -14,29 +14,30 @@
 
 #if (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING)
 
+#ifndef TRC_KERNEL_PORT_KERNEL_CAN_SWITCH_TO_SAME_TASK
+#define TRC_KERNEL_PORT_KERNEL_CAN_SWITCH_TO_SAME_TASK 1
+#endif
+
 /* Code used for "task address" when no task has started, to indicate "(startup)".
  * This value was used since NULL/0 was already reserved for the idle task. */
-#define TRACE_HANDLE_NO_TASK ((void*)2)
+#define TRACE_HANDLE_NO_TASK ((void*)2UL)
 
-#define TRC_TASK_STATE_INDEX_PRIORITY		0
-#define TRC_TASK_STATE_INDEX_UNUSED_STACK	1
+#define TRC_TASK_STATE_INDEX_PRIORITY		0u
 
-TraceTaskInfo_t* pxTraceTaskInfo;
+TraceTaskData_t* pxTraceTaskData TRC_CFG_RECORDER_DATA_ATTRIBUTE;
 
-traceResult xTraceTaskInitialize(TraceTaskInfoBuffer_t *pxBuffer)
+traceResult xTraceTaskInitialize(TraceTaskData_t *pxBuffer)
 {
-	uint32_t i;
-
-	TRC_ASSERT_EQUAL_SIZE(TraceTaskInfoBuffer_t, TraceTaskInfo_t);
+	int32_t i;
 
 	/* This should never fail */
-	TRC_ASSERT(pxBuffer != 0);
+	TRC_ASSERT(pxBuffer != (void*)0);
 
-	pxTraceTaskInfo = (TraceTaskInfo_t*)pxBuffer;
+	pxTraceTaskData= pxBuffer;
 
-	for (i = 0; i < TRC_CFG_CORE_COUNT; i++)
+	for (i = 0; i < (TRC_CFG_CORE_COUNT); i++)
 	{
-		pxTraceTaskInfo->coreTasks[i] = TRACE_HANDLE_NO_TASK;
+		pxTraceTaskData->coreTasks[i] = TRACE_HANDLE_NO_TASK;  /*cstat !MISRAC2004-11.3 !MISRAC2012-Rule-11.4 !MISRAC2012-Rule-11.6 Suppress conversion from pointer to integer check*/
 	}
 
 	xTraceSetComponentInitialized(TRC_RECORDER_COMPONENT_TASK);
@@ -46,7 +47,7 @@ traceResult xTraceTaskInitialize(TraceTaskInfoBuffer_t *pxBuffer)
 
 traceResult xTraceTaskUnregister(TraceTaskHandle_t xTaskHandle, TraceUnsignedBaseType_t uxPriority)
 {
-	void* pvTask;
+	void* pvTask = (void*)0;
 	
 	/* This should never fail */
 	TRC_ASSERT_ALWAYS_EVALUATE(xTraceEntryGetAddress((TraceEntryHandle_t)xTaskHandle, &pvTask) == TRC_SUCCESS);
@@ -58,29 +59,21 @@ traceResult xTraceTaskUnregister(TraceTaskHandle_t xTaskHandle, TraceUnsignedBas
 
 traceResult xTraceTaskSetPriority(TraceTaskHandle_t xTaskHandle, TraceUnsignedBaseType_t uxPriority)
 {
-	TraceEventHandle_t xEventHandle = 0;
-	void *pvTask;
+	void *pvTask = (void*)0;
 
 	/* This should never fail */
-	TRC_ASSERT_ALWAYS_EVALUATE(xTraceObjectSetState((TraceObjectHandle_t)xTaskHandle, uxPriority) == TRC_SUCCESS);
+	TRC_ASSERT_ALWAYS_EVALUATE(xTraceObjectSetSpecificState((TraceObjectHandle_t)xTaskHandle, TRC_TASK_STATE_INDEX_PRIORITY, uxPriority) == TRC_SUCCESS);
 	
 	/* This should never fail */
 	TRC_ASSERT_ALWAYS_EVALUATE(xTraceEntryGetAddress((TraceEntryHandle_t)xTaskHandle, &pvTask) == TRC_SUCCESS);
 
-	/* We need to check this */
-	if (xTraceEventBegin(PSF_EVENT_TASK_PRIORITY, sizeof(void*) + sizeof(uint32_t), &xEventHandle) == TRC_SUCCESS)
-	{
-		xTraceEventAddPointer(xEventHandle, pvTask);
-		xTraceEventAdd32(xEventHandle, (uint32_t)uxPriority);
-		xTraceEventEnd(xEventHandle);
-	}
+	(void)xTraceEventCreate2(PSF_EVENT_TASK_PRIORITY, (TraceUnsignedBaseType_t)pvTask, uxPriority);  /*cstat !MISRAC2004-11.3 !MISRAC2012-Rule-11.4 !MISRAC2012-Rule-11.6 Suppress conversion from pointer to integer check*/
 	
 	return TRC_SUCCESS;
 }
 
 traceResult xTraceTaskSetPriorityWithoutHandle(void* pvTask, TraceUnsignedBaseType_t uxPriority)
 {
-	TraceEventHandle_t xEventHandle = 0;
 	TraceEntryHandle_t xEntryHandle;
 	
 	if (xTraceEntryFind(pvTask, &xEntryHandle) == TRC_FAIL)
@@ -89,32 +82,36 @@ traceResult xTraceTaskSetPriorityWithoutHandle(void* pvTask, TraceUnsignedBaseTy
 	}
 
 	/* This should never fail */
-	TRC_ASSERT_ALWAYS_EVALUATE(xTraceObjectSetState((TraceObjectHandle_t)xEntryHandle, uxPriority) == TRC_SUCCESS);
+	TRC_ASSERT_ALWAYS_EVALUATE(xTraceObjectSetSpecificState((TraceObjectHandle_t)xEntryHandle, TRC_TASK_STATE_INDEX_PRIORITY, uxPriority) == TRC_SUCCESS);
 
 	/* We need to check this */
-	if (xTraceEventBegin(PSF_EVENT_TASK_PRIORITY, sizeof(void*) + sizeof(uint32_t), &xEventHandle) == TRC_SUCCESS)
-	{
-		xTraceEventAddPointer(xEventHandle, pvTask);
-		xTraceEventAdd32(xEventHandle, (uint32_t)uxPriority);
-		xTraceEventEnd(xEventHandle);
-	}
-	
+	(void)xTraceEventCreate2(PSF_EVENT_TASK_PRIORITY, (TraceUnsignedBaseType_t)pvTask, uxPriority);  /*cstat !MISRAC2004-11.3 !MISRAC2012-Rule-11.4 !MISRAC2012-Rule-11.6 Suppress conversion from pointer to integer check*/
+
 	return TRC_SUCCESS;
 }
 
 traceResult xTraceTaskSwitch(void *pvTask, TraceUnsignedBaseType_t uxPriority)
 {
 	traceResult xResult = TRC_FAIL;
-	TraceEventHandle_t xEventHandle = 0;
-	void* pvCurrent = 0;
+#if (TRC_KERNEL_PORT_KERNEL_CAN_SWITCH_TO_SAME_TASK == 1)
+	void* pvCurrent = (void*)0;
+#endif
 
 	TRACE_ALLOC_CRITICAL_SECTION();
 	
 	(void)pvTask;
 	(void)uxPriority;
 
-	if (xTraceIsRecorderEnabled() == 0)
+	if (!xTraceIsRecorderInitialized())
 	{
+		return xResult;
+	}
+
+	if (!xTraceIsRecorderEnabled())
+	{
+		/* Make sure we store the current task, even while recorder isn't enabled */
+		xTraceTaskSetCurrent(pvTask);
+
 		return xResult;
 	}
 
@@ -122,18 +119,14 @@ traceResult xTraceTaskSwitch(void *pvTask, TraceUnsignedBaseType_t uxPriority)
 
 	xTraceStateSet(TRC_STATE_IN_TASKSWITCH);
 
+#if (TRC_KERNEL_PORT_KERNEL_CAN_SWITCH_TO_SAME_TASK == 1)
 	xTraceTaskGetCurrent(&pvCurrent);
 	if (pvCurrent != pvTask)
+#endif
 	{
 		xTraceTaskSetCurrent(pvTask);
-		
-		if (xTraceEventBegin(PSF_EVENT_TASK_ACTIVATE, sizeof(void*) + sizeof(uint32_t), &xEventHandle) == TRC_SUCCESS)
-		{
-			xTraceEventAddPointer(xEventHandle, pvTask);
-			xTraceEventAdd32(xEventHandle, (uint32_t)uxPriority);
-			xTraceEventEnd(xEventHandle);
-			xResult = TRC_SUCCESS;
-		}
+
+		xResult = xTraceEventCreate2(PSF_EVENT_TASK_ACTIVATE, (TraceUnsignedBaseType_t)pvTask, uxPriority);  /*cstat !MISRAC2004-11.3 !MISRAC2012-Rule-11.4 !MISRAC2012-Rule-11.6 Suppress conversion from pointer to integer check*/
 	}
 
 	xTraceStateSet(TRC_STATE_IN_APPLICATION);
@@ -141,51 +134,6 @@ traceResult xTraceTaskSwitch(void *pvTask, TraceUnsignedBaseType_t uxPriority)
 	TRACE_EXIT_CRITICAL_SECTION();
 
 	return xResult;
-}
-
-#if (TRC_CFG_INCLUDE_READY_EVENTS == 1)
-traceResult xTraceTaskReady(void *pvTask)
-{
-	traceResult xResult = TRC_FAIL;
-	TraceEventHandle_t xEventHandle = 0;
-
-	if (xTraceEventBegin(PSF_EVENT_TASK_READY, sizeof(void*), &xEventHandle) == TRC_SUCCESS)
-	{
-		xTraceEventAddPointer(xEventHandle, pvTask);
-		xTraceEventEnd(xEventHandle);
-		xResult = TRC_SUCCESS;
-	}
-
-	return xResult;
-}
-#endif /* (TRC_CFG_INCLUDE_READY_EVENTS == 1) */
-
-traceResult xTraceTaskInstanceFinishedNow(void)
-{
-	TraceEventHandle_t xEventHandle = 0;
-
-	if (xTraceEventBegin(PSF_EVENT_IFE_DIRECT, 0, &xEventHandle) == TRC_FAIL)
-	{
-		return TRC_FAIL;
-	}
-
-	xTraceEventEnd(xEventHandle);
-
-	return TRC_SUCCESS;
-}
-
-traceResult xTraceTaskInstanceFinishedNext(void)
-{
-	TraceEventHandle_t xEventHandle = 0;
-
-	if (xTraceEventBegin(PSF_EVENT_IFE_NEXT, 0, &xEventHandle) == TRC_FAIL)
-	{
-		return TRC_FAIL;
-	}
-
-	xTraceEventEnd(xEventHandle);
-
-	return TRC_SUCCESS;
 }
 
 #endif /* (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING) */

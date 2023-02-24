@@ -1,6 +1,6 @@
 /*
- * Trace Recorder for Tracealyzer v4.6.6
- * Copyright 2021 Percepio AB
+ * Trace Recorder for Tracealyzer v4.7.0
+ * Copyright 2023 Percepio AB
  * www.percepio.com
  *
  * SPDX-License-Identifier: Apache-2.0
@@ -206,7 +206,7 @@ extern "C" {
  * increases the CPU load of TzCtrl somewhat, but may improve the performance of
  * of the trace streaming, especially if the trace buffer is small.
  */
-#define TRC_CFG_CTRL_TASK_DELAY 2
+#define TRC_CFG_CTRL_TASK_DELAY 10
 
 /**
  * @def TRC_CFG_CTRL_TASK_STACK_SIZE
@@ -281,8 +281,8 @@ extern "C" {
  * If this is an issue for you, set TRC_CFG_RECORDER_DATA_INIT to 0.
  * The following code can then be used before any traced objects are created:
  *
- *	extern uint32_t RecorderEnabled;
- *	RecorderEnabled = 0;
+ *	extern uint32_t RecorderInitialized;
+ *	RecorderInitialized = 0;
  *	xTraceInitialize();
  *
  * After the clocks are properly initialized, use vTraceEnable(...) to start

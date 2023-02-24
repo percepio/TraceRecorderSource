@@ -1,6 +1,6 @@
 /*
-* Percepio Trace Recorder for Tracealyzer v4.6.6
-* Copyright 2021 Percepio AB
+* Percepio Trace Recorder for Tracealyzer v4.7.0
+* Copyright 2023 Percepio AB
 * www.percepio.com
 *
 * SPDX-License-Identifier: Apache-2.0
@@ -57,12 +57,36 @@ typedef struct TraceMultiCoreEventBuffer
  * @retval TRC_FAIL Failure
  * @retval TRC_SUCCESS Success
  */
-traceResult xTraceMultiCoreEventBufferInitialize(TraceMultiCoreEventBuffer_t* pxTraceMultiCoreEventBuffer, uint32_t uiOptions,
+traceResult xTraceMultiCoreEventBufferInitialize(TraceMultiCoreEventBuffer_t* const pxTraceMultiCoreEventBuffer, uint32_t uiOptions,
 	uint8_t* puiBuffer, uint32_t uiSize);
 
 
 
 #if ((TRC_CFG_USE_TRACE_ASSERT) == 1)
+/**
+ * @brief Allocates a data slot directly from the event buffer.
+ *
+ * @param[in] pxTraceMultiCoreEventBuffer Pointer to initialized multi-core trace event buffer.
+ * @param[in] uiSize Allocation size
+ * @param[out] ppvData Pointer that will hold the area from the buffer.
+ *
+ * @retval TRC_FAIL Failure
+ * @retval TRC_SUCCESS Success
+ */
+traceResult xTraceMultiCoreEventBufferAlloc(const TraceMultiCoreEventBuffer_t * const pxTraceMultiCoreEventBuffer, uint32_t uiSize, void** ppvData);
+
+/**
+ * @brief Commits the last allocated block to the event buffer.
+ *
+ * @param[in] pxTraceMultiCoreEventBuffer Pointer to initialized multi-core trace event buffer.
+ * @param[in] pvData Data pointer.
+ * @param[in] uiSize Data size.
+ * @param piBytesWritten The number of bytes that was written.
+ *
+ * @retval TRC_FAIL Failure
+ * @retval TRC_SUCCESS Success
+ */
+traceResult xTraceMultiCoreEventBufferAllocCommit(const TraceMultiCoreEventBuffer_t * const pxTraceMultiCoreEventBuffer, void *pvData, uint32_t uiSize, int32_t *piBytesWritten);
 
 /**
  * @brief Pushes data into multi-core trace event buffer.
@@ -80,9 +104,31 @@ traceResult xTraceMultiCoreEventBufferInitialize(TraceMultiCoreEventBuffer_t* px
  * @retval TRC_FAIL Failure
  * @retval TRC_SUCCESS Success
  */
-traceResult xTraceMultiCoreEventBufferPush(TraceMultiCoreEventBuffer_t* pxTraceMultiCoreEventBuffer, void* pvData, uint32_t uiSize, int32_t* piBytesWritten);
+traceResult xTraceMultiCoreEventBufferPush(const TraceMultiCoreEventBuffer_t* const pxTraceMultiCoreEventBuffer, void* pvData, uint32_t uiSize, int32_t* piBytesWritten);
 
 #else
+
+/**
+ * @brief Allocates a data slot directly from the event buffer.
+ *
+ * @param[in] pxTraceEventBuffer Pointer to initialized multi-core trace event buffer.
+ * @param[in] uiSize Allocation size
+ * @param[out] ppvData Pointer that will hold the area from the buffer.
+ *
+ * @retval TRC_FAIL Failure
+ * @retval TRC_SUCCESS Success
+ */
+#define xTraceMultiCoreEventBufferAlloc(pxTraceMultiCoreEventBuffer, uiSize, ppvData) xTraceEventBufferAlloc((pxTraceMultiCoreEventBuffer)->xEventBuffer[TRC_CFG_GET_CURRENT_CORE()], uiSize, ppvData)
+
+/**
+ * @brief Commits the last allocated block to the event buffer.
+ *
+ * @param[in] pxTraceEventBuffer Pointer to initialized multi-core trace event buffer.
+ *
+ * @retval TRC_FAIL Failure
+ * @retval TRC_SUCCESS Success
+ */
+#define xTraceMultiCoreEventBufferAllocCommit(pxTraceMultiCoreEventBuffer, pvData, uiSize, piBytesWritten) xTraceEventBufferAllocCommit((pxTraceMultiCoreEventBuffer)->xEventBuffer[TRC_CFG_GET_CURRENT_CORE()], pvData, uiSize, piBytesWritten)
 
 /**
  * @brief Pushes data into multi-core trace event buffer.
@@ -118,7 +164,21 @@ traceResult xTraceMultiCoreEventBufferPush(TraceMultiCoreEventBuffer_t* pxTraceM
  * @retval TRC_FAIL Failure
  * @retval TRC_SUCCESS Success
  */
-traceResult xTraceMultiCoreEventBufferTransfer(TraceMultiCoreEventBuffer_t* pxTraceMultiCoreEventBuffer, int32_t* piBytesWritten);
+traceResult xTraceMultiCoreEventBufferTransferAll(const TraceMultiCoreEventBuffer_t* const pxTraceMultiCoreEventBuffer, int32_t* piBytesWritten);
+
+/**
+ * @brief Transfer multi-core trace event buffer data through streamport.
+ *
+ * This routine will attempt to transfer a chunk of stored event data in the multi-core
+ * trace event buffer. Note that the chunk size is on a per-core basis with each core
+ * event buffer attempting to push up to uiChunkSize of bytes.
+ *
+ * @param[in] pxTraceMultiCoreEventBuffer Pointer to initialized multi-core event buffer.
+ * @param[in] uiChunkSize Number of bytes to attempt to transfer per core.
+ * @param[out] piBytesWritten Pointer to variable which the routine will write the number
+ * of bytes that was pushed into the multi-core trace event buffer.
+ */
+traceResult xTraceMultiCoreEventBufferTransferChunk(const TraceMultiCoreEventBuffer_t* const pxTraceMultiCoreEventBuffer, uint32_t uiChunkSize, int32_t* piBytesWritten);
 
 /**
  * @brief Clears all data from event buffer.
@@ -128,7 +188,7 @@ traceResult xTraceMultiCoreEventBufferTransfer(TraceMultiCoreEventBuffer_t* pxTr
  * @retval TRC_FAIL Failure
  * @retval TRC_SUCCESS Success
  */
-traceResult xTraceMultiCoreEventBufferClear(TraceMultiCoreEventBuffer_t* pxTraceMultiCoreEventBuffer);
+traceResult xTraceMultiCoreEventBufferClear(const TraceMultiCoreEventBuffer_t* const pxTraceMultiCoreEventBuffer);
 
 /** @} */
 

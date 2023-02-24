@@ -1,6 +1,6 @@
 /*
-* Percepio Trace Recorder for Tracealyzer v4.6.6
-* Copyright 2021 Percepio AB
+* Percepio Trace Recorder for Tracealyzer v4.7.0
+* Copyright 2023 Percepio AB
 * www.percepio.com
 *
 * SPDX-License-Identifier: Apache-2.0
@@ -31,9 +31,9 @@
 extern "C" {
 #endif
 
-#define TRC_HEAP_STATE_INDEX_CURRENT		0
-#define TRC_HEAP_STATE_INDEX_HIGHWATERMARK	1
-#define TRC_HEAP_STATE_INDEX_MAX			2
+#define TRC_HEAP_STATE_INDEX_CURRENT		0u
+#define TRC_HEAP_STATE_INDEX_HIGHWATERMARK	1u
+#define TRC_HEAP_STATE_INDEX_MAX			2u
 
 /**
  * @defgroup trace_heap_apis Trace Heap APIs

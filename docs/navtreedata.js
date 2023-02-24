@@ -40,7 +40,7 @@ var NAVTREE =
     [ "Files", "files.html", [
       [ "File List", "files.html", "files_dup" ],
       [ "Globals", "globals.html", [
-        [ "All", "globals.html", null ],
+        [ "All", "globals.html", "globals_dup" ],
         [ "Functions", "globals_func.html", null ],
         [ "Typedefs", "globals_type.html", null ],
         [ "Macros", "globals_defs.html", null ]
@@ -52,8 +52,8 @@ var NAVTREE =
 
 var NAVTREEINDEX =
 [
-"FreeRTOS_2config_2trcKernelPortConfig_8h_source.html",
-"group__trace__object__apis.html#ga304a75a1c8a64e02b0f8fe2355305555"
+"BareMetal_2config_2trcKernelPortConfig_8h_source.html",
+"group__trace__task__apis.html#ga008c1439e57449718389f865dff32c1e"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

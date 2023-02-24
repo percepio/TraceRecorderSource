@@ -1,6 +1,6 @@
 /*
- * Trace Recorder for Tracealyzer v4.6.6
- * Copyright 2021 Percepio AB
+ * Trace Recorder for Tracealyzer v4.7.0
+ * Copyright 2023 Percepio AB
  * www.percepio.com
  *
  * SPDX-License-Identifier: Apache-2.0
@@ -144,15 +144,22 @@ uint32_t uiTraceTimerGetValue(void);
 	/* Set the meaning of IRQ priorities in ISR tracing - see above */
 	#define TRC_IRQ_PRIORITY_ORDER NOT_SET
 
-#elif (TRC_CFG_HARDWARE_PORT == TRC_HARDWARE_PORT_ARM_Cortex_M)
+#elif ((TRC_CFG_HARDWARE_PORT == TRC_HARDWARE_PORT_ARM_Cortex_M) || (TRC_CFG_HARDWARE_PORT == TRC_HARDWARE_PORT_ARM_Cortex_M_NRF_SD))
 	
 	#ifndef __CORTEX_M
 	#error "Can't find the CMSIS API. Please include your processor's header file in trcConfig.h" 	
 	#endif
-	
+
+#if (TRC_CFG_HARDWARE_PORT == TRC_HARDWARE_PORT_ARM_Cortex_M)
 	#define TRACE_ALLOC_CRITICAL_SECTION() uint32_t TRACE_ALLOC_CRITICAL_SECTION_NAME;
 	#define TRACE_ENTER_CRITICAL_SECTION() {TRACE_ALLOC_CRITICAL_SECTION_NAME = __get_PRIMASK(); __set_PRIMASK(1);} /* PRIMASK disables ALL interrupts - allows for tracing in any ISR */
 	#define TRACE_EXIT_CRITICAL_SECTION() {__set_PRIMASK(TRACE_ALLOC_CRITICAL_SECTION_NAME);}
+#else
+        #include "nrf_nvic.h"
+        #define TRACE_ALLOC_CRITICAL_SECTION() uint8_t TRACE_ALLOC_CRITICAL_SECTION_NAME;
+        #define TRACE_ENTER_CRITICAL_SECTION() {(void) sd_nvic_critical_region_enter(&TRACE_ALLOC_CRITICAL_SECTION_NAME);}
+        #define TRACE_EXIT_CRITICAL_SECTION() {(void) sd_nvic_critical_region_exit(TRACE_ALLOC_CRITICAL_SECTION_NAME);}
+#endif
 
 	/**************************************************************************
 	* For Cortex-M3, M4 and M7, the DWT cycle counter is used for timestamping.
@@ -201,13 +208,22 @@ uint32_t uiTraceTimerGetValue(void);
 		#define TRC_IRQ_PRIORITY_ORDER 0
 	
 	#else
-			
-		#define TRC_HWTC_TYPE TRC_OS_TIMER_DECR
-		#define TRC_HWTC_COUNT (*((volatile uint32_t*)0xE000E018))
-		#define TRC_HWTC_PERIOD ((*((volatile uint32_t*)0xE000E014)) + 1)
-		#define TRC_HWTC_DIVISOR 4
-		#define TRC_HWTC_FREQ_HZ TRACE_CPU_CLOCK_HZ
-		#define TRC_IRQ_PRIORITY_ORDER 0
+		/* Uses the lower bits of the 64-bit free running timer in the RP2040. SysTick can not be used since it is different for both cores. */
+		#ifdef _CMSIS_RP2040_H_
+			#define TRC_HWTC_TYPE TRC_FREE_RUNNING_32BIT_INCR
+			#define TRC_HWTC_COUNT (*((volatile uint32_t*)0x4005400c))
+			#define TRC_HWTC_PERIOD 0
+			#define TRC_HWTC_DIVISOR 1
+			#define TRC_HWTC_FREQ_HZ 1000000
+			#define TRC_IRQ_PRIORITY_ORDER 0
+		#else	
+			#define TRC_HWTC_TYPE TRC_OS_TIMER_DECR
+			#define TRC_HWTC_COUNT (*((volatile uint32_t*)0xE000E018))
+			#define TRC_HWTC_PERIOD ((*((volatile uint32_t*)0xE000E014)) + 1)
+			#define TRC_HWTC_DIVISOR 4
+			#define TRC_HWTC_FREQ_HZ TRACE_CPU_CLOCK_HZ
+			#define TRC_IRQ_PRIORITY_ORDER 0
+		#endif
 	
 	#endif
 
@@ -372,7 +388,7 @@ uint32_t uiTraceTimerGetValue(void);
 	#define TRC_IRQ_PRIORITY_ORDER  0
 
 	#ifdef __GNUC__
-	/* For Arm Cortex-A and Cortex-R in general. */
+
 	static inline uint32_t prvGetCPSR(void)
 	{
 		unsigned long ret;
@@ -438,9 +454,8 @@ uint32_t uiTraceTimerGetValue(void);
 	* can only be called from ISRs with priority less or equal to 
 	* configMAX_API_CALL_INTERRUPT_PRIORITY (like FreeRTOS fromISR functions).
 	*
-    * This hardware port has been tested on it a Xilinx Zync 7000 (Cortex-A9),
-	* but should work with all Cortex-A and R processors assuming that
-	* TRC_CA9_MPCORE_PERIPHERAL_BASE_ADDRESS is set accordingly.	
+    * This hardware port has been tested on a Xilinx Zync 7000 (Cortex-A9).
+	
 	**************************************************************************/
 
 	extern int cortex_a9_r5_enter_critical(void);
@@ -482,7 +497,7 @@ uint32_t uiTraceTimerGetValue(void);
     #define TRC_IRQ_PRIORITY_ORDER 0
 
 	#ifdef __GNUC__
-	/* For Arm Cortex-A and Cortex-R in general. */
+
 	static inline uint32_t prvGetCPSR(void)
 	{
 		unsigned long ret;
@@ -548,6 +563,14 @@ uint32_t uiTraceTimerGetValue(void);
 	 * 			instead we use the external 40MHz timer for synchronized timestamping between the cores.
 	 */
 	#if CONFIG_FREERTOS_UNICORE == 1
+		
+		#define TRACE_ALLOC_CRITICAL_SECTION() uint32_t TRACE_ALLOC_CRITICAL_SECTION_NAME;
+		#define TRACE_ENTER_CRITICAL_SECTION() {TRACE_ALLOC_CRITICAL_SECTION_NAME = __extension__({ unsigned __tmp; 	\
+				__asm__ __volatile__("rsil	%0, 15\n" 												\
+						: "=a" (__tmp) : : "memory" ); 												\
+						__tmp;});}
+		#define TRACE_EXIT_CRITICAL_SECTION() {portCLEAR_INTERRUPT_MASK_FROM_ISR(TRACE_ALLOC_CRITICAL_SECTION_NAME);}
+		
 		#define TRC_HWTC_TYPE TRC_FREE_RUNNING_32BIT_INCR
 		#define TRC_HWTC_COUNT ({ unsigned int __ccount; 			\
 			__asm__ __volatile__("rsr.ccount %0" : "=a"(__ccount)); \
@@ -628,6 +651,38 @@ uint32_t uiTraceTimerGetValue(void);
     #define TRC_HWTC_FREQ_HZ configPIT_CLOCK_HZ
     #define TRC_HWTC_DIVISOR 1
     #define TRC_IRQ_PRIORITY_ORDER 1 // higher IRQ priority values are more significant
+
+#elif (TRC_CFG_HARDWARE_PORT == TRC_HARDWARE_PORT_ARMv8AR_A32)
+    extern uint32_t cortex_a9_r5_enter_critical(void);
+    extern void cortex_a9_r5_exit_critical(uint32_t irq_already_masked_at_enter);
+
+    #define TRACE_ALLOC_CRITICAL_SECTION() uint32_t TRACE_ALLOC_CRITICAL_SECTION_NAME;
+
+    #define TRACE_ENTER_CRITICAL_SECTION() { TRACE_ALLOC_CRITICAL_SECTION_NAME = cortex_a9_r5_enter_critical(); }
+
+    #define TRACE_EXIT_CRITICAL_SECTION() { cortex_a9_r5_exit_critical(TRACE_ALLOC_CRITICAL_SECTION_NAME); }
+
+    #include <cmsis_compiler.h>
+
+    #define TRC_HWTC_TYPE  TRC_FREE_RUNNING_32BIT_INCR
+    #define TRC_HWTC_COUNT  ((uint32_t)__get_CNTPCT())
+    #define TRC_HWTC_PERIOD  0
+    #define TRC_HWTC_DIVISOR  16
+    #define TRC_HWTC_FREQ_HZ  (R_GSC->CNTFID0)
+    #define TRC_IRQ_PRIORITY_ORDER  0
+
+    #ifdef __GNUC__
+    /* For Arm Cortex-A and Cortex-R in general. */
+    static inline uint32_t prvGetCPSR(void)
+    {
+        unsigned long ret;
+        /* GCC-style assembly for getting the CPSR/APSR register, where the system execution mode is found. */
+        __asm volatile (" mrs  %0, cpsr" : "=r" (ret) : /* no inputs */  );
+        return ret;
+    }
+    #else
+        #error "Only GCC Supported!"
+    #endif
 
 #elif (TRC_CFG_HARDWARE_PORT == TRC_HARDWARE_PORT_APPLICATION_DEFINED)
 

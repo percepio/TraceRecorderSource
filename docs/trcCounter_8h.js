@@ -8,6 +8,7 @@ var trcCounter_8h =
     [ "xTraceCounterGetUpperLimit", "group__trace__counter__apis.html#ga692a007ff950ec87f1988782ca1145c0", null ],
     [ "xTraceCounterIncrease", "group__trace__counter__apis.html#ga6374de3cf1de24d354ea095c75a54742", null ],
     [ "xTraceCounterCreate", "group__trace__counter__apis.html#gabc5ffcf7218f9b9dfde860aa3f0f2632", null ],
+    [ "xTraceCounterInitialize", "group__trace__counter__apis.html#ga4feede3ee8b5b78ec2ec8ac534b9ef7e", null ],
     [ "xTraceCounterSet", "group__trace__counter__apis.html#gaab9ced4239f659fbe9390187e05cbd4a", null ],
     [ "xTraceCounterSetCallback", "group__trace__counter__apis.html#ga2e9567e1b12afeea68e415f46963c5ca", null ]
 ];

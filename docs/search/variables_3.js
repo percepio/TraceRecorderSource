@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['period_339',['period',['../structTraceTimestamp.html#a66767ff290dc1482bb65edc8f76762a9',1,'TraceTimestamp']]],
-  ['puibuffer_340',['puiBuffer',['../structTraceEventBuffer.html#afbe952f473fc2e4374d616e5cf3549e8',1,'TraceEventBuffer']]]
+  ['latesttimestamp_0',['latestTimestamp',['../structTraceTimestampData.html#a2b2a757a002505e143807470cf9a2696',1,'TraceTimestampData']]],
+  ['lowestindexofclass_1',['lowestIndexOfClass',['../structobjectHandleStackType.html#a165dd3475f5cd974af60a9aeef60195c',1,'objectHandleStackType']]]
 ];

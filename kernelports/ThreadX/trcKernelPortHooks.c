@@ -14,14 +14,14 @@ traceResult xTraceEventEndOffline_orig(TraceEventHandle_t pxEventHandle);
 #define TRC_EVENT_BEGIN_OFFLINE_ORIG(uiEventCode, uiPayloadSize, pxEventHandle) \
 	(xTraceIsRecorderEnabled() ? \
 		( \
-			(xTraceEventBeginRawOffline_orig(sizeof(TraceBaseEvent_t) + (uiPayloadSize), pxEventHandle)) == TRC_SUCCESS ? \
+			(xTraceEventBeginRawOffline_orig(sizeof(TraceEvent0_t) + (uiPayloadSize), pxEventHandle)) == TRC_SUCCESS ? \
 			( \
 				pxTraceEventDataTable->coreEventData[TRC_CFG_GET_CURRENT_CORE()].eventCounter++, \
-				SET_BASE_EVENT_DATA((TraceBaseEvent_t*)(((TraceEventData_t*)*(pxEventHandle))->pvBlob), \
+				SET_BASE_EVENT_DATA((TraceEvent0_t*)(((TraceEventData_t*)*(pxEventHandle))->pvBlob), \
 					uiEventCode, \
-					(((TraceEventData_t*)*(pxEventHandle))->size - sizeof(TraceBaseEvent_t)) / sizeof(uint32_t), \
+					(((TraceEventData_t*)*(pxEventHandle))->size - sizeof(TraceEvent0_t)) / sizeof(uint32_t), \
 					pxTraceEventDataTable->coreEventData[TRC_CFG_GET_CURRENT_CORE()].eventCounter), \
-				((TraceEventData_t*)*(pxEventHandle))->offset += sizeof(TraceBaseEvent_t), \
+				((TraceEventData_t*)*(pxEventHandle))->offset += sizeof(TraceEvent0_t), \
 				TRC_SUCCESS \
 			) : TRC_FAIL \
 		) : TRC_FAIL \

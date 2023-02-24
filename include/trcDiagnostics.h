@@ -1,6 +1,6 @@
 /*
-* Percepio Trace Recorder for Tracealyzer v4.6.6
-* Copyright 2021 Percepio AB
+* Percepio Trace Recorder for Tracealyzer v4.7.0
+* Copyright 2023 Percepio AB
 * www.percepio.com
 *
 * SPDX-License-Identifier: Apache-2.0
@@ -25,21 +25,21 @@
 extern "C" {
 #endif
 
-#define TRC_DIAGNOSTICS_COUNT 5
+#define TRC_DIAGNOSTICS_COUNT 5UL
 
 typedef enum TraceDiagnosticsType
 {
-	TRC_DIAGNOSTICS_ENTRY_SYMBOL_LONGEST_LENGTH = 0x00,
-	TRC_DIAGNOSTICS_ENTRY_SLOTS_NO_ROOM = 0x01,
-	TRC_DIAGNOSTICS_BLOB_MAX_BYTES_TRUNCATED = 0x02,
-	TRC_DIAGNOSTICS_STACK_MONITOR_NO_SLOTS = 0x03,
-	TRC_DIAGNOSTICS_ASSERTS_TRIGGERED = 0x04,
+	TRC_DIAGNOSTICS_ENTRY_SYMBOL_LONGEST_LENGTH = 0x00UL,
+	TRC_DIAGNOSTICS_ENTRY_SLOTS_NO_ROOM = 0x01UL,
+	TRC_DIAGNOSTICS_BLOB_MAX_BYTES_TRUNCATED = 0x02UL,
+	TRC_DIAGNOSTICS_STACK_MONITOR_NO_SLOTS = 0x03UL,
+	TRC_DIAGNOSTICS_ASSERTS_TRIGGERED = 0x04UL,
 } TraceDiagnosticsType_t;
 
-typedef struct TraceDiagnosticsBuffer
+typedef struct TraceDiagnostics
 {
-	uint8_t buffer[sizeof(TraceBaseType_t) * (TRC_DIAGNOSTICS_COUNT)];
-} TraceDiagnosticsBuffer_t;
+	TraceBaseType_t metrics[TRC_DIAGNOSTICS_COUNT];
+} TraceDiagnosticsData_t;
 
 /**
  * @internal Initialize diagnostics
@@ -49,7 +49,7 @@ typedef struct TraceDiagnosticsBuffer
  * @retval TRC_FAIL Failure
  * @retval TRC_SUCCESS Success
  */
-traceResult xTraceDiagnosticsInitialize(TraceDiagnosticsBuffer_t* pxBuffer);
+traceResult xTraceDiagnosticsInitialize(TraceDiagnosticsData_t* pxBuffer);
 
 /**
  * @brief Retrieve diagnostics value

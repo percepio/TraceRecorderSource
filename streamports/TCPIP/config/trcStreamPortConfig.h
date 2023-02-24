@@ -1,6 +1,6 @@
 /*
- * Trace Recorder for Tracealyzer v4.6.6
- * Copyright 2021 Percepio AB
+ * Trace Recorder for Tracealyzer v4.7.0
+ * Copyright 2023 Percepio AB
  * www.percepio.com
  *
  * SPDX-License-Identifier: Apache-2.0
@@ -18,7 +18,7 @@ extern "C" {
 /* This define will determine whether to use the internal buffer or not.
 If file writing creates additional trace events (i.e. it uses semaphores or mutexes),
 then the internal buffer must be enabled to avoid infinite recursion. */
-#define TRC_CFG_STREAM_PORT_USE_INTERNAL_BUFFER 0
+#define TRC_CFG_STREAM_PORT_USE_INTERNAL_BUFFER 1
 
 /*******************************************************************************
 * Configuration Macro: TRC_CFG_STREAM_PORT_TCPIP_PORT

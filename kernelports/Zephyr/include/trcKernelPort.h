@@ -1,6 +1,6 @@
 /*
- * Trace Recorder for Tracealyzer v4.6.6
- * Copyright 2021 Percepio AB
+ * Trace Recorder for Tracealyzer v4.7.0
+ * Copyright 2023 Percepio AB
  * www.percepio.com
  *
  * SPDX-License-Identifier: Apache-2.0
@@ -44,7 +44,7 @@ extern "C" {
  * @def TRC_PLATFORM_CFG_MINOR
  * @brief Minor release version for recorder.
  */
-#define TRC_PLATFORM_CFG_MINOR 1
+#define TRC_PLATFORM_CFG_MINOR 2
 
 /**
  * @def TRC_PLATFORM_CFG_PATCH
@@ -598,6 +598,7 @@ void vTraceSetTimerName(void* object, const char* name);
 #define PSF_EVENT_CONDVAR_WAIT_FAILURE						0x81
 
 #define PSF_EVENT_USER_EVENT								0x90
+#define PSF_EVENT_USER_EVENT_FIXED							0x98
 
 #define PSF_EVENT_TIMER_INIT								0xA0
 #define PSF_EVENT_TIMER_START								0xA1
@@ -692,7 +693,13 @@ void vTraceSetTimerName(void* object, const char* name);
 #define PSF_EVENT_TASK_PRIORITY								PSF_EVENT_THREAD_SET_PRIORITY
 #define PSF_EVENT_TASK_DELETE								PSF_EVENT_THREAD_ABORT
 
-#define TRC_EVENT_LAST_ID 									0x167
+#define PSF_EVENT_RUNNABLE_REGISTER							0x167
+#define PSF_EVENT_RUNNABLE_START							0x168
+#define PSF_EVENT_RUNNABLE_STOP								0x169
+
+#define PSF_EVENT_DEPENDENCY_REGISTER						0x16A
+
+#define TRC_EVENT_LAST_ID									(PSF_EVENT_DEPENDENCY_REGISTER)
 
 
 #ifdef __cplusplus

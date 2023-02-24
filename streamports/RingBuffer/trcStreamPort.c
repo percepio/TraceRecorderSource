@@ -1,6 +1,6 @@
 /*
-* Trace Recorder for Tracealyzer v4.6.6
-* Copyright 2021 Percepio AB
+* Trace Recorder for Tracealyzer v4.7.0
+* Copyright 2023 Percepio AB
 * www.percepio.com
 *
 * SPDX-License-Identifier: Apache-2.0
@@ -18,9 +18,9 @@
 
 /* Backwards compatibility with plugins */
 typedef TraceRingBuffer_t RecorderData;
-RecorderData* RecorderDataPtr = 0;
+RecorderData* RecorderDataPtr TRC_CFG_RECORDER_DATA_ATTRIBUTE; /*cstat !MISRAC2004-8.7 !MISRAC2004-8.10 !MISRAC2012-Rule-8.4 !MISRAC2012-Rule-8.7 !MISRAC2012-Rule-8.9_b Suppress global object check*/
 
-TraceStreamPortData_t* pxStreamPortData;
+TraceStreamPortData_t* pxStreamPortData TRC_CFG_RECORDER_DATA_ATTRIBUTE;
 
 traceResult xTraceStreamPortInitialize(TraceStreamPortBuffer_t* pxBuffer)
 {
@@ -28,13 +28,14 @@ traceResult xTraceStreamPortInitialize(TraceStreamPortBuffer_t* pxBuffer)
 
 	TRC_ASSERT_EQUAL_SIZE(TraceStreamPortBuffer_t, TraceStreamPortData_t);
 	
-	if (pxBuffer == 0)
+	if (pxBuffer == (void*)0)
 	{
 		return TRC_FAIL;
 	}
 
-	pxStreamPortData = (TraceStreamPortData_t*)pxBuffer;
-	RecorderDataPtr = pxRingBuffer = &pxStreamPortData->xRingBuffer;
+	pxStreamPortData = (TraceStreamPortData_t*)pxBuffer; /*cstat !MISRAC2004-11.4 !MISRAC2012-Rule-11.3 Suppress conversion between pointer types checks*/
+	pxRingBuffer = &pxStreamPortData->xRingBuffer;
+	RecorderDataPtr = pxRingBuffer;
 
 	pxRingBuffer->xEventBuffer.uiSize = sizeof(pxRingBuffer->xEventBuffer.uiBuffer);
 	
@@ -55,7 +56,7 @@ traceResult xTraceStreamPortInitialize(TraceStreamPortBuffer_t* pxBuffer)
 		return TRC_FAIL;
 	}
 	
-	if (xTraceEntryTableInitialize(&pxRingBuffer->xEntryTableBuffer) == TRC_FAIL)
+	if (xTraceEntryTableInitialize(&pxRingBuffer->xEntryTable) == TRC_FAIL)
 	{
 		return TRC_FAIL;
 	}
@@ -65,58 +66,36 @@ traceResult xTraceStreamPortInitialize(TraceStreamPortBuffer_t* pxBuffer)
 		return TRC_FAIL;
 	}
 
-	pxRingBuffer->END_MARKERS[0] = 0x0A;
-	pxRingBuffer->END_MARKERS[1] = 0x0B;
-	pxRingBuffer->END_MARKERS[2] = 0x0C;
-	pxRingBuffer->END_MARKERS[3] = 0x0D;
+	pxRingBuffer->END_MARKERS[0] = 0x0AU;
+	pxRingBuffer->END_MARKERS[1] = 0x0BU;
+	pxRingBuffer->END_MARKERS[2] = 0x0CU;
+	pxRingBuffer->END_MARKERS[3] = 0x0DU;
 	
-	pxRingBuffer->END_MARKERS[4] = 0x71;
-	pxRingBuffer->END_MARKERS[5] = 0x72;
-	pxRingBuffer->END_MARKERS[6] = 0x73;
-	pxRingBuffer->END_MARKERS[7] = 0x74;
+	pxRingBuffer->END_MARKERS[4] = 0x71U;
+	pxRingBuffer->END_MARKERS[5] = 0x72U;
+	pxRingBuffer->END_MARKERS[6] = 0x73U;
+	pxRingBuffer->END_MARKERS[7] = 0x74U;
 	
-	pxRingBuffer->END_MARKERS[8] = 0xF1;
-	pxRingBuffer->END_MARKERS[9] = 0xF2;
-	pxRingBuffer->END_MARKERS[10] = 0xF3;
-	pxRingBuffer->END_MARKERS[11] = 0xF4;
+	pxRingBuffer->END_MARKERS[8] = 0xF1U;
+	pxRingBuffer->END_MARKERS[9] = 0xF2U;
+	pxRingBuffer->END_MARKERS[10] = 0xF3U;
+	pxRingBuffer->END_MARKERS[11] = 0xF4U;
 
-	pxRingBuffer->START_MARKERS[0] = 0x05;
-	pxRingBuffer->START_MARKERS[1] = 0x06;
-	pxRingBuffer->START_MARKERS[2] = 0x07;
-	pxRingBuffer->START_MARKERS[3] = 0x08;
+	pxRingBuffer->START_MARKERS[0] = 0x05U;
+	pxRingBuffer->START_MARKERS[1] = 0x06U;
+	pxRingBuffer->START_MARKERS[2] = 0x07U;
+	pxRingBuffer->START_MARKERS[3] = 0x08U;
 	
-	pxRingBuffer->START_MARKERS[4] = 0x75;
-	pxRingBuffer->START_MARKERS[5] = 0x76;
-	pxRingBuffer->START_MARKERS[6] = 0x77;
-	pxRingBuffer->START_MARKERS[7] = 0x78;
+	pxRingBuffer->START_MARKERS[4] = 0x75U;
+	pxRingBuffer->START_MARKERS[5] = 0x76U;
+	pxRingBuffer->START_MARKERS[6] = 0x77U;
+	pxRingBuffer->START_MARKERS[7] = 0x78U;
 	
-	pxRingBuffer->START_MARKERS[8] = 0xF5;
-	pxRingBuffer->START_MARKERS[9] = 0xF6;
-	pxRingBuffer->START_MARKERS[10] = 0xF7;
-	pxRingBuffer->START_MARKERS[11] = 0xF8;
+	pxRingBuffer->START_MARKERS[8] = 0xF5U;
+	pxRingBuffer->START_MARKERS[9] = 0xF6U;
+	pxRingBuffer->START_MARKERS[10] = 0xF7U;
+	pxRingBuffer->START_MARKERS[11] = 0xF8U;
 	
-	return TRC_SUCCESS;
-}
-
-traceResult xTraceStreamPortCommit(void* pvData, uint32_t uiSize, int32_t* piBytesCommitted)
-{
-	if (pvData == 0)
-	{
-		return TRC_FAIL;
-	}
-
-	xTraceMultiCoreEventBufferPush(&pxStreamPortData->xMultiCoreEventBuffer, pvData, uiSize, piBytesCommitted);
-
-#if (TRC_CFG_STREAM_PORT_RINGBUFFER_MODE == TRC_STREAM_PORT_RINGBUFFER_MODE_STOP_WHEN_FULL)
-	/* If no bytes was written it means that the buffer is full and we should stop
-	 * tracing.
-	 */
-	if (uiSize > 0 && *piBytesCommitted == 0) {
-		xTraceDisable();
-		return TRC_FAIL;
-	}
-#endif
-
 	return TRC_SUCCESS;
 }
 

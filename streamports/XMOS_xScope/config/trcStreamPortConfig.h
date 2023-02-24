@@ -1,6 +1,6 @@
 /*
- * Trace Recorder for Tracealyzer v4.6.6
- * Copyright 2021 Percepio AB
+ * Trace Recorder for Tracealyzer v4.7.0
+ * Copyright 2023 Percepio AB
  * www.percepio.com
  *
  * SPDX-License-Identifier: Apache-2.0
@@ -21,12 +21,34 @@ then the internal buffer must be enabled to avoid infinite recursion. */
 #define TRC_CFG_STREAM_PORT_USE_INTERNAL_BUFFER 0
 
 /**
-* @def TRC_CFG_INTERNAL_BUFFER_SIZE
-*
-* @brief Configures the size of the internal buffer if used.
-* is enabled.
-*/
+ * @def TRC_CFG_INTERNAL_BUFFER_SIZE
+ *
+ * @brief Configures the size of the internal buffer if used.
+ * is enabled.
+ */
 #define TRC_CFG_STREAM_PORT_INTERNAL_BUFFER_SIZE 35000
+
+/**
+ * @def TRC_CFG_STREAM_PORT_INTERNAL_BUFFER_WRITE_MODE
+ *
+ * @brief
+ */
+#define TRC_CFG_STREAM_PORT_INTERNAL_BUFFER_WRITE_MODE TRC_INTERNAL_EVENT_BUFFER_OPTION_WRITE_MODE_DIRECT
+
+/**
+ * @def TRC_CFG_STREAM_PORT_INTERNAL_BUFFER_TRANSFER_MODE
+ *
+ * @brief
+ */
+#define TRC_CFG_STREAM_PORT_INTERNAL_BUFFER_TRANSFER_MODE TRC_INTERNAL_EVENT_BUFFER_OPTION_TRANSFER_MODE_ALL
+
+/**
+ * @def TRC_CFG_STREAM_PORT_INTERNAL_BUFFER_CHUNK_SIZE
+ *
+ * @brief Defines the maximum chunk size when transferring
+ * internal buffer events in chunks.
+ */
+#define TRC_CFG_STREAM_PORT_INTERNAL_BUFFER_CHUNK_SIZE 5000
 
 #ifdef __cplusplus
 }

@@ -1,6 +1,6 @@
 /*
-* Trace Recorder for Tracealyzer v4.6.6
-* Copyright 2021 Percepio AB
+* Trace Recorder for Tracealyzer v4.7.0
+* Copyright 2023 Percepio AB
 * www.percepio.com
 *
 * SPDX-License-Identifier: Apache-2.0
@@ -14,25 +14,18 @@
 
 #if (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING)
 
-typedef struct TraceDiagnostics
-{
-	TraceBaseType_t metrics[TRC_DIAGNOSTICS_COUNT];
-} TraceDiagnostics_t;
+static TraceDiagnosticsData_t *pxDiagnostics TRC_CFG_RECORDER_DATA_ATTRIBUTE;
 
-static TraceDiagnostics_t *pxDiagnostics;
-
-traceResult xTraceDiagnosticsInitialize(TraceDiagnosticsBuffer_t *pxBuffer)
+traceResult xTraceDiagnosticsInitialize(TraceDiagnosticsData_t *pxBuffer)
 {
 	uint32_t i;
 	
-	TRC_ASSERT_EQUAL_SIZE(TraceDiagnosticsBuffer_t, TraceDiagnostics_t);
-
 	/* This should never fail */
-	TRC_ASSERT(pxBuffer != 0);
+	TRC_ASSERT(pxBuffer != (void*)0);
 
-	pxDiagnostics = (TraceDiagnostics_t*)pxBuffer;
+	pxDiagnostics = pxBuffer;
 
-	for (i = 0; i < TRC_DIAGNOSTICS_COUNT; i++)
+	for (i = 0u; i < (TRC_DIAGNOSTICS_COUNT); i++)
 	{
 		pxDiagnostics->metrics[i] = 0;
 	}
@@ -51,7 +44,7 @@ traceResult xTraceDiagnosticsGet(TraceDiagnosticsType_t xType, TraceBaseType_t* 
 	TRC_ASSERT((TraceUnsignedBaseType_t)xType < TRC_DIAGNOSTICS_COUNT);
 
 	/* This should never fail */
-	TRC_ASSERT(pxValue != 0);
+	TRC_ASSERT(pxValue != (void*)0);
 
 	*pxValue = pxDiagnostics->metrics[(TraceUnsignedBaseType_t)xType];
 
@@ -129,32 +122,32 @@ traceResult xTraceDiagnosticsSetIfLower(TraceDiagnosticsType_t xType, TraceBaseT
 traceResult xTraceDiagnosticsCheckStatus(void)
 {
 	/* It is probably good if we always check this */
-	if (!xTraceIsComponentInitialized(TRC_RECORDER_COMPONENT_DIAGNOSTICS))
+	if (xTraceIsComponentInitialized(TRC_RECORDER_COMPONENT_DIAGNOSTICS) == 0U)
 	{
 		return TRC_FAIL;
 	}
 
 	if (pxDiagnostics->metrics[TRC_DIAGNOSTICS_ENTRY_SLOTS_NO_ROOM] > 0)
 	{
-		xTraceWarning(TRC_WARNING_ENTRY_TABLE_SLOTS);
+		(void)xTraceWarning(TRC_WARNING_ENTRY_TABLE_SLOTS);
 		pxDiagnostics->metrics[TRC_DIAGNOSTICS_ENTRY_SLOTS_NO_ROOM] = 0;
 	}
 
 	if (pxDiagnostics->metrics[TRC_DIAGNOSTICS_ENTRY_SYMBOL_LONGEST_LENGTH] > (TRC_CFG_ENTRY_SYMBOL_MAX_LENGTH))
 	{
-		xTraceWarning(TRC_WARNING_ENTRY_SYMBOL_MAX_LENGTH);
+		(void)xTraceWarning(TRC_WARNING_ENTRY_SYMBOL_MAX_LENGTH);
 		pxDiagnostics->metrics[TRC_DIAGNOSTICS_ENTRY_SYMBOL_LONGEST_LENGTH] = 0;
 	}
 
 	if (pxDiagnostics->metrics[TRC_DIAGNOSTICS_BLOB_MAX_BYTES_TRUNCATED] > 0)
 	{
-		xTraceWarning(TRC_WARNING_EVENT_SIZE_TRUNCATED);
+		(void)xTraceWarning(TRC_WARNING_EVENT_SIZE_TRUNCATED);
 		pxDiagnostics->metrics[TRC_DIAGNOSTICS_BLOB_MAX_BYTES_TRUNCATED] = 0;
 	}
 
 	if (pxDiagnostics->metrics[TRC_DIAGNOSTICS_STACK_MONITOR_NO_SLOTS] > 0)
 	{
-		xTraceWarning(TRC_WARNING_STACKMON_NO_SLOTS);
+		(void)xTraceWarning(TRC_WARNING_STACKMON_NO_SLOTS);
 		pxDiagnostics->metrics[TRC_DIAGNOSTICS_STACK_MONITOR_NO_SLOTS] = 0;
 	}
 

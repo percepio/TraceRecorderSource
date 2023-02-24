@@ -1,6 +1,6 @@
 /*
-* Percepio Trace Recorder for Tracealyzer v4.6.6
-* Copyright 2021 Percepio AB
+* Percepio Trace Recorder for Tracealyzer v4.7.0
+* Copyright 2023 Percepio AB
 * www.percepio.com
 *
 * SPDX-License-Identifier: Apache-2.0
@@ -16,6 +16,7 @@
 
 #if (TRC_USE_HEAPS == 1)
 
+/*cstat !MISRAC2004-6.3 !MISRAC2012-Dir-4.6_a Suppress basic char type usage*/
 traceResult xTraceHeapCreate(const char *szName, TraceUnsignedBaseType_t uxCurrent, TraceUnsignedBaseType_t uxHighWaterMark, TraceUnsignedBaseType_t uxMax, TraceHeapHandle_t *pxHeapHandle)
 {
 	TraceUnsignedBaseType_t uxStates[3];
@@ -24,13 +25,12 @@ traceResult xTraceHeapCreate(const char *szName, TraceUnsignedBaseType_t uxCurre
 	uxStates[TRC_HEAP_STATE_INDEX_HIGHWATERMARK] = uxHighWaterMark;
 	uxStates[TRC_HEAP_STATE_INDEX_MAX] = uxMax;
 
-	return xTraceObjectRegisterInternal(PSF_EVENT_HEAP_CREATE, 0, szName, 3, uxStates, TRC_ENTRY_OPTION_HEAP, (TraceObjectHandle_t*)pxHeapHandle);
+	return xTraceObjectRegisterInternal(PSF_EVENT_HEAP_CREATE, (void*)0, szName, 3u, uxStates, TRC_ENTRY_OPTION_HEAP, (TraceObjectHandle_t*)pxHeapHandle);
 }
 
 traceResult xTraceHeapAlloc(TraceHeapHandle_t xHeapHandle, void *pvAddress, TraceUnsignedBaseType_t uxSize)
 {
 	TraceUnsignedBaseType_t uxCurrent, uxHighWaterMark;
-	TraceEventHandle_t xEventHandle = 0;
 	
 	if (xHeapHandle == 0)
 	{
@@ -39,7 +39,7 @@ traceResult xTraceHeapAlloc(TraceHeapHandle_t xHeapHandle, void *pvAddress, Trac
 	}
 
 	/* If the address is null we assume this was a failed alloc attempt */
-	if (pvAddress != 0)
+	if (pvAddress != (void*)0)
 	{
 		/* This should never fail */
 		TRC_ASSERT_ALWAYS_EVALUATE(xTraceEntryGetState(xHeapHandle, TRC_HEAP_STATE_INDEX_CURRENT, &uxCurrent) == TRC_SUCCESS);
@@ -60,13 +60,7 @@ traceResult xTraceHeapAlloc(TraceHeapHandle_t xHeapHandle, void *pvAddress, Trac
 		TRC_ASSERT_ALWAYS_EVALUATE(xTraceEntrySetState(xHeapHandle, TRC_HEAP_STATE_INDEX_CURRENT, uxCurrent) == TRC_SUCCESS);
 	}
 
-	/* We need to check this */
-	if (xTraceEventBegin(pvAddress != 0 ? PSF_EVENT_MALLOC : PSF_EVENT_MALLOC_FAILED, sizeof(void*) + sizeof(TraceUnsignedBaseType_t), &xEventHandle) == TRC_SUCCESS)
-	{
-		xTraceEventAddPointer(xEventHandle, pvAddress);
-		xTraceEventAddUnsignedBaseType(xEventHandle, uxSize);
-		xTraceEventEnd(xEventHandle);
-	}
+	(void)xTraceEventCreate2((pvAddress != (void*)0) ? PSF_EVENT_MALLOC : PSF_EVENT_MALLOC_FAILED, (TraceUnsignedBaseType_t)pvAddress, uxSize);  /*cstat !MISRAC2004-11.3 !MISRAC2012-Rule-11.4 !MISRAC2012-Rule-11.6 Suppress conversion from pointer to integer check*/
 
 	return TRC_SUCCESS;
 }
@@ -74,7 +68,6 @@ traceResult xTraceHeapAlloc(TraceHeapHandle_t xHeapHandle, void *pvAddress, Trac
 traceResult xTraceHeapFree(TraceHeapHandle_t xHeapHandle, void *pvAddress, TraceUnsignedBaseType_t uxSize)
 {
 	TraceUnsignedBaseType_t uxCurrent;
-	TraceEventHandle_t xEventHandle = 0;
 
 	if (xHeapHandle == 0)
 	{
@@ -83,7 +76,7 @@ traceResult xTraceHeapFree(TraceHeapHandle_t xHeapHandle, void *pvAddress, Trace
 	}
 
 	/* If the address is null we assume this was a failed alloc attempt */
-	if (pvAddress != 0)
+	if (pvAddress != (void*)0)
 	{
 		/* This should never fail */
 		TRC_ASSERT_ALWAYS_EVALUATE(xTraceEntryGetState(xHeapHandle, TRC_HEAP_STATE_INDEX_CURRENT, &uxCurrent) == TRC_SUCCESS);
@@ -94,13 +87,7 @@ traceResult xTraceHeapFree(TraceHeapHandle_t xHeapHandle, void *pvAddress, Trace
 		TRC_ASSERT_ALWAYS_EVALUATE(xTraceEntrySetState(xHeapHandle, TRC_HEAP_STATE_INDEX_CURRENT, uxCurrent) == TRC_SUCCESS);
 	}
 
-	/* We need to check this */
-	if (xTraceEventBegin(pvAddress != 0 ? PSF_EVENT_FREE : PSF_EVENT_FREE_FAILED, sizeof(void*) + sizeof(TraceUnsignedBaseType_t), &xEventHandle) == TRC_SUCCESS)
-	{
-		xTraceEventAddPointer(xEventHandle, pvAddress);
-		xTraceEventAddUnsignedBaseType(xEventHandle, uxSize);
-		xTraceEventEnd(xEventHandle);
-	}
+	(void)xTraceEventCreate2((pvAddress != (void*)0) ? PSF_EVENT_FREE : PSF_EVENT_FREE_FAILED, (TraceUnsignedBaseType_t)pvAddress, uxSize);  /*cstat !MISRAC2004-11.3 !MISRAC2012-Rule-11.4 !MISRAC2012-Rule-11.6 Suppress conversion from pointer to integer check*/
 
 	return TRC_SUCCESS;
 }

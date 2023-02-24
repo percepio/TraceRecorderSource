@@ -1,6 +1,6 @@
 /*
-* Trace Recorder for Tracealyzer v4.6.6
-* Copyright 2021 Percepio AB
+* Trace Recorder for Tracealyzer v4.7.0
+* Copyright 2023 Percepio AB
 * www.percepio.com
 *
 * SPDX-License-Identifier: Apache-2.0
@@ -14,30 +14,28 @@
 
 #if (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING)
 
-TraceTimestamp_t *pxTraceTimestamp;
+TraceTimestampData_t *pxTraceTimestamp TRC_CFG_RECORDER_DATA_ATTRIBUTE;
 
-traceResult xTraceTimestampInitialize(TraceTimestampBuffer_t *pxBuffer)
+traceResult xTraceTimestampInitialize(TraceTimestampData_t *pxBuffer)
 {
-	TRC_ASSERT_EQUAL_SIZE(TraceTimestampBuffer_t, TraceTimestamp_t);
-
 	/* This should never fail */
-	TRC_ASSERT(pxBuffer != 0);
+	TRC_ASSERT(pxBuffer != (void*)0);
 
-	pxTraceTimestamp = (TraceTimestamp_t*)pxBuffer;
+	pxTraceTimestamp = pxBuffer;
 
 	/* These will be set when tracing is enabled */
-	pxTraceTimestamp->frequency = 0;
-	pxTraceTimestamp->period = 0;
+	pxTraceTimestamp->frequency = 0u;
+	pxTraceTimestamp->period = 0u;
 
 	pxTraceTimestamp->osTickHz = TRC_TICK_RATE_HZ;
-	pxTraceTimestamp->osTickCount = 0;
-	pxTraceTimestamp->wraparounds = 0;
+	pxTraceTimestamp->osTickCount = 0u;
+	pxTraceTimestamp->wraparounds = 0u;
 	pxTraceTimestamp->type = TRC_HWTC_TYPE;
 
 #if (TRC_HWTC_TYPE == TRC_FREE_RUNNING_32BIT_INCR || TRC_HWTC_TYPE == TRC_CUSTOM_TIMER_INCR || TRC_HWTC_TYPE == TRC_OS_TIMER_INCR)
-	pxTraceTimestamp->latestTimestamp = 0;
+	pxTraceTimestamp->latestTimestamp = 0u;
 #elif (TRC_HWTC_TYPE == TRC_FREE_RUNNING_32BIT_DECR || TRC_HWTC_TYPE == TRC_CUSTOM_TIMER_DECR || TRC_HWTC_TYPE == TRC_OS_TIMER_DECR)
-	pxTraceTimestamp->latestTimestamp = pxTraceTimestamp->period - 1;
+	pxTraceTimestamp->latestTimestamp = pxTraceTimestamp->period - 1u;
 #endif
 
 	xTraceSetComponentInitialized(TRC_RECORDER_COMPONENT_TIMESTAMP);
@@ -53,13 +51,13 @@ traceResult xTraceTimestampGet(uint32_t *puiTimestamp)
 	TRC_ASSERT(xTraceIsComponentInitialized(TRC_RECORDER_COMPONENT_TIMESTAMP));
 
 	/* This should never fail */
-	TRC_ASSERT(puiTimestamp != 0);
+	TRC_ASSERT(puiTimestamp != (void*)0);
 
 	switch (pxTraceTimestamp->type)
 	{
 	case TRC_FREE_RUNNING_32BIT_INCR:
 	case TRC_CUSTOM_TIMER_INCR:
-		*puiTimestamp = TRC_HWTC_COUNT;
+		*puiTimestamp = (uint32_t)(TRC_HWTC_COUNT);
 		if (*puiTimestamp < pxTraceTimestamp->latestTimestamp)
 		{
 			pxTraceTimestamp->wraparounds++;
@@ -67,7 +65,7 @@ traceResult xTraceTimestampGet(uint32_t *puiTimestamp)
 		break;
 	case TRC_FREE_RUNNING_32BIT_DECR:
 	case TRC_CUSTOM_TIMER_DECR:
-		*puiTimestamp = TRC_HWTC_COUNT;
+		*puiTimestamp = (uint32_t)(TRC_HWTC_COUNT);
 		if (*puiTimestamp > pxTraceTimestamp->latestTimestamp)
 		{
 			pxTraceTimestamp->wraparounds++;
@@ -75,11 +73,12 @@ traceResult xTraceTimestampGet(uint32_t *puiTimestamp)
 		break;
 	case TRC_OS_TIMER_INCR:
 	case TRC_OS_TIMER_DECR:
-		*puiTimestamp = ((TRC_HWTC_COUNT) & 0x00FFFFFFU) + ((pxTraceTimestamp->osTickCount & 0x000000FFU) << 24);
+		*puiTimestamp = (((uint32_t)(TRC_HWTC_COUNT)) & 0x00FFFFFFUL) + ((pxTraceTimestamp->osTickCount & 0x000000FFUL) << 24);
 		pxTraceTimestamp->wraparounds = pxTraceTimestamp->osTickCount;
 		break;
 	default:
 		return TRC_FAIL;
+		break;
 	}
 
 	pxTraceTimestamp->latestTimestamp = *puiTimestamp;
@@ -93,7 +92,7 @@ traceResult xTraceTimestampGetWraparounds(uint32_t* puiTimerWraparounds)
 	TRC_ASSERT(xTraceIsComponentInitialized(TRC_RECORDER_COMPONENT_TIMESTAMP));
 
 	/* This should never fail */
-	TRC_ASSERT(puiTimerWraparounds != 0);
+	TRC_ASSERT(puiTimerWraparounds != (void*)0);
 
 	*puiTimerWraparounds = pxTraceTimestamp->wraparounds;
 
@@ -136,7 +135,7 @@ traceResult xTraceTimestampGetFrequency(TraceUnsignedBaseType_t *puxFrequency)
 	TRC_ASSERT(xTraceIsComponentInitialized(TRC_RECORDER_COMPONENT_TIMESTAMP));
 
 	/* This should never fail */
-	TRC_ASSERT(puxFrequency != 0);
+	TRC_ASSERT(puxFrequency != (void*)0);
 
 	*puxFrequency = pxTraceTimestamp->frequency;
 
@@ -149,7 +148,7 @@ traceResult xTraceTimestampGetPeriod(uint32_t *puiPeriod)
 	TRC_ASSERT(xTraceIsComponentInitialized(TRC_RECORDER_COMPONENT_TIMESTAMP));
 
 	/* This should never fail */
-	TRC_ASSERT(puiPeriod != 0);
+	TRC_ASSERT(puiPeriod != (void*)0);
 
 	*puiPeriod = pxTraceTimestamp->period;
 
@@ -162,7 +161,7 @@ traceResult xTraceTimestampGetOsTickCount(uint32_t* puiOsTickCount)
 	TRC_ASSERT(xTraceIsComponentInitialized(TRC_RECORDER_COMPONENT_TIMESTAMP));
 
 	/* This should never fail */
-	TRC_ASSERT(puiOsTickCount != 0);
+	TRC_ASSERT(puiOsTickCount != (void*)0);
 
 	*puiOsTickCount = pxTraceTimestamp->osTickCount;
 

@@ -1,14 +1,7 @@
 var searchData=
 [
-  ['vtraceenable_362',['vTraceEnable',['../trcRecorder_8h.html#ad81a6a12b34c4761097d25c6c9036887',1,'trcRecorder.h']]],
-  ['vtraceinitialize_363',['vTraceInitialize',['../trcRecorder_8h.html#a4433d7c94ad4000866306078790197fe',1,'trcRecorder.h']]],
-  ['vtraceinittimestamps_364',['vTraceInitTimestamps',['../trcRecorder_8h.html#aba11ae447ecd0b85b8a98fca71c8e124',1,'trcRecorder.h']]],
-  ['vtraceinstancefinishednext_365',['vTraceInstanceFinishedNext',['../trcRecorder_8h.html#a017e80004dee99fbe357c86c77940819',1,'trcRecorder.h']]],
-  ['vtraceinstancefinishednow_366',['vTraceInstanceFinishedNow',['../trcRecorder_8h.html#ac4441d3b4dd03eb69d335307d3650dae',1,'trcRecorder.h']]],
-  ['vtraceprint_367',['vTracePrint',['../trcRecorder_8h.html#a00d742ca47f84add37a93a8a0f3fb6c5',1,'trcRecorder.h']]],
-  ['vtraceprintf_368',['vTracePrintF',['../trcRecorder_8h.html#a56704be14a68b7e59a378fac22ff42c7',1,'trcRecorder.h']]],
-  ['vtracesetrecorderdatabuffer_369',['vTraceSetRecorderDataBuffer',['../trcRecorder_8h.html#ab484288bbf50e8844cd63530c06808ab',1,'trcRecorder.h']]],
-  ['vtracesetstophook_370',['vTraceSetStopHook',['../trcRecorder_8h.html#a595c6523320f46204bdac038591f9bdb',1,'trcRecorder.h']]],
-  ['vtracestop_371',['vTraceStop',['../trcRecorder_8h.html#a54344b66a74433f50feee5cfdb726f91',1,'trcRecorder.h']]],
-  ['vtracevprintf_372',['vTraceVPrintF',['../trcRecorder_8h.html#a548dc97141d6e4d3049da174c5b23e16',1,'trcRecorder.h']]]
+  ['trace_5fget_5fhigh16_0',['TRACE_GET_HIGH16',['../trcRecorder_8h.html#a65cfc74ff712c7408f868b91ec142a5b',1,'trcRecorder.h']]],
+  ['trace_5fget_5flow16_1',['TRACE_GET_LOW16',['../trcRecorder_8h.html#a0be07ccb07bfdc964b8afb2a3942666e',1,'trcRecorder.h']]],
+  ['trace_5fset_5fhigh16_2',['TRACE_SET_HIGH16',['../trcRecorder_8h.html#aaa24e857131d37a5602ce9c3bb125157',1,'trcRecorder.h']]],
+  ['trace_5fset_5flow16_3',['TRACE_SET_LOW16',['../trcRecorder_8h.html#ae52706e82ec178b04522ed536eaad2a3',1,'trcRecorder.h']]]
 ];

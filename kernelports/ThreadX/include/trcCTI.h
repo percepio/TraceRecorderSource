@@ -1,6 +1,6 @@
 /*
- * Trace Recorder for Tracealyzer v4.6.6
- * Copyright 2021 Percepio AB
+ * Trace Recorder for Tracealyzer v4.7.0
+ * Copyright 2023 Percepio AB
  * www.percepio.com
  *
  * SPDX-License-Identifier: Apache-2.0
@@ -12,6 +12,8 @@
 
 #ifndef TRC_CTI_H_
 #define TRC_CTI_H_
+
+#if !TRC_CFG_SCHEDULING_ONLY
 
 /* Block Pool tracing hooks */
 #ifdef __inside_txe_block_allocate
@@ -914,6 +916,155 @@ UINT _txe_semaphore_put_orig(TX_SEMAPHORE *semaphore_ptr) __attribute__((alias("
 #endif /* __inside_txe_semaphore_put */
 
 
+/* Timer tracing hooks */
+#ifdef __inside_tx_time_get
+
+#include "tx_api.h"
+#include "tx_timer.h"
+
+ULONG _tx_time_get(VOID) __attribute__((weak));
+ULONG _tx_time_get_orig(VOID) __attribute__((alias("_tx_time_get")));
+
+#ifdef __IAR_SYSTEMS_ICC__
+#pragma weak _tx_time_get
+#pragma weak _tx_time_get_orig=_tx_time_get
+#endif /* __IAR_SYSTEMS_ICC__ */
+
+#endif /* __inside_tx_time_get */
+
+#ifdef __inside_tx_time_set
+
+#include "tx_api.h"
+#include "tx_timer.h"
+
+VOID _tx_time_set(ULONG new_time) __attribute((weak));
+VOID _tx_time_set_orig(ULONG new_time) __attribute((alias("_tx_time_set")));
+
+#ifdef __IAR_SYSTEMS_ICC__
+#pragma weak _tx_time_set
+#pragma weak _tx_time_set_orig=_tx_time_set
+#endif /* __IAR_SYSTEMS_ICC__ */
+
+#endif /* __inside_tx_time_set */
+
+#ifdef __inside_txe_timer_activate
+
+#include "tx_api.h"
+#include "tx_timer.h"
+
+UINT _txe_timer_activate(TX_TIMER *timer_ptr) __attribute__((weak));
+UINT _txe_timer_activate_orig(TX_TIMER *timer_ptr) __attribute__((alias("_txe_timer_activate")));
+
+#ifdef __IAR_SYSTEMS_ICC__
+#pragma weak _txe_timer_activate
+#pragma weak _txe_timer_activate_orig=_txe_timer_activate
+#endif /* __IAR_SYSTEMS_ICC__ */
+
+#endif /* __inside_txe_timer_active */
+
+#ifdef __inside_txe_timer_change
+
+#include "tx_api.h"
+#include "tx_initialize.h"
+#include "tx_thread.h"
+#include "tx_timer.h"
+
+UINT _txe_timer_change(TX_TIMER *timer_ptr, ULONG initial_ticks, ULONG reschedule_ticks) __attribute__((weak));
+UINT _txe_timer_change_orig(TX_TIMER *timer_ptr, ULONG initial_ticks, ULONG reschedule_ticks) __attribute__((alias("_txe_timer_change")));
+
+#ifdef __IAR_SYSTEMS_ICC__
+#pragma weak _txe_timer_change
+#pragma weak _txe_timer_change_orig=_txe_timer_change
+#endif /* __IAR_SYSTEMS_ICC__ */
+
+#endif /* __inside_txe_timer_change */
+
+#ifdef __inside_txe_timer_create
+
+#include "tx_api.h"
+#include "tx_trace.h"
+#include "tx_timer.h"
+
+UINT _txe_timer_create(TX_TIMER *timer_ptr, CHAR *name_ptr,
+            VOID (*expiration_function)(ULONG id), ULONG expiration_input,
+            ULONG initial_ticks, ULONG reschedule_ticks, UINT auto_activate, UINT timer_control_block_size) __attribute__((weak));
+UINT _txe_timer_create_orig(TX_TIMER *timer_ptr, CHAR *name_ptr,
+            VOID (*expiration_function)(ULONG id), ULONG expiration_input,
+            ULONG initial_ticks, ULONG reschedule_ticks, UINT auto_activate, UINT timer_control_block_size) __attribute__((alias("_txe_timer_create")));
+
+#ifdef __IAR_SYSTEMS_ICC__
+#pragma weak _txe_timer_create
+#pragma weak _txe_timer_create_orig=_txe_timer_create
+#endif /* __IAR_SYSTEMS_ICC__ */
+
+#endif /* __inside_txe_timer_create */
+
+#ifdef __inside_txe_timer_deactivate
+
+#include "tx_api.h"
+#include "tx_timer.h"
+
+UINT  _txe_timer_deactivate(TX_TIMER *timer_ptr) __attribute__((weak));
+UINT  _txe_timer_deactivate_orig(TX_TIMER *timer_ptr) __attribute__((alias("_txe_timer_deactivate")));
+
+#ifdef __IAR_SYSTEMS_ICC__
+#pragma weak _txe_timer_deactivate
+#pragma weak _txe_timer_deactivate_orig=_txe_timer_deactivate
+#endif /* __IAR_SYSTEMS_ICC__ */
+
+#endif /* __inside_txe_timer_deactivate */
+
+#ifdef __inside_txe_timer_delete
+
+#include "tx_api.h"
+#include "tx_thread.h"
+#include "tx_timer.h"
+#include "tx_trace.h"
+
+UINT  _txe_timer_delete(TX_TIMER *timer_ptr) __attribute__((weak));
+UINT  _txe_timer_delete_orig(TX_TIMER *timer_ptr) __attribute__((alias("_txe_timer_delete")));
+
+#ifdef __IAR_SYSTEMS_ICC__
+#pragma weak _txe_timer_delete
+#pragma weak _txe_timer_delete_orig=_txe_timer_delete
+#endif /* __IAR_SYSTEMS_ICC__ */
+
+#endif /* __inside_txe_timer_delete */
+
+#ifdef __inside_txe_timer_info_get
+
+#include "tx_api.h"
+#include "tx_timer.h"
+#include "tx_trace.h"
+
+UINT _txe_timer_info_get(TX_TIMER *timer_ptr, CHAR **name, UINT *active, ULONG *remaining_ticks, ULONG *reschedule_ticks, TX_TIMER **next_timer) __attribute__((weak));
+UINT _txe_timer_info_get_orig(TX_TIMER *timer_ptr, CHAR **name, UINT *active, ULONG *remaining_ticks, ULONG *reschedule_ticks, TX_TIMER **next_timer) __attribute__((alias("_txe_timer_info_get")));
+
+#ifdef __IAR_SYSTEMS_ICC__
+#pragma weak _txe_timer_info_get
+#pragma weak _txe_timer_info_get_orig=_txe_timer_info_get
+#endif /* __IAR_SYSTEMS_ICC__ */
+
+#endif /* __inside_txe_timer_info_get */
+
+#ifdef __inside_tx_timer_performance_info_get
+
+#include "tx_api.h"
+#include "tx_timer.h"
+#include "tx_trace.h"
+
+UINT _tx_timer_performance_info_get(TX_TIMER *timer_ptr, ULONG *activates, ULONG *reactivates, ULONG *deactivates, ULONG *expirations, ULONG *expiration_adjusts) __attribute__((weak));
+UINT _tx_timer_performance_info_get_orig(TX_TIMER *timer_ptr, ULONG *activates, ULONG *reactivates, ULONG *deactivates, ULONG *expirations, ULONG *expiration_adjusts) __attribute__((alias("_tx_timer_performance_info_get")));
+
+#ifdef __IAR_SYSTEMS_ICC__
+#pragma weak _tx_timer_performance_info_get
+#pragma weak _tx_timer_performance_info_get_orig=_tx_timer_performance_info_get
+#endif /* __IAR_SYSTEMS_ICC__ */
+
+#endif /* __inside_tx_performance_info_get */
+
+#endif /* TRC_CFG_SCHEDULING_ONLY */
+
 /* Thread tracing hooks */
 #ifdef __inside_txe_thread_create
 
@@ -1190,154 +1341,6 @@ UINT _txe_thread_wait_abort_orig(TX_THREAD  *thread_ptr) __attribute__((alias("_
 #endif /* __IAR_SYSTEMS_ICC__ */
 
 #endif /* __inside_txe_thread_wait_abort */
-
-
-/* Timer tracing hooks */
-#ifdef __inside_tx_time_get
-
-#include "tx_api.h"
-#include "tx_timer.h"
-
-ULONG _tx_time_get(VOID) __attribute__((weak));
-ULONG _tx_time_get_orig(VOID) __attribute__((alias("_tx_time_get")));
-
-#ifdef __IAR_SYSTEMS_ICC__
-#pragma weak _tx_time_get
-#pragma weak _tx_time_get_orig=_tx_time_get
-#endif /* __IAR_SYSTEMS_ICC__ */
-
-#endif /* __inside_tx_time_get */
-
-#ifdef __inside_tx_time_set
-
-#include "tx_api.h"
-#include "tx_timer.h"
-
-VOID _tx_time_set(ULONG new_time) __attribute((weak));
-VOID _tx_time_set_orig(ULONG new_time) __attribute((alias("_tx_time_set")));
-
-#ifdef __IAR_SYSTEMS_ICC__
-#pragma weak _tx_time_set
-#pragma weak _tx_time_set_orig=_tx_time_set
-#endif /* __IAR_SYSTEMS_ICC__ */
-
-#endif /* __inside_tx_time_set */
-
-#ifdef __inside_txe_timer_activate
-
-#include "tx_api.h"
-#include "tx_timer.h"
-
-UINT _txe_timer_activate(TX_TIMER *timer_ptr) __attribute__((weak));
-UINT _txe_timer_activate_orig(TX_TIMER *timer_ptr) __attribute__((alias("_txe_timer_activate")));
-
-#ifdef __IAR_SYSTEMS_ICC__
-#pragma weak _txe_timer_activate
-#pragma weak _txe_timer_activate_orig=_txe_timer_activate
-#endif /* __IAR_SYSTEMS_ICC__ */
-
-#endif /* __inside_txe_timer_active */
-
-#ifdef __inside_txe_timer_change
-
-#include "tx_api.h"
-#include "tx_initialize.h"
-#include "tx_thread.h"
-#include "tx_timer.h"
-
-UINT _txe_timer_change(TX_TIMER *timer_ptr, ULONG initial_ticks, ULONG reschedule_ticks) __attribute__((weak));
-UINT _txe_timer_change_orig(TX_TIMER *timer_ptr, ULONG initial_ticks, ULONG reschedule_ticks) __attribute__((alias("_txe_timer_change")));
-
-#ifdef __IAR_SYSTEMS_ICC__
-#pragma weak _txe_timer_change
-#pragma weak _txe_timer_change_orig=_txe_timer_change
-#endif /* __IAR_SYSTEMS_ICC__ */
-
-#endif /* __inside_txe_timer_change */
-
-#ifdef __inside_txe_timer_create
-
-#include "tx_api.h"
-#include "tx_trace.h"
-#include "tx_timer.h"
-
-UINT _txe_timer_create(TX_TIMER *timer_ptr, CHAR *name_ptr,
-            VOID (*expiration_function)(ULONG id), ULONG expiration_input,
-            ULONG initial_ticks, ULONG reschedule_ticks, UINT auto_activate, UINT timer_control_block_size) __attribute__((weak));
-UINT _txe_timer_create_orig(TX_TIMER *timer_ptr, CHAR *name_ptr,
-            VOID (*expiration_function)(ULONG id), ULONG expiration_input,
-            ULONG initial_ticks, ULONG reschedule_ticks, UINT auto_activate, UINT timer_control_block_size) __attribute__((alias("_txe_timer_create")));
-
-#ifdef __IAR_SYSTEMS_ICC__
-#pragma weak _txe_timer_create
-#pragma weak _txe_timer_create_orig=_txe_timer_create
-#endif /* __IAR_SYSTEMS_ICC__ */
-
-#endif /* __inside_txe_timer_create */
-
-#ifdef __inside_txe_timer_deactivate
-
-#include "tx_api.h"
-#include "tx_timer.h"
-
-UINT  _txe_timer_deactivate(TX_TIMER *timer_ptr) __attribute__((weak));
-UINT  _txe_timer_deactivate_orig(TX_TIMER *timer_ptr) __attribute__((alias("_txe_timer_deactivate")));
-
-#ifdef __IAR_SYSTEMS_ICC__
-#pragma weak _txe_timer_deactivate
-#pragma weak _txe_timer_deactivate_orig=_txe_timer_deactivate
-#endif /* __IAR_SYSTEMS_ICC__ */
-
-#endif /* __inside_txe_timer_deactivate */
-
-#ifdef __inside_txe_timer_delete
-
-#include "tx_api.h"
-#include "tx_thread.h"
-#include "tx_timer.h"
-#include "tx_trace.h"
-
-UINT  _txe_timer_delete(TX_TIMER *timer_ptr) __attribute__((weak));
-UINT  _txe_timer_delete_orig(TX_TIMER *timer_ptr) __attribute__((alias("_txe_timer_delete")));
-
-#ifdef __IAR_SYSTEMS_ICC__
-#pragma weak _txe_timer_delete
-#pragma weak _txe_timer_delete_orig=_txe_timer_delete
-#endif /* __IAR_SYSTEMS_ICC__ */
-
-#endif /* __inside_txe_timer_delete */
-
-#ifdef __inside_txe_timer_info_get
-
-#include "tx_api.h"
-#include "tx_timer.h"
-#include "tx_trace.h"
-
-UINT _txe_timer_info_get(TX_TIMER *timer_ptr, CHAR **name, UINT *active, ULONG *remaining_ticks, ULONG *reschedule_ticks, TX_TIMER **next_timer) __attribute__((weak));
-UINT _txe_timer_info_get_orig(TX_TIMER *timer_ptr, CHAR **name, UINT *active, ULONG *remaining_ticks, ULONG *reschedule_ticks, TX_TIMER **next_timer) __attribute__((alias("_txe_timer_info_get")));
-
-#ifdef __IAR_SYSTEMS_ICC__
-#pragma weak _txe_timer_info_get
-#pragma weak _txe_timer_info_get_orig=_txe_timer_info_get
-#endif /* __IAR_SYSTEMS_ICC__ */
-
-#endif /* __inside_txe_timer_info_get */
-
-#ifdef __inside_tx_timer_performance_info_get
-
-#include "tx_api.h"
-#include "tx_timer.h"
-#include "tx_trace.h"
-
-UINT _tx_timer_performance_info_get(TX_TIMER *timer_ptr, ULONG *activates, ULONG *reactivates, ULONG *deactivates, ULONG *expirations, ULONG *expiration_adjusts) __attribute__((weak));
-UINT _tx_timer_performance_info_get_orig(TX_TIMER *timer_ptr, ULONG *activates, ULONG *reactivates, ULONG *deactivates, ULONG *expirations, ULONG *expiration_adjusts) __attribute__((alias("_tx_timer_performance_info_get")));
-
-#ifdef __IAR_SYSTEMS_ICC__
-#pragma weak _tx_timer_performance_info_get
-#pragma weak _tx_timer_performance_info_get_orig=_tx_timer_performance_info_get
-#endif /* __IAR_SYSTEMS_ICC__ */
-
-#endif /* __inside_tx_performance_info_get */
 
 #ifdef __inside_trcEvent
 

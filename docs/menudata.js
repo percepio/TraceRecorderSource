@@ -37,10 +37,13 @@ var menudata={children:[
 {text:"Globals",url:"globals.html",children:[
 {text:"All",url:"globals.html",children:[
 {text:"p",url:"globals.html#index_p"},
-{text:"t",url:"globals.html#index_t"},
-{text:"v",url:"globals.html#index_v"},
-{text:"x",url:"globals.html#index_x"}]},
+{text:"t",url:"globals_t.html#index_t"},
+{text:"u",url:"globals_u.html#index_u"},
+{text:"v",url:"globals_v.html#index_v"},
+{text:"x",url:"globals_x.html#index_x"}]},
 {text:"Functions",url:"globals_func.html",children:[
+{text:"p",url:"globals_func.html#index_p"},
+{text:"u",url:"globals_func.html#index_u"},
 {text:"v",url:"globals_func.html#index_v"},
 {text:"x",url:"globals_func.html#index_x"}]},
 {text:"Typedefs",url:"globals_type.html"},

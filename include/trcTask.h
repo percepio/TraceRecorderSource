@@ -1,6 +1,6 @@
 /*
-* Percepio Trace Recorder for Tracealyzer v4.6.6
-* Copyright 2021 Percepio AB
+* Percepio Trace Recorder for Tracealyzer v4.7.0
+* Copyright 2023 Percepio AB
 * www.percepio.com
 *
 * SPDX-License-Identifier: Apache-2.0
@@ -36,24 +36,14 @@ extern "C" {
 #endif
 
 /**
- * @internal Trace Task Info Structure
+ * @internal Trace Task Data Structure
  */
-typedef struct TraceTaskInfo
+typedef struct TraceTaskData
 {
 	void* coreTasks[TRC_CFG_CORE_COUNT];
-} TraceTaskInfo_t;
+} TraceTaskData_t;
 
-extern TraceTaskInfo_t* pxTraceTaskInfo;
-
-#define TRACE_TASK_INFO_BUFFER_SIZE (sizeof(TraceTaskInfo_t))
-
-/**
- * @internal Trace Task Info Buffer Structure
- */
-typedef struct TraceTaskInfoBuffer
-{
-	uint8_t buffer[TRACE_TASK_INFO_BUFFER_SIZE];
-} TraceTaskInfoBuffer_t;
+extern TraceTaskData_t* pxTraceTaskData;
 
 /**
  * @internal Initialize trace task system.
@@ -64,7 +54,7 @@ typedef struct TraceTaskInfoBuffer
  * @retval TRC_FAIL Failure
  * @retval TRC_SUCCESS Success
  */
-traceResult xTraceTaskInitialize(TraceTaskInfoBuffer_t* pxBuffer);
+traceResult xTraceTaskInitialize(TraceTaskData_t* pxBuffer);
 
 /**
  * @brief Register trace task in the trace.
@@ -177,30 +167,59 @@ traceResult xTraceTaskSwitch(void* pvTask, TraceUnsignedBaseType_t uxPriority);
  * @retval TRC_FAIL Failure
  * @retval TRC_SUCCESS Success
  */
-traceResult xTraceTaskReady(void* pvTask);
+#define xTraceTaskReady(pvTask) xTraceEventCreate1(PSF_EVENT_TASK_READY, (TraceUnsignedBaseType_t)(pvTask))
 #else
 #define xTraceTaskReady(p) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_2((void)p, TRC_SUCCESS)
 #endif
 
 /**
- * @brief Sets current trace task.
+ * @brief Sets current trace task on current core.
  * 
  * @param[in] pvTask Task.
  * 
  * @retval TRC_FAIL Failure
  * @retval TRC_SUCCESS Success
  */
-#define xTraceTaskSetCurrent(pvTask) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_2(pxTraceTaskInfo->coreTasks[TRC_CFG_GET_CURRENT_CORE()] = (pvTask), TRC_SUCCESS)
+#define xTraceTaskSetCurrent(pvTask) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_2(pxTraceTaskData->coreTasks[TRC_CFG_GET_CURRENT_CORE()] = (pvTask), TRC_SUCCESS)
 
 /**
- * @brief Gets current trace task.
+ * @brief Sets current trace task on specific core.
+ *
+ * @param[in] coreId Core id.
+ * @param[in] pvTask Task.
+ *
+ * @retval TRC_FAIL Failure
+ * @retval TRC_SUCCESS Success
+ */
+#define xTraceTaskSetCurrentOnCore(coreId, pvTask) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_2(pxTraceTaskData->coreTasks[coreId] = (pvTask), TRC_SUCCESS)
+
+/**
+ * @brief Gets current trace task on current core.
  * 
  * @param[out] ppvTask Task.
  * 
  * @retval TRC_FAIL Failure
  * @retval TRC_SUCCESS Success
  */
-#define xTraceTaskGetCurrent(ppvTask) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_2(*(ppvTask) = pxTraceTaskInfo->coreTasks[TRC_CFG_GET_CURRENT_CORE()], TRC_SUCCESS)
+#define xTraceTaskGetCurrent(ppvTask) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_2(*(ppvTask) = pxTraceTaskData->coreTasks[TRC_CFG_GET_CURRENT_CORE()], TRC_SUCCESS)
+
+/**
+ * @brief Gets current trace task on specific core.
+ *
+ * @param[in] coreId Core id.
+ * @param[out] ppvTask Task.
+ *
+ * @retval TRC_FAIL Failure
+ * @retval TRC_SUCCESS Success
+ */
+#define xTraceTaskGetCurrentOnCore(coreId, ppvTask) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_2(*(ppvTask) = pxTraceTaskData->coreTasks[coreId], TRC_SUCCESS)
+
+ /**
+  * @brief Returns current trace task.
+  *
+  * @returns Current trace task.
+  */
+#define xTraceTaskGetCurrentReturn() (pxTraceTaskData->coreTasks[TRC_CFG_GET_CURRENT_CORE()])
 
 /**
  * @brief Registers trace task instance finished event.
@@ -213,7 +232,7 @@ traceResult xTraceTaskReady(void* pvTask);
  * @retval TRC_FAIL Failure
  * @retval TRC_SUCCESS Success
  */
-traceResult xTraceTaskInstanceFinishedNow(void);
+#define xTraceTaskInstanceFinishedNow() xTraceEventCreate0(PSF_EVENT_IFE_DIRECT)
 
 /**
  * @brief Marks the current trace task instance as finished on the next
@@ -228,7 +247,7 @@ traceResult xTraceTaskInstanceFinishedNow(void);
  * @retval TRC_FAIL Failure
  * @retval TRC_SUCCESS Success
  */
-traceResult xTraceTaskInstanceFinishedNext(void);
+#define xTraceTaskInstanceFinishedNext() xTraceEventCreate0(PSF_EVENT_IFE_NEXT)
 
 /** @} */
 

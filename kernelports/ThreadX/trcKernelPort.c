@@ -1,6 +1,6 @@
 /*
- * Trace Recorder for Tracealyzer v4.6.6
- * Copyright 2021 Percepio AB
+ * Trace Recorder for Tracealyzer v4.7.0
+ * Copyright 2023 Percepio AB
  * www.percepio.com
  *
  * SPDX-License-Identifier: Apache-2.0
@@ -63,9 +63,7 @@ typedef struct TraceKernelPortData
 	TraceKernelPortTaskHandle_t xTzCtrlHandle;
 } TraceKernelPortData_t;
 
-static TraceKernelPortData_t* pxKernelPortData;
-
-
+static TraceKernelPortData_t* pxKernelPortData TRC_CFG_RECORDER_DATA_ATTRIBUTE;
 
 traceResult xTraceKernelPortInitialize(TraceKernelPortDataBuffer_t* pxBuffer)
 {
@@ -107,7 +105,7 @@ traceResult xTraceKernelPortEnable(void)
 				}
 			}
 
-			xTraceEntrySetSymbol(xEntryHandle, pxTxThreadPtr->tx_thread_name);
+			xTraceEntrySetSymbol(xEntryHandle, pxTxThreadPtr->tx_thread_name, strlen(pxTxThreadPtr->tx_thread_name));
 
 			pxTxThreadPtr = pxTxThreadPtr->tx_thread_created_next;
 		}

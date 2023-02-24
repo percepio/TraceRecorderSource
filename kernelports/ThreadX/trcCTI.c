@@ -1,6 +1,6 @@
 /*
- * Trace Recorder for Tracealyzer v4.6.6
- * Copyright 2021 Percepio AB
+ * Trace Recorder for Tracealyzer v4.7.0
+ * Copyright 2023 Percepio AB
  * www.percepio.com
  *
  * SPDX-License-Identifier: Apache-2.0
@@ -109,6 +109,7 @@ extern traceResult xTraceISREnd_orig(TraceBaseType_t uxIsTaskSwitchRequired);
 extern traceResult xTraceEventBeginRawOffline_orig(uint32_t uiSize, TraceEventHandle_t* pxEventHandle);
 extern traceResult xTraceEventEndOffline_orig(TraceEventHandle_t xEventHandle);
 
+#if !TRC_CFG_SCHEDULING_ONLY
 
 UINT _txe_block_allocate(TX_BLOCK_POOL *pool_ptr, VOID **block_ptr, ULONG wait_option)
 {
@@ -1452,6 +1453,167 @@ UINT _txe_semaphore_put(TX_SEMAPHORE *semaphore_ptr)
 	return ret;
 }
 
+ULONG _tx_time_get(VOID)
+{
+	TraceEventHandle_t xTraceHandle;
+
+	ULONG ret = _tx_time_get_orig();
+
+	if (xTraceEventBegin(PSF_EVENT_TIME_GET_SUCCESS, sizeof(ULONG),
+		&xTraceHandle) == TRC_SUCCESS) {
+		xTraceEventAddUnsignedBaseType(xTraceHandle, ret);
+		xTraceEventEnd(xTraceHandle);
+	}
+
+	return ret;
+}
+
+VOID _tx_time_set(ULONG new_time)
+{
+	_tx_time_set_orig(new_time);
+}
+
+UINT _txe_timer_activate(TX_TIMER *timer_ptr)
+{
+	UINT ret = _txe_timer_activate_orig(timer_ptr);
+
+	if (ret != TX_SUCCESS)
+	{
+		TraceEventHandle_t xTraceHandle;
+
+		if (xTraceEventBegin(PSF_EVENT_TIMER_ACTIVATE_FAILED, sizeof(void*) + sizeof(UINT),
+			&xTraceHandle) == TRC_SUCCESS) {
+			xTraceEventAddPointer(xTraceHandle, (void*)timer_ptr);
+			xTraceEventAdd32(xTraceHandle, ret);
+			xTraceEventEnd(xTraceHandle);
+		}
+	}
+
+	return ret;
+}
+
+UINT _txe_timer_change(TX_TIMER *timer_ptr, ULONG initial_ticks, ULONG reschedule_ticks)
+{
+	UINT ret = _txe_timer_change_orig(timer_ptr, initial_ticks, reschedule_ticks);
+
+	if (ret != TX_SUCCESS)
+	{
+		TraceEventHandle_t xTraceHandle;
+
+		if (xTraceEventBegin(PSF_EVENT_TIMER_CHANGE_FAILED, sizeof(void*) + sizeof(ULONG) + sizeof(ULONG) + sizeof(UINT),
+			&xTraceHandle) == TRC_SUCCESS) {
+			xTraceEventAddPointer(xTraceHandle, (void*)timer_ptr);
+			xTraceEventAddUnsignedBaseType(xTraceHandle, initial_ticks);
+			xTraceEventAddUnsignedBaseType(xTraceHandle, reschedule_ticks);
+			xTraceEventAdd32(xTraceHandle, ret);
+			xTraceEventEnd(xTraceHandle);
+		}
+	}
+
+	return ret;
+}
+
+UINT _txe_timer_create(TX_TIMER *timer_ptr, CHAR *name_ptr,
+            VOID (*expiration_function)(ULONG id), ULONG expiration_input,
+            ULONG initial_ticks, ULONG reschedule_ticks, UINT auto_activate, UINT timer_control_block_size)
+{
+	UINT ret = _txe_timer_create_orig(timer_ptr, name_ptr, expiration_function, expiration_input, initial_ticks,
+			reschedule_ticks, auto_activate, timer_control_block_size);
+
+	if (ret != TX_SUCCESS)
+	{
+		TraceEventHandle_t xTraceHandle;
+
+		if (xTraceEventBegin(PSF_EVENT_TIMER_CREATE_FAILED, sizeof(void*) + sizeof(ULONG) + sizeof(ULONG) + sizeof(ULONG) + sizeof(UINT),
+			&xTraceHandle) == TRC_SUCCESS) {
+			xTraceEventAddPointer(xTraceHandle, (void*)timer_ptr);
+			xTraceEventAddUnsignedBaseType(xTraceHandle, initial_ticks);
+			xTraceEventAddUnsignedBaseType(xTraceHandle, reschedule_ticks);
+			xTraceEventAddUnsignedBaseType(xTraceHandle, auto_activate);
+			xTraceEventAdd32(xTraceHandle, ret);
+			xTraceEventEnd(xTraceHandle);
+		}
+	}
+
+	return ret;
+}
+
+UINT _txe_timer_deactivate(TX_TIMER *timer_ptr)
+{
+	UINT ret = _txe_timer_deactivate_orig(timer_ptr);
+
+	if (ret != TX_SUCCESS)
+	{
+		TraceEventHandle_t xTraceHandle;
+
+		if (xTraceEventBegin(PSF_EVENT_TIMER_DEACTIVATE_FAILED, sizeof(void*) + sizeof(UINT),
+			&xTraceHandle) == TRC_SUCCESS) {
+			xTraceEventAddPointer(xTraceHandle, (void*)timer_ptr);
+			xTraceEventAdd32(xTraceHandle, ret);
+			xTraceEventEnd(xTraceHandle);
+		}
+	}
+
+	return ret;
+}
+
+UINT _txe_timer_delete(TX_TIMER *timer_ptr)
+{
+	UINT ret = _txe_timer_delete_orig(timer_ptr);
+
+	if (ret != TX_SUCCESS)
+	{
+		TraceEventHandle_t xTraceHandle;
+
+		if (xTraceEventBegin(PSF_EVENT_TIMER_DELETE_FAILED, sizeof(void*) + sizeof(UINT),
+			&xTraceHandle) == TRC_SUCCESS) {
+			xTraceEventAddPointer(xTraceHandle, (void*)timer_ptr);
+			xTraceEventAdd32(xTraceHandle, ret);
+			xTraceEventEnd(xTraceHandle);
+		}
+	}
+
+	return ret;
+}
+
+UINT _txe_timer_info_get(TX_TIMER *timer_ptr, CHAR **name, UINT *active, ULONG *remaining_ticks, ULONG *reschedule_ticks, TX_TIMER **next_timer)
+{
+	UINT ret = _txe_timer_info_get_orig(timer_ptr, name, active, remaining_ticks, reschedule_ticks, next_timer);
+
+	if (ret != TX_SUCCESS)
+	{
+		TraceEventHandle_t xTraceHandle;
+
+		if (xTraceEventBegin(PSF_EVENT_TIMER_INFO_GET_FAILED, sizeof(void*) + sizeof(UINT),
+			&xTraceHandle) == TRC_SUCCESS) {
+			xTraceEventAddPointer(xTraceHandle, (void*)timer_ptr);
+			xTraceEventAdd32(xTraceHandle, ret);
+			xTraceEventEnd(xTraceHandle);
+		}
+	}
+
+	return ret;
+}
+
+UINT _tx_timer_performance_info_get(TX_TIMER *timer_ptr, ULONG *activates, ULONG *reactivates, ULONG *deactivates, ULONG *expirations, ULONG *expiration_adjusts)
+{
+	UINT ret = _tx_timer_performance_info_get_orig(timer_ptr, activates, reactivates, deactivates, expirations, expiration_adjusts);
+
+	if (ret != TX_SUCCESS)
+	{
+		TraceEventHandle_t xTraceHandle;
+
+		if (xTraceEventBegin(PSF_EVENT_TIMER_PERFORMANCE_INFO_GET_FAILED, sizeof(void*) + sizeof(UINT),
+			&xTraceHandle) == TRC_SUCCESS) {
+			xTraceEventAddPointer(xTraceHandle, (void*)timer_ptr);
+			xTraceEventAdd32(xTraceHandle, ret);
+			xTraceEventEnd(xTraceHandle);
+		}
+	}
+
+	return ret;
+}
+#endif /* TRC_CFG_SCHEDULING_ONLY */
 
 UINT _txe_thread_create(TX_THREAD *thread_ptr, CHAR *name_ptr, VOID (*entry_function)(ULONG id), ULONG entry_input,
         VOID *stack_start, ULONG stack_size, UINT priority, UINT preempt_threshold,
@@ -1780,167 +1942,6 @@ UINT _txe_thread_wait_abort(TX_THREAD  *thread_ptr)
 		if (xTraceEventBegin(PSF_EVENT_THREAD_WAIT_ABORT_FAILED, sizeof(void*) + sizeof(UINT),
 			&xTraceHandle) == TRC_SUCCESS) {
 			xTraceEventAddPointer(xTraceHandle, (void*)thread_ptr);
-			xTraceEventAdd32(xTraceHandle, ret);
-			xTraceEventEnd(xTraceHandle);
-		}
-	}
-
-	return ret;
-}
-
-ULONG _tx_time_get(VOID)
-{
-	TraceEventHandle_t xTraceHandle;
-
-	ULONG ret = _tx_time_get_orig();
-
-	if (xTraceEventBegin(PSF_EVENT_TIME_GET_SUCCESS, sizeof(ULONG),
-		&xTraceHandle) == TRC_SUCCESS) {
-		xTraceEventAddUnsignedBaseType(xTraceHandle, ret);
-		xTraceEventEnd(xTraceHandle);
-	}
-
-	return ret;
-}
-
-VOID _tx_time_set(ULONG new_time)
-{
-	_tx_time_set_orig(new_time);
-}
-
-UINT _txe_timer_activate(TX_TIMER *timer_ptr)
-{
-	UINT ret = _txe_timer_activate_orig(timer_ptr);
-
-	if (ret != TX_SUCCESS)
-	{
-		TraceEventHandle_t xTraceHandle;
-
-		if (xTraceEventBegin(PSF_EVENT_TIMER_ACTIVATE_FAILED, sizeof(void*) + sizeof(UINT),
-			&xTraceHandle) == TRC_SUCCESS) {
-			xTraceEventAddPointer(xTraceHandle, (void*)timer_ptr);
-			xTraceEventAdd32(xTraceHandle, ret);
-			xTraceEventEnd(xTraceHandle);
-		}
-	}
-
-	return ret;
-}
-
-UINT _txe_timer_change(TX_TIMER *timer_ptr, ULONG initial_ticks, ULONG reschedule_ticks)
-{
-	UINT ret = _txe_timer_change_orig(timer_ptr, initial_ticks, reschedule_ticks);
-
-	if (ret != TX_SUCCESS)
-	{
-		TraceEventHandle_t xTraceHandle;
-
-		if (xTraceEventBegin(PSF_EVENT_TIMER_CHANGE_FAILED, sizeof(void*) + sizeof(ULONG) + sizeof(ULONG) + sizeof(UINT),
-			&xTraceHandle) == TRC_SUCCESS) {
-			xTraceEventAddPointer(xTraceHandle, (void*)timer_ptr);
-			xTraceEventAddUnsignedBaseType(xTraceHandle, initial_ticks);
-			xTraceEventAddUnsignedBaseType(xTraceHandle, reschedule_ticks);
-			xTraceEventAdd32(xTraceHandle, ret);
-			xTraceEventEnd(xTraceHandle);
-		}
-	}
-
-	return ret;
-}
-
-UINT _txe_timer_create(TX_TIMER *timer_ptr, CHAR *name_ptr,
-            VOID (*expiration_function)(ULONG id), ULONG expiration_input,
-            ULONG initial_ticks, ULONG reschedule_ticks, UINT auto_activate, UINT timer_control_block_size) 
-{
-	UINT ret = _txe_timer_create_orig(timer_ptr, name_ptr, expiration_function, expiration_input, initial_ticks,
-			reschedule_ticks, auto_activate, timer_control_block_size);
-
-	if (ret != TX_SUCCESS)
-	{
-		TraceEventHandle_t xTraceHandle;
-
-		if (xTraceEventBegin(PSF_EVENT_TIMER_CREATE_FAILED, sizeof(void*) + sizeof(ULONG) + sizeof(ULONG) + sizeof(ULONG) + sizeof(UINT),
-			&xTraceHandle) == TRC_SUCCESS) {
-			xTraceEventAddPointer(xTraceHandle, (void*)timer_ptr);
-			xTraceEventAddUnsignedBaseType(xTraceHandle, initial_ticks);
-			xTraceEventAddUnsignedBaseType(xTraceHandle, reschedule_ticks);
-			xTraceEventAddUnsignedBaseType(xTraceHandle, auto_activate);
-			xTraceEventAdd32(xTraceHandle, ret);
-			xTraceEventEnd(xTraceHandle);
-		}
-	}
-
-	return ret;
-}
-
-UINT _txe_timer_deactivate(TX_TIMER *timer_ptr)
-{
-	UINT ret = _txe_timer_deactivate_orig(timer_ptr);
-
-	if (ret != TX_SUCCESS)
-	{
-		TraceEventHandle_t xTraceHandle;
-
-		if (xTraceEventBegin(PSF_EVENT_TIMER_DEACTIVATE_FAILED, sizeof(void*) + sizeof(UINT),
-			&xTraceHandle) == TRC_SUCCESS) {
-			xTraceEventAddPointer(xTraceHandle, (void*)timer_ptr);
-			xTraceEventAdd32(xTraceHandle, ret);
-			xTraceEventEnd(xTraceHandle);
-		}
-	}
-
-	return ret;
-}
-
-UINT _txe_timer_delete(TX_TIMER *timer_ptr)
-{
-	UINT ret = _txe_timer_delete_orig(timer_ptr);
-
-	if (ret != TX_SUCCESS)
-	{
-		TraceEventHandle_t xTraceHandle;
-
-		if (xTraceEventBegin(PSF_EVENT_TIMER_DELETE_FAILED, sizeof(void*) + sizeof(UINT),
-			&xTraceHandle) == TRC_SUCCESS) {
-			xTraceEventAddPointer(xTraceHandle, (void*)timer_ptr);
-			xTraceEventAdd32(xTraceHandle, ret);
-			xTraceEventEnd(xTraceHandle);
-		}
-	}
-
-	return ret;
-}
-
-UINT _txe_timer_info_get(TX_TIMER *timer_ptr, CHAR **name, UINT *active, ULONG *remaining_ticks, ULONG *reschedule_ticks, TX_TIMER **next_timer)
-{
-	UINT ret = _txe_timer_info_get_orig(timer_ptr, name, active, remaining_ticks, reschedule_ticks, next_timer);
-
-	if (ret != TX_SUCCESS)
-	{
-		TraceEventHandle_t xTraceHandle;
-
-		if (xTraceEventBegin(PSF_EVENT_TIMER_INFO_GET_FAILED, sizeof(void*) + sizeof(UINT),
-			&xTraceHandle) == TRC_SUCCESS) {
-			xTraceEventAddPointer(xTraceHandle, (void*)timer_ptr);
-			xTraceEventAdd32(xTraceHandle, ret);
-			xTraceEventEnd(xTraceHandle);
-		}
-	}
-
-	return ret;
-}
-
-UINT _tx_timer_performance_info_get(TX_TIMER *timer_ptr, ULONG *activates, ULONG *reactivates, ULONG *deactivates, ULONG *expirations, ULONG *expiration_adjusts)
-{
-	UINT ret = _tx_timer_performance_info_get_orig(timer_ptr, activates, reactivates, deactivates, expirations, expiration_adjusts);
-
-	if (ret != TX_SUCCESS)
-	{
-		TraceEventHandle_t xTraceHandle;
-
-		if (xTraceEventBegin(PSF_EVENT_TIMER_PERFORMANCE_INFO_GET_FAILED, sizeof(void*) + sizeof(UINT),
-			&xTraceHandle) == TRC_SUCCESS) {
-			xTraceEventAddPointer(xTraceHandle, (void*)timer_ptr);
 			xTraceEventAdd32(xTraceHandle, ret);
 			xTraceEventEnd(xTraceHandle);
 		}

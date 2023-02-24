@@ -1,6 +1,6 @@
 /*
-* Percepio Trace Recorder for Tracealyzer v4.6.6
-* Copyright 2021 Percepio AB
+* Percepio Trace Recorder for Tracealyzer v4.7.0
+* Copyright 2023 Percepio AB
 * www.percepio.com
 *
 * SPDX-License-Identifier: Apache-2.0
@@ -34,6 +34,21 @@ extern "C" {
  * @ingroup trace_recorder_apis
  * @{
  */
+
+typedef struct TraceExtensionData
+{
+	TraceUnsignedBaseType_t uxNextFreeExtensionEventId;
+} TraceExtensionData_t;
+
+/**
+ * @brief Initializes the Extension trace system
+ * 
+ * @param[in] pxBuffer Pointer to memory that is used by the extension trace system
+ * 
+ * @retval TRC_FAIL Failure
+ * @retval TRC_SUCCESS Success
+ */
+traceResult xTraceExtensionInitialize(TraceExtensionData_t* const pxBuffer);
 
 /**
  * @brief Creates trace extension.

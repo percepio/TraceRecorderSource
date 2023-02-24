@@ -1,6 +1,6 @@
 /*
- * Trace Recorder for Tracealyzer v4.6.6
- * Copyright 2021 Percepio AB
+ * Trace Recorder for Tracealyzer v4.7.0
+ * Copyright 2023 Percepio AB
  * www.percepio.com
  *
  * SPDX-License-Identifier: Apache-2.0
@@ -50,7 +50,7 @@ extern "C" {
  * @def TRC_PLATFORM_CFG_MINOR
  * @brief Minor release version for recorder.
  */
-#define TRC_PLATFORM_CFG_MINOR 0
+#define TRC_PLATFORM_CFG_MINOR 1
 
 /**
  * @def TRC_PLATFORM_CFG_PATCH
@@ -432,6 +432,14 @@ void vTraceSetMessageBufferName(void* object, const char* name);
 #define PSF_EVENT_TASK_POTENTIAL_SWITCH_RESULT						4017
 #define PSF_EVENT_UNUSED_STACK										4020
 #define PSF_EVENT_USER_EVENT										4030
+#define PSF_EVENT_USER_EVENT_FIXED									4038
+
+#define PSF_EVENT_RUNNABLE_REGISTER									4040
+#define PSF_EVENT_RUNNABLE_START									4041
+#define PSF_EVENT_RUNNABLE_STOP										4042
+
+#define PSF_EVENT_DEPENDENCY_REGISTER								4043
+
 #define TRC_EVENT_LAST_ID											4096
 
 /* Assign recorder defaults to match ThreadX mappings. */

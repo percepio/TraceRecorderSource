@@ -8,5 +8,5 @@ var trcTimestamp_8h =
     [ "xTraceTimestampSetFrequency", "group__trace__timestamp__apis.html#ga7e582d9f384f366f5d44dd9033e160c8", null ],
     [ "xTraceTimestampSetOsTickCount", "group__trace__timestamp__apis.html#ga4c8f56e6cfdc4c041c25dfc8e9c53a12", null ],
     [ "xTraceTimestampSetPeriod", "group__trace__timestamp__apis.html#gaaebd43421b8dd4fbc59e57ef8faf1969", null ],
-    [ "TraceTimestamp_t", "group__trace__timestamp__apis.html#ga0e04e6bca13f34860b3d8afccc1b2699", null ]
+    [ "TraceTimestampData_t", "group__trace__timestamp__apis.html#ga8b7c675ec2e8975af31f37bc1b7da5d0", null ]
 ];

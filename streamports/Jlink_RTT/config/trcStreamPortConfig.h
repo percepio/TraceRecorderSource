@@ -1,6 +1,6 @@
 /*
- * Trace Recorder for Tracealyzer v4.6.6
- * Copyright 2021 Percepio AB
+ * Trace Recorder for Tracealyzer v4.7.0
+ * Copyright 2023 Percepio AB
  * www.percepio.com
  *
  * SPDX-License-Identifier: Apache-2.0
@@ -15,9 +15,13 @@
 extern "C" {
 #endif
 
-/* This define will determine whether to use the internal buffer or not.
-If file writing creates additional trace events (i.e. it uses semaphores or mutexes),
-then the internal buffer must be enabled to avoid infinite recursion. */
+/**
+ * @def TRC_CFG_STREAM_PORT_USE_INTERNAL_BUFFER
+ *
+ * @brief This define will determine whether to use the internal buffer or not.
+ * If file writing creates additional trace events (i.e. it uses semaphores or mutexes),
+ * then the internal buffer must be enabled to avoid infinite recursion.
+ */
 #define TRC_CFG_STREAM_PORT_USE_INTERNAL_BUFFER 0
 
 /**
@@ -27,6 +31,28 @@ then the internal buffer must be enabled to avoid infinite recursion. */
 * is enabled.
 */
 #define TRC_CFG_STREAM_PORT_INTERNAL_BUFFER_SIZE 5000
+
+/**
+ * @def TRC_CFG_STREAM_PORT_INTERNAL_BUFFER_WRITE_MODE
+ *
+ * @brief
+ */
+#define TRC_CFG_STREAM_PORT_INTERNAL_BUFFER_WRITE_MODE TRC_INTERNAL_EVENT_BUFFER_OPTION_WRITE_MODE_DIRECT
+
+/**
+ * @def TRC_CFG_STREAM_PORT_INTERNAL_BUFFER_TRANSFER_MODE
+ *
+ * @brief
+ */
+#define TRC_CFG_STREAM_PORT_INTERNAL_BUFFER_TRANSFER_MODE TRC_INTERNAL_EVENT_BUFFER_OPTION_TRANSFER_MODE_ALL
+
+/**
+ * @def TRC_CFG_STREAM_PORT_INTERNAL_BUFFER_CHUNK_SIZE
+ *
+ * @brief Defines the maximum chunk size when transferring
+ * internal buffer events in chunks.
+ */
+#define TRC_CFG_STREAM_PORT_INTERNAL_BUFFER_CHUNK_SIZE 1000
 
 /**
 * @def TRC_CFG_STREAM_PORT_RTT_UP_BUFFER_SIZE
@@ -102,7 +128,7 @@ then the internal buffer must be enabled to avoid infinite recursion. */
 * Tracealyzer will report lost events if the transfer is not
 * fast enough. In that case, try increasing the size of the "up buffer".
 */
-#define TRC_CFG_STREAM_PORT_RTT_MODE SEGGER_RTT_MODE_BLOCK_IF_FIFO_FULL
+#define TRC_CFG_STREAM_PORT_RTT_MODE SEGGER_RTT_MODE_NO_BLOCK_SKIP
 
 /**
  * @def TRC_CFG_STREAM_PORT_RTT_NO_LOCK_WRITE

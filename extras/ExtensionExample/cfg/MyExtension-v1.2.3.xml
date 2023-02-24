@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<PlatformExtension>
+  <EventCodes>
+    <EventGroup name="MY_EXTENSION">
+      <Event code="0x00" service="MY_EVENT_A" type="KernelServiceReturn" status="StatusOK" >
+      </Event>
+      <Event code="0x01" service="MY_EVENT_B" type="KernelServiceReturn" status="StatusOK">
+        <Param index="0" type="Int32" useAs="Arg"></Param>
+      </Event>
+      <Event code="0x02" service="MY_EVENT_C" type="KernelServiceReturn" status="StatusOK">
+        <Param index="0" type="Handle" class="Queue" useAs="Arg"></Param>
+      </Event>
+      <Event code="0x03" service="MY_EVENT_D" type="KernelServiceReturn" status="StatusOK">
+        <Param index="0" type="Handle" class="Queue" useAs="Arg"></Param>
+        <Param index="1" type="Int32" useAs="Arg"></Param>
+      </Event>
+    </EventGroup>
+  </EventCodes>
+
+  <TargetPlatform>
+  <TaskPriorityDirection>HigherNumberIsMoreImportant</TaskPriorityDirection>
+  <KernelServiceGroups>
+    <KernelServiceGroup name="MY_EXTENSION">
+      <KernelService name="MY_EVENT_A"           parameters="None"/>
+      <KernelService name="MY_EVENT_B"           parameters="NumericParameterOnly"/>
+      <KernelService name="MY_EVENT_C"           parameters="Object"/>
+      <KernelService name="MY_EVENT_D"           parameters="ObjectAndNumericParameter"/>
+    </KernelServiceGroup>
+  </KernelServiceGroups>
+
+  <ObjectClasses>
+  </ObjectClasses>
+  </TargetPlatform>
+</PlatformExtension>

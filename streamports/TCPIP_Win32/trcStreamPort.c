@@ -1,6 +1,6 @@
 /*
- * Trace Recorder for Tracealyzer v4.6.6
- * Copyright 2021 Percepio AB
+ * Trace Recorder for Tracealyzer v4.7.0
+ * Copyright 2023 Percepio AB
  * www.percepio.com
  *
  * SPDX-License-Identifier: Apache-2.0
@@ -31,7 +31,7 @@ typedef struct TraceStreamPortTCPIP
 #endif
 } TraceStreamPortTCPIP_t;
 
-static TraceStreamPortTCPIP_t* pxStreamPortFile;
+static TraceStreamPortTCPIP_t* pxStreamPortFile TRC_CFG_RECORDER_DATA_ATTRIBUTE;
 static SOCKET server_socket = (UINT_PTR)0, trace_socket = (UINT_PTR)0;
 struct sockaddr_in server, client;
 

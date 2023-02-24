@@ -1,6 +1,6 @@
 /*
- * Trace Recorder for Tracealyzer v4.6.6
- * Copyright 2021 Percepio AB
+ * Trace Recorder for Tracealyzer v4.7.0
+ * Copyright 2023 Percepio AB
  * www.percepio.com
  *
  * SPDX-License-Identifier: Apache-2.0
@@ -20,7 +20,7 @@
 #include <string.h>
 #include <stdarg.h>
 
-static TraceMultiCoreEventBuffer_t *pxInternalEventBuffer;
+static TraceMultiCoreEventBuffer_t *pxInternalEventBuffer TRC_CFG_RECORDER_DATA_ATTRIBUTE;
 
 traceResult xTraceInternalEventBufferInitialize(uint8_t* puiBuffer, uint32_t uiSize)
 {
@@ -44,6 +44,24 @@ traceResult xTraceInternalEventBufferInitialize(uint8_t* puiBuffer, uint32_t uiS
 	return TRC_SUCCESS;
 }
 
+traceResult xTraceInternalEventBufferAlloc(uint32_t uiSize, void **ppvData)
+{
+	/* This should never fail */
+	TRC_ASSERT(xTraceIsComponentInitialized(TRC_RECORDER_COMPONENT_INTERNAL_EVENT_BUFFER));
+
+	return xTraceMultiCoreEventBufferAlloc(pxInternalEventBuffer, uiSize, ppvData);
+}
+
+traceResult xTraceInternalEventBufferAllocCommit(void *pvData, uint32_t uiSize, int32_t *piBytesWritten)
+{
+	(void)pvData;
+
+	/* This should never fail */
+	TRC_ASSERT(xTraceIsComponentInitialized(TRC_RECORDER_COMPONENT_INTERNAL_EVENT_BUFFER));
+
+	return xTraceMultiCoreEventBufferAllocCommit(pxInternalEventBuffer, pvData, uiSize, piBytesWritten);
+}
+
 traceResult xTraceInternalEventBufferPush(void *pvData, uint32_t uiSize, int32_t *piBytesWritten)
 {
 	/* This should never fail */
@@ -52,12 +70,20 @@ traceResult xTraceInternalEventBufferPush(void *pvData, uint32_t uiSize, int32_t
 	return xTraceMultiCoreEventBufferPush(pxInternalEventBuffer, pvData, uiSize, piBytesWritten);
 }
 
-traceResult xTraceInternalEventBufferTransfer(int32_t *piBytesWritten)
+traceResult xTraceInternalEventBufferTransferAll(int32_t *piBytesWritten)
 {
 	/* This should never fail */
 	TRC_ASSERT(xTraceIsComponentInitialized(TRC_RECORDER_COMPONENT_INTERNAL_EVENT_BUFFER));
 	
-	return xTraceMultiCoreEventBufferTransfer(pxInternalEventBuffer, piBytesWritten);
+	return xTraceMultiCoreEventBufferTransferAll(pxInternalEventBuffer, piBytesWritten);
+}
+
+traceResult xTraceInternalEventBufferTransferChunk(int32_t *piBytesWritten)
+{
+	/* This should never fail */
+	TRC_ASSERT(xTraceIsComponentInitialized(TRC_RECORDER_COMPONENT_INTERNAL_EVENT_BUFFER));
+
+	return xTraceMultiCoreEventBufferTransferChunk(pxInternalEventBuffer, TRC_INTERNAL_BUFFER_CHUNK_SIZE, piBytesWritten);
 }
 
 traceResult xTraceInternalEventBufferClear()

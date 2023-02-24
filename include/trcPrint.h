@@ -1,6 +1,6 @@
 /*
-* Percepio Trace Recorder for Tracealyzer v4.6.6
-* Copyright 2021 Percepio AB
+* Percepio Trace Recorder for Tracealyzer v4.7.0
+* Copyright 2023 Percepio AB
 * www.percepio.com
 *
 * SPDX-License-Identifier: Apache-2.0
@@ -32,18 +32,13 @@ extern "C" {
  * @{
  */
 
-#if (TRC_CFG_SCHEDULING_ONLY == 0) && (TRC_CFG_INCLUDE_USER_EVENTS == 1)
+#if (TRC_CFG_INCLUDE_USER_EVENTS == 1)
 
-/** @internal */
-#define TRC_PRINT_BUFFER_SIZE (sizeof(TraceStringHandle_t) + sizeof(TraceStringHandle_t))
-
-/**
- * @internal Trace Print Buffer Structure
- */
-typedef struct TracePrintBuffer
+typedef struct TracePrintData
 {
-	uint32_t buffer[(TRC_PRINT_BUFFER_SIZE) / sizeof(uint32_t)];
-} TracePrintBuffer_t;
+	TraceStringHandle_t defaultChannel;
+	TraceStringHandle_t consoleChannel;
+} TracePrintData_t;
 
 /**
  * @internal Initialize print trace system.
@@ -54,7 +49,239 @@ typedef struct TracePrintBuffer
  * @retval TRC_FAIL Failure
  * @retval TRC_SUCCESS Success
  */
-traceResult xTracePrintInitialize(TracePrintBuffer_t* pxBuffer);
+traceResult xTracePrintInitialize(TracePrintData_t* pxBuffer);
+
+/**
+ * @brief Generate a "User Event". Channel and format string are only stored in ELF.
+ *
+ * This is a compact version of xTracePrintF(). Only addresses to channel and format strings are stored and an ELF file must be provided to interpret the trace.
+ * NOTE! All parameters must be cast to TraceUnsignedBaseType_t/TraceBaseType_t!
+ *
+ * Example:
+ *	xTracePrintCompact("MyChannel", "MyFormat %d", 1);
+ *
+ * @param[in] szChannel Channel string.
+ * @param[in] szFormat Format string.
+ *
+ * @retval TRC_FAIL Failure
+ * @retval TRC_SUCCESS Success
+ */
+traceResult xTracePrintCompactF(const char* szChannel, const char* szFormat, ...);
+
+/**
+ * @brief Generate a "User Event" with 0 parameters. Channel and format string are only stored in ELF.
+ *
+ * This is a compact and fixed version of xTracePrintF(). Only addresses to channel and format strings are stored and an ELF file must be provided to interpret the trace.
+ *
+ * Example:
+ *	xTracePrintCompactF0("MyChannel", "MyText");
+ *
+ * @param[in] szChannel Channel string.
+ * @param[in] szFormat Format string.
+ *
+ * @retval TRC_FAIL Failure
+ * @retval TRC_SUCCESS Success
+ */
+#define xTracePrintCompactF0(szChannel, szFormat) xTraceEventCreate2(PSF_EVENT_USER_EVENT_FIXED, (TraceUnsignedBaseType_t)(szChannel), (TraceUnsignedBaseType_t)(szFormat))
+
+/**
+ * @brief Generate a "User Event" with 1 parameter. Channel and format string are only stored in ELF.
+ *
+ * This is a compact and fixed version of xTracePrintF(). Only addresses to channel and format strings are stored and an ELF file must be provided to interpret the trace.
+ *
+ * Example:
+ *	xTracePrintCompactF1("MyChannel", "MyFormat %u", 1);
+ *
+ * @param[in] szChannel Channel string.
+ * @param[in] szFormat Format string.
+ * @param[in] uxParam1 First parameter.
+ *
+ * @retval TRC_FAIL Failure
+ * @retval TRC_SUCCESS Success
+ */
+#define xTracePrintCompactF1(szChannel, szFormat, uxParam1) xTraceEventCreate3(PSF_EVENT_USER_EVENT_FIXED + 1, (TraceUnsignedBaseType_t)(szChannel), (TraceUnsignedBaseType_t)(szFormat), uxParam1)
+
+/**
+ * @brief Generate a "User Event" with 2 parameters. Channel and format string are only stored in ELF.
+ *
+ * This is a compact and fixed version of xTracePrintF(). Only addresses to channel and format strings are stored and an ELF file must be provided to interpret the trace.
+ *
+ * Examp
+ *	xTracePrintCompactF2("MyChannel", "MyFormat %u %u", 1, 2);
+ *
+ * @param[in] szChannel Channel string.
+ * @param[in] szFormat Format string.
+ * @param[in] uxParam1 First parameter.
+ * @param[in] uxParam2 Second parameter.
+ *
+ * @retval TRC_FAIL Failure
+ * @retval TRC_SUCCESS Success
+ */
+#define xTracePrintCompactF2(szChannel, szFormat, uxParam1, uxParam2) xTraceEventCreate4(PSF_EVENT_USER_EVENT_FIXED + 2, (TraceUnsignedBaseType_t)(szChannel), (TraceUnsignedBaseType_t)(szFormat), uxParam1, uxParam2)
+
+/**
+ * @brief Generate a "User Event" with 3 parameters. Channel and format string are only stored in ELF.
+ *
+ * This is a compact and fixed version of xTracePrintF(). Only addresses to channel and format strings are stored and an ELF file must be provided to interpret the trace.
+ *
+ * Example:
+ *	xTracePrintCompactF3("MyChannel", "MyFormat %u %u %u", 1, 2, 3);
+ *
+ * @param[in] szChannel Channel string.
+ * @param[in] szFormat Format string.
+ * @param[in] uxParam1 First parameter.
+ * @param[in] uxParam2 Second parameter.
+ * @param[in] uxParam3 Third parameter.
+ *
+ * @retval TRC_FAIL Failure
+ * @retval TRC_SUCCESS Success
+ */
+#define xTracePrintCompactF3(szChannel, szFormat, uxParam1, uxParam2, uxParam3) xTraceEventCreate5(PSF_EVENT_USER_EVENT_FIXED + 3, (TraceUnsignedBaseType_t)(szChannel), (TraceUnsignedBaseType_t)(szFormat), uxParam1, uxParam2, uxParam3)
+
+/**
+ * @brief Generate a "User Event" with 4 parameters. Channel and format string are only stored in ELF.
+ *
+ * This is a compact and fixed version of xTracePrintF(). Only addresses to channel and format strings are stored and an ELF file must be provided to interpret the trace.
+ *
+ * Example:
+ *	xTracePrintCompactF4("MyChannel", "MyFormat %u %u %u %u", 1, 2, 3, 4);
+ *
+ * @param[in] szChannel Channel string.
+ * @param[in] szFormat Format string.
+ * @param[in] uxParam1 First parameter.
+ * @param[in] uxParam2 Second parameter.
+ * @param[in] uxParam3 Third parameter.
+ * @param[in] uxParam4 Fourth parameter.
+ *
+ * @retval TRC_FAIL Failure
+ * @retval TRC_SUCCESS Success
+ */
+#define xTracePrintCompactF4(szChannel, szFormat, uxParam1, uxParam2, uxParam3, uxParam4) xTraceEventCreate6(PSF_EVENT_USER_EVENT_FIXED + 4, (TraceUnsignedBaseType_t)(szChannel), (TraceUnsignedBaseType_t)(szFormat), uxParam1, uxParam2, uxParam3, uxParam4)
+
+/**
+ * @brief Generate a "User Event" with 0 parameters.
+ *
+ * This is a highly optimized version of xTracePrintF().
+ * The channel and format string must be registered using xTraceStringRegister().
+ *
+ * Example:
+ * 	TraceStringHandle_t xChannel;
+ * 	TraceStringHandle_t xHelloWorld;
+ *
+ *	xTraceStringRegister("MyChannel", &xChannel);
+ *	xTraceStringRegister("Hello world!", &xHelloWorld);
+ *	...
+ *	xTracePrintFormat0(xChannel, xHelloWorld);
+ *
+ * @param[in] xChannel Channel handle.
+ * @param[in] xFormatStringHandle Format string handle.
+ *
+ * @retval TRC_FAIL Failure
+ * @retval TRC_SUCCESS Success
+ */
+#define xTracePrintF0(xChannelStringHandle, xFormatStringHandle) xTraceEventCreate2(PSF_EVENT_USER_EVENT_FIXED, (TraceUnsignedBaseType_t)(xChannelStringHandle), (TraceUnsignedBaseType_t)(xFormatStringHandle))
+
+/**
+ * @brief Generate a "User Event" with 1 parameter.
+ *
+ * This is a highly optimized version of xTracePrintF().
+ * The channel and format string must be registered using xTraceStringRegister().
+ *
+ * Example:
+ * 	TraceStringHandle_t xChannel;
+ * 	TraceStringHandle_t xHelloWorld;
+ *
+ *	xTraceStringRegister("MyChannel", &xChannel);
+ *	xTraceStringRegister("Hello world! %d", &xHelloWorld);
+ *	...
+ *	xTracePrintFormat1(xChannel, xHelloWorld, 1);
+ *
+ * @param[in] xChannel Channel handle.
+ * @param[in] xFormatStringHandle Format string handle.
+ * @param[in] uxParam1 First parameter.
+ *
+ * @retval TRC_FAIL Failure
+ * @retval TRC_SUCCESS Success
+ */
+#define xTracePrintF1(xChannelStringHandle, xFormatStringHandle, uxParam1) xTraceEventCreate3(PSF_EVENT_USER_EVENT_FIXED + 1, (TraceUnsignedBaseType_t)(xChannelStringHandle), (TraceUnsignedBaseType_t)(xFormatStringHandle), uxParam1)
+
+/**
+ * @brief Generate a "User Event" with 2 parameters.
+ *
+ * This is a highly optimized version of xTracePrintF().
+ * The channel and format string must be registered using xTraceStringRegister().
+ *
+ * Example:
+ * 	TraceStringHandle_t xChannel;
+ * 	TraceStringHandle_t xHelloWorld;
+ *
+ *	xTraceStringRegister("MyChannel", &xChannel);
+ *	xTraceStringRegister("Hello world! %d %d", &xHelloWorld);
+ *	...
+ *	xTracePrintFormat2(xChannel, xHelloWorld, 1, 2);
+ *
+ * @param[in] xChannel Channel handle.
+ * @param[in] xFormatStringHandle Format string handle.
+ * @param[in] uxParam1 First parameter.
+ * @param[in] uxParam2 Second parameter.
+ *
+ * @retval TRC_FAIL Failure
+ * @retval TRC_SUCCESS Success
+ */
+#define xTracePrintF2(xChannelStringHandle, xFormatStringHandle, uxParam1, uxParam2) xTraceEventCreate4(PSF_EVENT_USER_EVENT_FIXED + 2, (TraceUnsignedBaseType_t)(xChannelStringHandle), (TraceUnsignedBaseType_t)(xFormatStringHandle), uxParam1, uxParam2)
+
+/**
+ * @brief Generate a "User Event" with 3 parameters.
+ *
+ * This is a highly optimized version of xTracePrintF().
+ * The channel and format string must be registered using xTraceStringRegister().
+ *
+ * Example:
+ * 	TraceStringHandle_t xChannel;
+ * 	TraceStringHandle_t xHelloWorld;
+ *
+ *	xTraceStringRegister("MyChannel", &xChannel);
+ *	xTraceStringRegister("Hello world! %d %d %d", &xHelloWorld);
+ *	...
+ *	xTracePrintFormat3(xChannel, xHelloWorld, 1, 2, 3);
+ *
+ * @param[in] xChannel Channel handle.
+ * @param[in] xFormatStringHandle Format string handle.
+ * @param[in] uxParam1 First parameter.
+ * @param[in] uxParam2 Second parameter.
+ * @param[in] uxParam3 Third parameter.
+ *
+ * @retval TRC_FAIL Failure
+ * @retval TRC_SUCCESS Success
+ */
+#define xTracePrintF3(xChannelStringHandle, xFormatStringHandle, uxParam1, uxParam2, uxParam3) xTraceEventCreate5(PSF_EVENT_USER_EVENT_FIXED + 3, (TraceUnsignedBaseType_t)(xChannelStringHandle), (TraceUnsignedBaseType_t)(xFormatStringHandle), uxParam1, uxParam2, uxParam3)
+
+/**
+ * @brief Generate a "User Event" with 4 parameters.
+ *
+ * This is a highly optimized version of xTracePrintF().
+ * The channel and format string must be registered using xTraceStringRegister().
+ *
+ * Example:
+ * 	TraceStringHandle_t xChannel;
+ * 	TraceStringHandle_t xHelloWorld;
+ *
+ *	xTraceStringRegister("MyChannel", &xChannel);
+ *	xTraceStringRegister("Hello world! %d %d %d %d", &xHelloWorld);
+ *	...
+ *	xTracePrintFormat4(xChannel, xHelloWorld, 1, 2, 3, 4);
+ *
+ * @param[in] xChannel Channel handle.
+ * @param[in] xFormatStringHandle Format string handle.
+ * @param[in] uxParam1 First parameter.
+ * @param[in] uxParam2 Second parameter.
+ * @param[in] uxParam3 Third parameter.
+ * @param[in] uxParam4 Fourth parameter.
+ *
+ * @retval TRC_FAIL Failure
+ * @retval TRC_SUCCESS Success
+ */
+#define xTracePrintF4(xChannelStringHandle, xFormatStringHandle, uxParam1, uxParam2, uxParam3, uxParam4) xTraceEventCreate6(PSF_EVENT_USER_EVENT_FIXED + 4, (TraceUnsignedBaseType_t)(xChannelStringHandle), (TraceUnsignedBaseType_t)(xFormatStringHandle), uxParam1, uxParam2, uxParam3, uxParam4)
 
 /**
  * @brief Generate "User Events" with unformatted text.
@@ -74,7 +301,8 @@ traceResult xTracePrintInitialize(TracePrintBuffer_t* pxBuffer);
  *
  * Example:
  *
- *	 TraceStringHandle_t xChannel = xTraceStringRegister("MyChannel");
+ *	 TraceStringHandle_t xChannel;
+ *	 xTraceStringRegister("MyChannel", &xChannel);
  *	 ...
  *	 xTracePrint(xChannel, "Hello World!");
  * 
@@ -87,10 +315,11 @@ traceResult xTracePrintInitialize(TracePrintBuffer_t* pxBuffer);
 traceResult xTracePrint(TraceStringHandle_t xChannel, const char* szString);
 
 /**
- * @brief Wrapper for vTracePrintF for printing to default channel.
+ * @brief Wrapper for xTracePrintF for printing to default channel.
  * 
  * Wrapper for vTracePrintF, using the default channel. Can be used as a drop-in
  * replacement for printf and similar functions, e.g. in a debug logging macro.
+ * NOTE! All parameters must be cast to TraceUnsignedBaseType_t/TraceBaseType_t!
  * 
  * Example:
  * 	// Old: #define LogString debug_console_printf
@@ -100,8 +329,8 @@ traceResult xTracePrint(TraceStringHandle_t xChannel, const char* szString);
  *  ...
  *  LogString("My value is: %d", myValue);
  * 
- * @param[in] szFormat Format
- * @param[in] ... 
+ * @param[in] szFormat Format.
+ * @param[in] ... Parameters.
  * 
  * @retval TRC_FAIL Failure
  * @retval TRC_SUCCESS Success
@@ -134,13 +363,14 @@ traceResult xTraceConsoleChannelPrintF(const char* szFormat, ...);
  *
  * Example:
  *
- *	 TraceStringHandle_t adc_uechannel = xTraceStringRegister("ADC User Events");
+ *	 TraceStringHandle_t adc_uechannel;
+ *	 xTraceStringRegister("ADC User Events", &adc_uechannel);
  *	 ...
  *	 xTracePrintF(adc_uechannel,
  *				 "ADC channel %d: %d volts",
  *				 ch, adc_reading);
  *
- * All data arguments are assumed to be 32 bit wide. The following formats are
+ * NOTE! All data arguments are assumed to be TraceUnsignedBaseType_t/TraceBaseType_t. The following formats are
  * supported:
  * %d - signed integer. The following width and padding format is supported: "%05d" -> "-0042" and "%5d" -> "  -42"
  * %u - unsigned integer. The following width and padding format is supported: "%05u" -> "00042" and "%5u" -> "   42"
@@ -155,7 +385,7 @@ traceResult xTraceConsoleChannelPrintF(const char* szFormat, ...);
  * 
  * @param[in] xChannel Channel.
  * @param[in] szFormat Format.
- * @param[in] ... 
+ * @param[in] ... Parameters.
  * 
  * @retval TRC_FAIL Failure
  * @retval TRC_SUCCESS Success
@@ -167,31 +397,44 @@ traceResult xTracePrintF(TraceStringHandle_t xChannel, const char* szFormat, ...
  * 
  * @param[in] xChannel Channel.
  * @param[in] szFormat Format.
- * @param[in] xVL Variable list arguments.
+ * @param[in] xVariableList Variable list arguments.
  * 
  * @retval TRC_FAIL Failure
  * @retval TRC_SUCCESS Success
  */
-traceResult xTraceVPrintF(TraceStringHandle_t xChannel, const char* szFormat, va_list xVL);
+traceResult xTraceVPrintF(TraceStringHandle_t xChannel, const char* szFormat, va_list xVariableList);
 
-#else /* (TRC_CFG_SCHEDULING_ONLY == 0) && (TRC_CFG_INCLUDE_USER_EVENTS == 1) */
+#else
 
-typedef struct TracePrintBuffer
+typedef struct TracePrintData
 {
-	uint32_t buffer[1];
-} TracePrintBuffer_t;
+	TraceUnsignedBaseType_t buffer[1];
+} TracePrintData_t;
 
-#define xTracePrintInitialize(p) ((void)p, p != 0 ? TRC_SUCCESS : TRC_FAIL)
+#define xTracePrintInitialize(p) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_2((void)p, p != 0 ? TRC_SUCCESS : TRC_FAIL)
 
-#define xTracePrint(c, s) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_3((void)c, (void)s, TRC_SUCCESS)
+#define xTracePrint(_c, _s) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_3((void)(_c), (void)(_s), TRC_SUCCESS)
 
-#define xTracePrintF(c, s, ...) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_3((void)c, (void)s, TRC_SUCCESS)
+#define xTracePrintF(_c, _s, ...) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_3((void)(_c), (void)(_s), TRC_SUCCESS)
 
-#define xTraceConsoleChannelPrintF(s, ...) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_2((void)s, TRC_SUCCESS)
+#define xTraceConsoleChannelPrintF(_s, ...) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_2((void)(_s), TRC_SUCCESS)
 
-#define xTraceVPrintF(c, s, v) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_4((void)c, (void)s, (void)v, TRC_SUCCESS)
+#define xTraceVPrintF(_c, _s, _v) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_4((void)(_c), (void)(_s), (void)(_v), TRC_SUCCESS)
 
-#endif /* (TRC_CFG_SCHEDULING_ONLY == 0) && (TRC_CFG_INCLUDE_USER_EVENTS == 1) */
+#define xTracePrintF0(_c, _f) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_3((void)(_c), (void)(_f), TRC_SUCCESS)
+#define xTracePrintF1(_c, _f, _p1) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_4((void)(_c), (void)(_f), (void)(_p1), TRC_SUCCESS)
+#define xTracePrintF2(_c, _f, _p1, _p2) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_5((void)(_c), (void)(_f), (void)(_p1), (void)(_p2), TRC_SUCCESS)
+#define xTracePrintF3(_c, _f, _p1, _p2, _p3) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_6((void)(_c), (void)(_f), (void)(_p1), (void)(_p2), (void)(_p3), TRC_SUCCESS)
+#define xTracePrintF4(_c, _f, _p1, _p2, _p3, _p4) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_7((void)(_c), (void)(_f), (void)(_p1), (void)(_p2), (void)(_p3), (void)(_p4), TRC_SUCCESS)
+
+#define xTracePrintCompactF xTracePrintF
+#define xTracePrintCompactF0 xTracePrintF0
+#define xTracePrintCompactF1 xTracePrintF1
+#define xTracePrintCompactF2 xTracePrintF2
+#define xTracePrintCompactF3 xTracePrintF3
+#define xTracePrintCompactF4 xTracePrintF4
+
+#endif
 
 /** @} */
 
@@ -199,9 +442,9 @@ typedef struct TracePrintBuffer
 }
 #endif
 
-#endif /* (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING) */
+#endif
 
-#endif /* (TRC_USE_TRACEALYZER_RECORDER == 1) */
+#endif
 
 
-#endif /* TRC_PRINT_H */
+#endif

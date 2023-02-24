@@ -1,6 +1,6 @@
 /*
-* Percepio Trace Recorder for Tracealyzer v4.6.6
-* Copyright 2021 Percepio AB
+* Percepio Trace Recorder for Tracealyzer v4.7.0
+* Copyright 2023 Percepio AB
 * www.percepio.com
 *
 * SPDX-License-Identifier: Apache-2.0
@@ -32,35 +32,25 @@ extern "C" {
  */
 
 /**
- * @internal Trace ISR Core Info Structure
+ * @internal Trace ISR Core Data Structure
  */
-typedef struct TraceISRCoreInfo
+typedef struct TraceISRCoreData
 {
 	TraceISRHandle_t handleStack[TRC_CFG_MAX_ISR_NESTING];	/**< */
 	int32_t stackIndex;										/**< */
-	int32_t isPendingContextSwitch;							/**< */
-} TraceISRCoreInfo_t;
+	uint32_t isPendingContextSwitch;							/**< */
+} TraceISRCoreData_t;
 
 /**
- * @internal Trace ISR Info Structure
+ * @internal Trace ISR Data Structure
  */
-typedef struct TraceISRInfo
+typedef struct TraceISRData
 {
-	TraceISRCoreInfo_t coreInfos[TRC_CFG_CORE_COUNT]; /* ISR handles */
-} TraceISRInfo_t;
+	TraceISRCoreData_t cores[TRC_CFG_CORE_COUNT]; /* ISR handles */
+} TraceISRData_t;
 
 /* We expose this to enable faster access */
-extern TraceISRInfo_t* pxTraceISRInfo;
-
-#define TRACE_ISR_INFO_BUFFER_SIZE (sizeof(TraceISRInfo_t))
-
-/**
- * @internal Trace ISR Info Buffer
- */
-typedef struct TraceISRInfoBuffer
-{
-	uint8_t buffer[(TRACE_ISR_INFO_BUFFER_SIZE)];	/**< */
-} TraceISRInfoBuffer_t;
+extern TraceISRData_t* pxTraceISRData;
 
 /**
  * @internal Initialize ISR trace system.
@@ -71,7 +61,7 @@ typedef struct TraceISRInfoBuffer
  * @retval TRC_FAIL Failure
  * @retval TRC_SUCCESS Success
  */
-traceResult xTraceISRInitialize(TraceISRInfoBuffer_t *pxBuffer);
+traceResult xTraceISRInitialize(TraceISRData_t *pxBuffer);
 
 /**
  * @brief Registers trace ISR.
@@ -177,14 +167,14 @@ traceResult xTraceISRGetCurrent(TraceISRHandle_t* pxISRHandle);
  * @retval TRC_FAIL Failure
  * @retval TRC_SUCCESS Success
  */
-#define xTraceISRGetCurrentNesting(puiValue) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_2(*(puiValue) = pxTraceISRInfo->coreInfos[TRC_CFG_GET_CURRENT_CORE()].stackIndex, TRC_SUCCESS)
+#define xTraceISRGetCurrentNesting(puiValue) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_2(*(puiValue) = pxTraceISRData->cores[TRC_CFG_GET_CURRENT_CORE()].stackIndex, TRC_SUCCESS)
 
 /**
  * @brief 
  * 
  * @return int32_t 
  */
-#define xTraceISRGetCurrentNestingReturned() (pxTraceISRInfo->coreInfos[TRC_CFG_GET_CURRENT_CORE()].stackIndex)
+#define xTraceISRGetCurrentNestingReturned() (pxTraceISRData->cores[TRC_CFG_GET_CURRENT_CORE()].stackIndex)
 
 /**
  * @brief Gets current trace ISR nesting level.
@@ -197,7 +187,7 @@ traceResult xTraceISRGetCurrent(TraceISRHandle_t* pxISRHandle);
  * @retval TRC_FAIL Failure
  * @retval TRC_SUCCESS Success
  */
-#define xTraceISRGetCurrent(pxISRHandle) (xTraceISRGetCurrentNestingReturned() >= 0 ? (*(pxISRHandle) = pxTraceISRInfo->coreInfos[TRC_CFG_GET_CURRENT_CORE()].handleStack[xTraceISRGetCurrentNestingReturned()], TRC_SUCCESS) : TRC_FAIL)
+#define xTraceISRGetCurrent(pxISRHandle) (xTraceISRGetCurrentNestingReturned() >= 0 ? (*(pxISRHandle) = pxTraceISRData->cores[TRC_CFG_GET_CURRENT_CORE()].handleStack[xTraceISRGetCurrentNestingReturned()], TRC_SUCCESS) : TRC_FAIL)
 
 #endif /* ((TRC_CFG_USE_TRACE_ASSERT) == 1) */
 

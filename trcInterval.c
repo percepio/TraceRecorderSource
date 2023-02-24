@@ -1,6 +1,6 @@
 /*
-* Trace Recorder for Tracealyzer v4.6.6
-* Copyright 2021 Percepio AB
+* Trace Recorder for Tracealyzer v4.7.0
+* Copyright 2023 Percepio AB
 * www.percepio.com
 *
 * SPDX-License-Identifier: Apache-2.0
@@ -14,15 +14,16 @@
 
 #if (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING)
 
+/*cstat !MISRAC2004-6.3 !MISRAC2012-Dir-4.6_a Suppress basic char type usage*/
 traceResult xTraceIntervalChannelSetCreate(const char* szName, TraceIntervalChannelSetHandle_t* pxIntervalChannelSetHandle)
 {
 	TraceObjectHandle_t xObjectHandle;
 
 	/* This should never fail */
-	TRC_ASSERT(pxIntervalChannelSetHandle != 0);
+	TRC_ASSERT(pxIntervalChannelSetHandle != (void*)0);
 
 	/* We need to check this */
-	if (xTraceObjectRegister(PSF_EVENT_INTERVAL_CHANNEL_SET_CREATE, 0, szName, 0, &xObjectHandle) == TRC_FAIL)
+	if (xTraceObjectRegister(PSF_EVENT_INTERVAL_CHANNEL_SET_CREATE, (void*)0, szName, 0u, &xObjectHandle) == TRC_FAIL)
 	{
 		return TRC_FAIL;
 	}
@@ -35,18 +36,19 @@ traceResult xTraceIntervalChannelSetCreate(const char* szName, TraceIntervalChan
 	return TRC_SUCCESS;
 }
 
+/*cstat !MISRAC2004-6.3 !MISRAC2012-Dir-4.6_a Suppress basic char type usage*/
 traceResult xTraceIntervalChannelCreate(const char *szName, TraceIntervalChannelSetHandle_t xIntervalChannelSetHandle, TraceIntervalChannelHandle_t *pxIntervalChannelHandle)
 {
 	TraceObjectHandle_t xObjectHandle;
 
 	/* This should never fail */
-	TRC_ASSERT(pxIntervalChannelHandle != 0);
+	TRC_ASSERT(pxIntervalChannelHandle != (void*)0);
 
 	/* This should never fail */
 	TRC_ASSERT(xIntervalChannelSetHandle != 0);
 
 	/* We need to check this */
-	if (xTraceObjectRegister(PSF_EVENT_INTERVAL_CHANNEL_CREATE, 0, szName, xIntervalChannelSetHandle, &xObjectHandle) == TRC_FAIL)
+	if (xTraceObjectRegister(PSF_EVENT_INTERVAL_CHANNEL_CREATE, (void*)0, szName, (TraceUnsignedBaseType_t)xIntervalChannelSetHandle, &xObjectHandle) == TRC_FAIL) /*cstat !MISRAC2004-11.3 !MISRAC2012-Rule-11.4 Suppress conversion from pointer to integer check*/
 	{
 		return TRC_FAIL;
 	}
@@ -61,38 +63,26 @@ traceResult xTraceIntervalChannelCreate(const char *szName, TraceIntervalChannel
 
 traceResult xTraceIntervalStart(TraceIntervalChannelHandle_t xIntervalChannelHandle, TraceUnsignedBaseType_t uxValue, TraceIntervalInstanceHandle_t *pxIntervalInstanceHandle)
 {
-	TraceEventHandle_t xEventHandle = 0;
-
 	TRC_ASSERT(xIntervalChannelHandle != 0);
+	
+	TRC_ASSERT(pxIntervalInstanceHandle != (void*)0);
+	
+	/* We null all of it first in case it's 64-bit and we only write 32-bit */
+	*pxIntervalInstanceHandle = 0;
 
-	TRC_ASSERT_ALWAYS_EVALUATE(xTraceTimestampGet((uint32_t*)pxIntervalInstanceHandle) == TRC_SUCCESS);
+	TRC_ASSERT_ALWAYS_EVALUATE(xTraceTimestampGet((uint32_t*)pxIntervalInstanceHandle) == TRC_SUCCESS); /*cstat !MISRAC2004-11.4 !MISRAC2012-Rule-11.3 Suppress conversion between pointer types checks*/
 
-	/* We need to check this */
-	if (xTraceEventBegin(PSF_EVENT_INTERVAL_START, sizeof(void*) + sizeof(TraceUnsignedBaseType_t) + sizeof(TraceUnsignedBaseType_t), &xEventHandle) == TRC_SUCCESS)
-	{
-		xTraceEventAddPointer(xEventHandle, (void*)xIntervalChannelHandle);
-		xTraceEventAddUnsignedBaseType(xEventHandle, (TraceUnsignedBaseType_t)*pxIntervalInstanceHandle);
-		xTraceEventAddUnsignedBaseType(xEventHandle, uxValue);
-		xTraceEventEnd(xEventHandle);
-	}
-
+	(void)xTraceEventCreate3(PSF_EVENT_INTERVAL_START, (TraceUnsignedBaseType_t)xIntervalChannelHandle, (TraceUnsignedBaseType_t)*pxIntervalInstanceHandle, uxValue); /*cstat !MISRAC2004-11.3 !MISRAC2012-Rule-11.4 Suppress conversion from pointer to integer check*/
+	
 	return TRC_SUCCESS;
 }
 
 traceResult xTraceIntervalStop(TraceIntervalChannelHandle_t xIntervalChannelHandle, TraceIntervalInstanceHandle_t xIntervalInstanceHandle)
 {
-	TraceEventHandle_t xEventHandle = 0;
-
 	TRC_ASSERT(xIntervalChannelHandle != 0);
 
-	/* We need to check this */
-	if (xTraceEventBegin(PSF_EVENT_INTERVAL_STOP, sizeof(void*) + sizeof(TraceUnsignedBaseType_t), &xEventHandle) == TRC_SUCCESS)
-	{
-		xTraceEventAddPointer(xEventHandle, (void*)xIntervalChannelHandle);
-		xTraceEventAddUnsignedBaseType(xEventHandle, (TraceUnsignedBaseType_t)xIntervalInstanceHandle);
-		xTraceEventEnd(xEventHandle);
-	}
-	
+	(void)xTraceEventCreate2(PSF_EVENT_INTERVAL_STOP, (TraceUnsignedBaseType_t)xIntervalChannelHandle, (TraceUnsignedBaseType_t)xIntervalInstanceHandle); /*cstat !MISRAC2004-11.3 !MISRAC2012-Rule-11.4 Suppress conversion from pointer to integer check*/
+
 	return TRC_SUCCESS;
 }
 

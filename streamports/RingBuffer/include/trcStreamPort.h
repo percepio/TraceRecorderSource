@@ -1,6 +1,6 @@
 /*
-* Trace Recorder for Tracealyzer v4.6.6
-* Copyright 2021 Percepio AB
+* Trace Recorder for Tracealyzer v4.7.0
+* Copyright 2023 Percepio AB
 * www.percepio.com
 *
 * SPDX-License-Identifier: Apache-2.0
@@ -46,7 +46,7 @@ extern "C" {
 
 #define TRC_USE_INTERNAL_BUFFER 0
 
-#define TRC_STREAM_PORT_BUFFER_SIZE ((((TRC_CFG_STREAM_PORT_BUFFER_SIZE) + sizeof(uint32_t) - 1) / sizeof(uint32_t)) * sizeof(uint32_t))
+#define TRC_STREAM_PORT_BUFFER_SIZE ((((uint32_t)(TRC_CFG_STREAM_PORT_BUFFER_SIZE) + sizeof(uint32_t) - 1UL) / sizeof(uint32_t)) * sizeof(uint32_t))
 
 /**
 * @brief
@@ -64,8 +64,8 @@ typedef struct TraceRingBuffer
 {
 	volatile uint8_t START_MARKERS[12];
 	TraceHeaderBuffer_t xHeaderBuffer;
-	TraceTimestampBuffer_t xTimestampInfo;
-	TraceEntryTableBuffer_t xEntryTableBuffer;
+	TraceTimestampData_t xTimestampInfo;
+	TraceEntryTable_t xEntryTable;
 	TraceMultiCoreBuffer_t xEventBuffer;
 	volatile uint8_t END_MARKERS[12];
 } TraceRingBuffer_t;
@@ -116,7 +116,7 @@ traceResult xTraceStreamPortInitialize(TraceStreamPortBuffer_t* pxBuffer);
  * @retval TRC_FAIL Allocate failed
  * @retval TRC_SUCCESS Success
  */
-#define xTraceStreamPortAllocate(uiSize, ppvData) ((void)uiSize, xTraceStaticBufferGet(ppvData))
+#define xTraceStreamPortAllocate(_uiSize, _ppvData) xTraceMultiCoreEventBufferAlloc(&pxStreamPortData->xMultiCoreEventBuffer, _uiSize, _ppvData)
 
 /**
  * @brief Commits data to the stream port, depending on the implementation/configuration of the
@@ -130,7 +130,7 @@ traceResult xTraceStreamPortInitialize(TraceStreamPortBuffer_t* pxBuffer);
  * @retval TRC_FAIL Commit failed
  * @retval TRC_SUCCESS Success
  */
-traceResult xTraceStreamPortCommit(void* pvData, uint32_t uiSize, int32_t* piBytesCommitted);
+#define xTraceStreamPortCommit(_pvData, _uiSize, _piBytesCommitted) xTraceMultiCoreEventBufferAllocCommit(&pxStreamPortData->xMultiCoreEventBuffer, _pvData, _uiSize, _piBytesCommitted)
 
 /**
  * @brief Writes data through the stream port interface.
@@ -142,7 +142,7 @@ traceResult xTraceStreamPortCommit(void* pvData, uint32_t uiSize, int32_t* piByt
  * @retval TRC_FAIL Write failed
  * @retval TRC_SUCCESS Success
  */
-#define xTraceStreamPortWriteData(pvData, uiSize, piBytesWritten) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_4((void)(pvData), (void)(uiSize), (void)(piBytesWritten), TRC_SUCCESS)
+#define xTraceStreamPortWriteData(_pvData, _uiSize, _piBytesWritten) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_4((void)(_pvData), (void)(_uiSize), (void)(_piBytesWritten), TRC_SUCCESS)
 
 /**
  * @brief Reads data through the stream port interface.
@@ -161,7 +161,7 @@ traceResult xTraceStreamPortCommit(void* pvData, uint32_t uiSize, int32_t* piByt
  * 
  * @param[in] uiStartOption Start option used when enabling trace recorder
  *
- * @retval TRC_FAIL Read failed
+ * @retval TRC_FAIL Fail
  * @retval TRC_SUCCESS Success
  */
 #define xTraceStreamPortOnEnable(uiStartOption) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_2((void)(uiStartOption), TRC_SUCCESS)
@@ -169,7 +169,7 @@ traceResult xTraceStreamPortCommit(void* pvData, uint32_t uiSize, int32_t* piByt
 /**
  * @brief Callback for when recorder is disabled
  *
- * @retval TRC_FAIL Read failed
+ * @retval TRC_FAIL Fail
  * @retval TRC_SUCCESS Success
  */
 #define xTraceStreamPortOnDisable() TRC_COMMA_EXPR_TO_STATEMENT_EXPR_1(TRC_SUCCESS)
@@ -177,7 +177,7 @@ traceResult xTraceStreamPortCommit(void* pvData, uint32_t uiSize, int32_t* piByt
 /**
  * @brief Callback for when tracing begins
  *
- * @retval TRC_FAIL Read failed
+ * @retval TRC_FAIL Fail
  * @retval TRC_SUCCESS Success
  */
 traceResult xTraceStreamPortOnTraceBegin(void);
@@ -185,7 +185,7 @@ traceResult xTraceStreamPortOnTraceBegin(void);
 /**
  * @brief Callback for when tracing ends
  *
- * @retval TRC_FAIL Read failed
+ * @retval TRC_FAIL Fail
  * @retval TRC_SUCCESS Success
  */
 #define xTraceStreamPortOnTraceEnd() TRC_COMMA_EXPR_TO_STATEMENT_EXPR_1(TRC_SUCCESS)

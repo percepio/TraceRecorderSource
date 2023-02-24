@@ -1,6 +1,6 @@
 /*
- * Trace Recorder for Tracealyzer v4.6.6
- * Copyright 2021 Percepio AB
+ * Trace Recorder for Tracealyzer v4.7.0
+ * Copyright 2023 Percepio AB
  * www.percepio.com
  *
  * SPDX-License-Identifier: Apache-2.0
@@ -64,12 +64,7 @@
 
 #if (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING)
 
-typedef struct TraceStreamPortITM
-{
-	uint8_t buffer[sizeof(TraceUnsignedBaseType_t)];
-} TraceStreamPortITM_t;
-
-static TraceStreamPortITM_t* pxStreamPortITM;
+static TraceStreamPortBuffer_t* pxStreamPortITM TRC_CFG_RECORDER_DATA_ATTRIBUTE;
 
 /* This will be set by the debugger when there is data to be read */
 volatile int32_t tz_host_command_bytes_to_read = 0;
@@ -84,13 +79,8 @@ volatile char tz_host_command_data[32];
 
 #define itm_write_32(__data) \
 {\
-	if ((CoreDebug->DEMCR & CoreDebug_DEMCR_TRCENA_Msk) &&					/* Trace enabled? */ \
-		(ITM->TCR & ITM_TCR_ITMENA_Msk) &&									/* ITM enabled? */ \
-		(ITM->TER & (1UL << (TRC_CFG_STREAM_PORT_ITM_PORT))))								/* ITM port enabled? */ \
-	{ \
 		while (ITM->PORT[TRC_CFG_STREAM_PORT_ITM_PORT].u32 == 0) { /* Do nothing */ }	/* Block until room in ITM FIFO - This stream port is always in "blocking mode", since intended for high-speed ITM! */ \
-		ITM->PORT[TRC_CFG_STREAM_PORT_ITM_PORT].u32 = __data;								/* Write the data */ \
-	} \
+		ITM->PORT[TRC_CFG_STREAM_PORT_ITM_PORT].u32 = __data;							/* Write the data */ \
 }
 
 /* This is assumed to execute from within the recorder, with interrupts disabled */
@@ -102,12 +92,17 @@ traceResult prvTraceItmWrite(void* ptrData, uint32_t size, int32_t* ptrBytesWrit
 	TRC_ASSERT(ptrBytesWritten != 0);
 
 	*ptrBytesWritten = 0;
-
-	while (*ptrBytesWritten < (int32_t)size)
+	
+	if ((CoreDebug->DEMCR & CoreDebug_DEMCR_TRCENA_Msk) &&					/* Trace enabled? */ \
+		(ITM->TCR & ITM_TCR_ITMENA_Msk) &&									/* ITM enabled? */ \
+		(ITM->TER & (1UL << (TRC_CFG_STREAM_PORT_ITM_PORT))))				/* ITM port enabled? */
 	{
-		itm_write_32(*ptr32);
-		ptr32++;
-		*ptrBytesWritten += 4;
+		while (*ptrBytesWritten < (int32_t)size)
+		{
+			itm_write_32(*ptr32);
+			ptr32++;
+			*ptrBytesWritten += 4;
+		}
 	}
 
 	return TRC_SUCCESS;
@@ -151,14 +146,17 @@ traceResult xTraceStreamPortInitialize(TraceStreamPortBuffer_t* pxBuffer)
 
 	TRC_ASSERT(pxBuffer != 0);
 
-	pxStreamPortITM = (TraceStreamPortITM_t*)pxBuffer;
+	pxStreamPortITM = (TraceStreamPortBuffer_t*)pxBuffer;
 
-	/* pxStreamPortITM isn't used, but is required for the initialization
-	 * of the streamport, this removes any warning about assigned but
-	 * never used. */
-	(void)pxStreamPortITM; 
-
+#if (TRC_USE_INTERNAL_BUFFER == 1)
+	return xTraceInternalEventBufferInitialize(pxStreamPortITM->bufferInternal, sizeof(pxStreamPortITM->bufferInternal));
+#else
+        /* Prevents a warning for set but not used when internal buffer
+         * isn't used. */
+        (void)pxStreamPortITM;
+        
 	return TRC_SUCCESS;
+#endif
 }
 
 #endif

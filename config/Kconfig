@@ -13,6 +13,10 @@ config PERCEPIO_TRC_CFG_RECORDER_RTOS_ZEPHYR
     bool
     default n
 
+config PERCEPIO_TRC_CFG_RECORDER_RTOS_BAREMETAL
+    bool
+     default n
+
 choice PERCEPIO_TRC_CFG_START_MODE
 	prompt "Recorder Start Mode"
 	default PERCEPIO_TRC_START_MODE_START
@@ -549,8 +553,8 @@ config PERCEPIO_TRC_CFG_ENTRY_SLOTS
 
 config PERCEPIO_TRC_CFG_ENTRY_SYMBOL_MAX_LENGTH
 	int "Symbol Max Length"
-	range 1 4194304
-	default 32
+	range 1 28
+	default 28
 	help
       The maximum length of symbol names, including:
        - Task names

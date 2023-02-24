@@ -1,6 +1,6 @@
 /*
-* Percepio Trace Recorder for Tracealyzer v4.6.6
-* Copyright 2021 Percepio AB
+* Percepio Trace Recorder for Tracealyzer v4.7.0
+* Copyright 2023 Percepio AB
 * www.percepio.com
 *
 * SPDX-License-Identifier: Apache-2.0
@@ -14,16 +14,14 @@
 
 #if (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING)
 
-TraceStaticBufferTable_t *pxTraceStaticBufferTable;
+TraceStaticBufferTable_t *pxTraceStaticBufferTable TRC_CFG_RECORDER_DATA_ATTRIBUTE;
 
-traceResult xTraceStaticBufferInitialize(TraceStaticBufferBuffer_t *pxBuffer)
+traceResult xTraceStaticBufferInitialize(TraceStaticBufferTable_t *pxBuffer)
 {
-	TRC_ASSERT_EQUAL_SIZE(TraceStaticBufferBuffer_t, TraceStaticBufferTable_t);
-	
 	/* This should never fail */
-	TRC_ASSERT(pxBuffer != 0);
+	TRC_ASSERT(pxBuffer != (void*)0);
 
-	pxTraceStaticBufferTable = (TraceStaticBufferTable_t*)pxBuffer;
+	pxTraceStaticBufferTable = pxBuffer;
 
 	xTraceSetComponentInitialized(TRC_RECORDER_COMPONENT_STATIC_BUFFER);
 	
@@ -40,7 +38,7 @@ traceResult xTraceStaticBufferGet(void **ppvBuffer)
 	/* This should never fail */
 	TRC_ASSERT(xTraceIsComponentInitialized(TRC_RECORDER_COMPONENT_STATIC_BUFFER));
 
-	TRC_ASSERT(ppvBuffer != 0);
+	TRC_ASSERT(ppvBuffer != (void*)0);
 	
 	TRC_ASSERT(xTraceISRGetCurrentNesting(&ISR_nesting) ==  TRC_SUCCESS);
 	

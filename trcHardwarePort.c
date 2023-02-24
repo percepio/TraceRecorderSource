@@ -1,6 +1,6 @@
 /*
- * Trace Recorder for Tracealyzer v4.6.6
- * Copyright 2021 Percepio AB
+ * Trace Recorder for Tracealyzer v4.7.0
+ * Copyright 2023 Percepio AB
  * www.percepio.com
  *
  * SPDX-License-Identifier: Apache-2.0
@@ -13,11 +13,11 @@
 #if (TRC_USE_TRACEALYZER_RECORDER == 1)
 
 /* If using DWT timestamping (default on ARM Cortex-M3, M4 and M7), make sure the DWT unit is initialized. */
-#if ((TRC_CFG_HARDWARE_PORT == TRC_HARDWARE_PORT_ARM_Cortex_M) && (defined (__CORTEX_M) && (__CORTEX_M >= 0x03)))
+#if (((TRC_CFG_HARDWARE_PORT == TRC_HARDWARE_PORT_ARM_Cortex_M) || (TRC_CFG_HARDWARE_PORT == TRC_HARDWARE_PORT_ARM_Cortex_M_NRF_SD)) && (defined (__CORTEX_M) && (__CORTEX_M >= 0x03)))
 #if (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING)
 #ifndef TRC_CFG_ARM_CM_USE_SYSTICK
 
-void xTraceHardwarePortInitCortexM()
+void xTraceHardwarePortInitCortexM(void)
 {
 	/* Make sure the DWT registers are unlocked, in case the debugger doesn't do this. */
 	TRC_REG_ITM_LOCKACCESS = TRC_ITM_LOCKACCESS_UNLOCK;
@@ -72,9 +72,9 @@ void xTraceHardwarePortInitCortexM()
 #endif /* TRC_CFG_ARM_CM_USE_SYSTICK */
 
 #endif /* (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING) */
-#endif /* ((TRC_CFG_HARDWARE_PORT == TRC_HARDWARE_PORT_ARM_Cortex_M) && (defined (__CORTEX_M) && (__CORTEX_M >= 0x03))) */
+#endif /* (((TRC_CFG_HARDWARE_PORT == TRC_HARDWARE_PORT_ARM_Cortex_M) || (TRC_CFG_HARDWARE_PORT == TRC_HARDWARE_PORT_ARM_Cortex_M_NRF_SD)) && (defined (__CORTEX_M) && (__CORTEX_M >= 0x03))) */
 
-#if ((TRC_CFG_HARDWARE_PORT == TRC_HARDWARE_PORT_ARM_CORTEX_A9) || (TRC_CFG_HARDWARE_PORT == TRC_HARDWARE_PORT_XILINX_ZyncUltraScaleR5) || (TRC_CFG_HARDWARE_PORT == TRC_HARDWARE_PORT_CYCLONE_V_HPS))
+#if ((TRC_CFG_HARDWARE_PORT == TRC_HARDWARE_PORT_ARM_CORTEX_A9) || (TRC_CFG_HARDWARE_PORT == TRC_HARDWARE_PORT_XILINX_ZyncUltraScaleR5) || (TRC_CFG_HARDWARE_PORT == TRC_HARDWARE_PORT_CYCLONE_V_HPS) || (TRC_CFG_HARDWARE_PORT == TRC_HARDWARE_PORT_ARMv8AR_A32))
 
 #define CS_TYPE_NONE 0
 #define CS_TYPE_TASK 1
@@ -83,7 +83,7 @@ void xTraceHardwarePortInitCortexM()
 
 #define CS_TYPE_INVALID 0xFFFFFFFF
 
-int cortex_a9_r5_enter_critical(void)
+uint32_t cortex_a9_r5_enter_critical(void)
 {
 	uint32_t cs_type = CS_TYPE_INVALID;
 
@@ -122,7 +122,7 @@ int cortex_a9_r5_enter_critical(void)
 	return cs_type;
 }
 
-void cortex_a9_r5_exit_critical(int cs_type)
+void cortex_a9_r5_exit_critical(uint32_t cs_type)
 {
 	switch (cs_type)
 	{

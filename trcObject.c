@@ -1,6 +1,6 @@
 /*
-* Percepio Trace Recorder for Tracealyzer v4.6.6
-* Copyright 2021 Percepio AB
+* Percepio Trace Recorder for Tracealyzer v4.7.0
+* Copyright 2023 Percepio AB
 * www.percepio.com
 *
 * SPDX-License-Identifier: Apache-2.0
@@ -20,25 +20,27 @@
 #define TRC_SEND_NAME_ONLY_ON_DELETE 0
 #endif
 
-traceResult prvTraceObjectSendNameEvent(void* pvObject, const char* szName);
+traceResult prvTraceObjectSendNameEvent(void* pvObject, const char* szName, uint32_t uiLength);
 
-traceResult xTraceObjectRegisterInternal(uint32_t uiEventCode, void* pvObject, const char* szName, TraceUnsignedBaseType_t uxStateCount, TraceUnsignedBaseType_t uxStates[], TraceUnsignedBaseType_t uxOptions, TraceObjectHandle_t* pxObjectHandle)
+/*cstat !MISRAC2004-6.3 !MISRAC2012-Dir-4.6_a Suppress basic char type usage*/
+traceResult xTraceObjectRegisterInternal(uint32_t uiEventCode, void* const pvObject, const char* szName, TraceUnsignedBaseType_t uxStateCount, const TraceUnsignedBaseType_t uxStates[], TraceUnsignedBaseType_t uxOptions, TraceObjectHandle_t* pxObjectHandle)
 {
 	TraceEntryHandle_t xEntryHandle;
 	TraceEventHandle_t xEventHandle = 0;
 	TraceUnsignedBaseType_t i;
+	void *pvAddress;
 
 	TRACE_ALLOC_CRITICAL_SECTION();
 
 	/* This should never fail */
-	TRC_ASSERT(pxObjectHandle != 0);
+	TRC_ASSERT(pxObjectHandle != (void*)0);
 
 	/* This should never fail */
-	TRC_ASSERT(uxStateCount <= (TRC_ENTRY_TABLE_STATE_COUNT));
+	TRC_ASSERT(uxStateCount <= (uint32_t)(TRC_ENTRY_TABLE_STATE_COUNT));
 
 	TRACE_ENTER_CRITICAL_SECTION();
 
-	if (pvObject != 0)
+	if (pvObject != (void*)0)
 	{
 		/* An address was supplied */
 		if (xTraceEntryCreateWithAddress(pvObject, &xEntryHandle) == TRC_FAIL)
@@ -47,6 +49,8 @@ traceResult xTraceObjectRegisterInternal(uint32_t uiEventCode, void* pvObject, c
 
 			return TRC_FAIL;
 		}
+		
+		pvAddress = pvObject;
 	}
 	else
 	{
@@ -58,10 +62,10 @@ traceResult xTraceObjectRegisterInternal(uint32_t uiEventCode, void* pvObject, c
 			return TRC_FAIL;
 		}
 
-		TRC_ASSERT_ALWAYS_EVALUATE(xTraceEntryGetAddress(xEntryHandle, &pvObject) == TRC_SUCCESS);
+		TRC_ASSERT_ALWAYS_EVALUATE(xTraceEntryGetAddress(xEntryHandle, &pvAddress) == TRC_SUCCESS);
 	}
 
-	for (i = 0; i < uxStateCount; i++)
+	for (i = 0u; i < uxStateCount; i++)
 	{
 		/* This should never fail */
 		TRC_ASSERT_ALWAYS_EVALUATE(xTraceEntrySetState(xEntryHandle, i, uxStates[i]) == TRC_SUCCESS);
@@ -74,7 +78,7 @@ traceResult xTraceObjectRegisterInternal(uint32_t uiEventCode, void* pvObject, c
 
 	TRACE_EXIT_CRITICAL_SECTION();
 
-	if (szName != 0 && szName[0] != 0)
+	if ((szName != (void*)0) && (szName[0] != (char)0)) /*cstat !MISRAC2004-6.3 !MISRAC2012-Dir-4.6_a Suppress basic char type usage*/ /*cstat !MISRAC2004-17.4_b We need to access every character in the string*/
 	{
 		/* Not a null or empty string */
 		/* This will set the symbol and create an event for it */
@@ -84,29 +88,33 @@ traceResult xTraceObjectRegisterInternal(uint32_t uiEventCode, void* pvObject, c
 
 	/* Send the create event, if possible */
 	/*We need to check this */
-	if (xTraceEventBegin(uiEventCode, sizeof(void*) + uxStateCount * sizeof(TraceUnsignedBaseType_t), &xEventHandle) == TRC_SUCCESS)
+	if (xTraceEventBegin(uiEventCode, sizeof(void*) + (uxStateCount * sizeof(TraceUnsignedBaseType_t)), &xEventHandle) == TRC_SUCCESS)
 	{
-		xTraceEventAddPointer(xEventHandle, pvObject);
-		for (i = 0; i < uxStateCount; i++)
+		(void)xTraceEventAddPointer(xEventHandle, pvAddress);
+		for (i = 0u; i < uxStateCount; i++)
 		{
-			xTraceEventAddUnsignedBaseType(xEventHandle, uxStates[i]);
+			(void)xTraceEventAddUnsignedBaseType(xEventHandle, uxStates[i]);
 		}
-		xTraceEventEnd(xEventHandle);
+		(void)xTraceEventEnd(xEventHandle); /*cstat !MISRAC2012-Rule-17.7 Suppress ignored return value check (inside macro)*/
 	}
 
 	return TRC_SUCCESS;
 }
 
-traceResult xTraceObjectRegister(uint32_t uiEventCode, void *pvObject, const char* szName, TraceUnsignedBaseType_t uxState, TraceObjectHandle_t *pxObjectHandle)
+/*cstat !MISRAC2004-6.3 !MISRAC2012-Dir-4.6_a Suppress basic char type usage*/
+traceResult xTraceObjectRegister(uint32_t uiEventCode, void* const pvObject, const char* szName, TraceUnsignedBaseType_t uxState, TraceObjectHandle_t *pxObjectHandle)
 {
-	return xTraceObjectRegisterInternal(uiEventCode, pvObject, szName, 1, &uxState, 0, pxObjectHandle);
+	return xTraceObjectRegisterInternal(uiEventCode, pvObject, szName, 1u, &uxState, 0u, pxObjectHandle);
 }
 
 traceResult xTraceObjectUnregister(TraceObjectHandle_t xObjectHandle, uint32_t uiEventCode, TraceUnsignedBaseType_t uxState)
 {
-	void* pvObject = 0;
-	const char *szName = 0;
-	TraceEventHandle_t xEventHandle = 0;
+	void* pvObject = (void*)0;
+	const char *szName = (void*)0; /*cstat !MISRAC2004-6.3 !MISRAC2012-Dir-4.6_a Suppress basic char type usage*/
+#if (TRC_SEND_NAME_ONLY_ON_DELETE == 1)
+	uint32_t uiLength;
+	uint32_t i;
+#endif
 
 	/* If asserts are disabled this variable will not get used, this stops warnings. */
 	(void)szName;
@@ -119,45 +127,52 @@ traceResult xTraceObjectUnregister(TraceObjectHandle_t xObjectHandle, uint32_t u
 
 #if (TRC_SEND_NAME_ONLY_ON_DELETE == 1)
 	/* Send name event because this is a delete */
+
+	for (i = 0u; (szName[i] != (char)0) && (i < 128u); i++) {} /*cstat !MISRAC2004-6.3 !MISRAC2012-Dir-4.6_a Suppress basic char type usage*/ /*cstat !MISRAC2004-17.4_b We need to access every character in the string*/
+
+	uiLength = i;
 	/* This should never fail */
-	TRC_ASSERT(prvTraceObjectSendNameEvent(pvObject, szName) == TRC_SUCCESS);
+	TRC_ASSERT_ALWAYS_EVALUATE(prvTraceObjectSendNameEvent(pvObject, szName, uiLength) == TRC_SUCCESS);
 #endif /* (TRC_SEND_NAME_ONLY_ON_DELETE == 1) */
 
 	/* Send the delete event, if possible */
-	if (xTraceEventBegin(uiEventCode, sizeof(void*) + sizeof(TraceUnsignedBaseType_t), &xEventHandle) == TRC_SUCCESS)
-	{
-		xTraceEventAddPointer(xEventHandle, pvObject);
-		xTraceEventAddUnsignedBaseType(xEventHandle, uxState);
-		xTraceEventEnd(xEventHandle);
-	}
+	(void)xTraceEventCreate2(uiEventCode, (TraceUnsignedBaseType_t)(pvObject), uxState);  /*cstat !MISRAC2004-11.3 !MISRAC2012-Rule-11.4 !MISRAC2012-Rule-11.6 Suppress conversion from pointer to integer check*/
 
 	return xTraceEntryDelete(xObjectHandle);
 }
 
+/*cstat !MISRAC2004-6.3 !MISRAC2012-Dir-4.6_a Suppress basic char type usage*/
 traceResult xTraceObjectSetName(TraceObjectHandle_t xObjectHandle, const char* szName)
 {
-	void* pvObject = 0;
+	void* pvObject = (void*)0;
+	uint32_t uiLength;
+	uint32_t i;
 
     /* If asserts are disabled this variable will not get used, this stops warnings. */
 	(void)pvObject;
 
-	if (szName == 0)
+	if (szName == (void*)0)
 	{
-		szName = "";
+		szName = ""; /*cstat !MISRAC2012-Rule-17.8 Suppress modified function parameter check*/
 	}
 
 	/* This should never fail */
 	TRC_ASSERT_ALWAYS_EVALUATE(xTraceEntryGetAddress((TraceEntryHandle_t)xObjectHandle, &pvObject) == TRC_SUCCESS);
 
+	for (i = 0u; (szName[i] != (char)0) && (i < 128u); i++) {} /*cstat !MISRAC2004-6.3 !MISRAC2012-Dir-4.6_a Suppress basic char type usage*/ /*cstat !MISRAC2004-17.4_b We need to access every character in the string*/
+
+	uiLength = i;
+
 #if (TRC_SEND_NAME_ONLY_ON_DELETE == 0)
 	/* Send name event now since we don't do it on delete events */
 	/* This should never fail */
-	TRC_ASSERT_ALWAYS_EVALUATE(prvTraceObjectSendNameEvent(pvObject, szName) == TRC_SUCCESS);
+	TRC_ASSERT_ALWAYS_EVALUATE(prvTraceObjectSendNameEvent(pvObject, szName, uiLength) == TRC_SUCCESS);
 #endif /* (TRC_SEND_NAME_ONLY_ON_DELETE == 0) */
 
-	return xTraceEntrySetSymbol((TraceEntryHandle_t)xObjectHandle, szName);
+	return xTraceEntrySetSymbol((TraceEntryHandle_t)xObjectHandle, szName, uiLength);
 }
 
+/*cstat !MISRAC2004-6.3 !MISRAC2012-Dir-4.6_a Suppress basic char type usage*/
 traceResult xTraceObjectRegisterWithoutHandle(uint32_t uiEventCode, void* pvObject, const char* szName, TraceUnsignedBaseType_t uxState)
 {
 	TraceObjectHandle_t xObjectHandle;
@@ -188,6 +203,7 @@ traceResult xTraceObjectUnregisterWithoutHandle(uint32_t uiEventCode, void* pvOb
 	return xResult;
 }
 
+/*cstat !MISRAC2004-6.3 !MISRAC2012-Dir-4.6_a Suppress basic char type usage*/
 traceResult xTraceObjectSetNameWithoutHandle(void* pvObject, const char* szName)
 {
 	TraceEntryHandle_t xEntryHandle;
@@ -265,33 +281,30 @@ traceResult xTraceObjectSetOptionsWithoutHandle(void* pvObject, uint32_t uiMask)
 	return xResult;
 }
 
-traceResult prvTraceObjectSendNameEvent(void* pvObject, const char* szName)
+/*cstat !MISRAC2004-6.3 !MISRAC2012-Dir-4.6_a Suppress basic char type usage*/
+traceResult prvTraceObjectSendNameEvent(void* const pvObject, const char* szName, uint32_t uiLength)
 {
-	uint32_t i = 0, uiLength = 0, uiValue = 0;
+	uint32_t uiValue = 0u;
 	TraceEventHandle_t xEventHandle = 0;
-
-	for (i = 0; (szName[i] != 0) && (i < (TRC_ENTRY_TABLE_SLOT_SYMBOL_SIZE)); i++) {}
-
-	uiLength = i;
 
 	if (xTraceEventBegin(PSF_EVENT_OBJ_NAME, sizeof(void*) + uiLength, &xEventHandle) == TRC_SUCCESS)
 	{
-		xTraceEventAddPointer(xEventHandle, pvObject);
-		xTraceEventAddData(xEventHandle, (void*)szName, uiLength);
+		(void)xTraceEventAddPointer(xEventHandle, pvObject);
+		(void)xTraceEventAddString(xEventHandle, szName, uiLength);
 
 		/* Check if we can truncate */
-		xTraceEventPayloadRemaining(xEventHandle, &uiValue);
-		if (uiValue > 0)
+		(void)xTraceEventPayloadRemaining(xEventHandle, &uiValue);
+		if (uiValue > 0u)
 		{
-			xTraceEventAdd8(xEventHandle, 0);
+			(void)xTraceEventAdd8(xEventHandle, 0u);
 		}
 
-		xTraceEventEnd(xEventHandle);
+		(void)xTraceEventEnd(xEventHandle); /*cstat !MISRAC2012-Rule-17.7 Suppress ignored return value check (inside macro)*/
 	}
 
 	return TRC_SUCCESS;
 }
 
-#endif /* (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING) */
+#endif
 
-#endif /* (TRC_USE_TRACEALYZER_RECORDER == 1) */
+#endif
