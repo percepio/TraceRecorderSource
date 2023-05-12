@@ -691,6 +691,23 @@ uint32_t uiTraceTimerGetValue(void);
         #error "Only GCC Supported!"
     #endif
 
+#elif (TRC_CFG_HARDWARE_PORT == TRC_HARDWARE_PORT_ADSP_SC5XX_SHARC)
+
+    #define TRACE_ALLOC_CRITICAL_SECTION() UBaseType_t __irq_status;
+    #define TRACE_ENTER_CRITICAL_SECTION() {__irq_status = portSET_INTERRUPT_MASK_FROM_ISR();}
+    #define TRACE_EXIT_CRITICAL_SECTION() {portCLEAR_INTERRUPT_MASK_FROM_ISR(__irq_status);}
+
+    #define TRC_HWTC_TYPE TRC_FREE_RUNNING_32BIT_INCR
+    #define TRC_HWTC_COUNT ( *pREG_CGU0_TSCOUNT0 )
+    #define TRC_HWTC_PERIOD 1
+    #define TRC_HWTC_DIVISOR 1
+    #define TRC_HWTC_FREQ_HZ ( configCPU_CLOCK_HZ >> 1u )
+
+    #define TRC_PORT_SPECIFIC_INIT() {*pREG_CGU0_TSCTL |= BITM_CGU_TSCTL_EN;}
+
+	/* Set the meaning of IRQ priorities in ISR tracing - see above */
+	#define TRC_IRQ_PRIORITY_ORDER 1
+
 #elif (TRC_CFG_HARDWARE_PORT == TRC_HARDWARE_PORT_APPLICATION_DEFINED)
 
 	#if !( defined (TRC_HWTC_TYPE) && defined (TRC_HWTC_COUNT) && defined (TRC_HWTC_PERIOD) && defined (TRC_HWTC_FREQ_HZ) && defined (TRC_IRQ_PRIORITY_ORDER) )
