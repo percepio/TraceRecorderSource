@@ -1,5 +1,5 @@
 /*
-* Percepio Trace Recorder for Tracealyzer v4.7.0
+* Percepio Trace Recorder for Tracealyzer v4.8.0
 * Copyright 2023 Percepio AB
 * www.percepio.com
 *
@@ -35,7 +35,7 @@ extern "C" {
  * @{
  */
 
-typedef struct TraceExtensionData
+typedef struct TraceExtensionData	/* Aligned */
 {
 	TraceUnsignedBaseType_t uxNextFreeExtensionEventId;
 } TraceExtensionData_t;

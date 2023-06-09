@@ -1,5 +1,5 @@
 /*
- * Trace Recorder for Tracealyzer v4.7.0
+ * Trace Recorder for Tracealyzer v4.8.0
  * Copyright 2023 Percepio AB
  * www.percepio.com
  *
@@ -151,14 +151,14 @@ uint32_t uiTraceTimerGetValue(void);
 	#endif
 
 #if (TRC_CFG_HARDWARE_PORT == TRC_HARDWARE_PORT_ARM_Cortex_M)
-	#define TRACE_ALLOC_CRITICAL_SECTION() uint32_t TRACE_ALLOC_CRITICAL_SECTION_NAME;
+	#define TRACE_ALLOC_CRITICAL_SECTION() TraceUnsignedBaseType_t TRACE_ALLOC_CRITICAL_SECTION_NAME;
 	#define TRACE_ENTER_CRITICAL_SECTION() {TRACE_ALLOC_CRITICAL_SECTION_NAME = __get_PRIMASK(); __set_PRIMASK(1);} /* PRIMASK disables ALL interrupts - allows for tracing in any ISR */
 	#define TRACE_EXIT_CRITICAL_SECTION() {__set_PRIMASK(TRACE_ALLOC_CRITICAL_SECTION_NAME);}
 #else
         #include "nrf_nvic.h"
-        #define TRACE_ALLOC_CRITICAL_SECTION() uint8_t TRACE_ALLOC_CRITICAL_SECTION_NAME;
-        #define TRACE_ENTER_CRITICAL_SECTION() {(void) sd_nvic_critical_region_enter(&TRACE_ALLOC_CRITICAL_SECTION_NAME);}
-        #define TRACE_EXIT_CRITICAL_SECTION() {(void) sd_nvic_critical_region_exit(TRACE_ALLOC_CRITICAL_SECTION_NAME);}
+        #define TRACE_ALLOC_CRITICAL_SECTION() TraceUnsignedBaseType_t TRACE_ALLOC_CRITICAL_SECTION_NAME;
+        #define TRACE_ENTER_CRITICAL_SECTION() {(void) sd_nvic_critical_region_enter((uint8_t*)&TRACE_ALLOC_CRITICAL_SECTION_NAME);}
+        #define TRACE_EXIT_CRITICAL_SECTION() {(void) sd_nvic_critical_region_exit((uint8_t)TRACE_ALLOC_CRITICAL_SECTION_NAME);}
 #endif
 
 	/**************************************************************************
@@ -369,10 +369,10 @@ uint32_t uiTraceTimerGetValue(void);
 
 #elif (TRC_CFG_HARDWARE_PORT == TRC_HARDWARE_PORT_XILINX_ZyncUltraScaleR5)
 
-	extern int cortex_a9_r5_enter_critical(void);
-	extern void cortex_a9_r5_exit_critical(int irq_already_masked_at_enter);
+	extern TraceUnsignedBaseType_t cortex_a9_r5_enter_critical(void);
+	extern void cortex_a9_r5_exit_critical(TraceUnsignedBaseType_t irq_already_masked_at_enter);
 
-	#define TRACE_ALLOC_CRITICAL_SECTION() uint32_t TRACE_ALLOC_CRITICAL_SECTION_NAME;
+	#define TRACE_ALLOC_CRITICAL_SECTION() TraceUnsignedBaseType_t TRACE_ALLOC_CRITICAL_SECTION_NAME;
 
 	#define TRACE_ENTER_CRITICAL_SECTION() { TRACE_ALLOC_CRITICAL_SECTION_NAME = cortex_a9_r5_enter_critical(); }
 
@@ -458,10 +458,10 @@ uint32_t uiTraceTimerGetValue(void);
 	
 	**************************************************************************/
 
-	extern int cortex_a9_r5_enter_critical(void);
-	extern void cortex_a9_r5_exit_critical(int irq_already_masked_at_enter);
+	extern TraceUnsignedBaseType_t cortex_a9_r5_enter_critical(void);
+	extern void cortex_a9_r5_exit_critical(TraceUnsignedBaseType_t irq_already_masked_at_enter);
 
-	#define TRACE_ALLOC_CRITICAL_SECTION() uint32_t TRACE_ALLOC_CRITICAL_SECTION_NAME;
+	#define TRACE_ALLOC_CRITICAL_SECTION() TraceUnsignedBaseType_t TRACE_ALLOC_CRITICAL_SECTION_NAME;
 	#define TRACE_ENTER_CRITICAL_SECTION() { TRACE_ALLOC_CRITICAL_SECTION_NAME = cortex_a9_r5_enter_critical(); }
 	#define TRACE_EXIT_CRITICAL_SECTION() { cortex_a9_r5_exit_critical(TRACE_ALLOC_CRITICAL_SECTION_NAME); }
 	
@@ -512,10 +512,10 @@ uint32_t uiTraceTimerGetValue(void);
 #elif (TRC_CFG_HARDWARE_PORT == TRC_HARDWARE_PORT_CYCLONE_V_HPS)
 	#include "alt_clock_manager.h"
 
-	extern int cortex_a9_r5_enter_critical(void);
-	extern void cortex_a9_r5_exit_critical(int irq_already_masked_at_enter);
+	extern TraceUnsignedBaseType_t cortex_a9_r5_enter_critical(void);
+	extern void cortex_a9_r5_exit_critical(TraceUnsignedBaseType_t irq_already_masked_at_enter);
 
-	#define TRACE_ALLOC_CRITICAL_SECTION() uint32_t TRACE_ALLOC_CRITICAL_SECTION_NAME;
+	#define TRACE_ALLOC_CRITICAL_SECTION() TraceUnsignedBaseType_t TRACE_ALLOC_CRITICAL_SECTION_NAME;
 	#define TRACE_ENTER_CRITICAL_SECTION() { TRACE_ALLOC_CRITICAL_SECTION_NAME = cortex_a9_r5_enter_critical(); }
 	#define TRACE_EXIT_CRITICAL_SECTION() { cortex_a9_r5_exit_critical(TRACE_ALLOC_CRITICAL_SECTION_NAME); }
 
@@ -544,7 +544,15 @@ uint32_t uiTraceTimerGetValue(void);
 	#endif
 
 #elif (TRC_CFG_HARDWARE_PORT == TRC_HARDWARE_PORT_ZEPHYR)
-	#define TRACE_ALLOC_CRITICAL_SECTION() int TRACE_ALLOC_CRITICAL_SECTION_NAME;
+	#ifdef CONFIG_64BIT
+		#define TRC_BASE_TYPE int64_t
+		#define TRC_UNSIGNED_BASE_TYPE uint64_t
+	#else
+		#define TRC_BASE_TYPE int32_t
+		#define TRC_UNSIGNED_BASE_TYPE uint32_t
+	#endif
+
+	#define TRACE_ALLOC_CRITICAL_SECTION() TraceBaseType_t TRACE_ALLOC_CRITICAL_SECTION_NAME;
 	#define TRACE_ENTER_CRITICAL_SECTION() { TRACE_ALLOC_CRITICAL_SECTION_NAME = irq_lock(); }
 	#define TRACE_EXIT_CRITICAL_SECTION() { irq_unlock(TRACE_ALLOC_CRITICAL_SECTION_NAME); }
 	
@@ -564,7 +572,7 @@ uint32_t uiTraceTimerGetValue(void);
 	 */
 	#if CONFIG_FREERTOS_UNICORE == 1
 		
-		#define TRACE_ALLOC_CRITICAL_SECTION() uint32_t TRACE_ALLOC_CRITICAL_SECTION_NAME;
+		#define TRACE_ALLOC_CRITICAL_SECTION() TraceUnsignedBaseType_t TRACE_ALLOC_CRITICAL_SECTION_NAME;
 		#define TRACE_ENTER_CRITICAL_SECTION() {TRACE_ALLOC_CRITICAL_SECTION_NAME = __extension__({ unsigned __tmp; 	\
 				__asm__ __volatile__("rsil	%0, 15\n" 												\
 						: "=a" (__tmp) : : "memory" ); 												\
@@ -607,7 +615,7 @@ uint32_t uiTraceTimerGetValue(void);
 	#endif
 
 #elif (TRC_CFG_HARDWARE_PORT == TRC_HARDWARE_PORT_RISCV_RV32I)
-	#define TRACE_ALLOC_CRITICAL_SECTION() unsigned int TRACE_ALLOC_CRITICAL_SECTION_NAME;
+	#define TRACE_ALLOC_CRITICAL_SECTION() TraceUnsignedBaseType_t TRACE_ALLOC_CRITICAL_SECTION_NAME;
 	#define TRACE_ENTER_CRITICAL_SECTION() __asm__ __volatile__("csrr %0, mstatus	\n\t"	\
 																"csrci mstatus, 8	\n\t"	\
 																"andi %0, %0, 8		\n\t"	\
@@ -653,10 +661,10 @@ uint32_t uiTraceTimerGetValue(void);
     #define TRC_IRQ_PRIORITY_ORDER 1 // higher IRQ priority values are more significant
 
 #elif (TRC_CFG_HARDWARE_PORT == TRC_HARDWARE_PORT_ARMv8AR_A32)
-    extern uint32_t cortex_a9_r5_enter_critical(void);
-    extern void cortex_a9_r5_exit_critical(uint32_t irq_already_masked_at_enter);
+    extern TraceUnsignedBaseType_t cortex_a9_r5_enter_critical(void);
+    extern void cortex_a9_r5_exit_critical(TraceUnsignedBaseType_t irq_already_masked_at_enter);
 
-    #define TRACE_ALLOC_CRITICAL_SECTION() uint32_t TRACE_ALLOC_CRITICAL_SECTION_NAME;
+    #define TRACE_ALLOC_CRITICAL_SECTION() TraceUnsignedBaseType_t TRACE_ALLOC_CRITICAL_SECTION_NAME;
 
     #define TRACE_ENTER_CRITICAL_SECTION() { TRACE_ALLOC_CRITICAL_SECTION_NAME = cortex_a9_r5_enter_critical(); }
 
@@ -758,6 +766,24 @@ uint32_t uiTraceTimerGetValue(void);
 	#error "TRC_HWTC_FREQ_HZ not defined!"
 	#endif
 	
+#endif
+
+/* If a custom TRC_CFG_ALLOC_CRITICAL_SECTION is defined it will override the default definition */
+#ifdef TRC_CFG_ALLOC_CRITICAL_SECTION
+#undef TRACE_ALLOC_CRITICAL_SECTION
+#define TRACE_ALLOC_CRITICAL_SECTION() TRC_CFG_ALLOC_CRITICAL_SECTION()
+#endif
+
+/* If a custom TRC_CFG_ENTER_CRITICAL_SECTION is defined it will override the default definition */
+#ifdef TRC_CFG_ENTER_CRITICAL_SECTION
+#undef TRACE_ENTER_CRITICAL_SECTION
+#define TRACE_ENTER_CRITICAL_SECTION() TRC_CFG_ENTER_CRITICAL_SECTION()
+#endif
+
+/* If a custom TRC_CFG_EXIT_CRITICAL_SECTION is defined it will override the default definition */
+#ifdef TRC_CFG_EXIT_CRITICAL_SECTION
+#undef TRACE_EXIT_CRITICAL_SECTION
+#define TRACE_EXIT_CRITICAL_SECTION() TRC_CFG_EXIT_CRITICAL_SECTION()
 #endif
 
 #ifndef TRACE_ALLOC_CRITICAL_SECTION

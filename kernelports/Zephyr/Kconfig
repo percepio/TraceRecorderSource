@@ -3,7 +3,7 @@
 
 if TRACING && PERCEPIO_TRACERECORDER
 
-menu "RTOS Specific"
+menu "RTOS Hidden Settings"
     visible if n
 config PERCEPIO_TRC_CFG_RECORDER_RTOS_ZEPHYR
     bool "Zephyr"
@@ -18,7 +18,19 @@ config PERCEPIO_TRC_RECORDER_MODE_STREAMING
 config PERCEPIO_TRC_RECORDER_MODE_SNAPSHOT
     bool "Snapshot recorder mode"
     default n
+
+endmenu # "RTOS Hidden settings"
+
+menu "RTOS Specific"
+config PERCEPIO_TRC_CFG_USE_SYSCALL_EXTENSION
+    bool "Use Syscall Extension"
+    default n
+    help
+      If this option is enabled, syscalls will be submitted by id instead of name to Tracealyzer. By doing this,
+      less data will need to be transferred for each syscall that is made, however, this will also require
+      the build/syscalls-v<zephyr-version>.xml file to be loaded as an extension within Tracealyzer.
 endmenu # "RTOS Specific"
+
 
 # Source recorder common config
 rsource "../../config/Kconfig"

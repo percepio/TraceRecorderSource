@@ -25,7 +25,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">Percepio Trace Recorder<span id="projectnumber">&#160;v4.7.0</span>
+   <div id="projectname">Percepio Trace Recorder<span id="projectnumber">&#160;v4.8.0</span>
    </div>
   </td>
  </tr>
@@ -93,7 +93,7 @@ $(document).ready(function(){initNavTree('streamports_2RingBuffer_2include_2trcS
 </div><!--header-->
 <div class="contents">
 <div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="comment">/*</span></div>
-<div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span><span class="comment">* Trace Recorder for Tracealyzer v4.7.0</span></div>
+<div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span><span class="comment">* Trace Recorder for Tracealyzer v4.8.0</span></div>
 <div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span><span class="comment">* Copyright 2023 Percepio AB</span></div>
 <div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span><span class="comment">* www.percepio.com</span></div>
 <div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span><span class="comment">*</span></div>
@@ -124,68 +124,70 @@ $(document).ready(function(){initNavTree('streamports_2RingBuffer_2include_2trcS
 <div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span> </div>
 <div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span><span class="preprocessor">#define TRC_USE_INTERNAL_BUFFER 0</span></div>
 <div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span> </div>
-<div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span><span class="preprocessor">#define TRC_STREAM_PORT_BUFFER_SIZE ((((uint32_t)(TRC_CFG_STREAM_PORT_BUFFER_SIZE) + sizeof(uint32_t) - 1UL) / sizeof(uint32_t)) * sizeof(uint32_t))</span></div>
+<div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span><span class="preprocessor">#define TRC_STREAM_PORT_BUFFER_SIZE (((uint32_t)(TRC_CFG_STREAM_PORT_BUFFER_SIZE) / sizeof(TraceUnsignedBaseType_t)) * sizeof(TraceUnsignedBaseType_t)) </span><span class="comment">/* aligned */</span><span class="preprocessor"></span></div>
 <div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span> </div>
-<div class="line"><a id="l00054" name="l00054"></a><span class="lineno">   54</span><span class="keyword">typedef</span> <span class="keyword">struct </span>TraceMultiCoreBuffer</div>
+<div class="line"><a id="l00054" name="l00054"></a><span class="lineno">   54</span><span class="keyword">typedef</span> <span class="keyword">struct </span>TraceMultiCoreBuffer <span class="comment">/* Aligned */</span></div>
 <div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span>{</div>
-<div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span>    uint32_t uiSize;</div>
-<div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span>    uint8_t uiBuffer[TRC_STREAM_PORT_BUFFER_SIZE];</div>
+<div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span>    TraceUnsignedBaseType_t uxSize;     <span class="comment">/* aligned */</span></div>
+<div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span>    uint8_t uiBuffer[TRC_STREAM_PORT_BUFFER_SIZE];  <span class="comment">/* size is aligned */</span></div>
 <div class="line"><a id="l00058" name="l00058"></a><span class="lineno">   58</span>} TraceMultiCoreBuffer_t;</div>
 <div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span> </div>
 <div class="line"><a id="l00063" name="l00063"></a><span class="lineno">   63</span><span class="keyword">typedef</span> <span class="keyword">struct </span>TraceRingBuffer</div>
 <div class="line"><a id="l00064" name="l00064"></a><span class="lineno">   64</span>{</div>
-<div class="line"><a id="l00065" name="l00065"></a><span class="lineno">   65</span>    <span class="keyword">volatile</span> uint8_t START_MARKERS[12];</div>
-<div class="line"><a id="l00066" name="l00066"></a><span class="lineno">   66</span>    TraceHeaderBuffer_t xHeaderBuffer;</div>
-<div class="line"><a id="l00067" name="l00067"></a><span class="lineno">   67</span>    <a class="code hl_struct" href="structTraceTimestampData.html">TraceTimestampData_t</a> xTimestampInfo;</div>
-<div class="line"><a id="l00068" name="l00068"></a><span class="lineno">   68</span>    TraceEntryTable_t xEntryTable;</div>
-<div class="line"><a id="l00069" name="l00069"></a><span class="lineno">   69</span>    TraceMultiCoreBuffer_t xEventBuffer;</div>
-<div class="line"><a id="l00070" name="l00070"></a><span class="lineno">   70</span>    <span class="keyword">volatile</span> uint8_t END_MARKERS[12];</div>
-<div class="line"><a id="l00071" name="l00071"></a><span class="lineno">   71</span>} TraceRingBuffer_t;</div>
-<div class="line"><a id="l00072" name="l00072"></a><span class="lineno">   72</span> </div>
-<div class="line"><a id="l00076" name="l00076"></a><span class="lineno">   76</span><span class="keyword">typedef</span> <span class="keyword">struct </span>TraceStreamPortData</div>
-<div class="line"><a id="l00077" name="l00077"></a><span class="lineno">   77</span>{</div>
-<div class="line"><a id="l00078" name="l00078"></a><span class="lineno">   78</span>    <a class="code hl_struct" href="structTraceMultiCoreEventBuffer.html">TraceMultiCoreEventBuffer_t</a> xMultiCoreEventBuffer;</div>
-<div class="line"><a id="l00079" name="l00079"></a><span class="lineno">   79</span>    TraceRingBuffer_t xRingBuffer;</div>
-<div class="line"><a id="l00080" name="l00080"></a><span class="lineno">   80</span>} TraceStreamPortData_t;</div>
-<div class="line"><a id="l00081" name="l00081"></a><span class="lineno">   81</span> </div>
-<div class="line"><a id="l00082" name="l00082"></a><span class="lineno">   82</span><span class="keyword">extern</span> TraceStreamPortData_t* pxStreamPortData;</div>
+<div class="line"><a id="l00065" name="l00065"></a><span class="lineno">   65</span>    uint32_t reserved0; <span class="comment">/* alignment with START_MARKERS */</span></div>
+<div class="line"><a id="l00066" name="l00066"></a><span class="lineno">   66</span>    <span class="keyword">volatile</span> uint8_t START_MARKERS[12];</div>
+<div class="line"><a id="l00067" name="l00067"></a><span class="lineno">   67</span>    TraceHeaderBuffer_t xHeaderBuffer; <span class="comment">/* aligned */</span></div>
+<div class="line"><a id="l00068" name="l00068"></a><span class="lineno">   68</span>    <a class="code hl_struct" href="structTraceTimestampData.html">TraceTimestampData_t</a> xTimestampInfo; <span class="comment">/* aligned */</span></div>
+<div class="line"><a id="l00069" name="l00069"></a><span class="lineno">   69</span>    TraceEntryTable_t xEntryTable; <span class="comment">/* aligned */</span></div>
+<div class="line"><a id="l00070" name="l00070"></a><span class="lineno">   70</span>    TraceMultiCoreBuffer_t xEventBuffer; <span class="comment">/* aligned */</span></div>
+<div class="line"><a id="l00071" name="l00071"></a><span class="lineno">   71</span>    <span class="keyword">volatile</span> uint8_t END_MARKERS[12];</div>
+<div class="line"><a id="l00072" name="l00072"></a><span class="lineno">   72</span>    uint32_t reserved1; <span class="comment">/* alignment */</span></div>
+<div class="line"><a id="l00073" name="l00073"></a><span class="lineno">   73</span>} TraceRingBuffer_t;</div>
+<div class="line"><a id="l00074" name="l00074"></a><span class="lineno">   74</span> </div>
+<div class="line"><a id="l00078" name="l00078"></a><span class="lineno">   78</span><span class="keyword">typedef</span> <span class="keyword">struct </span>TraceStreamPortData</div>
+<div class="line"><a id="l00079" name="l00079"></a><span class="lineno">   79</span>{</div>
+<div class="line"><a id="l00080" name="l00080"></a><span class="lineno">   80</span>    <a class="code hl_struct" href="structTraceMultiCoreEventBuffer.html">TraceMultiCoreEventBuffer_t</a> xMultiCoreEventBuffer;</div>
+<div class="line"><a id="l00081" name="l00081"></a><span class="lineno">   81</span>    TraceRingBuffer_t xRingBuffer;</div>
+<div class="line"><a id="l00082" name="l00082"></a><span class="lineno">   82</span>} TraceStreamPortData_t;</div>
 <div class="line"><a id="l00083" name="l00083"></a><span class="lineno">   83</span> </div>
-<div class="line"><a id="l00088" name="l00088"></a><span class="lineno">   88</span><span class="preprocessor">#define TRC_STREAM_PORT_DATA_BUFFER_SIZE (sizeof(TraceStreamPortData_t))</span></div>
-<div class="line"><a id="l00089" name="l00089"></a><span class="lineno">   89</span> </div>
-<div class="line"><a id="l00093" name="l00093"></a><span class="lineno">   93</span><span class="keyword">typedef</span> <span class="keyword">struct </span><a class="code hl_struct" href="structTraceStreamPortBuffer.html">TraceStreamPortBuffer</a></div>
-<div class="line"><a id="l00094" name="l00094"></a><span class="lineno">   94</span>{</div>
-<div class="line"><a id="l00095" name="l00095"></a><span class="lineno">   95</span>    uint8_t buffer[(TRC_STREAM_PORT_DATA_BUFFER_SIZE)];</div>
-<div class="line"><a id="l00096" name="l00096"></a><span class="lineno">   96</span>} <a class="code hl_struct" href="structTraceStreamPortBuffer.html">TraceStreamPortBuffer_t</a>;</div>
-<div class="line"><a id="l00097" name="l00097"></a><span class="lineno">   97</span> </div>
-<div class="line"><a id="l00108" name="l00108"></a><span class="lineno">  108</span>traceResult xTraceStreamPortInitialize(<a class="code hl_struct" href="structTraceStreamPortBuffer.html">TraceStreamPortBuffer_t</a>* pxBuffer);</div>
-<div class="line"><a id="l00109" name="l00109"></a><span class="lineno">  109</span> </div>
-<div class="line"><a id="l00119" name="l00119"></a><span class="lineno">  119</span><span class="preprocessor">#define xTraceStreamPortAllocate(_uiSize, _ppvData) xTraceMultiCoreEventBufferAlloc(&amp;pxStreamPortData-&gt;xMultiCoreEventBuffer, _uiSize, _ppvData)</span></div>
-<div class="line"><a id="l00120" name="l00120"></a><span class="lineno">  120</span> </div>
-<div class="line"><a id="l00133" name="l00133"></a><span class="lineno">  133</span><span class="preprocessor">#define xTraceStreamPortCommit(_pvData, _uiSize, _piBytesCommitted) xTraceMultiCoreEventBufferAllocCommit(&amp;pxStreamPortData-&gt;xMultiCoreEventBuffer, _pvData, _uiSize, _piBytesCommitted)</span></div>
-<div class="line"><a id="l00134" name="l00134"></a><span class="lineno">  134</span> </div>
-<div class="line"><a id="l00145" name="l00145"></a><span class="lineno">  145</span><span class="preprocessor">#define xTraceStreamPortWriteData(_pvData, _uiSize, _piBytesWritten) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_4((void)(_pvData), (void)(_uiSize), (void)(_piBytesWritten), TRC_SUCCESS)</span></div>
-<div class="line"><a id="l00146" name="l00146"></a><span class="lineno">  146</span> </div>
-<div class="line"><a id="l00157" name="l00157"></a><span class="lineno">  157</span><span class="preprocessor">#define xTraceStreamPortReadData(pvData, uiSize, piBytesRead) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_4((void)(pvData), (void)(uiSize), (void)(piBytesRead), TRC_SUCCESS)</span></div>
-<div class="line"><a id="l00158" name="l00158"></a><span class="lineno">  158</span> </div>
-<div class="line"><a id="l00167" name="l00167"></a><span class="lineno">  167</span><span class="preprocessor">#define xTraceStreamPortOnEnable(uiStartOption) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_2((void)(uiStartOption), TRC_SUCCESS)</span></div>
-<div class="line"><a id="l00168" name="l00168"></a><span class="lineno">  168</span> </div>
-<div class="line"><a id="l00175" name="l00175"></a><span class="lineno">  175</span><span class="preprocessor">#define xTraceStreamPortOnDisable() TRC_COMMA_EXPR_TO_STATEMENT_EXPR_1(TRC_SUCCESS)</span></div>
-<div class="line"><a id="l00176" name="l00176"></a><span class="lineno">  176</span> </div>
-<div class="line"><a id="l00183" name="l00183"></a><span class="lineno">  183</span>traceResult xTraceStreamPortOnTraceBegin(<span class="keywordtype">void</span>);</div>
-<div class="line"><a id="l00184" name="l00184"></a><span class="lineno">  184</span> </div>
-<div class="line"><a id="l00191" name="l00191"></a><span class="lineno">  191</span><span class="preprocessor">#define xTraceStreamPortOnTraceEnd() TRC_COMMA_EXPR_TO_STATEMENT_EXPR_1(TRC_SUCCESS)</span></div>
-<div class="line"><a id="l00192" name="l00192"></a><span class="lineno">  192</span> </div>
-<div class="line"><a id="l00193" name="l00193"></a><span class="lineno">  193</span><span class="preprocessor">#ifdef __cplusplus</span></div>
-<div class="line"><a id="l00194" name="l00194"></a><span class="lineno">  194</span>}</div>
-<div class="line"><a id="l00195" name="l00195"></a><span class="lineno">  195</span><span class="preprocessor">#endif</span></div>
-<div class="line"><a id="l00196" name="l00196"></a><span class="lineno">  196</span> </div>
-<div class="line"><a id="l00197" name="l00197"></a><span class="lineno">  197</span><span class="preprocessor">#endif </span><span class="comment">/*(TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING)*/</span><span class="preprocessor"></span></div>
+<div class="line"><a id="l00084" name="l00084"></a><span class="lineno">   84</span><span class="keyword">extern</span> TraceStreamPortData_t* pxStreamPortData;</div>
+<div class="line"><a id="l00085" name="l00085"></a><span class="lineno">   85</span> </div>
+<div class="line"><a id="l00090" name="l00090"></a><span class="lineno">   90</span><span class="preprocessor">#define TRC_STREAM_PORT_DATA_BUFFER_SIZE (sizeof(TraceStreamPortData_t))</span></div>
+<div class="line"><a id="l00091" name="l00091"></a><span class="lineno">   91</span> </div>
+<div class="line"><a id="l00095" name="l00095"></a><span class="lineno">   95</span><span class="keyword">typedef</span> <span class="keyword">struct </span><a class="code hl_struct" href="structTraceStreamPortBuffer.html">TraceStreamPortBuffer</a></div>
+<div class="line"><a id="l00096" name="l00096"></a><span class="lineno">   96</span>{</div>
+<div class="line"><a id="l00097" name="l00097"></a><span class="lineno">   97</span>    uint8_t buffer[(TRC_STREAM_PORT_DATA_BUFFER_SIZE)];</div>
+<div class="line"><a id="l00098" name="l00098"></a><span class="lineno">   98</span>} <a class="code hl_struct" href="structTraceStreamPortBuffer.html">TraceStreamPortBuffer_t</a>;</div>
+<div class="line"><a id="l00099" name="l00099"></a><span class="lineno">   99</span> </div>
+<div class="line"><a id="l00110" name="l00110"></a><span class="lineno">  110</span>traceResult xTraceStreamPortInitialize(<a class="code hl_struct" href="structTraceStreamPortBuffer.html">TraceStreamPortBuffer_t</a>* pxBuffer);</div>
+<div class="line"><a id="l00111" name="l00111"></a><span class="lineno">  111</span> </div>
+<div class="line"><a id="l00121" name="l00121"></a><span class="lineno">  121</span><span class="preprocessor">#define xTraceStreamPortAllocate(_uiSize, _ppvData) xTraceMultiCoreEventBufferAlloc(&amp;pxStreamPortData-&gt;xMultiCoreEventBuffer, _uiSize, _ppvData)</span></div>
+<div class="line"><a id="l00122" name="l00122"></a><span class="lineno">  122</span> </div>
+<div class="line"><a id="l00135" name="l00135"></a><span class="lineno">  135</span><span class="preprocessor">#define xTraceStreamPortCommit(_pvData, _uiSize, _piBytesCommitted) xTraceMultiCoreEventBufferAllocCommit(&amp;pxStreamPortData-&gt;xMultiCoreEventBuffer, _pvData, _uiSize, _piBytesCommitted)</span></div>
+<div class="line"><a id="l00136" name="l00136"></a><span class="lineno">  136</span> </div>
+<div class="line"><a id="l00147" name="l00147"></a><span class="lineno">  147</span><span class="preprocessor">#define xTraceStreamPortWriteData(_pvData, _uiSize, _piBytesWritten) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_4((void)(_pvData), (void)(_uiSize), (void)(_piBytesWritten), TRC_SUCCESS)</span></div>
+<div class="line"><a id="l00148" name="l00148"></a><span class="lineno">  148</span> </div>
+<div class="line"><a id="l00159" name="l00159"></a><span class="lineno">  159</span><span class="preprocessor">#define xTraceStreamPortReadData(pvData, uiSize, piBytesRead) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_4((void)(pvData), (void)(uiSize), (void)(piBytesRead), TRC_SUCCESS)</span></div>
+<div class="line"><a id="l00160" name="l00160"></a><span class="lineno">  160</span> </div>
+<div class="line"><a id="l00169" name="l00169"></a><span class="lineno">  169</span><span class="preprocessor">#define xTraceStreamPortOnEnable(uiStartOption) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_2((void)(uiStartOption), TRC_SUCCESS)</span></div>
+<div class="line"><a id="l00170" name="l00170"></a><span class="lineno">  170</span> </div>
+<div class="line"><a id="l00177" name="l00177"></a><span class="lineno">  177</span><span class="preprocessor">#define xTraceStreamPortOnDisable() TRC_COMMA_EXPR_TO_STATEMENT_EXPR_1(TRC_SUCCESS)</span></div>
+<div class="line"><a id="l00178" name="l00178"></a><span class="lineno">  178</span> </div>
+<div class="line"><a id="l00185" name="l00185"></a><span class="lineno">  185</span>traceResult xTraceStreamPortOnTraceBegin(<span class="keywordtype">void</span>);</div>
+<div class="line"><a id="l00186" name="l00186"></a><span class="lineno">  186</span> </div>
+<div class="line"><a id="l00193" name="l00193"></a><span class="lineno">  193</span><span class="preprocessor">#define xTraceStreamPortOnTraceEnd() TRC_COMMA_EXPR_TO_STATEMENT_EXPR_1(TRC_SUCCESS)</span></div>
+<div class="line"><a id="l00194" name="l00194"></a><span class="lineno">  194</span> </div>
+<div class="line"><a id="l00195" name="l00195"></a><span class="lineno">  195</span><span class="preprocessor">#ifdef __cplusplus</span></div>
+<div class="line"><a id="l00196" name="l00196"></a><span class="lineno">  196</span>}</div>
+<div class="line"><a id="l00197" name="l00197"></a><span class="lineno">  197</span><span class="preprocessor">#endif</span></div>
 <div class="line"><a id="l00198" name="l00198"></a><span class="lineno">  198</span> </div>
-<div class="line"><a id="l00199" name="l00199"></a><span class="lineno">  199</span><span class="preprocessor">#endif </span><span class="comment">/*(TRC_USE_TRACEALYZER_RECORDER == 1)*/</span><span class="preprocessor"></span></div>
+<div class="line"><a id="l00199" name="l00199"></a><span class="lineno">  199</span><span class="preprocessor">#endif </span><span class="comment">/*(TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING)*/</span><span class="preprocessor"></span></div>
 <div class="line"><a id="l00200" name="l00200"></a><span class="lineno">  200</span> </div>
-<div class="line"><a id="l00201" name="l00201"></a><span class="lineno">  201</span><span class="preprocessor">#endif </span><span class="comment">/* TRC_STREAM_PORT_H */</span><span class="preprocessor"></span></div>
+<div class="line"><a id="l00201" name="l00201"></a><span class="lineno">  201</span><span class="preprocessor">#endif </span><span class="comment">/*(TRC_USE_TRACEALYZER_RECORDER == 1)*/</span><span class="preprocessor"></span></div>
+<div class="line"><a id="l00202" name="l00202"></a><span class="lineno">  202</span> </div>
+<div class="line"><a id="l00203" name="l00203"></a><span class="lineno">  203</span><span class="preprocessor">#endif </span><span class="comment">/* TRC_STREAM_PORT_H */</span><span class="preprocessor"></span></div>
 <div class="ttc" id="astructTraceMultiCoreEventBuffer_html"><div class="ttname"><a href="structTraceMultiCoreEventBuffer.html">TraceMultiCoreEventBuffer</a></div><div class="ttdoc">Trace Multi-Core Event Buffer Structure.</div><div class="ttdef"><b>Definition:</b> trcMultiCoreEventBuffer.h:38</div></div>
-<div class="ttc" id="astructTraceStreamPortBuffer_html"><div class="ttname"><a href="structTraceStreamPortBuffer.html">TraceStreamPortBuffer</a></div><div class="ttdoc">A structure representing the trace stream port buffer.</div><div class="ttdef"><b>Definition:</b> trcStreamPort.h:89</div></div>
+<div class="ttc" id="astructTraceStreamPortBuffer_html"><div class="ttname"><a href="structTraceStreamPortBuffer.html">TraceStreamPortBuffer</a></div><div class="ttdoc">A structure representing the trace stream port buffer.</div><div class="ttdef"><b>Definition:</b> trcStreamPort.h:93</div></div>
 <div class="ttc" id="astructTraceTimestampData_html"><div class="ttname"><a href="structTraceTimestampData.html">TraceTimestampData</a></div><div class="ttdoc">Trace Timestamp Structure.</div><div class="ttdef"><b>Definition:</b> trcTimestamp.h:38</div></div>
 <div class="ttc" id="atrcRecorder_8h_html"><div class="ttname"><a href="trcRecorder_8h.html">trcRecorder.h</a></div><div class="ttdoc">The public API of the Percepio trace recorder.</div></div>
 </div><!-- fragment --></div><!-- contents -->

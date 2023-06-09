@@ -19,7 +19,7 @@ config PERCEPIO_TRC_CFG_RECORDER_RTOS_BAREMETAL
 
 choice PERCEPIO_TRC_CFG_START_MODE
 	prompt "Recorder Start Mode"
-	default PERCEPIO_TRC_START_MODE_START
+	default PERCEPIO_TRC_START_MODE_START_FROM_HOST
 	help
 	  TRC_START: Starts the tracing directly. In snapshot mode this allows for 
 	  starting the trace at any point in your code, assuming vTraceEnable(TRC_INIT)
@@ -80,6 +80,12 @@ config PERCEPIO_TRC_CFG_STREAM_PORT_TCPIP
 config PERCEPIO_TRC_CFG_STREAM_PORT_STM32_USB_CDC
 	bool "STM32 USB CDC"
 	depends on !PERCEPIO_TRC_CFG_RECORDER_RTOS_ZEPHYR
+
+config PERCEPIO_TRC_CFG_STREAM_PORT_ZEPHYR_SEMIHOST
+	bool "Semihost"
+	depends on PERCEPIO_TRC_CFG_RECORDER_RTOS_ZEPHYR && \
+	QEMU_TARGET && SEMIHOST
+
 endchoice
 
 if PERCEPIO_TRC_CFG_STREAM_PORT_RTT
@@ -90,6 +96,9 @@ rsource "../streamports/ARM_ITM/Kconfig"
 endif
 if PERCEPIO_TRC_CFG_STREAM_PORT_RINGBUFFER
 rsource "../streamports/RingBuffer/Kconfig"
+endif
+if PERCEPIO_TRC_CFG_STREAM_PORT_ZEPHYR_SEMIHOST
+rsource "../kernelports/Zephyr/streamports/Semihost/Kconfig"
 endif
 
 choice PERCEPIO_TRC_CFG_RECORDER_BUFFER_ALLOCATION

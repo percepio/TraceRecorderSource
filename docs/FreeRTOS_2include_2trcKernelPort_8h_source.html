@@ -25,7 +25,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">Percepio Trace Recorder<span id="projectnumber">&#160;v4.7.0</span>
+   <div id="projectname">Percepio Trace Recorder<span id="projectnumber">&#160;v4.8.0</span>
    </div>
   </td>
  </tr>
@@ -93,7 +93,7 @@ $(document).ready(function(){initNavTree('FreeRTOS_2include_2trcKernelPort_8h_so
 </div><!--header-->
 <div class="contents">
 <div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="comment">/*</span></div>
-<div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span><span class="comment"> * Trace Recorder for Tracealyzer v4.7.0</span></div>
+<div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span><span class="comment"> * Trace Recorder for Tracealyzer v4.8.0</span></div>
 <div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span><span class="comment"> * Copyright 2023 Percepio AB</span></div>
 <div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span><span class="comment"> * www.percepio.com</span></div>
 <div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span><span class="comment"> *</span></div>
@@ -201,7 +201,7 @@ $(document).ready(function(){initNavTree('FreeRTOS_2include_2trcKernelPort_8h_so
 <div class="line"><a id="l00112" name="l00112"></a><span class="lineno">  112</span><span class="preprocessor">#error &quot;Please set TRC_CFG_FREERTOS_VERSION in trcKernelPortConfig.h to the FreeRTOS version used.&quot;</span></div>
 <div class="line"><a id="l00113" name="l00113"></a><span class="lineno">  113</span><span class="preprocessor">#endif</span></div>
 <div class="line"><a id="l00114" name="l00114"></a><span class="lineno">  114</span> </div>
-<div class="line"><a id="l00118" name="l00118"></a><span class="lineno">  118</span><span class="keyword">typedef</span> <span class="keyword">struct </span><a class="code hl_struct" href="structTraceKernelPortDataBuffer.html">TraceKernelPortDataBuffer</a></div>
+<div class="line"><a id="l00118" name="l00118"></a><span class="lineno">  118</span><span class="keyword">typedef</span> <span class="keyword">struct </span><a class="code hl_struct" href="structTraceKernelPortDataBuffer.html">TraceKernelPortDataBuffer</a>    <span class="comment">/* Aligned */</span></div>
 <div class="line"><a id="l00119" name="l00119"></a><span class="lineno">  119</span>{</div>
 <div class="line"><a id="l00120" name="l00120"></a><span class="lineno">  120</span>    uint8_t buffer[TRC_KERNEL_PORT_BUFFER_SIZE];</div>
 <div class="line"><a id="l00121" name="l00121"></a><span class="lineno">  121</span>} <a class="code hl_struct" href="structTraceKernelPortDataBuffer.html">TraceKernelPortDataBuffer_t</a>;</div>
@@ -2466,7 +2466,7 @@ $(document).ready(function(){initNavTree('FreeRTOS_2include_2trcKernelPort_8h_so
 <div class="line"><a id="l02786" name="l02786"></a><span class="lineno"> 2786</span> </div>
 <div class="line"><a id="l02787" name="l02787"></a><span class="lineno"> 2787</span><span class="preprocessor">#undef traceTIMER_EXPIRED</span></div>
 <div class="line"><a id="l02788" name="l02788"></a><span class="lineno"> 2788</span><span class="preprocessor">#define traceTIMER_EXPIRED(tmr) \</span></div>
-<div class="line"><a id="l02789" name="l02789"></a><span class="lineno"> 2789</span><span class="preprocessor">    prvTraceStoreEvent_HandleParam(PSF_EVENT_TIMER_EXPIRED, (void*)(tmr), (uint32_t)((tmr)-&gt;pxCallbackFunction))</span></div>
+<div class="line"><a id="l02789" name="l02789"></a><span class="lineno"> 2789</span><span class="preprocessor">    prvTraceStoreEvent_HandleParam(PSF_EVENT_TIMER_EXPIRED, (void*)(tmr), (TraceUnsignedBaseType_t)((tmr)-&gt;pxCallbackFunction))</span></div>
 <div class="line"><a id="l02790" name="l02790"></a><span class="lineno"> 2790</span> </div>
 <div class="line"><a id="l02791" name="l02791"></a><span class="lineno"> 2791</span><span class="preprocessor">#endif</span></div>
 <div class="line"><a id="l02792" name="l02792"></a><span class="lineno"> 2792</span> </div>
@@ -2475,11 +2475,11 @@ $(document).ready(function(){initNavTree('FreeRTOS_2include_2trcKernelPort_8h_so
 <div class="line"><a id="l02795" name="l02795"></a><span class="lineno"> 2795</span> </div>
 <div class="line"><a id="l02796" name="l02796"></a><span class="lineno"> 2796</span><span class="preprocessor">#undef tracePEND_FUNC_CALL</span></div>
 <div class="line"><a id="l02797" name="l02797"></a><span class="lineno"> 2797</span><span class="preprocessor">#define tracePEND_FUNC_CALL(func, arg1, arg2, ret) \</span></div>
-<div class="line"><a id="l02798" name="l02798"></a><span class="lineno"> 2798</span><span class="preprocessor">    prvTraceStoreEvent_Param(((ret) == pdPASS) ? PSF_EVENT_TIMER_PENDFUNCCALL : PSF_EVENT_TIMER_PENDFUNCCALL_FAILED, (uint32_t)(func))</span></div>
+<div class="line"><a id="l02798" name="l02798"></a><span class="lineno"> 2798</span><span class="preprocessor">    prvTraceStoreEvent_Param(((ret) == pdPASS) ? PSF_EVENT_TIMER_PENDFUNCCALL : PSF_EVENT_TIMER_PENDFUNCCALL_FAILED, (TraceUnsignedBaseType_t)(func))</span></div>
 <div class="line"><a id="l02799" name="l02799"></a><span class="lineno"> 2799</span> </div>
 <div class="line"><a id="l02800" name="l02800"></a><span class="lineno"> 2800</span><span class="preprocessor">#undef tracePEND_FUNC_CALL_FROM_ISR</span></div>
 <div class="line"><a id="l02801" name="l02801"></a><span class="lineno"> 2801</span><span class="preprocessor">#define tracePEND_FUNC_CALL_FROM_ISR(func, arg1, arg2, ret) \</span></div>
-<div class="line"><a id="l02802" name="l02802"></a><span class="lineno"> 2802</span><span class="preprocessor">    prvTraceStoreEvent_Param(((ret) == pdPASS) ? PSF_EVENT_TIMER_PENDFUNCCALL_FROMISR : PSF_EVENT_TIMER_PENDFUNCCALL_FROMISR_FAILED, (uint32_t)(func))</span></div>
+<div class="line"><a id="l02802" name="l02802"></a><span class="lineno"> 2802</span><span class="preprocessor">    prvTraceStoreEvent_Param(((ret) == pdPASS) ? PSF_EVENT_TIMER_PENDFUNCCALL_FROMISR : PSF_EVENT_TIMER_PENDFUNCCALL_FROMISR_FAILED, (TraceUnsignedBaseType_t)(func))</span></div>
 <div class="line"><a id="l02803" name="l02803"></a><span class="lineno"> 2803</span> </div>
 <div class="line"><a id="l02804" name="l02804"></a><span class="lineno"> 2804</span><span class="preprocessor">#endif</span></div>
 <div class="line"><a id="l02805" name="l02805"></a><span class="lineno"> 2805</span> </div>

@@ -25,7 +25,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">Percepio Trace Recorder<span id="projectnumber">&#160;v4.7.0</span>
+   <div id="projectname">Percepio Trace Recorder<span id="projectnumber">&#160;v4.8.0</span>
    </div>
   </td>
  </tr>
@@ -104,7 +104,7 @@ Macros</h2></td></tr>
 <tr class="memitem:ga3e4d4ace59b52e5c2e80d34b40329917"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__trace__event__apis.html#ga3e4d4ace59b52e5c2e80d34b40329917">xTraceEventEnd</a>(xEventHandle)&#160;&#160;&#160;	(!<a class="el" href="trcRecorder_8h.html#a1991479e9a6d6653333f8bb854abbbab">xTraceIsRecorderEnabled</a>() ? TRC_FAIL : xTraceEventEndOffline(xEventHandle))</td></tr>
 <tr class="memdesc:ga3e4d4ace59b52e5c2e80d34b40329917"><td class="mdescLeft">&#160;</td><td class="mdescRight">Ends a trace event.  <br /></td></tr>
 <tr class="separator:ga3e4d4ace59b52e5c2e80d34b40329917"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gacd2cdde9951fe313cec11003a4fe203f"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__trace__event__apis.html#gacd2cdde9951fe313cec11003a4fe203f">xTraceEventAddString</a>(xEventHandle,  szString,  uiLength)&#160;&#160;&#160;<a class="el" href="group__trace__event__apis.html#gaba917b973d2205dd83518108579a65ed">xTraceEventAddData</a>(xEventHandle, (uint32_t*)(szString), (((uiLength) + (sizeof(uint32_t) - 1)) / sizeof(uint32_t)))</td></tr>
+<tr class="memitem:gacd2cdde9951fe313cec11003a4fe203f"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__trace__event__apis.html#gacd2cdde9951fe313cec11003a4fe203f">xTraceEventAddString</a>(xEventHandle,  szString,  uiLength)&#160;&#160;&#160;<a class="el" href="group__trace__event__apis.html#ga112f4b8cbcbe510c9d07db9b90dc620c">xTraceEventAddData</a>(xEventHandle, (TraceUnsignedBaseType_t*)(szString), (((uiLength) + (sizeof(TraceUnsignedBaseType_t) - 1)) / sizeof(TraceUnsignedBaseType_t)))</td></tr>
 <tr class="memdesc:gacd2cdde9951fe313cec11003a4fe203f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Adds string to event payload.  <br /></td></tr>
 <tr class="separator:gacd2cdde9951fe313cec11003a4fe203f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga3d104209d01e4e1ac2fce7a1c7ebfa69"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__trace__event__apis.html#ga3d104209d01e4e1ac2fce7a1c7ebfa69">xTraceEventGetSize</a>(pvAddress,  puiSize)&#160;&#160;&#160;(*(uint32_t*)(puiSize) = sizeof(TraceEvent0_t) + (TRC_EVENT_GET_PARAM_COUNT(((TraceEvent0_t*)(pvAddress))-&gt;EventID)) * sizeof(uint32_t), TRC_SUCCESS)</td></tr>
@@ -164,9 +164,9 @@ Functions</h2></td></tr>
 <tr class="memitem:ga7c11b915f0ac18234c3bd2dd7be8610a"><td class="memItemLeft" align="right" valign="top">traceResult&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__trace__event__apis.html#ga7c11b915f0ac18234c3bd2dd7be8610a">xTraceEventCreate6</a> (uint32_t uiEventCode, TraceUnsignedBaseType_t uxParam1, TraceUnsignedBaseType_t uxParam2, TraceUnsignedBaseType_t uxParam3, TraceUnsignedBaseType_t uxParam4, TraceUnsignedBaseType_t uxParam5, TraceUnsignedBaseType_t uxParam6)</td></tr>
 <tr class="memdesc:ga7c11b915f0ac18234c3bd2dd7be8610a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates an event with 6 parameters.  <br /></td></tr>
 <tr class="separator:ga7c11b915f0ac18234c3bd2dd7be8610a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gaba917b973d2205dd83518108579a65ed"><td class="memItemLeft" align="right" valign="top">traceResult&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__trace__event__apis.html#gaba917b973d2205dd83518108579a65ed">xTraceEventAddData</a> (TraceEventHandle_t xEventHandle, const uint32_t *const puiData, uint32_t uiSize)</td></tr>
-<tr class="memdesc:gaba917b973d2205dd83518108579a65ed"><td class="mdescLeft">&#160;</td><td class="mdescRight">Adds data to event payload.  <br /></td></tr>
-<tr class="separator:gaba917b973d2205dd83518108579a65ed"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga112f4b8cbcbe510c9d07db9b90dc620c"><td class="memItemLeft" align="right" valign="top">traceResult&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__trace__event__apis.html#ga112f4b8cbcbe510c9d07db9b90dc620c">xTraceEventAddData</a> (TraceEventHandle_t xEventHandle, const TraceUnsignedBaseType_t *const puxData, TraceUnsignedBaseType_t uxSize)</td></tr>
+<tr class="memdesc:ga112f4b8cbcbe510c9d07db9b90dc620c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Adds data to event payload.  <br /></td></tr>
+<tr class="separator:ga112f4b8cbcbe510c9d07db9b90dc620c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <h2 class="groupheader">Macro Definition Documentation</h2>
@@ -287,7 +287,7 @@ Functions</h2></td></tr>
         <tr>
           <td></td>
           <td>)</td>
-          <td></td><td>&#160;&#160;&#160;<a class="el" href="group__trace__event__apis.html#gaba917b973d2205dd83518108579a65ed">xTraceEventAddData</a>(xEventHandle, (uint32_t*)(szString), (((uiLength) + (sizeof(uint32_t) - 1)) / sizeof(uint32_t)))</td>
+          <td></td><td>&#160;&#160;&#160;<a class="el" href="group__trace__event__apis.html#ga112f4b8cbcbe510c9d07db9b90dc620c">xTraceEventAddData</a>(xEventHandle, (TraceUnsignedBaseType_t*)(szString), (((uiLength) + (sizeof(TraceUnsignedBaseType_t) - 1)) / sizeof(TraceUnsignedBaseType_t)))</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -627,8 +627,8 @@ Functions</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Function Documentation</h2>
-<a id="gaba917b973d2205dd83518108579a65ed" name="gaba917b973d2205dd83518108579a65ed"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#gaba917b973d2205dd83518108579a65ed">&#9670;&#160;</a></span>xTraceEventAddData()</h2>
+<a id="ga112f4b8cbcbe510c9d07db9b90dc620c" name="ga112f4b8cbcbe510c9d07db9b90dc620c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga112f4b8cbcbe510c9d07db9b90dc620c">&#9670;&#160;</a></span>xTraceEventAddData()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -642,14 +642,14 @@ Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const uint32_t *const&#160;</td>
-          <td class="paramname"><em>puiData</em>, </td>
+          <td class="paramtype">const TraceUnsignedBaseType_t *const&#160;</td>
+          <td class="paramname"><em>puxData</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">uint32_t&#160;</td>
-          <td class="paramname"><em>uiSize</em>&#160;</td>
+          <td class="paramtype">TraceUnsignedBaseType_t&#160;</td>
+          <td class="paramname"><em>uxSize</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -663,8 +663,8 @@ Functions</h2></td></tr>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">xEventHandle</td><td>Pointer to initialized trace event. </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">puiData</td><td>Pointer to data. </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">uiSize</td><td>Size.</td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">puxData</td><td>Pointer to data. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">uxSize</td><td>Size.</td></tr>
   </table>
   </dd>
 </dl>

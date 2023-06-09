@@ -1,5 +1,5 @@
 /*
- * Trace Recorder for Tracealyzer v4.7.0
+ * Trace Recorder for Tracealyzer v4.8.0
  * Copyright 2023 Percepio AB
  * www.percepio.com
  *
@@ -146,7 +146,7 @@ extern "C" {
  * In snapshot mode, the TzCtrl task is only used for stack monitoring and is
  * not created unless this is enabled.
  */
-#define TRC_CFG_ENABLE_STACK_MONITOR 1
+#define TRC_CFG_ENABLE_STACK_MONITOR 0
 
 /**
  * @def TRC_CFG_STACK_MONITOR_MAX_TASKS
@@ -205,6 +205,9 @@ extern "C" {
  * a stream port leveraging the internal buffer (like TCP/IP). A shorter delay
  * increases the CPU load of TzCtrl somewhat, but may improve the performance of
  * of the trace streaming, especially if the trace buffer is small.
+ *
+ * The unit depends on the delay function used for the specific kernel port (trcKernelPort.c).
+ * For example, FreeRTOS uses ticks while Zephyr uses ms.
  */
 #define TRC_CFG_CTRL_TASK_DELAY 10
 

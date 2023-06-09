@@ -1,5 +1,5 @@
 /*
-* Percepio Trace Recorder for Tracealyzer v4.7.0
+* Percepio Trace Recorder for Tracealyzer v4.8.0
 * Copyright 2023 Percepio AB
 * www.percepio.com
 *
@@ -64,7 +64,7 @@ traceResult xTraceRunnableRegister(const char* szName, TraceRunnableRegisterMeth
 #define xTraceRunnableStart(xRunnableHandle) xTraceEventCreate1(PSF_EVENT_RUNNABLE_START, (TraceUnsignedBaseType_t)(xRunnableHandle))
 
 /**
- * @brief Creates an event indicating a runnable started.
+ * @brief Creates an event indicating a runnable stopped.
  *
  * @retval TRC_FAIL Failure
  * @retval TRC_SUCCESS Success

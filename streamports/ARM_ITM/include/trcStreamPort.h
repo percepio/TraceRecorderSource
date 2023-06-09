@@ -1,5 +1,5 @@
 /*
- * Trace Recorder for Tracealyzer v4.7.0
+ * Trace Recorder for Tracealyzer v4.8.0
  * Copyright 2023 Percepio AB
  * www.percepio.com
  *
@@ -82,10 +82,14 @@ extern "C" {
 
 #define TRC_INTERNAL_BUFFER_CHUNK_SIZE (TRC_CFG_STREAM_PORT_INTERNAL_BUFFER_CHUNK_SIZE)
 
+#define TRC_INTERNAL_BUFFER_CHUNK_TRANSFER_AGAIN_SIZE_LIMIT (TRC_CFG_STREAM_PORT_INTERNAL_BUFFER_CHUNK_TRANSFER_AGAIN_SIZE_LIMIT)
+
+#define TRC_INTERNAL_BUFFER_CHUNK_TRANSFER_AGAIN_COUNT_LIMIT (TRC_CFG_STREAM_PORT_INTERNAL_BUFFER_CHUNK_TRANSFER_AGAIN_COUNT_LIMIT)
+
 /* Aligned */
 #define TRC_STREAM_PORT_INTERNAL_BUFFER_SIZE ((((TRC_CFG_STREAM_PORT_INTERNAL_BUFFER_SIZE) + sizeof(TraceUnsignedBaseType_t) - 1) / sizeof(TraceUnsignedBaseType_t)) * sizeof(TraceUnsignedBaseType_t))
 
-typedef struct TraceStreamPortBuffer
+typedef struct TraceStreamPortBuffer	/* Aligned */
 {
 #if (TRC_USE_INTERNAL_BUFFER == 1)
 	uint8_t bufferInternal[TRC_STREAM_PORT_INTERNAL_BUFFER_SIZE];

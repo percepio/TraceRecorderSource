@@ -29,6 +29,9 @@ var NAVTREE =
     [ "README", "md_README.html", null ],
     [ "Deprecated List", "deprecated.html", null ],
     [ "Modules", "modules.html", "modules" ],
+    [ "Namespaces", "namespaces.html", [
+      [ "Namespace List", "namespaces.html", "namespaces_dup" ]
+    ] ],
     [ "Data Structures", "annotated.html", [
       [ "Data Structures", "annotated.html", "annotated_dup" ],
       [ "Data Structure Index", "classes.html", null ],
@@ -53,7 +56,8 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 "BareMetal_2config_2trcKernelPortConfig_8h_source.html",
-"group__trace__task__apis.html#ga008c1439e57449718389f865dff32c1e"
+"group__trace__print__apis.html#ga8ec55bf7ab9f149637723ab71f6c3f92",
+"trcRecorder_8h_source.html"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

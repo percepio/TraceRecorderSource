@@ -1,5 +1,5 @@
 /*
-* Percepio Trace Recorder for Tracealyzer v4.7.0
+* Percepio Trace Recorder for Tracealyzer v4.8.0
 * Copyright 2023 Percepio AB
 * www.percepio.com
 *
@@ -34,7 +34,7 @@ extern "C" {
 /**
  * @brief Trace Multi-Core Event Buffer Structure
  */
-typedef struct TraceMultiCoreEventBuffer
+typedef struct TraceMultiCoreEventBuffer	/* Aligned */
 {
 	TraceEventBuffer_t *xEventBuffer[TRC_CFG_CORE_COUNT]; /**< */
 } TraceMultiCoreEventBuffer_t;

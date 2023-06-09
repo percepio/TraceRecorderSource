@@ -63,5 +63,6 @@ var searchData=
   ['trcstring_2eh_60',['trcString.h',['../trcString_8h.html',1,'']]],
   ['trctask_2eh_61',['trcTask.h',['../trcTask_8h.html',1,'']]],
   ['trctimestamp_2eh_62',['trcTimestamp.h',['../trcTimestamp_8h.html',1,'']]],
-  ['type_63',['type',['../structTraceTimestampData.html#a48de9426193337c796e7d71bd13c48bb',1,'TraceTimestampData']]]
+  ['type_63',['type',['../structTraceTimestampData.html#a48de9426193337c796e7d71bd13c48bb',1,'TraceTimestampData']]],
+  ['tz_5fparse_5fsyscalls_64',['tz_parse_syscalls',['../namespacetz__parse__syscalls.html',1,'']]]
 ];

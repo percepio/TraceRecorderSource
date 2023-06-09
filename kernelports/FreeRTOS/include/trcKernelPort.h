@@ -1,5 +1,5 @@
 /*
- * Trace Recorder for Tracealyzer v4.7.0
+ * Trace Recorder for Tracealyzer v4.8.0
  * Copyright 2023 Percepio AB
  * www.percepio.com
  *
@@ -115,7 +115,7 @@ extern "C" {
 /**
  * @internal The kernel port data buffer
  */
-typedef struct TraceKernelPortDataBuffer
+typedef struct TraceKernelPortDataBuffer	/* Aligned */
 {
 	uint8_t buffer[TRC_KERNEL_PORT_BUFFER_SIZE];
 } TraceKernelPortDataBuffer_t;
@@ -2786,7 +2786,7 @@ TraceHeapHandle_t xTraceKernelPortGetSystemHeapHandle(void);
 
 #undef traceTIMER_EXPIRED
 #define traceTIMER_EXPIRED(tmr) \
-	prvTraceStoreEvent_HandleParam(PSF_EVENT_TIMER_EXPIRED, (void*)(tmr), (uint32_t)((tmr)->pxCallbackFunction))
+	prvTraceStoreEvent_HandleParam(PSF_EVENT_TIMER_EXPIRED, (void*)(tmr), (TraceUnsignedBaseType_t)((tmr)->pxCallbackFunction))
 
 #endif
 
@@ -2795,11 +2795,11 @@ TraceHeapHandle_t xTraceKernelPortGetSystemHeapHandle(void);
 
 #undef tracePEND_FUNC_CALL
 #define tracePEND_FUNC_CALL(func, arg1, arg2, ret) \
-	prvTraceStoreEvent_Param(((ret) == pdPASS) ? PSF_EVENT_TIMER_PENDFUNCCALL : PSF_EVENT_TIMER_PENDFUNCCALL_FAILED, (uint32_t)(func))
+	prvTraceStoreEvent_Param(((ret) == pdPASS) ? PSF_EVENT_TIMER_PENDFUNCCALL : PSF_EVENT_TIMER_PENDFUNCCALL_FAILED, (TraceUnsignedBaseType_t)(func))
 
 #undef tracePEND_FUNC_CALL_FROM_ISR
 #define tracePEND_FUNC_CALL_FROM_ISR(func, arg1, arg2, ret) \
-	prvTraceStoreEvent_Param(((ret) == pdPASS) ? PSF_EVENT_TIMER_PENDFUNCCALL_FROMISR : PSF_EVENT_TIMER_PENDFUNCCALL_FROMISR_FAILED, (uint32_t)(func))
+	prvTraceStoreEvent_Param(((ret) == pdPASS) ? PSF_EVENT_TIMER_PENDFUNCCALL_FROMISR : PSF_EVENT_TIMER_PENDFUNCCALL_FROMISR_FAILED, (TraceUnsignedBaseType_t)(func))
 
 #endif
 

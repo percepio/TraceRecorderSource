@@ -1,5 +1,5 @@
 /*
-* Trace Recorder for Tracealyzer v4.7.0
+* Trace Recorder for Tracealyzer v4.8.0
 * Copyright 2023 Percepio AB
 * www.percepio.com
 *
@@ -37,7 +37,7 @@ traceResult xTraceStreamPortInitialize(TraceStreamPortBuffer_t* pxBuffer)
 	pxRingBuffer = &pxStreamPortData->xRingBuffer;
 	RecorderDataPtr = pxRingBuffer;
 
-	pxRingBuffer->xEventBuffer.uiSize = sizeof(pxRingBuffer->xEventBuffer.uiBuffer);
+	pxRingBuffer->xEventBuffer.uxSize = sizeof(pxRingBuffer->xEventBuffer.uiBuffer);
 	
 #if (TRC_CFG_STREAM_PORT_RINGBUFFER_MODE == TRC_STREAM_PORT_RINGBUFFER_MODE_OVERWRITE_WHEN_FULL)
 	if (xTraceMultiCoreEventBufferInitialize(&pxStreamPortData->xMultiCoreEventBuffer, TRC_EVENT_BUFFER_OPTION_OVERWRITE, pxRingBuffer->xEventBuffer.uiBuffer, sizeof(pxRingBuffer->xEventBuffer.uiBuffer)) == TRC_FAIL)

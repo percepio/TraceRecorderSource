@@ -1,5 +1,5 @@
 /*
-* Trace Recorder for Tracealyzer v4.7.0
+* Trace Recorder for Tracealyzer v4.8.0
 * Copyright 2023 Percepio AB
 * www.percepio.com
 *
@@ -30,7 +30,7 @@ extern "C" {
  * 
  * @brief Defines the size of the ring buffer use for storing trace events.
  */
-#define TRC_CFG_STREAM_PORT_BUFFER_SIZE 10000
+#define TRC_CFG_STREAM_PORT_BUFFER_SIZE 10240
 
 /**
  * @def TRC_CFG_STREAM_PORT_BUFFER_MODE

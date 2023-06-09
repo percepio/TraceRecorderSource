@@ -1,5 +1,5 @@
 /*
-* Percepio Trace Recorder for Tracealyzer v4.7.0
+* Percepio Trace Recorder for Tracealyzer v4.8.0
 * Copyright 2023 Percepio AB
 * www.percepio.com
 *
@@ -68,7 +68,8 @@ inline TraceBaseType_t prvTraceAssertCheckCondition(TraceBaseType_t condition)
 
 #endif
 
-typedef struct TraceAssertData
+
+typedef struct TraceAssertData /* Aligned */
 {
 	TraceEntryHandle_t xEntry;
 } TraceAssertData_t;

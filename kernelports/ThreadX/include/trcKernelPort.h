@@ -1,5 +1,5 @@
 /*
- * Trace Recorder for Tracealyzer v4.7.0
+ * Trace Recorder for Tracealyzer v4.8.0
  * Copyright 2023 Percepio AB
  * www.percepio.com
  *
@@ -95,9 +95,9 @@ extern TraceHeapHandle_t xSystemHeapHandle;
 /**
  * @brief A structure representing the kernel port buffer.
  */
-typedef struct TraceKernelPortDataBuffer
+typedef struct TraceKernelPortDataBuffer	/* Aligned */
 {
-	uint32_t buffer[(sizeof(TraceHeapHandle_t) + sizeof(TraceKernelPortTaskHandle_t)) / sizeof(uint32_t)];
+	uint8_t buffer[sizeof(TraceHeapHandle_t) + sizeof(TraceKernelPortTaskHandle_t)];
 } TraceKernelPortDataBuffer_t;
 
 /**
@@ -446,8 +446,6 @@ void vTraceSetMessageBufferName(void* object, const char* name);
 #define PSF_EVENT_TASK_READY										PSF_EVENT_THREAD_SYSTEM_RESUME_SUCCESS
 #define PSF_EVENT_TASK_CREATE										PSF_EVENT_THREAD_CREATE_SUCCESS
 #define PSF_EVENT_TASK_PRIORITY										PSF_EVENT_THREAD_PRIORITY_CHANGE_SUCCESS
-
-extern volatile uint32_t uiTraceSystemState;
 
 #ifdef __cplusplus
 }

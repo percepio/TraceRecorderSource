@@ -25,7 +25,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">Percepio Trace Recorder<span id="projectnumber">&#160;v4.7.0</span>
+   <div id="projectname">Percepio Trace Recorder<span id="projectnumber">&#160;v4.8.0</span>
    </div>
   </td>
  </tr>
@@ -102,7 +102,7 @@ Macros</h2></td></tr>
 <tr class="memdesc:gac70437d35d979dc2d86a5e84f2468026"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates an event indicating a runnable started.  <br /></td></tr>
 <tr class="separator:gac70437d35d979dc2d86a5e84f2468026"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga966ad065b5646cf85599f845e4a25f0d"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__trace__runnable__apis.html#ga966ad065b5646cf85599f845e4a25f0d">xTraceRunnableStop</a>()&#160;&#160;&#160;<a class="el" href="group__trace__event__apis.html#ga63f12da033faf0f4de4ef2755d73b308">xTraceEventCreate0</a>(PSF_EVENT_RUNNABLE_STOP)</td></tr>
-<tr class="memdesc:ga966ad065b5646cf85599f845e4a25f0d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates an event indicating a runnable started.  <br /></td></tr>
+<tr class="memdesc:ga966ad065b5646cf85599f845e4a25f0d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates an event indicating a runnable stopped.  <br /></td></tr>
 <tr class="separator:ga966ad065b5646cf85599f845e4a25f0d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gab0c0cd7ac030b7d6b1681569f6e668d4"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__trace__runnable__apis.html#gab0c0cd7ac030b7d6b1681569f6e668d4">xTraceRunnableRegisterStaticSet</a>(szName,  uiMajor,  uiMinor,  uiPatch,  uiRunnableCount,  pxRunnableSetHandle)&#160;&#160;&#160;<a class="el" href="group__trace__extension__apis.html#ga358cdec30d87e1659cbb5dc551c5c310">xTraceExtensionCreate</a>(szName, uiMajor, uiMinor, uiPatch, uiRunnableCount, pxRunnableSetHandle)</td></tr>
 <tr class="memdesc:gab0c0cd7ac030b7d6b1681569f6e668d4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Registers a set of static runnables. Requires XML configuration to properly interpret.  <br /></td></tr>
@@ -286,7 +286,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Creates an event indicating a runnable started. </p>
+<p>Creates an event indicating a runnable stopped. </p>
 <dl class="retval"><dt>Return values</dt><dd>
   <table class="retval">
     <tr><td class="paramname">TRC_FAIL</td><td>Failure </td></tr>

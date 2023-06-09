@@ -25,7 +25,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">Percepio Trace Recorder<span id="projectnumber">&#160;v4.7.0</span>
+   <div id="projectname">Percepio Trace Recorder<span id="projectnumber">&#160;v4.8.0</span>
    </div>
   </td>
  </tr>
@@ -93,7 +93,7 @@ $(document).ready(function(){initNavTree('tracing__tracerecorder_8h_source.html'
 </div><!--header-->
 <div class="contents">
 <div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="comment">/*</span></div>
-<div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span><span class="comment"> * Trace Recorder for Tracealyzer v4.7.0</span></div>
+<div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span><span class="comment"> * Trace Recorder for Tracealyzer v4.8.0</span></div>
 <div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span><span class="comment"> * Copyright 2023 Percepio AB</span></div>
 <div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span><span class="comment"> * www.percepio.com</span></div>
 <div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span><span class="comment"> *</span></div>
@@ -1076,8 +1076,8 @@ $(document).ready(function(){initNavTree('tracing__tracerecorder_8h_source.html'
 <div class="line"><a id="l00982" name="l00982"></a><span class="lineno">  982</span> </div>
 <div class="line"><a id="l00983" name="l00983"></a><span class="lineno">  983</span> </div>
 <div class="line"><a id="l00984" name="l00984"></a><span class="lineno">  984</span><span class="comment">/* Semaphore trace function declarations */</span></div>
-<div class="line"><a id="l00985" name="l00985"></a><span class="lineno">  985</span><span class="keywordtype">void</span> sys_trace_k_sem_init(<span class="keyword">struct</span> k_sem *sem, uint32_t initial_count,</div>
-<div class="line"><a id="l00986" name="l00986"></a><span class="lineno">  986</span>    uint32_t limit, <span class="keywordtype">int</span> ret);</div>
+<div class="line"><a id="l00985" name="l00985"></a><span class="lineno">  985</span><span class="keywordtype">void</span> sys_trace_k_sem_init(<span class="keyword">struct</span> k_sem *sem, <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> initial_count,</div>
+<div class="line"><a id="l00986" name="l00986"></a><span class="lineno">  986</span>    <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> limit, <span class="keywordtype">int</span> ret);</div>
 <div class="line"><a id="l00987" name="l00987"></a><span class="lineno">  987</span><span class="keywordtype">void</span> sys_trace_k_sem_give_enter(<span class="keyword">struct</span> k_sem *sem);</div>
 <div class="line"><a id="l00988" name="l00988"></a><span class="lineno">  988</span><span class="keywordtype">void</span> sys_trace_k_sem_take_enter(<span class="keyword">struct</span> k_sem *sem, k_timeout_t timeout);</div>
 <div class="line"><a id="l00989" name="l00989"></a><span class="lineno">  989</span><span class="keywordtype">void</span> sys_trace_k_sem_take_blocking(<span class="keyword">struct</span> k_sem *sem, k_timeout_t timeout);</div>

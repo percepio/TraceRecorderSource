@@ -1,5 +1,5 @@
 /*
- * Trace Recorder for Tracealyzer v4.7.0
+ * Trace Recorder for Tracealyzer v4.8.0
  * Copyright 2023 Percepio AB
  * www.percepio.com
  *
@@ -22,10 +22,20 @@ extern "C" {
 
 #define TRC_USE_INTERNAL_BUFFER 1
 
+#define TRC_INTERNAL_EVENT_BUFFER_WRITE_MODE (TRC_CFG_STREAM_PORT_INTERNAL_BUFFER_WRITE_MODE)
+
+#define TRC_INTERNAL_EVENT_BUFFER_TRANSFER_MODE (TRC_CFG_STREAM_PORT_INTERNAL_BUFFER_TRANSFER_MODE)
+
+#define TRC_INTERNAL_BUFFER_CHUNK_SIZE (TRC_CFG_STREAM_PORT_INTERNAL_BUFFER_CHUNK_SIZE)
+
+#define TRC_INTERNAL_BUFFER_CHUNK_TRANSFER_AGAIN_SIZE_LIMIT (TRC_CFG_STREAM_PORT_INTERNAL_BUFFER_CHUNK_TRANSFER_AGAIN_SIZE_LIMIT)
+
+#define TRC_INTERNAL_BUFFER_CHUNK_TRANSFER_AGAIN_COUNT_LIMIT (TRC_CFG_STREAM_PORT_INTERNAL_BUFFER_CHUNK_TRANSFER_AGAIN_COUNT_LIMIT)
+
 #define TRC_STREAM_PORT_USB_BUFFER_SIZE ((((TRC_CFG_STREAM_PORT_USB_BUFFER_SIZE) + sizeof(TraceUnsignedBaseType_t) - 1) / sizeof(TraceUnsignedBaseType_t)) * sizeof(TraceUnsignedBaseType_t))
 #define TRC_STREAM_PORT_INTERNAL_BUFFER_SIZE ((((TRC_CFG_STREAM_PORT_INTERNAL_BUFFER_SIZE) + sizeof(TraceUnsignedBaseType_t) - 1) / sizeof(TraceUnsignedBaseType_t)) * sizeof(TraceUnsignedBaseType_t))
 
-typedef struct TraceStreamPortBuffer
+typedef struct TraceStreamPortBuffer	/* Aligned */
 {
 	uint8_t buffer[(TRC_STREAM_PORT_USB_BUFFER_SIZE) + (TRC_STREAM_PORT_INTERNAL_BUFFER_SIZE) + sizeof(TraceUnsignedBaseType_t)];
 } TraceStreamPortBuffer_t;
@@ -55,7 +65,7 @@ traceResult xTraceStreamPortInitialize(TraceStreamPortBuffer_t* pxBuffer);
  * @retval TRC_FAIL Allocate failed
  * @retval TRC_SUCCESS Success
  */
-#define xTraceStreamPortAllocate(uiSize, ppvData) ((void)uiSize, xTraceStaticBufferGet(ppvData))
+#define xTraceStreamPortAllocate xTraceInternalEventBufferAlloc
 
 /**
  * @brief Commits data to the stream port, depending on the implementation/configuration of the
@@ -69,7 +79,7 @@ traceResult xTraceStreamPortInitialize(TraceStreamPortBuffer_t* pxBuffer);
  * @retval TRC_FAIL Commit failed
  * @retval TRC_SUCCESS Success
  */
-#define xTraceStreamPortCommit xTraceInternalEventBufferPush
+#define xTraceStreamPortCommit xTraceInternalEventBufferAllocCommit
 
 /**
  * @brief Writes data through the stream port interface.

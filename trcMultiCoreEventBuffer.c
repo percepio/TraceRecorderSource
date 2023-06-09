@@ -1,5 +1,5 @@
 /*
-* Percepio Trace Recorder for Tracealyzer v4.7.0
+* Percepio Trace Recorder for Tracealyzer v4.8.0
 * Copyright 2023 Percepio AB
 * www.percepio.com
 *
@@ -26,7 +26,7 @@ traceResult xTraceMultiCoreEventBufferInitialize(TraceMultiCoreEventBuffer_t* co
 	/* This should never fail */
 	TRC_ASSERT(puiBuffer != (void*)0);
 
-	uiBufferSizePerCore = uiSize / (uint32_t)(TRC_CFG_CORE_COUNT);
+	uiBufferSizePerCore = ((uiSize / (uint32_t)(TRC_CFG_CORE_COUNT)) / sizeof(TraceUnsignedBaseType_t)) * sizeof(TraceUnsignedBaseType_t); /* BaseType aligned */
 
 	/* This should never fail */
 	TRC_ASSERT(uiBufferSizePerCore != 0u);
@@ -40,7 +40,7 @@ traceResult xTraceMultiCoreEventBufferInitialize(TraceMultiCoreEventBuffer_t* co
 		/* Initialize the event buffer structure with its memory buffer placed following its own structure data. */
 		/* We need to check this */
 		if (xTraceEventBufferInitialize(pxTraceMultiCoreEventBuffer->xEventBuffer[i], uiOptions,
-			&puiBuffer[(i * uiBufferSizePerCore) + sizeof(TraceEventBuffer_t)], /*cstat !MISRAC2004-17.4_b We need to access a spcific point in the buffer*/
+			&puiBuffer[(i * uiBufferSizePerCore) + sizeof(TraceEventBuffer_t)], /*cstat !MISRAC2004-17.4_b We need to access a specific point in the buffer*/
 			uiBufferSizePerCore - sizeof(TraceEventBuffer_t)) == TRC_FAIL)
 		{
 			return TRC_FAIL;

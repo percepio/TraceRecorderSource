@@ -1,5 +1,5 @@
 /*
- * Trace Recorder for Tracealyzer v4.7.0
+ * Trace Recorder for Tracealyzer v4.8.0
  * Copyright 2023 Percepio AB
  * www.percepio.com
  *
@@ -118,15 +118,15 @@ typedef uint8_t traceHandle;
 #define traceHandle TraceISRHandle_t
 
 /* Maximum event size */
-#define TRC_MAX_BLOB_SIZE (64UL)
+#define TRC_MAX_BLOB_SIZE (16UL * sizeof(TraceUnsignedBaseType_t))
 
 /* Platform name length */
 #define TRC_PLATFORM_CFG_LENGTH 8UL
 
 /* Header size */
-#define TRC_HEADER_BUFFER_SIZE (sizeof(uint32_t) + sizeof(uint16_t) + sizeof(uint16_t) + sizeof(uint32_t) + sizeof(uint32_t) + sizeof(uint32_t) + (sizeof(char) * (TRC_PLATFORM_CFG_LENGTH)) + sizeof(uint16_t) + sizeof(uint8_t) + sizeof(uint8_t))
+#define TRC_HEADER_BUFFER_SIZE (sizeof(uint32_t) + sizeof(uint16_t) + sizeof(uint16_t) + sizeof(uint32_t) + sizeof(uint32_t) + sizeof(uint32_t) + sizeof(uint16_t) + sizeof(uint8_t) + sizeof(uint8_t) + (sizeof(char) * (TRC_PLATFORM_CFG_LENGTH)))
 
-typedef struct TraceHeaderBuffer
+typedef struct TraceHeaderBuffer	/* Aligned */
 {
 	uint8_t buffer[TRC_HEADER_BUFFER_SIZE];
 } TraceHeaderBuffer_t;
@@ -172,9 +172,13 @@ typedef struct TraceHeaderBuffer
 /**
  * @brief
  *
- * Initializes the recorder data. xTraceInitialize() or xTraceEnable(...)
- * must be called before any attempts at adding trace data/information.
- * See xTraceEnable(...) for more information. 
+ * Initializes the recorder data.
+ * xTraceInitialize() or xTraceEnable(...) must be called before any attempts
+ * at adding trace data/information. xTraceInitialize() can be called before
+ * timestamp source is initialized since timestamps aren't used until
+ * xTraceEnable(...) is called.
+ *
+ * See xTraceEnable(...) for more information.
  * 
  * @retval TRC_FAIL Failure
  * @retval TRC_SUCCESS Success
@@ -187,6 +191,11 @@ traceResult xTraceInitialize(void);
  * This function enables tracing.
  * To use the trace recorder, the startup must call xTraceInitialize() or
  * xTraceEnable(...) before any RTOS calls are made (including "create" calls).
+ * This function should only be called after the timestamp source is properly
+ * initialized. If kernel services that generate trace data are called before that,
+ * an earlier call to xTraceInitialize() is necessary. Then call xTraceEnable(...)
+ * once the timestamp source is initialized.
+ *
  * Three start options are provided:
  * 
  * 	TRC_START: Starts the tracing directly. In snapshot mode this allows for 
@@ -1612,31 +1621,32 @@ typedef RecorderDataType TraceRecorderData_t;
 #define TRC_EXTERNAL_BUFFERS 0
 #endif
 
-typedef struct TraceRecorderData
+typedef struct TraceRecorderData	/* Aligned */
 {
 	uint32_t uiSessionCounter;
 	uint32_t uiRecorderEnabled;
-	uint32_t uiTraceSystemState;
+	TraceUnsignedBaseType_t uxTraceSystemStates[TRC_CFG_CORE_COUNT];
+	uint32_t reserved;								/* alignment */
 
-	TraceAssertData_t xAssertBuffer;
-	TraceEntryIndexTable_t xEntryIndexTableBuffer;
+	TraceAssertData_t xAssertBuffer;				/* aligned */
+	TraceEntryIndexTable_t xEntryIndexTableBuffer;	/* aligned */
 #if (TRC_EXTERNAL_BUFFERS == 0)
-	TraceHeaderBuffer_t xHeaderBuffer;
-	TraceEntryTable_t xEntryTable;
-	TraceTimestampData_t xTimestampBuffer;
+	TraceHeaderBuffer_t xHeaderBuffer;				/* aligned */
+	TraceEntryTable_t xEntryTable;					/* aligned */
+	TraceTimestampData_t xTimestampBuffer;			/* aligned */
 #endif
-	TraceStreamPortBuffer_t xStreamPortBuffer;
-	TraceStaticBufferTable_t xStaticBufferBuffer;
-	TraceEventDataTable_t xEventDataBuffer;
-	TracePrintData_t xPrintBuffer;
-	TraceErrorData_t xErrorBuffer;
-	TraceISRData_t xISRBuffer;
-	TraceKernelPortDataBuffer_t xKernelPortBuffer;
-	TraceTaskData_t xTaskInfoBuffer;
-	TraceStackMonitorData_t xStackMonitorBuffer;
-	TraceDiagnosticsData_t xDiagnosticsBuffer;
-	TraceExtensionData_t xExtensionBuffer;
-	TraceCounterData_t xCounterBuffer;
+	TraceStreamPortBuffer_t xStreamPortBuffer;		/* verify alignment in xTraceInitialize() */
+	TraceStaticBufferTable_t xStaticBufferBuffer;	/* aligned */
+	TraceEventDataTable_t xEventDataBuffer;			/* verify alignment in xTraceInitialize() */
+	TracePrintData_t xPrintBuffer;					/* aligned */
+	TraceErrorData_t xErrorBuffer;					/* aligned */
+	TraceISRData_t xISRBuffer;						/* aligned */
+	TraceKernelPortDataBuffer_t xKernelPortBuffer;	/* verify alignment in xTraceInitialize() */
+	TraceTaskData_t xTaskInfoBuffer;				/* aligned */
+	TraceStackMonitorData_t xStackMonitorBuffer;	/* aligned */
+	TraceDiagnosticsData_t xDiagnosticsBuffer;		/* aligned */
+	TraceExtensionData_t xExtensionBuffer;			/* aligned */
+	TraceCounterData_t xCounterBuffer;				/* aligned */
 } TraceRecorderData_t;
 
 extern TraceRecorderData_t* pxTraceRecorderData;
@@ -1696,7 +1706,7 @@ traceResult xTraceHeaderInitialize(TraceHeaderBuffer_t* pxBuffer);
  * @retval TRC_FAIL Failure
  * @retval TRC_SUCCESS Success
  */
-#define xTraceStateSet(uiState) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_2(pxTraceRecorderData->uiTraceSystemState = (uiState), TRC_SUCCESS)
+#define xTraceStateSet(uxState) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_2(pxTraceRecorderData->uxTraceSystemStates[TRC_CFG_GET_CURRENT_CORE()] = (uxState), TRC_SUCCESS)
 
 /**
  * @brief Query the trace state
@@ -1706,7 +1716,7 @@ traceResult xTraceHeaderInitialize(TraceHeaderBuffer_t* pxBuffer);
  * @retval TRC_FAIL Failure
  * @retval TRC_SUCCESS Success
  */
-#define xTraceStateGet(puiState) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_2(*(puiState) = pxTraceRecorderData->uiTraceSystemState, TRC_SUCCESS)
+#define xTraceStateGet(puxState) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_2(*(puxState) = pxTraceRecorderData->uxTraceSystemStates[TRC_CFG_GET_CURRENT_CORE()], TRC_SUCCESS)
 
 /**
  * @brief Call this function periodically

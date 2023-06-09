@@ -25,7 +25,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">Percepio Trace Recorder<span id="projectnumber">&#160;v4.7.0</span>
+   <div id="projectname">Percepio Trace Recorder<span id="projectnumber">&#160;v4.8.0</span>
    </div>
   </td>
  </tr>
@@ -93,7 +93,7 @@ $(document).ready(function(){initNavTree('trcStaticBuffer_8h_source.html',''); i
 </div><!--header-->
 <div class="contents">
 <a href="trcStaticBuffer_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="comment">/*</span></div>
-<div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span><span class="comment">* Percepio Trace Recorder for Tracealyzer v4.7.0</span></div>
+<div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span><span class="comment">* Percepio Trace Recorder for Tracealyzer v4.8.0</span></div>
 <div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span><span class="comment">* Copyright 2023 Percepio AB</span></div>
 <div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span><span class="comment">* www.percepio.com</span></div>
 <div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span><span class="comment">*</span></div>
@@ -116,12 +116,12 @@ $(document).ready(function(){initNavTree('trcStaticBuffer_8h_source.html',''); i
 <div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span><span class="comment">/* A buffer type that is maximum size */</span></div>
 <div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span><span class="keyword">typedef</span> uint8_t TraceStaticBuffer_t[TRC_MAX_BLOB_SIZE];</div>
 <div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span> </div>
-<div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span><span class="keyword">typedef</span> <span class="keyword">struct </span>TraceCoreStaticBufferCore</div>
+<div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span><span class="keyword">typedef</span> <span class="keyword">struct </span>TraceCoreStaticBufferCore    <span class="comment">/* Aligned */</span></div>
 <div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span>{</div>
 <div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span>    TraceStaticBuffer_t dummyEvents[(TRC_CFG_MAX_ISR_NESTING) + 1]; </div>
 <div class="line"><a id="l00043" name="l00043"></a><span class="lineno">   43</span>} TraceCoreStaticBuffer_t;</div>
 <div class="line"><a id="l00044" name="l00044"></a><span class="lineno">   44</span> </div>
-<div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span><span class="keyword">typedef</span> <span class="keyword">struct </span>TraceStaticBufferTable</div>
+<div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span><span class="keyword">typedef</span> <span class="keyword">struct </span>TraceStaticBufferTable   <span class="comment">/* Aligned */</span></div>
 <div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span>{</div>
 <div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span>    TraceCoreStaticBuffer_t coreDummyEvents[TRC_CFG_CORE_COUNT]; </div>
 <div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span>} TraceStaticBufferTable_t;</div>

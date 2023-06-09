@@ -1,5 +1,5 @@
 /*
-* Percepio Trace Recorder for Tracealyzer v4.7.0
+* Percepio Trace Recorder for Tracealyzer v4.8.0
 * Copyright 2023 Percepio AB
 * www.percepio.com
 *
@@ -31,7 +31,7 @@ extern "C" {
  * @{
  */
 
-typedef struct TraceErrorData
+typedef struct TraceErrorData	/* Aligned */
 {
 	uint32_t uiErrorAndWarningFlags;
 	uint32_t uiErrorCode;

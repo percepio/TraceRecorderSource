@@ -1,5 +1,5 @@
 /*
- * Trace Recorder for Tracealyzer v4.7.0
+ * Trace Recorder for Tracealyzer v4.8.0
  * Copyright 2023 Percepio AB
  * www.percepio.com
  *
@@ -37,24 +37,23 @@ extern "C" {
 #define TRC_CFG_STREAM_PORT_USE_INTERNAL_BUFFER 0
 
 /**
- * @def TRC_CFG_INTERNAL_BUFFER_SIZE
+ * @def TRC_CFG_STREAM_PORT_INTERNAL_BUFFER_SIZE
  *
  * @brief Configures the size of the internal buffer if used.
- * is enabled.
  */
-#define TRC_CFG_STREAM_PORT_INTERNAL_BUFFER_SIZE 5000
+#define TRC_CFG_STREAM_PORT_INTERNAL_BUFFER_SIZE 5120
 
 /**
  * @def TRC_CFG_STREAM_PORT_INTERNAL_BUFFER_WRITE_MODE
  *
- * @brief
+ * @brief This should be set to TRC_INTERNAL_EVENT_BUFFER_OPTION_WRITE_MODE_DIRECT for best performance.
  */
 #define TRC_CFG_STREAM_PORT_INTERNAL_BUFFER_WRITE_MODE TRC_INTERNAL_EVENT_BUFFER_OPTION_WRITE_MODE_DIRECT
 
 /**
  * @def TRC_CFG_STREAM_PORT_INTERNAL_BUFFER_TRANSFER_MODE
  *
- * @brief
+ * @brief Defines if the internal buffer will attempt to transfer all data each time or limit it to a chunk size.
  */
 #define TRC_CFG_STREAM_PORT_INTERNAL_BUFFER_TRANSFER_MODE TRC_INTERNAL_EVENT_BUFFER_OPTION_TRANSFER_MODE_ALL
 
@@ -64,7 +63,27 @@ extern "C" {
  * @brief Defines the maximum chunk size when transferring
  * internal buffer events in chunks.
  */
-#define TRC_CFG_STREAM_PORT_INTERNAL_BUFFER_CHUNK_SIZE 1000
+#define TRC_CFG_STREAM_PORT_INTERNAL_BUFFER_CHUNK_SIZE 1024
+
+/**
+ * @def TRC_CFG_STREAM_PORT_INTERNAL_BUFFER_CHUNK_TRANSFER_AGAIN_SIZE_LIMIT
+ *
+ * @brief Defines the number of transferred bytes needed to trigger another transfer.
+ * It also depends on TRC_CFG_STREAM_PORT_INTERNAL_BUFFER_CHUNK_TRANSFER_AGAIN_COUNT_LIMIT to set a maximum number
+ * of additional transfers this loop.
+ * This will increase throughput by immediately doing a transfer and not wait for another xTraceTzCtrl() loop.
+ */
+#define TRC_CFG_STREAM_PORT_INTERNAL_BUFFER_CHUNK_TRANSFER_AGAIN_SIZE_LIMIT 256
+
+/**
+ * @def TRC_CFG_STREAM_PORT_INTERNAL_BUFFER_CHUNK_TRANSFER_AGAIN_COUNT_LIMIT
+ *
+ * @brief Defines the maximum number of times to trigger another transfer before returning to xTraceTzCtrl().
+ * It also depends on TRC_CFG_STREAM_PORT_INTERNAL_BUFFER_CHUNK_TRANSFER_AGAIN_SIZE_LIMIT to see if a meaningful amount of data was
+ * transferred in the last loop.
+ * This will increase throughput by immediately doing a transfer and not wait for another xTraceTzCtrl() loop.
+ */
+#define TRC_CFG_STREAM_PORT_INTERNAL_BUFFER_CHUNK_TRANSFER_AGAIN_COUNT_LIMIT 5
 
 #ifdef __cplusplus
 }

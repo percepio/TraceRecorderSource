@@ -1,5 +1,5 @@
 /*
-* Percepio Trace Recorder for Tracealyzer v4.7.0
+* Percepio Trace Recorder for Tracealyzer v4.8.0
 * Copyright 2023 Percepio AB
 * www.percepio.com
 *
@@ -115,9 +115,9 @@ traceResult xTraceTaskSwitch(void *pvTask, TraceUnsignedBaseType_t uxPriority)
 		return xResult;
 	}
 
-	TRACE_ENTER_CRITICAL_SECTION();
-
 	xTraceStateSet(TRC_STATE_IN_TASKSWITCH);
+
+	TRACE_ENTER_CRITICAL_SECTION();
 
 #if (TRC_KERNEL_PORT_KERNEL_CAN_SWITCH_TO_SAME_TASK == 1)
 	xTraceTaskGetCurrent(&pvCurrent);

@@ -1,5 +1,5 @@
 /*
-* Trace Recorder for Tracealyzer v4.7.0
+* Trace Recorder for Tracealyzer v4.8.0
 * Copyright 2023 Percepio AB
 * www.percepio.com
 *
@@ -46,15 +46,15 @@ extern "C" {
 
 #define TRC_USE_INTERNAL_BUFFER 0
 
-#define TRC_STREAM_PORT_BUFFER_SIZE ((((uint32_t)(TRC_CFG_STREAM_PORT_BUFFER_SIZE) + sizeof(uint32_t) - 1UL) / sizeof(uint32_t)) * sizeof(uint32_t))
+#define TRC_STREAM_PORT_BUFFER_SIZE (((uint32_t)(TRC_CFG_STREAM_PORT_BUFFER_SIZE) / sizeof(TraceUnsignedBaseType_t)) * sizeof(TraceUnsignedBaseType_t))	/* aligned */
 
 /**
 * @brief
 */
-typedef struct TraceMultiCoreBuffer
+typedef struct TraceMultiCoreBuffer	/* Aligned */
 {
-	uint32_t uiSize;
-	uint8_t uiBuffer[TRC_STREAM_PORT_BUFFER_SIZE];
+	TraceUnsignedBaseType_t uxSize;		/* aligned */
+	uint8_t uiBuffer[TRC_STREAM_PORT_BUFFER_SIZE];	/* size is aligned */
 } TraceMultiCoreBuffer_t;
 
 /**
@@ -62,12 +62,14 @@ typedef struct TraceMultiCoreBuffer
  */
 typedef struct TraceRingBuffer
 {
+	uint32_t reserved0; /* alignment with START_MARKERS */
 	volatile uint8_t START_MARKERS[12];
-	TraceHeaderBuffer_t xHeaderBuffer;
-	TraceTimestampData_t xTimestampInfo;
-	TraceEntryTable_t xEntryTable;
-	TraceMultiCoreBuffer_t xEventBuffer;
+	TraceHeaderBuffer_t xHeaderBuffer; /* aligned */
+	TraceTimestampData_t xTimestampInfo; /* aligned */
+	TraceEntryTable_t xEntryTable; /* aligned */
+	TraceMultiCoreBuffer_t xEventBuffer; /* aligned */
 	volatile uint8_t END_MARKERS[12];
+	uint32_t reserved1; /* alignment */
 } TraceRingBuffer_t;
 
 /**

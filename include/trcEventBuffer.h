@@ -1,5 +1,5 @@
 /*
-* Percepio Trace Recorder for Tracealyzer v4.7.0
+* Percepio Trace Recorder for Tracealyzer v4.8.0
 * Copyright 2023 Percepio AB
 * www.percepio.com
 *
@@ -46,7 +46,7 @@ extern "C" {
 /**
  * @brief Trace Event Buffer Structure
  */
-typedef struct TraceEventBuffer
+typedef struct TraceEventBuffer	/* Aligned */
 {
 	uint32_t uiHead;				/**< Head index of buffer */
 	uint32_t uiTail;				/**< Tail index of buffer */
@@ -57,6 +57,7 @@ typedef struct TraceEventBuffer
 	uint32_t uiSlack;				/**< */
 	uint32_t uiNextHead;			/**< */
 	uint32_t uiTimerWraparounds;	/**< Nr of timer wraparounds */
+	uint32_t uiReserved;			/**< Reserved */
 	uint8_t* puiBuffer;				/**< Trace Event Buffer: may be NULL */
 } TraceEventBuffer_t;
 

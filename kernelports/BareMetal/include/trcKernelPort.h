@@ -1,5 +1,5 @@
 /*
- * Trace Recorder for Tracealyzer v4.7.0
+ * Trace Recorder for Tracealyzer v4.8.0
  * Copyright 2023 Percepio AB
  * www.percepio.com
  *
@@ -69,7 +69,7 @@ extern "C" {
 /**
  * @internal The kernel port data buffer
  */
-typedef struct TraceKernelPortDataBuffer
+typedef struct TraceKernelPortDataBuffer	/* Aligned */
 {
 	uint8_t buffer[TRC_KERNEL_PORT_BUFFER_SIZE];
 } TraceKernelPortDataBuffer_t;

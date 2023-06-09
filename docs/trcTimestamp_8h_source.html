@@ -25,7 +25,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">Percepio Trace Recorder<span id="projectnumber">&#160;v4.7.0</span>
+   <div id="projectname">Percepio Trace Recorder<span id="projectnumber">&#160;v4.8.0</span>
    </div>
   </td>
  </tr>
@@ -93,7 +93,7 @@ $(document).ready(function(){initNavTree('trcTimestamp_8h_source.html',''); init
 </div><!--header-->
 <div class="contents">
 <a href="trcTimestamp_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="comment">/*</span></div>
-<div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span><span class="comment">* Percepio Trace Recorder for Tracealyzer v4.7.0</span></div>
+<div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span><span class="comment">* Percepio Trace Recorder for Tracealyzer v4.8.0</span></div>
 <div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span><span class="comment">* Copyright 2023 Percepio AB</span></div>
 <div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span><span class="comment">* www.percepio.com</span></div>
 <div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span><span class="comment">*</span></div>
@@ -113,11 +113,11 @@ $(document).ready(function(){initNavTree('trcTimestamp_8h_source.html',''); init
 <div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span><span class="keyword">extern</span> <span class="stringliteral">&quot;C&quot;</span> {</div>
 <div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span><span class="preprocessor">#endif</span></div>
 <div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span> </div>
-<div class="line"><a id="l00037" name="l00037"></a><span class="lineno"><a class="line" href="structTraceTimestampData.html">   37</a></span><span class="keyword">typedef</span> <span class="keyword">struct </span><a class="code hl_struct" href="structTraceTimestampData.html">TraceTimestampData</a></div>
+<div class="line"><a id="l00037" name="l00037"></a><span class="lineno"><a class="line" href="structTraceTimestampData.html">   37</a></span><span class="keyword">typedef</span> <span class="keyword">struct </span><a class="code hl_struct" href="structTraceTimestampData.html">TraceTimestampData</a>   <span class="comment">/* Aligned */</span></div>
 <div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span>{</div>
 <div class="line"><a id="l00039" name="l00039"></a><span class="lineno"><a class="line" href="structTraceTimestampData.html#a48de9426193337c796e7d71bd13c48bb">   39</a></span>    uint32_t <a class="code hl_variable" href="structTraceTimestampData.html#a48de9426193337c796e7d71bd13c48bb">type</a>;                      </div>
-<div class="line"><a id="l00040" name="l00040"></a><span class="lineno"><a class="line" href="structTraceTimestampData.html#a86e73f20ece09258cf5c0466238530e0">   40</a></span>    TraceUnsignedBaseType_t <a class="code hl_variable" href="structTraceTimestampData.html#a86e73f20ece09258cf5c0466238530e0">frequency</a>;  </div>
-<div class="line"><a id="l00041" name="l00041"></a><span class="lineno"><a class="line" href="structTraceTimestampData.html#af5cb77711278fbc4883f92ece1eb8a77">   41</a></span>    uint32_t <a class="code hl_variable" href="structTraceTimestampData.html#af5cb77711278fbc4883f92ece1eb8a77">period</a>;                    </div>
+<div class="line"><a id="l00040" name="l00040"></a><span class="lineno"><a class="line" href="structTraceTimestampData.html#af5cb77711278fbc4883f92ece1eb8a77">   40</a></span>    uint32_t <a class="code hl_variable" href="structTraceTimestampData.html#af5cb77711278fbc4883f92ece1eb8a77">period</a>;                    </div>
+<div class="line"><a id="l00041" name="l00041"></a><span class="lineno"><a class="line" href="structTraceTimestampData.html#a86e73f20ece09258cf5c0466238530e0">   41</a></span>    TraceUnsignedBaseType_t <a class="code hl_variable" href="structTraceTimestampData.html#a86e73f20ece09258cf5c0466238530e0">frequency</a>;  </div>
 <div class="line"><a id="l00042" name="l00042"></a><span class="lineno"><a class="line" href="structTraceTimestampData.html#a8c0595bf3f6711d97a12712108834b5e">   42</a></span>    uint32_t <a class="code hl_variable" href="structTraceTimestampData.html#a8c0595bf3f6711d97a12712108834b5e">wraparounds</a>;               </div>
 <div class="line"><a id="l00043" name="l00043"></a><span class="lineno"><a class="line" href="structTraceTimestampData.html#a6ddf9efb7b1b2b4eb54c2c1ccd467d6c">   43</a></span>    uint32_t <a class="code hl_variable" href="structTraceTimestampData.html#a6ddf9efb7b1b2b4eb54c2c1ccd467d6c">osTickHz</a>;                  </div>
 <div class="line"><a id="l00044" name="l00044"></a><span class="lineno"><a class="line" href="structTraceTimestampData.html#a2b2a757a002505e143807470cf9a2696">   44</a></span>    uint32_t <a class="code hl_variable" href="structTraceTimestampData.html#a2b2a757a002505e143807470cf9a2696">latestTimestamp</a>;           </div>
@@ -195,9 +195,9 @@ $(document).ready(function(){initNavTree('trcTimestamp_8h_source.html',''); init
 <div class="ttc" id="astructTraceTimestampData_html_a48de9426193337c796e7d71bd13c48bb"><div class="ttname"><a href="structTraceTimestampData.html#a48de9426193337c796e7d71bd13c48bb">TraceTimestampData::type</a></div><div class="ttdeci">uint32_t type</div><div class="ttdef"><b>Definition:</b> trcTimestamp.h:39</div></div>
 <div class="ttc" id="astructTraceTimestampData_html_a6ddf9efb7b1b2b4eb54c2c1ccd467d6c"><div class="ttname"><a href="structTraceTimestampData.html#a6ddf9efb7b1b2b4eb54c2c1ccd467d6c">TraceTimestampData::osTickHz</a></div><div class="ttdeci">uint32_t osTickHz</div><div class="ttdef"><b>Definition:</b> trcTimestamp.h:43</div></div>
 <div class="ttc" id="astructTraceTimestampData_html_a7cbe7298667e55b74926aad8266808bc"><div class="ttname"><a href="structTraceTimestampData.html#a7cbe7298667e55b74926aad8266808bc">TraceTimestampData::osTickCount</a></div><div class="ttdeci">uint32_t osTickCount</div><div class="ttdef"><b>Definition:</b> trcTimestamp.h:45</div></div>
-<div class="ttc" id="astructTraceTimestampData_html_a86e73f20ece09258cf5c0466238530e0"><div class="ttname"><a href="structTraceTimestampData.html#a86e73f20ece09258cf5c0466238530e0">TraceTimestampData::frequency</a></div><div class="ttdeci">TraceUnsignedBaseType_t frequency</div><div class="ttdef"><b>Definition:</b> trcTimestamp.h:40</div></div>
+<div class="ttc" id="astructTraceTimestampData_html_a86e73f20ece09258cf5c0466238530e0"><div class="ttname"><a href="structTraceTimestampData.html#a86e73f20ece09258cf5c0466238530e0">TraceTimestampData::frequency</a></div><div class="ttdeci">TraceUnsignedBaseType_t frequency</div><div class="ttdef"><b>Definition:</b> trcTimestamp.h:41</div></div>
 <div class="ttc" id="astructTraceTimestampData_html_a8c0595bf3f6711d97a12712108834b5e"><div class="ttname"><a href="structTraceTimestampData.html#a8c0595bf3f6711d97a12712108834b5e">TraceTimestampData::wraparounds</a></div><div class="ttdeci">uint32_t wraparounds</div><div class="ttdef"><b>Definition:</b> trcTimestamp.h:42</div></div>
-<div class="ttc" id="astructTraceTimestampData_html_af5cb77711278fbc4883f92ece1eb8a77"><div class="ttname"><a href="structTraceTimestampData.html#af5cb77711278fbc4883f92ece1eb8a77">TraceTimestampData::period</a></div><div class="ttdeci">uint32_t period</div><div class="ttdef"><b>Definition:</b> trcTimestamp.h:41</div></div>
+<div class="ttc" id="astructTraceTimestampData_html_af5cb77711278fbc4883f92ece1eb8a77"><div class="ttname"><a href="structTraceTimestampData.html#af5cb77711278fbc4883f92ece1eb8a77">TraceTimestampData::period</a></div><div class="ttdeci">uint32_t period</div><div class="ttdef"><b>Definition:</b> trcTimestamp.h:40</div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->

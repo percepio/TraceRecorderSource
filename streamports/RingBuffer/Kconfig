@@ -4,7 +4,7 @@
 menu "Ring Buffer Config"
 config PERCEPIO_TRC_CFG_STREAM_PORT_RINGBUFFER_SIZE
 	int "Buffer size"
-	default 5000
+	default 10240
 	range 0 10485760
 	help
 	  Defines the size of the ring buffer use for storing trace events.

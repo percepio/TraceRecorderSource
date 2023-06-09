@@ -1,0 +1,1007 @@
+menu "Percepio hidden"
+    visible if n
+    config PERCEPIO_RECORDER_TRC_RECORDER_MODE_STREAMING
+        bool "Recorder mode"
+        default y
+endmenu
+
+menu "Percepio Trace Recorder"
+	depends on APPTRACE_ENABLE
+	config PERCEPIO_TRACERECORDER_ENABLED
+		bool "Tracealyzer Tracing Enable"
+		depends on !APPTRACE_GCOV_ENABLE
+		select FREERTOS_USE_TRACE_FACILITY
+		default n
+		help
+			Enables support for Percepio Tracealyzer tracing functionality.
+	
+	choice PERCEPIO_RECORDER_CFG_START_MODE
+		prompt "Recorder Start Mode"
+		depends on PERCEPIO_TRACERECORDER_ENABLED
+		default PERCEPIO_RECORDER_CFG_START_MODE_START_FROM_HOST
+		help
+			Start From Host: The device will boot up normally and tracing will only start
+			when Tracealyzer starts accepting trace data ("Start Session" button).
+			
+			Start: Assumes the receiver is ready and starts the tracing directly.
+			Can also be used for streaming without Tracealyzer control, e.g. to a local
+			File system or RingBuffer StreamPort.
+			
+			Start Await Host: Waits for a Start command from Tracealyzer ("Start Session" button).
+			This will intentionally block execution during startup until tracing is started in order
+			to  trace the startup sequence as well.
+			This may trigger a watchdog if one is used!
+	
+		config PERCEPIO_RECORDER_CFG_START_MODE_START_FROM_HOST
+			bool "Start From Host"
+			depends on PERCEPIO_RECORDER_TRC_RECORDER_MODE_STREAMING
+	
+		config PERCEPIO_RECORDER_CFG_START_MODE_START
+			bool "Start"
+	
+		config PERCEPIO_RECORDER_CFG_START_MODE_START_AWAIT_HOST
+			bool "Start Await Host"
+			depends on PERCEPIO_RECORDER_TRC_RECORDER_MODE_STREAMING
+	endchoice
+	
+	choice PERCEPIO_TRC_CFG_STREAM_PORT
+		prompt "Stream Port"
+		default PERCEPIO_TRC_CFG_STREAM_PORT_ESP_IDF_APPTRACE
+
+		config PERCEPIO_TRC_CFG_STREAM_PORT_ESP_IDF_APPTRACE
+			bool "ESP-IDF APPTRACE"
+
+		config PERCEPIO_TRC_CFG_STREAM_PORT_RINGBUFFER
+			bool "Ring Buffer"
+	endchoice
+
+if PERCEPIO_TRC_CFG_STREAM_PORT_RINGBUFFER
+	menu "Ring Buffer Config"
+		config PERCEPIO_TRC_CFG_STREAM_PORT_RINGBUFFER_SIZE
+			int "Buffer size"
+			default 5000
+			range 0 10485760
+			help
+				Defines the size of the ring buffer use for storing trace events.
+
+		choice PERCEPIO_TRC_CFG_STREAM_PORT_RINGBUFFER_MODE
+			prompt "Ring Buffer Mode"
+			default PERCEPIO_TRC_STREAM_PORT_RINGBUFFER_MODE_OVERWRITE_WHEN_FULL
+			help
+				With PERCEPIO_TRC_CFG_STREAM_PORT_RINGBUFFER_MODE set to PERCEPIO_TRC_STREAM_PORT_RINGBUFFER_MODE_OVERWRITE_WHEN_FULL, the
+				events are stored in a ring buffer, i.e., where the oldest events are
+				overwritten when the buffer becomes full. This allows you to get the last
+				events leading up to an interesting state, e.g., an error, without having
+				to store the whole run since startup.
+				
+				When PERCEPIO_TRC_CFG_STREAM_PORT_RINGBUFFER_MODE is PERCEPIO_TRC_STREAM_PORT_RINGBUFFER_MODE_STOP_WHEN_FULL, the
+				recording is stopped when the buffer becomes full. This is useful for
+				recording events following a specific state, e.g., the startup sequence.
+
+			config PERCEPIO_TRC_STREAM_PORT_RINGBUFFER_MODE_OVERWRITE_WHEN_FULL
+				bool "Overwrite when full"
+
+			config PERCEPIO_TRC_STREAM_PORT_RINGBUFFER_MODE_STOP_WHEN_FULL
+				bool "Stop when full"
+		endchoice
+	endmenu # "Ring Buffer Config"
+endif
+
+if PERCEPIO_TRC_CFG_STREAM_PORT_ESP_IDF_APPTRACE
+	choice PERCEPIO_RECORDER_CFG_TRAX_BLOCKING_MODE
+		prompt "Stream Blocking Mode"
+		depends on PERCEPIO_TRACERECORDER_ENABLED && PERCEPIO_RECORDER_TRC_RECORDER_MODE_STREAMING
+		default PERCEPIO_RECORDER_CFG_TRAX_MODE_NO_BLOCK_SKIP
+		help
+			This stream port for streaming over XTensa Trax relies on apptrace that utilize
+			an internal TRAX RAM buffer read by OpenOCD during execution.
+			
+			Possible values:
+			- APPTRACE_TRAX_MODE_BLOCK_IF_FIFO_FULL
+			- APPTRACE_TRAX_MODE_NO_BLOCK_SKIP (default)
+			
+			Using APPTRACE_TRAX_MODE_BLOCK_IF_FIFO_FULL ensure that you get a
+			complete and valid trace. This may however cause blocking if your streaming
+			interface isn't fast enough, which may disturb the real-time behavior.
+			
+			We therefore recommend APPTRACE_TRAX_MODE_NO_BLOCK_SKIP. In this mode,
+			Tracealyzer will report lost events if the transfer is not
+			fast enough. If there are problems, try increasing the apptrace buffer
+			in sdkconfig.
+		
+		config PERCEPIO_RECORDER_CFG_TRAX_MODE_BLOCK_IF_FIFO_FULL
+			bool "Block if FIFO full"
+
+		config PERCEPIO_RECORDER_CFG_TRAX_MODE_NO_BLOCK_SKIP
+			bool "Skip if FIFO full"
+	endchoice
+endif
+
+	config PERCEPIO_RECORDER_CFG_SCHEDULING_ONLY
+		bool "Only Record Scheduling Events"
+		depends on PERCEPIO_TRACERECORDER_ENABLED
+		default n
+		help
+			If this setting is enabled, only scheduling events are recorded. If disabled,
+			all events are recorded (unless filtered in other ways).
+	
+	config PERCEPIO_RECORDER_CFG_INCLUDE_MEMMANG_EVENTS
+		bool "Trace Memory Management Events"
+		depends on PERCEPIO_TRACERECORDER_ENABLED && !PERCEPIO_RECORDER_CFG_SCHEDULING_ONLY
+		default y
+		help
+			This controls if malloc and free calls should be traced. Disable this to exclude
+			malloc/free calls, or enable it to include such events in the trace.
+
+	config PERCEPIO_RECORDER_CFG_INCLUDE_USER_EVENTS
+		bool "Trace User Events"
+		depends on PERCEPIO_TRACERECORDER_ENABLED
+		default y
+		help
+			If this is disabled, all code related to User Events is excluded in order 
+			to reduce code size. Any attempts of storing User Events are then silently
+			ignored.
+			
+			User Events are application-generated events, like "printf" but for the 
+			trace log, generated using vTracePrint and vTracePrintF. 
+			The formatting is done on host-side, by Tracealyzer. User Events are 
+			therefore much faster than a console printf and can often be used
+			in timing critical code without problems.
+			
+			Note: In streaming mode, User Events are used to provide error messages
+			and warnings from the recorder (in case of incorrect configuration) for
+			display in Tracealyzer. Disabling user events will also disable these
+			warnings. You can however still catch them by calling xTraceGetLastError 
+			or by putting breakpoints in prvTraceError and prvTraceWarning.
+
+	config PERCEPIO_RECORDER_CFG_INCLUDE_ISR_TRACING
+		bool "Trace ISR Events"
+		depends on PERCEPIO_TRACERECORDER_ENABLED && !PERCEPIO_RECORDER_CFG_SCHEDULING_ONLY
+		default y
+		help
+			If this is disabled, the code for recording Interrupt Service Routines is
+			excluded, in order to reduce code size. This means that any calls to
+			vTraceStoreISRBegin/vTraceStoreISREnd will be ignored.
+			This does not completely disable ISR tracing, in cases where an ISR is
+			calling a traced kernel service. These events will still be recorded and
+			show up in anonymous ISR instances in Tracealyzer, with names such as
+			"ISR sending to <queue name>".
+			To disable such tracing, please refer to vTraceSetFilterGroup and vTraceSetFilterMask.
+
+	config PERCEPIO_RECORDER_CFG_INCLUDE_READY_EVENTS
+		bool "Trace Task Ready Events"
+		depends on PERCEPIO_TRACERECORDER_ENABLED && !PERCEPIO_RECORDER_CFG_SCHEDULING_ONLY
+		default y
+		help
+			If enabled, events are recorded when tasks enter scheduling state "ready".
+			This allows Tracealyzer to show the initial pending time before tasks enter
+			the execution state, and present accurate response times.
+			If disabled, "ready events" are not created, which allows for recording
+			longer traces in the same amount of RAM.
+
+	config PERCEPIO_RECORDER_CFG_INCLUDE_OSTICK_EVENTS
+		bool "Trace OS Tick Events"
+		depends on PERCEPIO_TRACERECORDER_ENABLED && !PERCEPIO_RECORDER_CFG_SCHEDULING_ONLY
+		default y
+		help
+			If this is enabled, events will be generated whenever the OS clock is
+			increased. If disabled, OS tick events are not generated, which allows for
+			recording longer traces in the same amount of RAM.
+		
+	config PERCEPIO_RECORDER_CFG_INCLUDE_EVENT_GROUP_EVENTS
+		bool "Trace Event Group Events"
+		depends on PERCEPIO_TRACERECORDER_ENABLED && !PERCEPIO_RECORDER_CFG_SCHEDULING_ONLY
+		default n
+		help
+			If this is disabled, the trace will exclude any "event group" events.
+		
+	config PERCEPIO_RECORDER_CFG_INCLUDE_TIMER_EVENTS
+		bool "Trace Timer Events"
+		depends on PERCEPIO_TRACERECORDER_ENABLED && !PERCEPIO_RECORDER_CFG_SCHEDULING_ONLY
+		default n
+		help
+			If this is disabled, the trace will exclude any Timer events.
+
+	config PERCEPIO_RECORDER_CFG_INCLUDE_PEND_FUNC_CALL_EVENTS
+		bool "Trace Pend Function Events"
+		depends on PERCEPIO_TRACERECORDER_ENABLED && !PERCEPIO_RECORDER_CFG_SCHEDULING_ONLY
+		default n
+		help
+			If this is disabled, the trace will exclude any "pending function call"
+			events, such as xTimerPendFunctionCall().
+		
+	config PERCEPIO_RECORDER_CFG_INCLUDE_STREAM_BUFFER_EVENTS
+		bool "Trace Stream Buffer Events"
+		depends on PERCEPIO_TRACERECORDER_ENABLED && !PERCEPIO_RECORDER_CFG_SCHEDULING_ONLY
+		default n
+		help
+			If this is disabled, the trace will exclude any stream buffer or message
+			buffer events.
+		
+	config PERCEPIO_RECORDER_CFG_ENABLE_STACK_MONITOR
+		bool "Trace Stack Usage"
+		depends on PERCEPIO_TRACERECORDER_ENABLED && !PERCEPIO_RECORDER_CFG_SCHEDULING_ONLY
+		default n
+		help
+			If enabled, the recorder periodically reports the unused stack space of
+			all active tasks.
+			The stack monitoring runs in the Tracealyzer Control task, TzCtrl. This task
+			is always created by the recorder when in streaming mode. 
+			In snapshot mode, the TzCtrl task is only used for stack monitoring and is
+			not created unless this is enabled.
+
+	config PERCEPIO_RECORDER_CFG_STACK_MONITOR_MAX_TASKS
+		int "Stack Monitor Max Tasks"
+		depends on PERCEPIO_TRACERECORDER_ENABLED && PERCEPIO_RECORDER_CFG_ENABLE_STACK_MONITOR && !PERCEPIO_RECORDER_CFG_SCHEDULING_ONLY
+		range 1 64
+		default 15
+		help
+			This controls how many tasks that can be monitored by the stack monitor.
+			If this is too small, some tasks will be excluded and a warning is shown.
+	
+	config PERCEPIO_RECORDER_CFG_STACK_MONITOR_MAX_REPORTS
+		int "Stack Monitor Max Reports"
+		depends on PERCEPIO_TRACERECORDER_ENABLED && PERCEPIO_RECORDER_CFG_ENABLE_STACK_MONITOR && !PERCEPIO_RECORDER_CFG_SCHEDULING_ONLY
+		range 1 64
+		default 1
+		help
+			This defines how many tasks that will be subject to stack usage analysis for
+			each execution of the Tracealyzer Control task (TzCtrl). Note that the stack
+			monitoring cycles between the tasks, so this does not affect WHICH tasks that
+			are monitored, but HOW OFTEN each task stack is analyzed. 
+
+			This setting can be combined with TRC_CFG_CTRL_TASK_DELAY to tune the
+			frequency of the stack monitoring. This is motivated since the stack analysis
+			can take some time to execute.
+			However, note that the stack analysis runs in a separate task (TzCtrl) that
+			can be executed on low priority. This way, you can avoid that the stack
+			analysis disturbs any time-sensitive tasks.
+	
+	config PERCEPIO_RECORDER_CFG_CTRL_TASK_PRIORITY
+		int "TzCtrl Task Priority"
+		depends on PERCEPIO_TRACERECORDER_ENABLED && (PERCEPIO_RECORDER_TRC_RECORDER_MODE_STREAMING || PERCEPIO_RECORDER_CFG_ENABLE_STACK_MONITOR) && !PERCEPIO_RECORDER_CFG_SCHEDULING_ONLY
+		range 1 32
+		default 1
+		help
+			In streaming mode, TzCtrl is used to receive start/stop commands from
+			Tracealyzer and in some cases also to transmit the trace data (for stream
+			ports that use the internal buffer, like TCP/IP). For such stream ports,
+			make sure the TzCtrl priority is high enough to ensure reliable periodic
+			execution and transfer of the data, but low enough to avoid disturbing any 
+			time-sensitive functions.
+			
+			In Snapshot mode, TzCtrl is only used for the stack usage monitoring and is
+			not created if stack monitoring is disabled. TRC_CFG_CTRL_TASK_PRIORITY should
+			be low, to avoid disturbing any time-sensitive tasks.
+		
+	config PERCEPIO_RECORDER_CFG_CTRL_TASK_DELAY
+		int "TzCtrl Task Delay"
+		depends on PERCEPIO_TRACERECORDER_ENABLED && (PERCEPIO_RECORDER_TRC_RECORDER_MODE_STREAMING || PERCEPIO_RECORDER_CFG_ENABLE_STACK_MONITOR) && !PERCEPIO_RECORDER_CFG_SCHEDULING_ONLY
+		range 1 1000000000
+		default 10
+		help
+			The delay between loops of the TzCtrl task (see TRC_CFG_CTRL_TASK_PRIORITY), 
+			which affects the frequency of the stack monitoring.
+			
+			In streaming mode, this also affects the trace data transfer if you are using
+			a stream port leveraging the internal buffer (like TCP/IP). A shorter delay
+			increases the CPU load of TzCtrl somewhat, but may improve the performance of
+			of the trace streaming, especially if the trace buffer is small.
+		
+	config PERCEPIO_RECORDER_CFG_CTRL_TASK_STACK_SIZE
+		int "TzCtrl Task Stack Size"
+		depends on PERCEPIO_TRACERECORDER_ENABLED && (PERCEPIO_RECORDER_TRC_RECORDER_MODE_STREAMING || PERCEPIO_RECORDER_CFG_ENABLE_STACK_MONITOR) && !PERCEPIO_RECORDER_CFG_SCHEDULING_ONLY
+		range 1 1048576
+		default 2048
+		help
+			The stack size of the Tracealyzer Control (TzCtrl) task.
+			See TRC_CFG_CTRL_TASK_PRIORITY for further information about TzCtrl.
+		
+	choice PERCEPIO_RECORDER_CFG_RECORDER_BUFFER_ALLOCATION
+		prompt "Recorder Allocation Mode"
+		depends on PERCEPIO_TRACERECORDER_ENABLED
+		default PERCEPIO_RECORDER_TRC_RECORDER_BUFFER_ALLOCATION_STATIC
+		help
+			Specifies how the recorder buffer is allocated (also in case of streaming, in
+			port using the recorder's internal temporary buffer)
+			
+			Values:
+				TRC_RECORDER_BUFFER_ALLOCATION_STATIC	- Static allocation (internal)
+				TRC_RECORDER_BUFFER_ALLOCATION_DYNAMIC - Malloc in vTraceEnable
+				TRC_RECORDER_BUFFER_ALLOCATION_CUSTOM	- Use vTraceSetRecorderDataBuffer
+				
+			Static and dynamic mode does the allocation for you, either in compile time
+			(static) or in runtime (malloc).
+			The custom mode allows you to control how and where the allocation is made,
+			for details see TRC_ALLOC_CUSTOM_BUFFER and vTraceSetRecorderDataBuffer().
+
+		config PERCEPIO_RECORDER_TRC_RECORDER_BUFFER_ALLOCATION_STATIC
+			bool "Static allocation"
+
+		config PERCEPIO_RECORDER_TRC_RECORDER_BUFFER_ALLOCATION_DYNAMIC
+			bool "Dynamic allocation"
+		
+		config PERCEPIO_RECORDER_TRC_RECORDER_BUFFER_ALLOCATION_CUSTOM
+			bool "Custom allocation"
+	endchoice
+
+	config PERCEPIO_RECORDER_CFG_MAX_ISR_NESTING
+		int "Max ISR Nesting"
+		depends on PERCEPIO_TRACERECORDER_ENABLED && !PERCEPIO_RECORDER_CFG_SCHEDULING_ONLY
+		range 1 1048576
+		default 8
+		help
+			Defines how many levels of interrupt nesting the recorder can handle, in
+			case multiple ISRs are traced and ISR nesting is possible. If this
+			is exceeded, the particular ISR will not be traced and the recorder then
+			logs an error message. This setting is used to allocate an internal stack
+			for keeping track of the previous execution context (4 byte per entry).
+	
+	menu "Streaming Configuration"
+	depends on PERCEPIO_RECORDER_TRC_RECORDER_MODE_STREAMING
+		config PERCEPIO_RECORDER_TRC_CFG_SYMBOL_TABLE_SLOTS
+			int "Symbol Table Slots"
+			depends on PERCEPIO_RECORDER_TRC_RECORDER_MODE_STREAMING
+			range 1 4194304
+			default 40
+			help
+				The maximum number of symbols names that can be stored. This includes:
+				- Task names
+				- Named ISRs (vTraceSetISRProperties)
+				- Named kernel objects (vTraceStoreKernelObjectName)
+				- User event channels (xTraceRegisterString)
+				
+				If this value is too small, not all symbol names will be stored and the
+				trace display will be affected. In that case, there will be warnings
+				(as User Events) from TzCtrl task, that monitors this.
+				
+		config PERCEPIO_RECORDER_TRC_CFG_SYMBOL_MAX_LENGTH
+			int "Symbol Max Length"
+			depends on PERCEPIO_RECORDER_TRC_RECORDER_MODE_STREAMING
+			range 1 4194304
+			default 25
+			help
+				The maximum length of symbol names, including:
+				- Task names
+				- Named ISRs (vTraceSetISRProperties)
+				- Named kernel objects (vTraceStoreKernelObjectName)
+				- User event channel names (xTraceRegisterString)
+				
+				If longer symbol names are used, they will be truncated by the recorder,
+				which will affect the trace display. In that case, there will be warnings
+				(as User Events) from TzCtrl task, that monitors this.
+				
+		config PERCEPIO_RECORDER_TRC_CFG_OBJECT_DATA_SLOTS
+			int "Object Data Slots"
+			depends on PERCEPIO_RECORDER_TRC_RECORDER_MODE_STREAMING
+			range 1 4194304
+			default 40
+			help
+				The maximum number of object data entries (used for task priorities) that can
+				be stored at the same time. Must be sufficient for all tasks, otherwise there
+				will be warnings (as User Events) from TzCtrl task, that monitors this.
+		
+		config PERCEPIO_RECORDER_TRC_STREAM_PORT_USE_INTERNAL_BUFFER
+			bool "Use Internal Paged Event Buffer"
+			default n
+			help
+				Important for the J-Link port, in most other ports this can be skipped.
+
+		config PERCEPIO_RECORDER_CFG_STREAM_PORT_INTERNAL_BUFFER_SIZE
+			int "Internal buffer size"
+			depends on PERCEPIO_RECORDER_TRC_STREAM_PORT_USE_INTERNAL_BUFFER
+			range 128 4194304
+			default 4096
+			help
+				The size of the internal event buffer that will contain trace data until it can be transferred off the device.
+				The bigger it is the more trace data it can hold in between transfers, thereby reducing the chance of the buffer being full.
+				
+		choice PERCEPIO_RECORDER_TRC_STREAM_PORT_INTERNAL_BUFFER_WRITE_MODE
+			prompt "Internal buffer write mode"
+			depends on PERCEPIO_RECORDER_TRC_STREAM_PORT_USE_INTERNAL_BUFFER
+			default PERCEPIO_RECORDER_TRC_STREAM_PORT_INTERNAL_BUFFER_WRITE_MODE_DIRECT
+			help
+				The internal buffer write mode. "Direct" will allow it to write directly into the buffer continuously,
+				whereas "copy" will instead copy the entire data into the buffer once completed.
+			
+			config PERCEPIO_RECORDER_TRC_STREAM_PORT_INTERNAL_BUFFER_WRITE_MODE_DIRECT
+				bool "Direct"
+		
+			config PERCEPIO_RECORDER_TRC_STREAM_PORT_INTERNAL_BUFFER_WRITE_MODE_COPY
+				bool "Copy"
+		endchoice
+
+		choice PERCEPIO_RECORDER_TRC_STREAM_PORT_INTERNAL_EVENT_BUFFER_TRANSFER_MODE
+			prompt "Internal buffer transfer mode"
+			depends on PERCEPIO_RECORDER_TRC_STREAM_PORT_USE_INTERNAL_BUFFER
+			default PERCEPIO_RECORDER_TRC_STREAM_PORT_INTERNAL_EVENT_BUFFER_TRANSFER_MODE_ALL
+			help
+				Configures the internal event buffer to attempt to transfer "all" data each time, or use a maximum chunk size.
+				Useful for when the streaming transport protocol has a size limit per packet.
+			
+			config PERCEPIO_RECORDER_TRC_STREAM_PORT_INTERNAL_EVENT_BUFFER_TRANSFER_MODE_ALL
+				bool "All"
+		
+			config PERCEPIO_RECORDER_TRC_STREAM_PORT_INTERNAL_EVENT_BUFFER_TRANSFER_MODE_CHUNKED
+				bool "Chunk"
+		endchoice
+
+		config PERCEPIO_RECORDER_CFG_STREAM_PORT_INTERNAL_BUFFER_CHUNK_SIZE
+			int "Internal buffer chunk size"
+			depends on PERCEPIO_RECORDER_TRC_STREAM_PORT_INTERNAL_EVENT_BUFFER_TRANSFER_MODE_CHUNKED
+			range 1 4194304
+			default 1024
+			help
+				The chunk size to be transferred each time. Can be set to match streaming transport protocol packet size.
+
+		config PERCEPIO_RECORDER_CFG_STREAM_PORT_INTERNAL_BUFFER_CHUNK_TRANSFER_AGAIN_SIZE_LIMIT
+			int "Transfer size limit for immediate re-transfer"
+			depends on PERCEPIO_RECORDER_TRC_STREAM_PORT_INTERNAL_EVENT_BUFFER_TRANSFER_MODE_CHUNKED
+			range 4 10485760
+			default 1024
+			help
+				Defines the number of transferred bytes needed to trigger another immediate transfer.
+				This will increase throughput by immediately doing a transfer and not wait for another xTraceTzCtrl() loop.
+
+		config PERCEPIO_RECORDER_CFG_STREAM_PORT_INTERNAL_BUFFER_CHUNK_TRANSFER_AGAIN_COUNT_LIMIT
+			int "Immediate re-transfer count limit"
+			depends on PERCEPIO_RECORDER_TRC_STREAM_PORT_INTERNAL_EVENT_BUFFER_TRANSFER_MODE_CHUNKED
+			range 1 20
+			default 5
+			help
+				Defines the maximum number of times to trigger another immediate transfer before returning to xTraceTzCtrl().
+				This will increase throughput by immediately doing a transfer and not wait for another xTraceTzCtrl() loop.
+
+		config PERCEPIO_RECORDER_TRC_CFG_ISR_TAILCHAINING_THRESHOLD_STREAMING
+			int "ISR Tailchaining Threshold"
+			depends on PERCEPIO_RECORDER_TRC_RECORDER_MODE_STREAMING
+			range 0 4194304
+			default 0
+			help
+				If tracing multiple ISRs, this setting allows for accurate display of the
+				context-switching also in cases when the ISRs execute in direct sequence.
+				
+				vTraceStoreISREnd normally assumes that the ISR returns to the previous
+				context, i.e., a task or a preempted ISR. But if another traced ISR
+				executes in direct sequence, Tracealyzer may incorrectly display a minimal
+				fragment of the previous context in between the ISRs.
+				
+				By using TRC_CFG_ISR_TAILCHAINING_THRESHOLD you can avoid this. This is
+				however a threshold value that must be measured for your specific setup.
+				See http://percepio.com/2014/03/21/isr_tailchaining_threshold/
+				
+				The default setting is 0, meaning "disabled" and that you may get an
+				extra fragments of the previous context in between tail-chained ISRs.
+	endmenu
+	
+	menu "Snapshot Configuration"
+	depends on PERCEPIO_RECORDER_TRC_RECORDER_MODE_SNAPSHOT
+		choice PERCEPIO_RECORDER_TRC_CFG_SNAPSHOT_MODE
+			prompt "Snapshot Mode"
+			depends on PERCEPIO_RECORDER_TRC_RECORDER_MODE_SNAPSHOT
+			default PERCEPIO_RECORDER_TRC_SNAPSHOT_MODE_RING_BUFFER
+			help
+				With TRC_CFG_SNAPSHOT_MODE set to TRC_SNAPSHOT_MODE_RING_BUFFER, the
+				events are stored in a ring buffer, i.e., where the oldest events are
+				overwritten when the buffer becomes full. This allows you to get the last
+				events leading up to an interesting state, e.g., an error, without having
+				to store the whole run since startup.
+				
+				When TRC_CFG_SNAPSHOT_MODE is TRC_SNAPSHOT_MODE_STOP_WHEN_FULL, the
+				recording is stopped when the buffer becomes full. This is useful for
+				recording events following a specific state, e.g., the startup sequence.
+			
+			config PERCEPIO_RECORDER_TRC_SNAPSHOT_MODE_RING_BUFFER
+				bool "Ring buffer mode"
+			
+			config PERCEPIO_RECORDER_TRC_SNAPSHOT_MODE_STOP_WHEN_FULL
+				bool "Stop when full"
+		endchoice
+		
+		config PERCEPIO_RECORDER_TRC_CFG_EVENT_BUFFER_SIZE
+			int "Event Buffer Size"
+			depends on PERCEPIO_RECORDER_TRC_RECORDER_MODE_SNAPSHOT
+			range 1 4194304
+			default 1000
+			help
+				This defines the capacity of the event buffer, i.e., the number of records
+				it may store. Most events use one record (4 byte), although some events
+				require multiple 4-byte records. You should adjust this to the amount of RAM
+				available in the target system.
+				
+				Default value is 1000, which means that 4000 bytes is allocated for the
+				event buffer.
+			
+		config PERCEPIO_RECORDER_TRC_CFG_NTASK
+			int "Number of Tasks"
+			depends on PERCEPIO_RECORDER_TRC_RECORDER_MODE_SNAPSHOT
+			range 1 2048
+			default 15
+			help
+				These define the capacity of the Object Property Table, i.e., the maximum
+				number of objects active at any given point, within each object class (e.g.,
+				task, queue, semaphore, ...).
+				
+				If tasks or other objects are deleted in your system, this
+				setting does not limit the total amount of objects created, only the number
+				of objects that have been successfully created but not yet deleted.
+				
+				Using too small values will cause vTraceError to be called, which stores an
+				error message in the trace that is shown when opening the trace file. The
+				error message can also be retrieved using xTraceGetLastError.
+				
+				It can be wise to start with large values for these constants,
+				unless you are very confident on these numbers. Then do a recording and
+				check the actual usage by selecting View menu -> Trace Details ->
+				Resource Usage -> Object Table.
+			
+		config PERCEPIO_RECORDER_TRC_CFG_NISR
+			int "Number of ISR"
+			depends on PERCEPIO_RECORDER_TRC_RECORDER_MODE_SNAPSHOT
+			range 1 2048
+			default 5
+			help
+				These define the capacity of the Object Property Table, i.e., the maximum
+				number of objects active at any given point, within each object class (e.g.,
+				task, queue, semaphore, ...).
+				
+				If tasks or other objects are deleted in your system, this
+				setting does not limit the total amount of objects created, only the number
+				of objects that have been successfully created but not yet deleted.
+				
+				Using too small values will cause vTraceError to be called, which stores an
+				error message in the trace that is shown when opening the trace file. The
+				error message can also be retrieved using xTraceGetLastError.
+				
+				It can be wise to start with large values for these constants,
+				unless you are very confident on these numbers. Then do a recording and
+				check the actual usage by selecting View menu -> Trace Details ->
+				Resource Usage -> Object Table.
+			
+		config PERCEPIO_RECORDER_TRC_CFG_NQUEUE
+			int "Number of Queues"
+			depends on PERCEPIO_RECORDER_TRC_RECORDER_MODE_SNAPSHOT
+			range 1 2048
+			default 10
+			help
+				These define the capacity of the Object Property Table, i.e., the maximum
+				number of objects active at any given point, within each object class (e.g.,
+				task, queue, semaphore, ...).
+				
+				If tasks or other objects are deleted in your system, this
+				setting does not limit the total amount of objects created, only the number
+				of objects that have been successfully created but not yet deleted.
+				
+				Using too small values will cause vTraceError to be called, which stores an
+				error message in the trace that is shown when opening the trace file. The
+				error message can also be retrieved using xTraceGetLastError.
+				
+				It can be wise to start with large values for these constants,
+				unless you are very confident on these numbers. Then do a recording and
+				check the actual usage by selecting View menu -> Trace Details ->
+				Resource Usage -> Object Table.
+			
+		config PERCEPIO_RECORDER_TRC_CFG_NSEMAPHORE
+			int "Number of Semaphores"
+			depends on PERCEPIO_RECORDER_TRC_RECORDER_MODE_SNAPSHOT
+			range 1 2048
+			default 10
+			help
+				These define the capacity of the Object Property Table, i.e., the maximum
+				number of objects active at any given point, within each object class (e.g.,
+				task, queue, semaphore, ...).
+				
+				If tasks or other objects are deleted in your system, this
+				setting does not limit the total amount of objects created, only the number
+				of objects that have been successfully created but not yet deleted.
+				
+				Using too small values will cause vTraceError to be called, which stores an
+				error message in the trace that is shown when opening the trace file. The
+				error message can also be retrieved using xTraceGetLastError.
+				
+				It can be wise to start with large values for these constants,
+				unless you are very confident on these numbers. Then do a recording and
+				check the actual usage by selecting View menu -> Trace Details ->
+				Resource Usage -> Object Table.
+			
+		config PERCEPIO_RECORDER_TRC_CFG_NMUTEX
+			int "Number of Mutex"
+			depends on PERCEPIO_RECORDER_TRC_RECORDER_MODE_SNAPSHOT
+			range 1 2048
+			default 10
+			help
+				These define the capacity of the Object Property Table, i.e., the maximum
+				number of objects active at any given point, within each object class (e.g.,
+				task, queue, semaphore, ...).
+				
+				If tasks or other objects are deleted in your system, this
+				setting does not limit the total amount of objects created, only the number
+				of objects that have been successfully created but not yet deleted.
+				
+				Using too small values will cause vTraceError to be called, which stores an
+				error message in the trace that is shown when opening the trace file. The
+				error message can also be retrieved using xTraceGetLastError.
+				
+				It can be wise to start with large values for these constants,
+				unless you are very confident on these numbers. Then do a recording and
+				check the actual usage by selecting View menu -> Trace Details ->
+				Resource Usage -> Object Table.
+			
+		config PERCEPIO_RECORDER_TRC_CFG_NTIMER
+			int "Number of Timers"
+			depends on PERCEPIO_RECORDER_TRC_RECORDER_MODE_SNAPSHOT
+			range 1 2048
+			default 5
+			help
+				These define the capacity of the Object Property Table, i.e., the maximum
+				number of objects active at any given point, within each object class (e.g.,
+				task, queue, semaphore, ...).
+				
+				If tasks or other objects are deleted in your system, this
+				setting does not limit the total amount of objects created, only the number
+				of objects that have been successfully created but not yet deleted.
+				
+				Using too small values will cause vTraceError to be called, which stores an
+				error message in the trace that is shown when opening the trace file. The
+				error message can also be retrieved using xTraceGetLastError.
+				
+				It can be wise to start with large values for these constants,
+				unless you are very confident on these numbers. Then do a recording and
+				check the actual usage by selecting View menu -> Trace Details ->
+				Resource Usage -> Object Table.
+			
+		config PERCEPIO_RECORDER_TRC_CFG_NEVENTGROUP
+			int "Number of Event Groups"
+			depends on PERCEPIO_RECORDER_TRC_RECORDER_MODE_SNAPSHOT
+			range 1 2048
+			default 5
+			help
+				These define the capacity of the Object Property Table, i.e., the maximum
+				number of objects active at any given point, within each object class (e.g.,
+				task, queue, semaphore, ...).
+				
+				If tasks or other objects are deleted in your system, this
+				setting does not limit the total amount of objects created, only the number
+				of objects that have been successfully created but not yet deleted.
+				
+				Using too small values will cause vTraceError to be called, which stores an
+				error message in the trace that is shown when opening the trace file. The
+				error message can also be retrieved using xTraceGetLastError.
+				
+				It can be wise to start with large values for these constants,
+				unless you are very confident on these numbers. Then do a recording and
+				check the actual usage by selecting View menu -> Trace Details ->
+				Resource Usage -> Object Table.
+		
+		config PERCEPIO_RECORDER_TRC_CFG_NSTREAMBUFFER
+			int "Number of Stream Buffers"
+			depends on PERCEPIO_RECORDER_TRC_RECORDER_MODE_SNAPSHOT
+			range 1 2048
+			default 5
+			help
+				These define the capacity of the Object Property Table, i.e., the maximum
+				number of objects active at any given point, within each object class (e.g.,
+				task, queue, semaphore, ...).
+				
+				If tasks or other objects are deleted in your system, this
+				setting does not limit the total amount of objects created, only the number
+				of objects that have been successfully created but not yet deleted.
+				
+				Using too small values will cause vTraceError to be called, which stores an
+				error message in the trace that is shown when opening the trace file. The
+				error message can also be retrieved using xTraceGetLastError.
+				
+				It can be wise to start with large values for these constants,
+				unless you are very confident on these numbers. Then do a recording and
+				check the actual usage by selecting View menu -> Trace Details ->
+				Resource Usage -> Object Table.
+			
+		config PERCEPIO_RECORDER_TRC_CFG_NMESSAGEBUFFER
+			int "Number of Message Buffers"
+			depends on PERCEPIO_RECORDER_TRC_RECORDER_MODE_SNAPSHOT
+			range 1 2048
+			default 5
+			help
+				These define the capacity of the Object Property Table, i.e., the maximum
+				number of objects active at any given point, within each object class (e.g.,
+				task, queue, semaphore, ...).
+				
+				If tasks or other objects are deleted in your system, this
+				setting does not limit the total amount of objects created, only the number
+				of objects that have been successfully created but not yet deleted.
+				
+				Using too small values will cause vTraceError to be called, which stores an
+				error message in the trace that is shown when opening the trace file. The
+				error message can also be retrieved using xTraceGetLastError.
+				
+				It can be wise to start with large values for these constants,
+				unless you are very confident on these numbers. Then do a recording and
+				check the actual usage by selecting View menu -> Trace Details ->
+				Resource Usage -> Object Table.
+			
+		config PERCEPIO_RECORDER_TRC_CFG_INCLUDE_FLOAT_SUPPORT
+			bool "Include Float Support"
+			depends on PERCEPIO_RECORDER_TRC_RECORDER_MODE_SNAPSHOT
+			default 0
+			help
+				If this is zero (0), the support for logging floating point values in
+				vTracePrintF is stripped out, in case floating point values are not used or
+				supported by the platform used.
+				
+				Floating point values are only used in vTracePrintF and its subroutines, to
+				allow for storing float (%f) or double (%lf) arguments.
+				
+				vTracePrintF can be used with integer and string arguments in either case.
+			
+		config PERCEPIO_RECORDER_TRC_CFG_SYMBOL_TABLE_SIZE
+			int "Symbol Table Size"
+			depends on PERCEPIO_RECORDER_TRC_RECORDER_MODE_SNAPSHOT
+			range 1 4194304
+			default 800
+			help
+				This defines the capacity of the symbol table, in bytes. This symbol table
+				stores User Events labels and names of deleted tasks, queues, or other kernel
+				objects. If you don't use User Events or delete any kernel
+				objects you set this to a very low value. The minimum recommended value is 4.
+				A size of zero (0) is not allowed since a zero-sized array may result in a
+				32-bit pointer, i.e., using 4 bytes rather than 0.
+			
+		config PERCEPIO_RECORDER_TRC_CFG_NAME_LEN_TASK
+			int "Name Length Task"
+			depends on PERCEPIO_RECORDER_TRC_RECORDER_MODE_SNAPSHOT
+			range 1 512
+			default 15
+			help
+				Macros that specify the maximum lengths (number of characters) for names of
+				kernel objects, such as tasks and queues. If longer names are used, they will
+				be truncated when stored in the recorder.
+			
+		config PERCEPIO_RECORDER_TRC_CFG_NAME_LEN_ISR
+			int "Name Length ISR"
+			depends on PERCEPIO_RECORDER_TRC_RECORDER_MODE_SNAPSHOT
+			range 1 512
+			default 15
+			help
+				Macros that specify the maximum lengths (number of characters) for names of
+				kernel objects, such as tasks and queues. If longer names are used, they will
+				be truncated when stored in the recorder.
+			
+		config PERCEPIO_RECORDER_TRC_CFG_NAME_LEN_QUEUE
+			int "Name Length Queue"
+			depends on PERCEPIO_RECORDER_TRC_RECORDER_MODE_SNAPSHOT
+			range 1 512
+			default 15
+			help
+				Macros that specify the maximum lengths (number of characters) for names of
+				kernel objects, such as tasks and queues. If longer names are used, they will
+				be truncated when stored in the recorder.
+			
+		config PERCEPIO_RECORDER_TRC_CFG_NAME_LEN_SEMAPHORE
+			int "Name Length Semaphore"
+			depends on PERCEPIO_RECORDER_TRC_RECORDER_MODE_SNAPSHOT
+			range 1 512
+			default 15
+			help
+				Macros that specify the maximum lengths (number of characters) for names of
+				kernel objects, such as tasks and queues. If longer names are used, they will
+				be truncated when stored in the recorder.
+			
+		config PERCEPIO_RECORDER_TRC_CFG_NAME_LEN_MUTEX
+			int "Name Length Mutex"
+			depends on PERCEPIO_RECORDER_TRC_RECORDER_MODE_SNAPSHOT
+			range 1 512
+			default 15
+			help
+				Macros that specify the maximum lengths (number of characters) for names of
+				kernel objects, such as tasks and queues. If longer names are used, they will
+				be truncated when stored in the recorder.
+			
+		config PERCEPIO_RECORDER_TRC_CFG_NAME_LEN_TIMER
+			int "Name Length Timer"
+			depends on PERCEPIO_RECORDER_TRC_RECORDER_MODE_SNAPSHOT
+			range 1 512
+			default 15
+			help
+				Macros that specify the maximum lengths (number of characters) for names of
+				kernel objects, such as tasks and queues. If longer names are used, they will
+				be truncated when stored in the recorder.
+			
+		config PERCEPIO_RECORDER_TRC_CFG_NAME_LEN_EVENTGROUP
+			int "Name Length Event Group"
+			depends on PERCEPIO_RECORDER_TRC_RECORDER_MODE_SNAPSHOT
+			range 1 512
+			default 15
+			help
+				Macros that specify the maximum lengths (number of characters) for names of
+				kernel objects, such as tasks and queues. If longer names are used, they will
+				be truncated when stored in the recorder.
+			
+		config PERCEPIO_RECORDER_TRC_CFG_NAME_LEN_STREAMBUFFER
+			int "Name Length Stream Buffer"
+			depends on PERCEPIO_RECORDER_TRC_RECORDER_MODE_SNAPSHOT
+			range 1 512
+			default 15
+			help
+				Macros that specify the maximum lengths (number of characters) for names of
+				kernel objects, such as tasks and queues. If longer names are used, they will
+				be truncated when stored in the recorder.
+			
+		config PERCEPIO_RECORDER_TRC_CFG_NAME_LEN_MESSAGEBUFFER
+			int "Name Length Message Buffer"
+			depends on PERCEPIO_RECORDER_TRC_RECORDER_MODE_SNAPSHOT
+			range 1 512
+			default 15
+			help
+				Macros that specify the maximum lengths (number of characters) for names of
+				kernel objects, such as tasks and queues. If longer names are used, they will
+				be truncated when stored in the recorder.
+			
+		config PERCEPIO_RECORDER_TRC_CFG_HEAP_SIZE_BELOW_16M
+			bool "Heap Size Below 16M"
+			depends on PERCEPIO_RECORDER_TRC_RECORDER_MODE_SNAPSHOT
+			default n
+			help
+				An integer constant that can be used to reduce the buffer usage of memory
+				allocation events (malloc/free). This value should be 1 if the heap size is
+				below 16 MB (2^24 byte), and you can live with reported addresses showing the
+				lower 24 bits only. If 0, you get the full 32-bit addresses.
+			
+		config PERCEPIO_RECORDER_TRC_CFG_USE_IMPLICIT_IFE_RULES
+			bool "Use Implicit IFE Rules"
+			depends on PERCEPIO_RECORDER_TRC_RECORDER_MODE_SNAPSHOT
+			default y
+			help
+				Tracealyzer groups the events into "instances" based on Instance Finish
+				Events (IFEs), produced either by default rules or calls to the recorder
+				functions vTraceInstanceFinishedNow and vTraceInstanceFinishedNext.
+				
+				If TRC_CFG_USE_IMPLICIT_IFE_RULES is one (1), the default IFE rules is
+				used, resulting in a "typical" grouping of events into instances.
+				If these rules don't give appropriate instances in your case, you can
+				override the default rules using vTraceInstanceFinishedNow/Next for one
+				or several tasks. The default IFE rules are then disabled for those tasks.
+				
+				If TRC_CFG_USE_IMPLICIT_IFE_RULES is zero (0), the implicit IFE rules are
+				disabled globally. You must then call vTraceInstanceFinishedNow or
+				vTraceInstanceFinishedNext to manually group the events into instances,
+				otherwise the tasks will appear a single long instance.
+				
+				The default IFE rules count the following events as "instance finished":
+				- Task delay, delay until
+				- Task suspend
+				- Blocking on "input" operations, i.e., when the task is waiting for the
+					next a message/signal/event. But only if this event is blocking.
+			
+		config PERCEPIO_RECORDER_TRC_CFG_USE_16BIT_OBJECT_HANDLES
+			bool "Use 16 Bit Object Handles"
+			depends on PERCEPIO_RECORDER_TRC_RECORDER_MODE_SNAPSHOT
+			default n
+			help
+				If set to 0 (zero), the recorder uses 8-bit handles to identify kernel
+				objects such as tasks and queues. This limits the supported number of
+				concurrently active objects to 255 of each type (tasks, queues, mutexes,
+				etc.) Note: 255, not 256, since handle 0 is reserved.
+				
+				If set to 1 (one), the recorder uses 16-bit handles to identify kernel
+				objects such as tasks and queues. This limits the supported number of
+				concurrent objects to 65535 of each type (object class). However, since the
+				object property table is limited to 64 KB, the practical limit is about
+				3000 objects in total.
+				
+				Default is 0 (8-bit handles)
+				
+				NOTE: An object with handle above 255 will use an extra 4-byte record in
+				the event buffer whenever the object is referenced. Moreover, some internal
+				tables in the recorder gets slightly larger when using 16-bit handles.
+			
+		config PERCEPIO_RECORDER_TRC_CFG_USE_TRACE_ASSERT
+			bool "Use Trace Assert"
+			depends on PERCEPIO_RECORDER_TRC_RECORDER_MODE_SNAPSHOT
+			default y
+			help
+				If this is one (1), the TRACE_ASSERT macro (used at various locations in the
+				trace recorder) will verify that a relevant condition is true.
+				If the condition is false, prvTraceError() will be called, which stops the
+				recording and stores an error message that is displayed when opening the
+				trace in Tracealyzer.
+				
+				This is used on several places in the recorder code for sanity checks on
+				parameters. Can be switched off to reduce the footprint of the tracing, but
+				we recommend to have it enabled initially.
+			
+		config PERCEPIO_RECORDER_TRC_CFG_USE_SEPARATE_USER_EVENT_BUFFER
+			bool "Use Separate User Event Buffer"
+			depends on PERCEPIO_RECORDER_TRC_RECORDER_MODE_SNAPSHOT
+			default n
+			help
+				Set TRC_CFG_USE_SEPARATE_USER_EVENT_BUFFER to 1 to enable the
+				separate user event buffer (UB).
+				In this mode, user events are stored separately from other events,
+				e.g., RTOS events. Thereby you can get a much longer history of
+				user events as they don't need to share the buffer space with more
+				frequent events.
+				
+				The UB is typically used with the snapshot ring-buffer mode, so the
+				recording can continue when the main buffer gets full. And since the
+				main buffer then overwrites the earliest events, Tracealyzer displays
+				"Unknown Actor" instead of task scheduling for periods with UB data only.
+				
+				In UB mode, user events are structured as UB channels, which contains
+				a channel name and a default format string. Register a UB channel using
+				xTraceRegisterUBChannel.
+				
+				Events and data arguments are written using vTraceUBEvent and
+				vTraceUBData. They are designed to provide efficient logging of
+				repeating events, using the same format string within each channel.
+				
+				Examples:
+				traceString chn1 = xTraceRegisterString("Channel 1");
+				traceString fmt1 = xTraceRegisterString("Event!");
+				traceUBChannel UBCh1 = xTraceRegisterUBChannel(chn1, fmt1);
+				
+				traceString chn2 = xTraceRegisterString("Channel 2");
+				traceString fmt2 = xTraceRegisterString("X: %d, Y: %d");
+				traceUBChannel UBCh2 = xTraceRegisterUBChannel(chn2, fmt2);
+				
+				// Result in "[Channel 1] Event!"
+				vTraceUBEvent(UBCh1);
+				
+				// Result in "[Channel 2] X: 23, Y: 19"
+				vTraceUBData(UBCh2, 23, 19);
+				
+				You can also use the other user event functions, like vTracePrintF.
+				as they are then rerouted to the UB instead of the main event buffer.
+				vTracePrintF then looks up the correct UB channel based on the
+				provided channel name and format string, or creates a new UB channel
+				if no match is found. The format string should therefore not contain
+				"random" messages but mainly format specifiers. Random strings should
+				be stored using %s and with the string as an argument.
+				
+				// Creates a new UB channel ("Channel 2", "%Z: %d")
+				vTracePrintF(chn2, "%Z: %d", value1);
+				
+				// Finds the existing UB channel
+				vTracePrintF(chn2, "%Z: %d", value2);
+			
+		config PERCEPIO_RECORDER_TRC_CFG_SEPARATE_USER_EVENT_BUFFER_SIZE
+			int "Separate User Event Buffer Size"
+			depends on PERCEPIO_RECORDER_TRC_RECORDER_MODE_SNAPSHOT && PERCEPIO_RECORDER_TRC_CFG_USE_SEPARATE_USER_EVENT_BUFFER
+			range 1 4194304
+			default 200
+			help
+				This defines the capacity of the user event buffer (UB), in number of slots.
+				A single user event can use multiple slots, depending on the arguments.
+			
+		config PERCEPIO_RECORDER_TRC_CFG_UB_CHANNELS
+			int "User Event Buffer Channels"
+			depends on PERCEPIO_RECORDER_TRC_RECORDER_MODE_SNAPSHOT && PERCEPIO_RECORDER_TRC_CFG_USE_SEPARATE_USER_EVENT_BUFFER
+			range 0 4194304
+			default 32
+			help
+				This defines the number of User Event Buffer Channels (UB channels).
+				These are used to structure the events when using the separate user
+				event buffer, and contains both a User Event Channel (the name) and
+				a default format string for the channel.
+			
+		config PERCEPIO_RECORDER_TRC_CFG_ISR_TAILCHAINING_THRESHOLD_SNAPSHOT
+			int "ISR Tailchaining Threshold"
+			depends on PERCEPIO_RECORDER_TRC_RECORDER_MODE_SNAPSHOT
+			range 0 4194304
+			default 0
+			help
+				If tracing multiple ISRs, this setting allows for accurate display of the
+				context-switching also in cases when the ISRs execute in direct sequence.
+				
+				vTraceStoreISREnd normally assumes that the ISR returns to the previous
+				context, i.e., a task or a preempted ISR. But if another traced ISR
+				executes in direct sequence, Tracealyzer may incorrectly display a minimal
+				fragment of the previous context in between the ISRs.
+				
+				By using TRC_CFG_ISR_TAILCHAINING_THRESHOLD you can avoid this. This is
+				however a threshold value that must be measured for your specific setup.
+				See http://percepio.com/2014/03/21/isr_tailchaining_threshold/
+				
+				The default setting is 0, meaning "disabled" and that you may get an
+				extra fragments of the previous context in between tail-chained ISRs.
+	endmenu
+endmenu

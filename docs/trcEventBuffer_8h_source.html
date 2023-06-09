@@ -25,7 +25,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">Percepio Trace Recorder<span id="projectnumber">&#160;v4.7.0</span>
+   <div id="projectname">Percepio Trace Recorder<span id="projectnumber">&#160;v4.8.0</span>
    </div>
   </td>
  </tr>
@@ -93,7 +93,7 @@ $(document).ready(function(){initNavTree('trcEventBuffer_8h_source.html',''); in
 </div><!--header-->
 <div class="contents">
 <a href="trcEventBuffer_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="comment">/*</span></div>
-<div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span><span class="comment">* Percepio Trace Recorder for Tracealyzer v4.7.0</span></div>
+<div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span><span class="comment">* Percepio Trace Recorder for Tracealyzer v4.8.0</span></div>
 <div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span><span class="comment">* Copyright 2023 Percepio AB</span></div>
 <div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span><span class="comment">* www.percepio.com</span></div>
 <div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span><span class="comment">*</span></div>
@@ -117,7 +117,7 @@ $(document).ready(function(){initNavTree('trcEventBuffer_8h_source.html',''); in
 <div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span> </div>
 <div class="line"><a id="l00044" name="l00044"></a><span class="lineno"><a class="line" href="group__trace__event__buffer__apis.html#ga63ee751b8545813fdd9ceab326eee66d">   44</a></span><span class="preprocessor">#define TRC_EVENT_BUFFER_OPTION_OVERWRITE   (1U)</span></div>
 <div class="line"><a id="l00045" name="l00045"></a><span class="lineno">   45</span> </div>
-<div class="line"><a id="l00049" name="l00049"></a><span class="lineno"><a class="line" href="structTraceEventBuffer.html">   49</a></span><span class="keyword">typedef</span> <span class="keyword">struct </span><a class="code hl_struct" href="structTraceEventBuffer.html">TraceEventBuffer</a></div>
+<div class="line"><a id="l00049" name="l00049"></a><span class="lineno"><a class="line" href="structTraceEventBuffer.html">   49</a></span><span class="keyword">typedef</span> <span class="keyword">struct </span><a class="code hl_struct" href="structTraceEventBuffer.html">TraceEventBuffer</a> <span class="comment">/* Aligned */</span></div>
 <div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span>{</div>
 <div class="line"><a id="l00051" name="l00051"></a><span class="lineno"><a class="line" href="structTraceEventBuffer.html#acf54ea1828686b9fd1e2d3dc643988ae">   51</a></span>    uint32_t <a class="code hl_variable" href="structTraceEventBuffer.html#acf54ea1828686b9fd1e2d3dc643988ae">uiHead</a>;                </div>
 <div class="line"><a id="l00052" name="l00052"></a><span class="lineno"><a class="line" href="structTraceEventBuffer.html#a0390983d805ead91dd8d163055a8f6d5">   52</a></span>    uint32_t <a class="code hl_variable" href="structTraceEventBuffer.html#a0390983d805ead91dd8d163055a8f6d5">uiTail</a>;                </div>
@@ -128,34 +128,35 @@ $(document).ready(function(){initNavTree('trcEventBuffer_8h_source.html',''); in
 <div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span>    uint32_t uiSlack;               </div>
 <div class="line"><a id="l00058" name="l00058"></a><span class="lineno">   58</span>    uint32_t uiNextHead;            </div>
 <div class="line"><a id="l00059" name="l00059"></a><span class="lineno"><a class="line" href="structTraceEventBuffer.html#ab1ad766c73b056a09cdf9afb82399fc4">   59</a></span>    uint32_t <a class="code hl_variable" href="structTraceEventBuffer.html#ab1ad766c73b056a09cdf9afb82399fc4">uiTimerWraparounds</a>;    </div>
-<div class="line"><a id="l00060" name="l00060"></a><span class="lineno"><a class="line" href="structTraceEventBuffer.html#afbe952f473fc2e4374d616e5cf3549e8">   60</a></span>    uint8_t* <a class="code hl_variable" href="structTraceEventBuffer.html#afbe952f473fc2e4374d616e5cf3549e8">puiBuffer</a>;             </div>
-<div class="line"><a id="l00061" name="l00061"></a><span class="lineno"><a class="line" href="group__trace__event__buffer__apis.html#ga750a11c15f329d553b013da474050190">   61</a></span>} <a class="code hl_typedef" href="group__trace__event__buffer__apis.html#ga750a11c15f329d553b013da474050190">TraceEventBuffer_t</a>;</div>
-<div class="line"><a id="l00062" name="l00062"></a><span class="lineno">   62</span> </div>
-<div class="line"><a id="l00081" name="l00081"></a><span class="lineno">   81</span>traceResult xTraceEventBufferInitialize(<a class="code hl_struct" href="structTraceEventBuffer.html">TraceEventBuffer_t</a> *pxTraceEventBuffer, uint32_t uiOptions,</div>
-<div class="line"><a id="l00082" name="l00082"></a><span class="lineno">   82</span>        uint8_t *puiBuffer, uint32_t uiSize);</div>
-<div class="line"><a id="l00083" name="l00083"></a><span class="lineno">   83</span> </div>
-<div class="line"><a id="l00094" name="l00094"></a><span class="lineno">   94</span>traceResult <a class="code hl_function" href="group__trace__event__buffer__apis.html#ga9e4bf49bc95df34cf5b296e79c7c72ad">xTraceEventBufferAlloc</a>(<a class="code hl_struct" href="structTraceEventBuffer.html">TraceEventBuffer_t</a> *pxTraceEventBuffer, uint32_t uiSize, <span class="keywordtype">void</span> **ppvData);</div>
-<div class="line"><a id="l00095" name="l00095"></a><span class="lineno">   95</span> </div>
-<div class="line"><a id="l00104" name="l00104"></a><span class="lineno">  104</span>traceResult <a class="code hl_function" href="group__trace__event__buffer__apis.html#ga2b188578828bdeb2bc21f928fa9f99c8">xTraceEventBufferAllocCommit</a>(<a class="code hl_struct" href="structTraceEventBuffer.html">TraceEventBuffer_t</a> *pxTraceEventBuffer, <span class="keyword">const</span> <span class="keywordtype">void</span> *pvData, uint32_t uiSize, int32_t *piBytesWritten);</div>
-<div class="line"><a id="l00105" name="l00105"></a><span class="lineno">  105</span> </div>
-<div class="line"><a id="l00119" name="l00119"></a><span class="lineno">  119</span>traceResult <a class="code hl_function" href="group__trace__event__buffer__apis.html#gabbac6eeab72f50d8953dffcfe6d6ddc7">xTraceEventBufferPush</a>(<a class="code hl_struct" href="structTraceEventBuffer.html">TraceEventBuffer_t</a> *pxTraceEventBuffer, <span class="keywordtype">void</span> *pvData, uint32_t uiSize, int32_t *piBytesWritten);</div>
-<div class="line"><a id="l00120" name="l00120"></a><span class="lineno">  120</span> </div>
-<div class="line"><a id="l00134" name="l00134"></a><span class="lineno">  134</span>traceResult <a class="code hl_function" href="group__trace__event__buffer__apis.html#ga2030a1dcfe1eae0708ff31d57c111ddd">xTraceEventBufferTransferAll</a>(<a class="code hl_struct" href="structTraceEventBuffer.html">TraceEventBuffer_t</a>* pxTraceEventBuffer, int32_t* piBytesWritten);</div>
-<div class="line"><a id="l00135" name="l00135"></a><span class="lineno">  135</span> </div>
-<div class="line"><a id="l00156" name="l00156"></a><span class="lineno">  156</span>traceResult <a class="code hl_function" href="group__trace__event__buffer__apis.html#gaaf993145eff5af6e524c0851072d9ed1">xTraceEventBufferTransferChunk</a>(<a class="code hl_struct" href="structTraceEventBuffer.html">TraceEventBuffer_t</a>* pxTraceEventBuffer, uint32_t uiChunkSize, int32_t* piBytesWritten);</div>
-<div class="line"><a id="l00157" name="l00157"></a><span class="lineno">  157</span> </div>
+<div class="line"><a id="l00060" name="l00060"></a><span class="lineno"><a class="line" href="structTraceEventBuffer.html#ac4d74ed058ed32190135103982e8403f">   60</a></span>    uint32_t <a class="code hl_variable" href="structTraceEventBuffer.html#ac4d74ed058ed32190135103982e8403f">uiReserved</a>;            </div>
+<div class="line"><a id="l00061" name="l00061"></a><span class="lineno"><a class="line" href="structTraceEventBuffer.html#afbe952f473fc2e4374d616e5cf3549e8">   61</a></span>    uint8_t* <a class="code hl_variable" href="structTraceEventBuffer.html#afbe952f473fc2e4374d616e5cf3549e8">puiBuffer</a>;             </div>
+<div class="line"><a id="l00062" name="l00062"></a><span class="lineno"><a class="line" href="group__trace__event__buffer__apis.html#ga750a11c15f329d553b013da474050190">   62</a></span>} <a class="code hl_typedef" href="group__trace__event__buffer__apis.html#ga750a11c15f329d553b013da474050190">TraceEventBuffer_t</a>;</div>
+<div class="line"><a id="l00063" name="l00063"></a><span class="lineno">   63</span> </div>
+<div class="line"><a id="l00082" name="l00082"></a><span class="lineno">   82</span>traceResult xTraceEventBufferInitialize(<a class="code hl_struct" href="structTraceEventBuffer.html">TraceEventBuffer_t</a> *pxTraceEventBuffer, uint32_t uiOptions,</div>
+<div class="line"><a id="l00083" name="l00083"></a><span class="lineno">   83</span>        uint8_t *puiBuffer, uint32_t uiSize);</div>
+<div class="line"><a id="l00084" name="l00084"></a><span class="lineno">   84</span> </div>
+<div class="line"><a id="l00095" name="l00095"></a><span class="lineno">   95</span>traceResult <a class="code hl_function" href="group__trace__event__buffer__apis.html#ga9e4bf49bc95df34cf5b296e79c7c72ad">xTraceEventBufferAlloc</a>(<a class="code hl_struct" href="structTraceEventBuffer.html">TraceEventBuffer_t</a> *pxTraceEventBuffer, uint32_t uiSize, <span class="keywordtype">void</span> **ppvData);</div>
+<div class="line"><a id="l00096" name="l00096"></a><span class="lineno">   96</span> </div>
+<div class="line"><a id="l00105" name="l00105"></a><span class="lineno">  105</span>traceResult <a class="code hl_function" href="group__trace__event__buffer__apis.html#ga2b188578828bdeb2bc21f928fa9f99c8">xTraceEventBufferAllocCommit</a>(<a class="code hl_struct" href="structTraceEventBuffer.html">TraceEventBuffer_t</a> *pxTraceEventBuffer, <span class="keyword">const</span> <span class="keywordtype">void</span> *pvData, uint32_t uiSize, int32_t *piBytesWritten);</div>
+<div class="line"><a id="l00106" name="l00106"></a><span class="lineno">  106</span> </div>
+<div class="line"><a id="l00120" name="l00120"></a><span class="lineno">  120</span>traceResult <a class="code hl_function" href="group__trace__event__buffer__apis.html#gabbac6eeab72f50d8953dffcfe6d6ddc7">xTraceEventBufferPush</a>(<a class="code hl_struct" href="structTraceEventBuffer.html">TraceEventBuffer_t</a> *pxTraceEventBuffer, <span class="keywordtype">void</span> *pvData, uint32_t uiSize, int32_t *piBytesWritten);</div>
+<div class="line"><a id="l00121" name="l00121"></a><span class="lineno">  121</span> </div>
+<div class="line"><a id="l00135" name="l00135"></a><span class="lineno">  135</span>traceResult <a class="code hl_function" href="group__trace__event__buffer__apis.html#ga2030a1dcfe1eae0708ff31d57c111ddd">xTraceEventBufferTransferAll</a>(<a class="code hl_struct" href="structTraceEventBuffer.html">TraceEventBuffer_t</a>* pxTraceEventBuffer, int32_t* piBytesWritten);</div>
+<div class="line"><a id="l00136" name="l00136"></a><span class="lineno">  136</span> </div>
+<div class="line"><a id="l00157" name="l00157"></a><span class="lineno">  157</span>traceResult <a class="code hl_function" href="group__trace__event__buffer__apis.html#gaaf993145eff5af6e524c0851072d9ed1">xTraceEventBufferTransferChunk</a>(<a class="code hl_struct" href="structTraceEventBuffer.html">TraceEventBuffer_t</a>* pxTraceEventBuffer, uint32_t uiChunkSize, int32_t* piBytesWritten);</div>
 <div class="line"><a id="l00158" name="l00158"></a><span class="lineno">  158</span> </div>
-<div class="line"><a id="l00167" name="l00167"></a><span class="lineno">  167</span>traceResult <a class="code hl_function" href="group__trace__event__buffer__apis.html#ga54964c174432a5dfb6e9379593e478b6">xTraceEventBufferClear</a>(<a class="code hl_struct" href="structTraceEventBuffer.html">TraceEventBuffer_t</a>* pxTraceEventBuffer);</div>
-<div class="line"><a id="l00168" name="l00168"></a><span class="lineno">  168</span> </div>
-<div class="line"><a id="l00171" name="l00171"></a><span class="lineno">  171</span><span class="preprocessor">#ifdef __cplusplus</span></div>
-<div class="line"><a id="l00172" name="l00172"></a><span class="lineno">  172</span>}</div>
-<div class="line"><a id="l00173" name="l00173"></a><span class="lineno">  173</span><span class="preprocessor">#endif</span></div>
-<div class="line"><a id="l00174" name="l00174"></a><span class="lineno">  174</span> </div>
-<div class="line"><a id="l00175" name="l00175"></a><span class="lineno">  175</span><span class="preprocessor">#endif </span><span class="comment">/* (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING) */</span><span class="preprocessor"></span></div>
-<div class="line"><a id="l00176" name="l00176"></a><span class="lineno">  176</span> </div>
-<div class="line"><a id="l00177" name="l00177"></a><span class="lineno">  177</span><span class="preprocessor">#endif </span><span class="comment">/* (TRC_USE_TRACEALYZER_RECORDER == 1) */</span><span class="preprocessor"></span></div>
-<div class="line"><a id="l00178" name="l00178"></a><span class="lineno">  178</span> </div>
-<div class="line"><a id="l00179" name="l00179"></a><span class="lineno">  179</span><span class="preprocessor">#endif </span><span class="comment">/* TRC_EVENT_BUFFER_H */</span><span class="preprocessor"></span></div>
+<div class="line"><a id="l00159" name="l00159"></a><span class="lineno">  159</span> </div>
+<div class="line"><a id="l00168" name="l00168"></a><span class="lineno">  168</span>traceResult <a class="code hl_function" href="group__trace__event__buffer__apis.html#ga54964c174432a5dfb6e9379593e478b6">xTraceEventBufferClear</a>(<a class="code hl_struct" href="structTraceEventBuffer.html">TraceEventBuffer_t</a>* pxTraceEventBuffer);</div>
+<div class="line"><a id="l00169" name="l00169"></a><span class="lineno">  169</span> </div>
+<div class="line"><a id="l00172" name="l00172"></a><span class="lineno">  172</span><span class="preprocessor">#ifdef __cplusplus</span></div>
+<div class="line"><a id="l00173" name="l00173"></a><span class="lineno">  173</span>}</div>
+<div class="line"><a id="l00174" name="l00174"></a><span class="lineno">  174</span><span class="preprocessor">#endif</span></div>
+<div class="line"><a id="l00175" name="l00175"></a><span class="lineno">  175</span> </div>
+<div class="line"><a id="l00176" name="l00176"></a><span class="lineno">  176</span><span class="preprocessor">#endif </span><span class="comment">/* (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING) */</span><span class="preprocessor"></span></div>
+<div class="line"><a id="l00177" name="l00177"></a><span class="lineno">  177</span> </div>
+<div class="line"><a id="l00178" name="l00178"></a><span class="lineno">  178</span><span class="preprocessor">#endif </span><span class="comment">/* (TRC_USE_TRACEALYZER_RECORDER == 1) */</span><span class="preprocessor"></span></div>
+<div class="line"><a id="l00179" name="l00179"></a><span class="lineno">  179</span> </div>
+<div class="line"><a id="l00180" name="l00180"></a><span class="lineno">  180</span><span class="preprocessor">#endif </span><span class="comment">/* TRC_EVENT_BUFFER_H */</span><span class="preprocessor"></span></div>
 <div class="ttc" id="agroup__trace__event__buffer__apis_html_ga2030a1dcfe1eae0708ff31d57c111ddd"><div class="ttname"><a href="group__trace__event__buffer__apis.html#ga2030a1dcfe1eae0708ff31d57c111ddd">xTraceEventBufferTransferAll</a></div><div class="ttdeci">traceResult xTraceEventBufferTransferAll(TraceEventBuffer_t *pxTraceEventBuffer, int32_t *piBytesWritten)</div><div class="ttdoc">Transfer trace event buffer data through streamport.</div><div class="ttdef"><b>Definition:</b> trcEventBuffer.c:398</div></div>
 <div class="ttc" id="agroup__trace__event__buffer__apis_html_ga2b188578828bdeb2bc21f928fa9f99c8"><div class="ttname"><a href="group__trace__event__buffer__apis.html#ga2b188578828bdeb2bc21f928fa9f99c8">xTraceEventBufferAllocCommit</a></div><div class="ttdeci">traceResult xTraceEventBufferAllocCommit(TraceEventBuffer_t *pxTraceEventBuffer, const void *pvData, uint32_t uiSize, int32_t *piBytesWritten)</div><div class="ttdoc">Commits the last allocated block to the event buffer.</div><div class="ttdef"><b>Definition:</b> trcEventBuffer.c:258</div></div>
 <div class="ttc" id="agroup__trace__event__buffer__apis_html_ga54964c174432a5dfb6e9379593e478b6"><div class="ttname"><a href="group__trace__event__buffer__apis.html#ga54964c174432a5dfb6e9379593e478b6">xTraceEventBufferClear</a></div><div class="ttdeci">traceResult xTraceEventBufferClear(TraceEventBuffer_t *pxTraceEventBuffer)</div><div class="ttdoc">Clears all data from event buffer.</div><div class="ttdef"><b>Definition:</b> trcEventBuffer.c:534</div></div>
@@ -170,8 +171,9 @@ $(document).ready(function(){initNavTree('trcEventBuffer_8h_source.html',''); in
 <div class="ttc" id="astructTraceEventBuffer_html_a3b183ccc676bcda670e368872bd63265"><div class="ttname"><a href="structTraceEventBuffer.html#a3b183ccc676bcda670e368872bd63265">TraceEventBuffer::uiFree</a></div><div class="ttdeci">uint32_t uiFree</div><div class="ttdef"><b>Definition:</b> trcEventBuffer.h:56</div></div>
 <div class="ttc" id="astructTraceEventBuffer_html_a4d5ea9533733063f346a008ddd829aa7"><div class="ttname"><a href="structTraceEventBuffer.html#a4d5ea9533733063f346a008ddd829aa7">TraceEventBuffer::uiOptions</a></div><div class="ttdeci">uint32_t uiOptions</div><div class="ttdef"><b>Definition:</b> trcEventBuffer.h:54</div></div>
 <div class="ttc" id="astructTraceEventBuffer_html_ab1ad766c73b056a09cdf9afb82399fc4"><div class="ttname"><a href="structTraceEventBuffer.html#ab1ad766c73b056a09cdf9afb82399fc4">TraceEventBuffer::uiTimerWraparounds</a></div><div class="ttdeci">uint32_t uiTimerWraparounds</div><div class="ttdef"><b>Definition:</b> trcEventBuffer.h:59</div></div>
+<div class="ttc" id="astructTraceEventBuffer_html_ac4d74ed058ed32190135103982e8403f"><div class="ttname"><a href="structTraceEventBuffer.html#ac4d74ed058ed32190135103982e8403f">TraceEventBuffer::uiReserved</a></div><div class="ttdeci">uint32_t uiReserved</div><div class="ttdef"><b>Definition:</b> trcEventBuffer.h:60</div></div>
 <div class="ttc" id="astructTraceEventBuffer_html_acf54ea1828686b9fd1e2d3dc643988ae"><div class="ttname"><a href="structTraceEventBuffer.html#acf54ea1828686b9fd1e2d3dc643988ae">TraceEventBuffer::uiHead</a></div><div class="ttdeci">uint32_t uiHead</div><div class="ttdef"><b>Definition:</b> trcEventBuffer.h:51</div></div>
-<div class="ttc" id="astructTraceEventBuffer_html_afbe952f473fc2e4374d616e5cf3549e8"><div class="ttname"><a href="structTraceEventBuffer.html#afbe952f473fc2e4374d616e5cf3549e8">TraceEventBuffer::puiBuffer</a></div><div class="ttdeci">uint8_t * puiBuffer</div><div class="ttdef"><b>Definition:</b> trcEventBuffer.h:60</div></div>
+<div class="ttc" id="astructTraceEventBuffer_html_afbe952f473fc2e4374d616e5cf3549e8"><div class="ttname"><a href="structTraceEventBuffer.html#afbe952f473fc2e4374d616e5cf3549e8">TraceEventBuffer::puiBuffer</a></div><div class="ttdeci">uint8_t * puiBuffer</div><div class="ttdef"><b>Definition:</b> trcEventBuffer.h:61</div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->

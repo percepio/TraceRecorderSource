@@ -1,5 +1,5 @@
 /*
-* Percepio Trace Recorder for Tracealyzer v4.7.0
+* Percepio Trace Recorder for Tracealyzer v4.8.0
 * Copyright 2023 Percepio AB
 * www.percepio.com
 *
@@ -68,11 +68,11 @@ traceResult xTraceObjectRegisterInternal(uint32_t uiEventCode, void* const pvObj
 	for (i = 0u; i < uxStateCount; i++)
 	{
 		/* This should never fail */
-		TRC_ASSERT_ALWAYS_EVALUATE(xTraceEntrySetState(xEntryHandle, i, uxStates[i]) == TRC_SUCCESS);
+		TRC_ASSERT_ALWAYS_EVALUATE(xTraceEntrySetState(xEntryHandle, (uint32_t)i, uxStates[i]) == TRC_SUCCESS);
 	}
 
 	/* This should never fail */
-	TRC_ASSERT_ALWAYS_EVALUATE(xTraceEntrySetOptions(xEntryHandle, uxOptions) == TRC_SUCCESS);
+	TRC_ASSERT_ALWAYS_EVALUATE(xTraceEntrySetOptions(xEntryHandle, (uint32_t)uxOptions) == TRC_SUCCESS);
 
 	*pxObjectHandle = (TraceObjectHandle_t)xEntryHandle;
 

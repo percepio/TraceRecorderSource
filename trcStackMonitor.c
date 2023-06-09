@@ -1,5 +1,5 @@
 /*
-* Percepio Trace Recorder for Tracealyzer v4.7.0
+* Percepio Trace Recorder for Tracealyzer v4.8.0
 * Copyright 2023 Percepio AB
 * www.percepio.com
 *
@@ -157,8 +157,8 @@ traceResult xTraceStackMonitorReport(void)
 {
 	TraceUnsignedBaseType_t uxLowWaterMark = 0;
 	TraceStackMonitorEntry_t *pxStackMonitorEntry;
-	uint32_t uiToReport;
-	uint32_t i;
+	TraceUnsignedBaseType_t uxToReport;
+	TraceUnsignedBaseType_t i;
 	static uint32_t uiCurrentIndex = 0;
 
 #if (TRC_CFG_ALLOW_TASK_DELETE == 1)
@@ -173,9 +173,9 @@ traceResult xTraceStackMonitorReport(void)
 #endif
 
 	/* Never report more than there are entries */
-	uiToReport = TRC_CFG_STACK_MONITOR_MAX_REPORTS <= pxStackMonitor->uxEntryCount ? TRC_CFG_STACK_MONITOR_MAX_REPORTS : pxStackMonitor->uxEntryCount;
+	uxToReport = TRC_CFG_STACK_MONITOR_MAX_REPORTS <= pxStackMonitor->uxEntryCount ? TRC_CFG_STACK_MONITOR_MAX_REPORTS : pxStackMonitor->uxEntryCount;
 
-	for (i = 0; i < uiToReport; i++)
+	for (i = 0; i < uxToReport; i++)
 	{
 		/* If uiCurrentIndex is too large, reset it */
 		uiCurrentIndex = uiCurrentIndex < pxStackMonitor->uxEntryCount ? uiCurrentIndex : 0;

@@ -1,5 +1,5 @@
 /*
-* Percepio Trace Recorder for Tracealyzer v4.7.0
+* Percepio Trace Recorder for Tracealyzer v4.8.0
 * Copyright 2023 Percepio AB
 * www.percepio.com
 *
@@ -34,7 +34,7 @@ extern "C" {
 /**
  * @internal Trace ISR Core Data Structure
  */
-typedef struct TraceISRCoreData
+typedef struct TraceISRCoreData	/* Aligned */
 {
 	TraceISRHandle_t handleStack[TRC_CFG_MAX_ISR_NESTING];	/**< */
 	int32_t stackIndex;										/**< */
@@ -44,7 +44,7 @@ typedef struct TraceISRCoreData
 /**
  * @internal Trace ISR Data Structure
  */
-typedef struct TraceISRData
+typedef struct TraceISRData	/* Aligned */
 {
 	TraceISRCoreData_t cores[TRC_CFG_CORE_COUNT]; /* ISR handles */
 } TraceISRData_t;

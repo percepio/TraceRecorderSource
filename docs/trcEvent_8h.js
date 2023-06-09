@@ -13,7 +13,7 @@ var trcEvent_8h =
     [ "xTraceEventPayloadRemaining", "group__trace__event__apis.html#gac2fe59add1d55f013879ee7d88503f25", null ],
     [ "xTraceEventPayloadSize", "group__trace__event__apis.html#gaf49b771de784ae6be526dcd1b851d77e", null ],
     [ "xTraceEventPayloadUsed", "group__trace__event__apis.html#ga7664fb00364a4a1165dc23074ef698bc", null ],
-    [ "xTraceEventAddData", "group__trace__event__apis.html#gaba917b973d2205dd83518108579a65ed", null ],
+    [ "xTraceEventAddData", "group__trace__event__apis.html#ga112f4b8cbcbe510c9d07db9b90dc620c", null ],
     [ "xTraceEventCreate0", "group__trace__event__apis.html#ga63f12da033faf0f4de4ef2755d73b308", null ],
     [ "xTraceEventCreate1", "group__trace__event__apis.html#ga676dd9f79556a3343072b14fac51af1d", null ],
     [ "xTraceEventCreate2", "group__trace__event__apis.html#ga5fcbd638f23ebbe7d9a4447d0338beca", null ],

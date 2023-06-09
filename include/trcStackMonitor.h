@@ -1,5 +1,5 @@
 /*
-* Percepio Trace Recorder SDK for Tracealyzer v4.7.0
+* Percepio Trace Recorder SDK for Tracealyzer v4.8.0
 * Copyright 2023 Percepio AB
 * www.percepio.com
 *
@@ -34,13 +34,13 @@ extern "C" {
 
 #if (((TRC_CFG_ENABLE_STACK_MONITOR) == 1) && ((TRC_CFG_SCHEDULING_ONLY) == 0))
 
-typedef struct TraceStackMonitorEntry
+typedef struct TraceStackMonitorEntry	/* Aligned */
 {
 	void *pvTask;
 	TraceUnsignedBaseType_t uxPreviousLowWaterMark;
 } TraceStackMonitorEntry_t;
 
-typedef struct TraceStackMonitorData
+typedef struct TraceStackMonitorData	/* Aligned */
 {
 	TraceStackMonitorEntry_t xEntries[TRC_CFG_STACK_MONITOR_MAX_TASKS];
 

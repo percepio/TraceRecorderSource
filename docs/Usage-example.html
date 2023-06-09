@@ -25,7 +25,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">Percepio Trace Recorder<span id="projectnumber">&#160;v4.7.0</span>
+   <div id="projectname">Percepio Trace Recorder<span id="projectnumber">&#160;v4.8.0</span>
    </div>
   </td>
  </tr>
@@ -92,8 +92,9 @@ $(document).ready(function(){initNavTree('Usage-example.html',''); initResizable
   <div class="headertitle"><div class="title">Usage</div></div>
 </div><!--header-->
 <div class="contents">
-<p>This function enables tracing. To use the trace recorder, the startup must call <a class="el" href="trcRecorder_8h.html#a55cefe256f7bfcfa9085667696a1752d" title="Initializes the recorder data. xTraceInitialize() or xTraceEnable(...) must be called before any atte...">xTraceInitialize()</a> or xTraceEnable(...) before any RTOS calls are made (including "create" calls). Three start options are provided:</p>
-<p>This function enables tracing. To use the trace recorder, the startup must call <a class="el" href="trcRecorder_8h.html#a55cefe256f7bfcfa9085667696a1752d" title="Initializes the recorder data. xTraceInitialize() or xTraceEnable(...) must be called before any atte...">xTraceInitialize()</a> or xTraceEnable(...) before any RTOS calls are made (including "create" calls). Three start options are provided: </p><pre class="fragment">TRC_START: Starts the tracing directly. In snapshot mode this allows for 
+<p>This function enables tracing. To use the trace recorder, the startup must call <a class="el" href="trcRecorder_8h.html#a55cefe256f7bfcfa9085667696a1752d" title="Initializes the recorder data. xTraceInitialize() or xTraceEnable(...) must be called before any atte...">xTraceInitialize()</a> or xTraceEnable(...) before any RTOS calls are made (including "create" calls). This function should only be called after the timestamp source is properly initialized. If kernel services that generate trace data are called before that, an earlier call to <a class="el" href="trcRecorder_8h.html#a55cefe256f7bfcfa9085667696a1752d" title="Initializes the recorder data. xTraceInitialize() or xTraceEnable(...) must be called before any atte...">xTraceInitialize()</a> is necessary. Then call xTraceEnable(...) once the timestamp source is initialized.</p>
+<p>This function enables tracing. To use the trace recorder, the startup must call <a class="el" href="trcRecorder_8h.html#a55cefe256f7bfcfa9085667696a1752d" title="Initializes the recorder data. xTraceInitialize() or xTraceEnable(...) must be called before any atte...">xTraceInitialize()</a> or xTraceEnable(...) before any RTOS calls are made (including "create" calls). This function should only be called after the timestamp source is properly initialized. If kernel services that generate trace data are called before that, an earlier call to <a class="el" href="trcRecorder_8h.html#a55cefe256f7bfcfa9085667696a1752d" title="Initializes the recorder data. xTraceInitialize() or xTraceEnable(...) must be called before any atte...">xTraceInitialize()</a> is necessary. Then call xTraceEnable(...) once the timestamp source is initialized.</p>
+<p>Three start options are provided: </p><pre class="fragment">TRC_START: Starts the tracing directly. In snapshot mode this allows for 
 starting the trace at any point in your code, assuming xTraceInitialize()
 has been called in the startup. Can also be used for streaming without 
 Tracealyzer control, e.g. to a local flash file system (assuming such a

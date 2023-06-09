@@ -1,5 +1,5 @@
 /*
- * Trace Recorder for Tracealyzer v4.7.0
+ * Trace Recorder for Tracealyzer v4.8.0
  * Copyright 2023 Percepio AB
  * www.percepio.com
  *
@@ -44,7 +44,7 @@ extern "C" {
  * @def TRC_PLATFORM_CFG_MINOR
  * @brief Minor release version for recorder.
  */
-#define TRC_PLATFORM_CFG_MINOR 2
+#define TRC_PLATFORM_CFG_MINOR 3
 
 /**
  * @def TRC_PLATFORM_CFG_PATCH
@@ -69,9 +69,9 @@ extern TraceHeapHandle_t xSystemHeapHandle;
 /**
  * @brief A structure representing the kernel port buffer.
  */
-typedef struct TraceKernelPortDataBuffer
+typedef struct TraceKernelPortDataBuffer	/* Aligned */
 {
-	uint8_t buffer[sizeof(TraceHeapHandle_t) + sizeof(TraceKernelPortTaskHandle_t) + 4];
+	uint8_t buffer[sizeof(TraceHeapHandle_t) + sizeof(TraceKernelPortTaskHandle_t) + sizeof(TraceExtensionHandle_t) + 8];
 } TraceKernelPortDataBuffer_t;
 
 /**
@@ -299,24 +299,6 @@ void vTraceSetTimerName(void* object, const char* name);
 #define PSF_EVENT_TASK_PRIO_DISINHERIT						0x06
 #define PSF_EVENT_DEFINE_ISR								0x07
 
-#define PSF_EVENT_STATEMACHINE_STATE_CREATE					0x0
-#define PSF_EVENT_STATEMACHINE_CREATE						0x0
-#define PSF_EVENT_STATEMACHINE_STATECHANGE					0x0
-#define PSF_EVENT_INTERVAL_CREATE							0x0
-#define PSF_EVENT_INTERVAL_CHANNEL_CREATE					0x0
-#define PSF_EVENT_INTERVAL_CHANNEL_SET_CREATE				0x0
-#define PSF_EVENT_INTERVAL_STATECHANGE						0x0
-#define PSF_EVENT_INTERVAL_START							0x0
-#define PSF_EVENT_INTERVAL_STOP								0x0
-#define PSF_EVENT_COUNTER_CREATE							0x0
-#define PSF_EVENT_COUNTER_CHANGE							0x0
-#define PSF_EVENT_COUNTER_LIMIT_EXCEEDED					0x0
-
-#define PSF_EVENT_MALLOC_FAILED 							0x0
-#define PSF_EVENT_FREE_FAILED 								0x0
-#define PSF_EVENT_EXTENSION_CREATE							0x0
-#define PSF_EVENT_HEAP_CREATE								0x0
-							
 #define PSF_EVENT_THREAD_SCHED_WAKEUP						0xB6
 #define PSF_EVENT_THREAD_SCHED_ABORT						0x20
 #define PSF_EVENT_THREAD_SCHED_PRIORITY_SET					0x04
@@ -699,7 +681,25 @@ void vTraceSetTimerName(void* object, const char* name);
 
 #define PSF_EVENT_DEPENDENCY_REGISTER						0x16A
 
-#define TRC_EVENT_LAST_ID									(PSF_EVENT_DEPENDENCY_REGISTER)
+#define PSF_EVENT_STATEMACHINE_STATE_CREATE					0x170
+#define PSF_EVENT_STATEMACHINE_CREATE						0x171
+#define PSF_EVENT_STATEMACHINE_STATECHANGE					0x172
+#define PSF_EVENT_INTERVAL_CREATE							0x173
+#define PSF_EVENT_INTERVAL_CHANNEL_CREATE					0x174
+#define PSF_EVENT_INTERVAL_CHANNEL_SET_CREATE				0x175
+#define PSF_EVENT_INTERVAL_STATECHANGE						0x176
+#define PSF_EVENT_INTERVAL_START							0x177
+#define PSF_EVENT_INTERVAL_STOP								0x178
+#define PSF_EVENT_COUNTER_CREATE							0x179
+#define PSF_EVENT_COUNTER_CHANGE							0x17A
+#define PSF_EVENT_COUNTER_LIMIT_EXCEEDED					0x17B
+
+#define PSF_EVENT_MALLOC_FAILED 							0x17C
+#define PSF_EVENT_FREE_FAILED 								0x17D
+#define PSF_EVENT_EXTENSION_CREATE							0x17E
+#define PSF_EVENT_HEAP_CREATE								0x17F
+
+#define TRC_EVENT_LAST_ID									(PSF_EVENT_HEAP_CREATE)
 
 
 #ifdef __cplusplus

@@ -1,5 +1,5 @@
 /*
- * Trace Recorder for Tracealyzer v4.7.0
+ * Trace Recorder for Tracealyzer v4.8.0
  * Copyright 2023 Percepio AB
  * www.percepio.com
  *
@@ -982,8 +982,8 @@ void sys_trace_k_poll_api_signal_raise(struct k_poll_signal *signal,
 
 
 /* Semaphore trace function declarations */
-void sys_trace_k_sem_init(struct k_sem *sem, uint32_t initial_count,
-    uint32_t limit, int ret);
+void sys_trace_k_sem_init(struct k_sem *sem, unsigned int initial_count,
+    unsigned int limit, int ret);
 void sys_trace_k_sem_give_enter(struct k_sem *sem);
 void sys_trace_k_sem_take_enter(struct k_sem *sem, k_timeout_t timeout);
 void sys_trace_k_sem_take_blocking(struct k_sem *sem, k_timeout_t timeout);

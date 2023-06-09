@@ -1,5 +1,5 @@
 /*
-* Percepio Trace Recorder for Tracealyzer v4.7.0
+* Percepio Trace Recorder for Tracealyzer v4.8.0
 * Copyright 2023 Percepio AB
 * www.percepio.com
 *
@@ -36,7 +36,7 @@ typedef enum TraceDiagnosticsType
 	TRC_DIAGNOSTICS_ASSERTS_TRIGGERED = 0x04UL,
 } TraceDiagnosticsType_t;
 
-typedef struct TraceDiagnostics
+typedef struct TraceDiagnostics /* Aligned */
 {
 	TraceBaseType_t metrics[TRC_DIAGNOSTICS_COUNT];
 } TraceDiagnosticsData_t;

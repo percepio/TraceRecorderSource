@@ -1,5 +1,5 @@
 /*
-* Percepio Trace Recorder for Tracealyzer v4.7.0
+* Percepio Trace Recorder for Tracealyzer v4.8.0
 * Copyright 2023 Percepio AB
 * www.percepio.com
 *
@@ -34,7 +34,7 @@ extern "C" {
 
 #if (TRC_CFG_INCLUDE_USER_EVENTS == 1)
 
-typedef struct TracePrintData
+typedef struct TracePrintData	/* Aligned */
 {
 	TraceStringHandle_t defaultChannel;
 	TraceStringHandle_t consoleChannel;

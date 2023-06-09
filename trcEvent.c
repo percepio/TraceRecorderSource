@@ -1,5 +1,5 @@
 /*
-* Percepio Trace Recorder for Tracealyzer v4.7.0
+* Percepio Trace Recorder for Tracealyzer v4.8.0
 * Copyright 2023 Percepio AB
 * www.percepio.com
 *
@@ -16,9 +16,9 @@
 
 /*cstat !MISRAC2004-19.4 Suppress macro check*/
 #define VERIFY_EVENT_SIZE(i) \
-	if ((i) > (uint32_t)(TRC_MAX_BLOB_SIZE)) \
+	if ((TraceUnsignedBaseType_t)(i) > (TraceUnsignedBaseType_t)(TRC_MAX_BLOB_SIZE)) \
 	{ \
-		(void)xTraceDiagnosticsSetIfHigher(TRC_DIAGNOSTICS_BLOB_MAX_BYTES_TRUNCATED, (int32_t)((TraceUnsignedBaseType_t)((i) - (uint32_t)(TRC_MAX_BLOB_SIZE)))); \
+		(void)xTraceDiagnosticsSetIfHigher(TRC_DIAGNOSTICS_BLOB_MAX_BYTES_TRUNCATED, (TraceBaseType_t)(i) - (TraceBaseType_t)(TRC_MAX_BLOB_SIZE)); \
 		(i) = (uint32_t)(TRC_MAX_BLOB_SIZE); \
 	}
 
@@ -365,7 +365,7 @@ traceResult xTraceEventBeginRawOffline(uint32_t uiSize, TraceEventHandle_t* pxEv
 
 	VERIFY_EVENT_SIZE(uiSize); /*cstat !MISRAC2012-Rule-17.8 Suppress modified function parameter check*/
 
-	pxEventData->size = ((uiSize + (sizeof(uint32_t) - 1u)) / sizeof(uint32_t)) * sizeof(uint32_t);	/* 4-byte align */
+	pxEventData->size = ((uiSize + (sizeof(TraceUnsignedBaseType_t) - 1u)) / sizeof(TraceUnsignedBaseType_t)) * sizeof(TraceUnsignedBaseType_t);	/* BaseType align */
 
 	pxEventData->offset = 0u;
 
@@ -418,7 +418,7 @@ traceResult xTraceEventBeginRawOfflineBlocking(uint32_t uiSize, TraceEventHandle
 
 	VERIFY_EVENT_SIZE(uiSize); /*cstat !MISRAC2012-Rule-17.8 Suppress modified function parameter check*/
 
-	pxEventData->size = ((uiSize + (sizeof(uint32_t) - 1u)) / sizeof(uint32_t)) * sizeof(uint32_t);	/* 4-byte align */
+	pxEventData->size = ((uiSize + (sizeof(TraceUnsignedBaseType_t) - 1u)) / sizeof(TraceUnsignedBaseType_t)) * sizeof(TraceUnsignedBaseType_t);	/* BaseType align */
 
 	pxEventData->offset = 0u;
 
@@ -509,9 +509,9 @@ traceResult xTraceEventEndOfflineBlocking(TraceEventHandle_t xEventHandle)
 	return TRC_SUCCESS;
 }
 
-traceResult xTraceEventAddData(TraceEventHandle_t xEventHandle, const uint32_t* const puiData, uint32_t uiSize)
+traceResult xTraceEventAddData(TraceEventHandle_t xEventHandle, const TraceUnsignedBaseType_t* const puxData, TraceUnsignedBaseType_t uxSize)
 {
-	uint32_t i;
+	TraceUnsignedBaseType_t i;
 
 	/* This should never fail */
 	TRC_ASSERT(xTraceIsComponentInitialized(TRC_RECORDER_COMPONENT_EVENT));
@@ -520,14 +520,14 @@ traceResult xTraceEventAddData(TraceEventHandle_t xEventHandle, const uint32_t* 
 	TRC_ASSERT(xEventHandle != 0);
 
 	/* This should never fail */
-	TRC_ASSERT(puiData != (void*)0);
+	TRC_ASSERT(puxData != (void*)0);
 
 	/* This should never fail */
-	TRC_ASSERT((((TraceEventData_t*)xEventHandle)->offset + (uiSize * sizeof(uint32_t))) <= ((TraceEventData_t*)xEventHandle)->size);
+	TRC_ASSERT((((TraceEventData_t*)xEventHandle)->offset + (uint32_t)(uxSize * sizeof(TraceUnsignedBaseType_t))) <= ((TraceEventData_t*)xEventHandle)->size);
 
-	for (i = 0u; i < uiSize; i++)
+	for (i = 0u; i < uxSize; i++)
 	{
-		TRC_EVENT_ADD_32(xEventHandle, puiData[i]); /*cstat !MISRAC2004-17.4_b We need to access a specific part of the buffer*/
+		TRC_EVENT_ADD_UNSIGNED_BASE_TYPE(xEventHandle, puxData[i]); /*cstat !MISRAC2004-17.4_b We need to access a specific part of the buffer*/
 	}
 
 	return TRC_SUCCESS;

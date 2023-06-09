@@ -1,5 +1,5 @@
 /*
-* Percepio Trace Recorder for Tracealyzer v4.7.0
+* Percepio Trace Recorder for Tracealyzer v4.8.0
 * Copyright 2023 Percepio AB
 * www.percepio.com
 *
@@ -70,7 +70,7 @@ extern "C" {
 /**
  * @internal Macro optimization for getting trace event size.
  */
-#define TRC_EVENT_GET_SIZE(pvAddress, puiSize) (*(uint32_t*)(puiSize) = sizeof(TraceEvent0_t) + (TRC_EVENT_GET_PARAM_COUNT(((TraceEvent0_t*)(pvAddress))->EventID)) * sizeof(uint32_t), TRC_SUCCESS)
+#define TRC_EVENT_GET_SIZE(pvAddress, puiSize) (*(uint32_t*)(puiSize) = sizeof(TraceEvent0_t) + (TRC_EVENT_GET_PARAM_COUNT(((TraceEvent0_t*)(pvAddress))->EventID)) * sizeof(TraceBaseType_t), TRC_SUCCESS)
 
 /**
  * @internal Macro optimization for getting trace event data pointer with an offset.
@@ -152,11 +152,11 @@ extern "C" {
  */
 #define TRC_EVENT_BEGIN_OFFLINE(uiEventCode, uiPayloadSize, pxEventHandle) \
 	( \
-		(xTraceEventBeginRawOffline(sizeof(TraceEvent0_t) + (uiPayloadSize), pxEventHandle)) == TRC_SUCCESS ? \
+		(xTraceEventBeginRawOffline((uint32_t)(sizeof(TraceEvent0_t) + (uiPayloadSize)), pxEventHandle)) == TRC_SUCCESS ? \
 		( \
 			SET_BASE_EVENT_DATA((TraceEvent0_t*)(((TraceEventData_t*)*(pxEventHandle))->pvBlob), \
 				uiEventCode, \
-				(((TraceEventData_t*)*(pxEventHandle))->size - sizeof(TraceEvent0_t)) / sizeof(uint32_t), \
+				(((TraceEventData_t*)*(pxEventHandle))->size - sizeof(TraceEvent0_t)) / sizeof(TraceBaseType_t), \
 				pxTraceEventDataTable->coreEventData[TRC_CFG_GET_CURRENT_CORE()].eventCounter), \
 			((TraceEventData_t*)*(pxEventHandle))->offset += sizeof(TraceEvent0_t), \
 			TRC_SUCCESS \
@@ -166,7 +166,7 @@ extern "C" {
 /**
  * @internal Trace Event Structure without uTraceUnsignedBaseType_t parameters
  */
-typedef struct {
+typedef struct {	/* Aligned */
 	uint16_t EventID;		/**< */
 	uint16_t EventCount;	/**< */
 	uint32_t TS;			/**< */
@@ -175,7 +175,7 @@ typedef struct {
 /**
  * @internal Trace Event Structure with one uTraceUnsignedBaseType_t parameter
  */
-typedef struct {
+typedef struct {	/* Aligned */
 	uint16_t EventID;						/**< */
 	uint16_t EventCount;					/**< */
 	uint32_t TS;							/**< */
@@ -185,7 +185,7 @@ typedef struct {
 /**
  * @internal Trace Event Structure with two uTraceUnsignedBaseType_t parameters
  */
-typedef struct {
+typedef struct {	/* Aligned */
 	uint16_t EventID;						/**< */
 	uint16_t EventCount;					/**< */
 	uint32_t TS;							/**< */
@@ -195,7 +195,7 @@ typedef struct {
 /**
  * @internal Trace Event Structure with three uTraceUnsignedBaseType_t parameters
  */
-typedef struct {
+typedef struct {	/* Aligned */
 	uint16_t EventID;						/**< */
 	uint16_t EventCount;					/**< */
 	uint32_t TS;							/**< */
@@ -205,7 +205,7 @@ typedef struct {
 /**
  * @internal Trace Event Structure with four uTraceUnsignedBaseType_t parameters
  */
-typedef struct {
+typedef struct {	/* Aligned */
 	uint16_t EventID;						/**< */
 	uint16_t EventCount;					/**< */
 	uint32_t TS;							/**< */
@@ -215,7 +215,7 @@ typedef struct {
 /**
  * @internal Trace Event Structure with five uTraceUnsignedBaseType_t parameters
  */
-typedef struct {
+typedef struct {	/* Aligned */
 	uint16_t EventID;						/**< */
 	uint16_t EventCount;					/**< */
 	uint32_t TS;							/**< */
@@ -225,7 +225,7 @@ typedef struct {
 /**
  * @internal Trace Event Structure with six uTraceUnsignedBaseType_t parameters
  */
-typedef struct {
+typedef struct {	/* Aligned */
 	uint16_t EventID;						/**< */
 	uint16_t EventCount;					/**< */
 	uint32_t TS;							/**< */
@@ -235,7 +235,7 @@ typedef struct {
 /**
  * @internal Trace Event Structure with seven uTraceUnsignedBaseType_t parameters
  */
-typedef struct {
+typedef struct {	/* Aligned */
 	uint16_t EventID;						/**< */
 	uint16_t EventCount;					/**< */
 	uint32_t TS;							/**< */
@@ -245,7 +245,7 @@ typedef struct {
 /** 
  * @internal Trace Event Data Structure
  */
-typedef struct TraceEventData
+typedef struct TraceEventData	/* Aligned */
 {
 	void* pvBlob;		/**< */
 	uint32_t size;		/**< */
@@ -255,17 +255,18 @@ typedef struct TraceEventData
 /** 
  * @internal Trace Core Event Data Structure
  */
-typedef struct TraceCoreEventData
+typedef struct TraceCoreEventData	/* Aligned */
 {
-	TraceEventData_t eventData[(TRC_CFG_MAX_ISR_NESTING)+1];	/**< */
+	TraceEventData_t eventData[(TRC_CFG_MAX_ISR_NESTING)+1];	/* aligned */
 	uint32_t eventCounter;										/**< */
+	uint32_t reserved;											/* alignment */
 	TRACE_ALLOC_CRITICAL_SECTION()
 } TraceCoreEventData_t;
 
 /** 
  * @internal Trace Event Data Table Structure.
  */
-typedef struct TraceEventDataTable
+typedef struct TraceEventDataTable	/* Aligned */
 {
 	TraceCoreEventData_t coreEventData[TRC_CFG_CORE_COUNT]; /**< Holds data about current event for each core/isr depth */
 } TraceEventDataTable_t;
@@ -485,13 +486,13 @@ traceResult xTraceEventEndOfflineBlocking(TraceEventHandle_t xEventHandle);
  * @brief Adds data to event payload.
  * 
  * @param[in] xEventHandle Pointer to initialized trace event.
- * @param[in] puiData Pointer to data.
- * @param[in] uiSize Size.
+ * @param[in] puxData Pointer to data.
+ * @param[in] uxSize Size.
  * 
  * @retval TRC_FAIL Failure
  * @retval TRC_SUCCESS Success
  */
-traceResult xTraceEventAddData(TraceEventHandle_t xEventHandle, const uint32_t* const puiData, uint32_t uiSize);
+traceResult xTraceEventAddData(TraceEventHandle_t xEventHandle, const TraceUnsignedBaseType_t* const puxData, TraceUnsignedBaseType_t uxSize);
 
 /**
  * @brief Adds string to event payload.
@@ -503,7 +504,7 @@ traceResult xTraceEventAddData(TraceEventHandle_t xEventHandle, const uint32_t* 
  * @retval TRC_FAIL Failure
  * @retval TRC_SUCCESS Success
  */
-#define xTraceEventAddString(xEventHandle, szString, uiLength) xTraceEventAddData(xEventHandle, (uint32_t*)(szString), (((uiLength) + (sizeof(uint32_t) - 1)) / sizeof(uint32_t)))
+#define xTraceEventAddString(xEventHandle, szString, uiLength) xTraceEventAddData(xEventHandle, (TraceUnsignedBaseType_t*)(szString), (((uiLength) + (sizeof(TraceUnsignedBaseType_t) - 1)) / sizeof(TraceUnsignedBaseType_t)))
 
 #if ((TRC_CFG_USE_TRACE_ASSERT) == 1)
 

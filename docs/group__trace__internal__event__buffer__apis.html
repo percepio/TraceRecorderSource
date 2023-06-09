@@ -25,7 +25,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">Percepio Trace Recorder<span id="projectnumber">&#160;v4.7.0</span>
+   <div id="projectname">Percepio Trace Recorder<span id="projectnumber">&#160;v4.8.0</span>
    </div>
   </td>
  </tr>
@@ -106,12 +106,12 @@ Functions</h2></td></tr>
 <tr class="memitem:ga8efdf84edc7d4b3d8c516c57e0379e01"><td class="memItemLeft" align="right" valign="top">traceResult&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__trace__internal__event__buffer__apis.html#ga8efdf84edc7d4b3d8c516c57e0379e01">xTraceInternalEventBufferPush</a> (void *pvData, uint32_t uiSize, int32_t *piBytesWritten)</td></tr>
 <tr class="memdesc:ga8efdf84edc7d4b3d8c516c57e0379e01"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pushes data to the internal trace event buffer.  <br /></td></tr>
 <tr class="separator:ga8efdf84edc7d4b3d8c516c57e0379e01"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga3353da37219bb20235b3500a2f9026ae"><td class="memItemLeft" align="right" valign="top">traceResult&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__trace__internal__event__buffer__apis.html#ga3353da37219bb20235b3500a2f9026ae">xTraceInternalEventBufferTransferAll</a> (int32_t *piBytesWritten)</td></tr>
-<tr class="memdesc:ga3353da37219bb20235b3500a2f9026ae"><td class="mdescLeft">&#160;</td><td class="mdescRight">Transfers all internal trace event buffer data using the function xTraceStreamPortWriteData(...) as defined in trcStreamPort.h.  <br /></td></tr>
-<tr class="separator:ga3353da37219bb20235b3500a2f9026ae"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga6e536455ac0e8f942074395ef79440f4"><td class="memItemLeft" align="right" valign="top">traceResult&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__trace__internal__event__buffer__apis.html#ga6e536455ac0e8f942074395ef79440f4">xTraceInternalEventBufferTransferChunk</a> (int32_t *piBytesWritten)</td></tr>
-<tr class="memdesc:ga6e536455ac0e8f942074395ef79440f4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Transfer internal trace event buffer data through streamport.  <br /></td></tr>
-<tr class="separator:ga6e536455ac0e8f942074395ef79440f4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gadacd640440d46ee4f0bea31d112acd67"><td class="memItemLeft" align="right" valign="top">traceResult&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__trace__internal__event__buffer__apis.html#gadacd640440d46ee4f0bea31d112acd67">xTraceInternalEventBufferTransferAll</a> (void)</td></tr>
+<tr class="memdesc:gadacd640440d46ee4f0bea31d112acd67"><td class="mdescLeft">&#160;</td><td class="mdescRight">Transfers all internal trace event buffer data using the function xTraceStreamPortWriteData(...) as defined in trcStreamPort.h.  <br /></td></tr>
+<tr class="separator:gadacd640440d46ee4f0bea31d112acd67"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga71c1dd2b171f8eb8968a4f159b5bd20f"><td class="memItemLeft" align="right" valign="top">traceResult&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__trace__internal__event__buffer__apis.html#ga71c1dd2b171f8eb8968a4f159b5bd20f">xTraceInternalEventBufferTransferChunk</a> (void)</td></tr>
+<tr class="memdesc:ga71c1dd2b171f8eb8968a4f159b5bd20f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Transfer internal trace event buffer data through streamport.  <br /></td></tr>
+<tr class="separator:ga71c1dd2b171f8eb8968a4f159b5bd20f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gab1e22d3a7a75cd53d9916ab2cc097075"><td class="memItemLeft" align="right" valign="top">traceResult&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__trace__internal__event__buffer__apis.html#gab1e22d3a7a75cd53d9916ab2cc097075">xTraceInternalEventBufferClear</a> (void)</td></tr>
 <tr class="memdesc:gab1e22d3a7a75cd53d9916ab2cc097075"><td class="mdescLeft">&#160;</td><td class="mdescRight">Clears all trace events in the internal trace event buffer.  <br /></td></tr>
 <tr class="separator:gab1e22d3a7a75cd53d9916ab2cc097075"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -292,8 +292,8 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="ga3353da37219bb20235b3500a2f9026ae" name="ga3353da37219bb20235b3500a2f9026ae"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga3353da37219bb20235b3500a2f9026ae">&#9670;&#160;</a></span>xTraceInternalEventBufferTransferAll()</h2>
+<a id="gadacd640440d46ee4f0bea31d112acd67" name="gadacd640440d46ee4f0bea31d112acd67"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gadacd640440d46ee4f0bea31d112acd67">&#9670;&#160;</a></span>xTraceInternalEventBufferTransferAll()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -301,8 +301,8 @@ Functions</h2></td></tr>
         <tr>
           <td class="memname">traceResult xTraceInternalEventBufferTransferAll </td>
           <td>(</td>
-          <td class="paramtype">int32_t *&#160;</td>
-          <td class="paramname"><em>piBytesWritten</em></td><td>)</td>
+          <td class="paramtype">void&#160;</td>
+          <td class="paramname"></td><td>)</td>
           <td></td>
         </tr>
       </table>
@@ -311,12 +311,6 @@ Functions</h2></td></tr>
 <p>Transfers all internal trace event buffer data using the function xTraceStreamPortWriteData(...) as defined in trcStreamPort.h. </p>
 <p>This function is intended to be called by the periodic TzCtrl task with a suitable delay (e.g. 10-100 ms).</p>
 <p>In case of errors from the streaming interface, it registers a warning (TRC_WARNING_STREAM_PORT_WRITE) provided by xTraceErrorGetLast().</p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramdir">[out]</td><td class="paramname">piBytesWritten</td><td>Bytes written.</td></tr>
-  </table>
-  </dd>
-</dl>
 <dl class="retval"><dt>Return values</dt><dd>
   <table class="retval">
     <tr><td class="paramname">TRC_FAIL</td><td>Failure </td></tr>
@@ -327,8 +321,8 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="ga6e536455ac0e8f942074395ef79440f4" name="ga6e536455ac0e8f942074395ef79440f4"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga6e536455ac0e8f942074395ef79440f4">&#9670;&#160;</a></span>xTraceInternalEventBufferTransferChunk()</h2>
+<a id="ga71c1dd2b171f8eb8968a4f159b5bd20f" name="ga71c1dd2b171f8eb8968a4f159b5bd20f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga71c1dd2b171f8eb8968a4f159b5bd20f">&#9670;&#160;</a></span>xTraceInternalEventBufferTransferChunk()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -336,8 +330,8 @@ Functions</h2></td></tr>
         <tr>
           <td class="memname">traceResult xTraceInternalEventBufferTransferChunk </td>
           <td>(</td>
-          <td class="paramtype">int32_t *&#160;</td>
-          <td class="paramname"><em>piBytesWritten</em></td><td>)</td>
+          <td class="paramtype">void&#160;</td>
+          <td class="paramname"></td><td>)</td>
           <td></td>
         </tr>
       </table>
@@ -346,12 +340,6 @@ Functions</h2></td></tr>
 <p>Transfer internal trace event buffer data through streamport. </p>
 <p>This routine will attempt to transfer a chunk of existing data in the trace event buffer through the streamport. New data pushed to the trace event buffer during the execution of this routine will not be transfered.</p>
 <p>When transferring a chunk which wraps the buffer, a singular transfer is made to avoid issuing dual writes. This configuration means that during wrapping, the chunk might be reduced in size even if there is more data at the start of the buffer. To transfer more data check piBytesWritten and issue multiple transfers if required.</p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramdir">[out]</td><td class="paramname">piBytesWritten</td><td>Bytes written.</td></tr>
-  </table>
-  </dd>
-</dl>
 <dl class="retval"><dt>Return values</dt><dd>
   <table class="retval">
     <tr><td class="paramname">TRC_FAIL</td><td>Failure </td></tr>

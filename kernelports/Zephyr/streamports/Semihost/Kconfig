@@ -1,0 +1,56 @@
+# Copyright (c) 2023 Percepio AB
+# SPDX-License-Identifier: Apache-2.0
+
+menu "Semihost Config"
+config PERCEPIO_TRC_CFG_STREAM_PORT_TRACE_FILE
+	string "Tracefile path"
+	default "./trace.psf"
+	help
+	  Path to where the Tracealyzer trace file should be stored (.psf).
+
+config PERCEPIO_TRC_CFG_STREAM_PORT_USE_INTERNAL_BUFFER
+	bool "Use internal buffer"
+	default n
+
+if PERCEPIO_TRC_CFG_STREAM_PORT_USE_INTERNAL_BUFFER
+config PERCEPIO_TRC_CFG_STREAM_PORT_INTERNAL_BUFFER_SIZE
+	int "Internal buffer size"
+	range 32 10485760
+	default 10240
+
+choice PERCEPIO_TRC_CFG_STREAM_PORT_INTERNAL_BUFFER_TRANSFER_MODE
+	prompt "Internal buffer transfer mode"
+	default PERCEPIO_TRC_INTERNAL_EVENT_BUFFER_OPTION_TRANSFER_MODE_ALL
+
+config PERCEPIO_TRC_INTERNAL_EVENT_BUFFER_OPTION_TRANSFER_MODE_ALL
+	bool "Transfer all"
+
+config PERCEPIO_TRC_INTERNAL_EVENT_BUFFER_OPTION_TRANSFER_MODE_CHUNK
+	bool "Transfer chunks"
+endchoice
+
+if PERCEPIO_TRC_INTERNAL_EVENT_BUFFER_OPTION_TRANSFER_MODE_CHUNK
+config PERCEPIO_TRC_CFG_STREAM_PORT_INTERNAL_BUFFER_CHUNK_SIZE
+	int "Chunk size"
+	range 4 10485760
+	default 4096
+
+config PERCEPIO_TRC_CFG_STREAM_PORT_INTERNAL_BUFFER_CHUNK_TRANSFER_AGAIN_SIZE_LIMIT
+	int "Transfer size limit for immediate re-transfer"
+	range 4 10485760
+	default 1024
+	help
+	  Defines the number of transferred bytes needed to trigger another immediate transfer.
+	  This will increase throughput by immediately doing a transfer and not wait for another xTraceTzCtrl() loop.
+
+config PERCEPIO_TRC_CFG_STREAM_PORT_INTERNAL_BUFFER_CHUNK_TRANSFER_AGAIN_COUNT_LIMIT
+	int "Immediate re-transfer count limit"
+	range 1 20
+	default 5
+	help
+	  Defines the maximum number of times to trigger another immediate transfer before returning to xTraceTzCtrl().
+	  This will increase throughput by immediately doing a transfer and not wait for another xTraceTzCtrl() loop.
+endif # PERCEPIO_TRC_INTERNAL_EVENT_BUFFER_OPTION_TRANSFER_MODE_CHUNK
+endif #PERCEPIO_TRC_CFG_STREAM_PORT_USE_INTERNAL_BUFFER
+
+endmenu # "Semihost Config"

@@ -1,5 +1,5 @@
 /*
-* Percepio Trace Recorder for Tracealyzer v4.7.0
+* Percepio Trace Recorder for Tracealyzer v4.8.0
 * Copyright 2023 Percepio AB
 * www.percepio.com
 *
@@ -37,7 +37,7 @@ typedef uint8_t TraceStaticBuffer_t[TRC_MAX_BLOB_SIZE];
 /**
  * @internal Trace Core Static Buffer Core Structure
  */
-typedef struct TraceCoreStaticBufferCore
+typedef struct TraceCoreStaticBufferCore	/* Aligned */
 {
 	TraceStaticBuffer_t dummyEvents[(TRC_CFG_MAX_ISR_NESTING) + 1]; /**< */
 } TraceCoreStaticBuffer_t;
@@ -45,7 +45,7 @@ typedef struct TraceCoreStaticBufferCore
 /**
  * @internal Trace Static Buffer Table Structure
  */
-typedef struct TraceStaticBufferTable
+typedef struct TraceStaticBufferTable	/* Aligned */
 {
 	TraceCoreStaticBuffer_t coreDummyEvents[TRC_CFG_CORE_COUNT]; /**< Temporary buffers used for event or blob creation. */
 } TraceStaticBufferTable_t;

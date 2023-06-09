@@ -1,5 +1,5 @@
 /*
- * Percepio Trace Recorder for Tracealyzer v4.7.0
+ * Percepio Trace Recorder for Tracealyzer v4.8.0
  * Copyright 2023 Percepio AB
  * www.percepio.com
  *
@@ -34,11 +34,19 @@
 #endif
 
 #ifndef TRC_INTERNAL_BUFFER_CHUNK_SIZE
-#define TRC_INTERNAL_BUFFER_CHUNK_SIZE 1024
+#define TRC_INTERNAL_BUFFER_CHUNK_SIZE 1024UL
 #endif
 
 #ifndef TRC_INTERNAL_BUFFER_PAGE_SIZE
-#define TRC_INTERNAL_BUFFER_PAGE_SIZE 1024
+#define TRC_INTERNAL_BUFFER_PAGE_SIZE 1024UL
+#endif
+
+#ifndef TRC_INTERNAL_BUFFER_CHUNK_TRANSFER_AGAIN_SIZE_LIMIT
+#define TRC_INTERNAL_BUFFER_CHUNK_TRANSFER_AGAIN_SIZE_LIMIT (TRC_INTERNAL_BUFFER_PAGE_SIZE / 2UL)
+#endif
+
+#ifndef TRC_INTERNAL_BUFFER_CHUNK_TRANSFER_AGAIN_COUNT_LIMIT
+#define TRC_INTERNAL_BUFFER_CHUNK_TRANSFER_AGAIN_COUNT_LIMIT (5UL)
 #endif
 
 #if (TRC_USE_INTERNAL_BUFFER == 1)
@@ -123,12 +131,10 @@ traceResult xTraceInternalEventBufferPush(void *pvData, uint32_t uiSize, int32_t
  * In case of errors from the streaming interface, it registers a warning
  * (TRC_WARNING_STREAM_PORT_WRITE) provided by xTraceErrorGetLast().
  * 
- * @param[out] piBytesWritten Bytes written.
- * 
  * @retval TRC_FAIL Failure
  * @retval TRC_SUCCESS Success
  */
-traceResult xTraceInternalEventBufferTransferAll(int32_t *piBytesWritten);
+traceResult xTraceInternalEventBufferTransferAll(void);
 
 /**
  * @brief Transfer internal trace event buffer data through streamport.
@@ -143,12 +149,10 @@ traceResult xTraceInternalEventBufferTransferAll(int32_t *piBytesWritten);
  * more data at the start of the buffer. To transfer more data check
  * piBytesWritten and issue multiple transfers if required.
  *
- * @param[out] piBytesWritten Bytes written.
- *
  * @retval TRC_FAIL Failure
  * @retval TRC_SUCCESS Success
  */
-traceResult xTraceInternalEventBufferTransferChunk(int32_t *piBytesWritten);
+traceResult xTraceInternalEventBufferTransferChunk(void);
 
 /**
  * @brief Clears all trace events in the internal trace event buffer.
@@ -166,12 +170,12 @@ traceResult xTraceInternalEventBufferClear(void);
 
 #else /* (TRC_USE_INTERNAL_BUFFER == 1)*/
 
-#define xTraceInternalEventBufferInitialize(puiBuffer, uiSize) ((void)uiSize, puiBuffer != 0 ? TRC_SUCCESS : TRC_FAIL)
-#define xTraceInternalEventBufferAlloc(ppvData, uiSize) ((void)uiSize, ppvData != 0 ? TRC_SUCCESS : TRC_FAIL)
-#define xTraceInternalEventBufferAllocCommit(pvData, uiSize, piBytesWritten)
-#define xTraceInternalEventBufferPush(pvData, uiSize, piBytesWritten) ((void)uiSize, (void)piBytesWritten, pvData != 0 ? TRC_SUCCESS : TRC_FAIL)
-#define xTraceInternalEventBufferTransfer(piBytesWritten) ((void)piBytesWritten, TRC_SUCCESS)
-#define xTraceInternalEventBufferTransferChunk(piBytesWritten, uiChunkSize) ((void)piBytesWritten, (void)uiChunkSize, TRC_SUCCESS)
+#define xTraceInternalEventBufferInitialize(puiBuffer, uiSize) ((void)(uiSize), (puiBuffer) != 0 ? TRC_SUCCESS : TRC_FAIL)
+#define xTraceInternalEventBufferAlloc(ppvData, uiSize) ((void)(uiSize), (ppvData) != 0 ? TRC_SUCCESS : TRC_FAIL)
+#define xTraceInternalEventBufferAllocCommit(pvData, uiSize, piBytesWritten) ((void)(pvData), (void)(uiSize), (void)(piBytesWritten), TRC_SUCCESS)
+#define xTraceInternalEventBufferPush(pvData, uiSize, piBytesWritten) ((void)(uiSize), (void)(piBytesWritten), (pvData) != 0 ? TRC_SUCCESS : TRC_FAIL)
+#define xTraceInternalEventBufferTransfer() (void)(TRC_SUCCESS)
+#define xTraceInternalEventBufferTransferChunk(piBytesWritten, uiChunkSize) ((void)(piBytesWritten), (void)(uiChunkSize), TRC_SUCCESS)
 #define xTraceInternalEventBufferClear() (void)(TRC_SUCCESS)
 
 #endif /* (TRC_USE_INTERNAL_BUFFER == 1)*/
