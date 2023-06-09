@@ -1,5 +1,5 @@
 /*
- * Trace Recorder for Tracealyzer v4.8.0
+ * Trace Recorder for Tracealyzer v4.8.0.hotfix1
  * Copyright 2023 Percepio AB
  * www.percepio.com
  *
@@ -73,46 +73,45 @@ typedef struct TraceStreamPortBuffer
  */
 traceResult xTraceStreamPortInitialize(TraceStreamPortBuffer_t* pxBuffer);
 
-
 /**
  * @brief Allocates data from the stream port.
- *
+ * 
  * @param[in] uiSize Allocation size
  * @param[out] ppvData Allocation data pointer
- *
+ * 
  * @retval TRC_FAIL Allocate failed
  * @retval TRC_SUCCESS Success
  */
 #if (TRC_USE_INTERNAL_BUFFER == 1)
-#if (TRC_INTERNAL_EVENT_BUFFER_WRITE_MODE == TRC_INTERNAL_EVENT_BUFFER_OPTION_WRITE_MODE_COPY)
-#define xTraceStreamPortAllocate(uiSize, ppvData) ((void)(uiSize), xTraceStaticBufferGet(ppvData))
+	#if (TRC_INTERNAL_EVENT_BUFFER_WRITE_MODE == TRC_INTERNAL_EVENT_BUFFER_OPTION_WRITE_MODE_COPY)
+		#define xTraceStreamPortAllocate(uiSize, ppvData) ((void)(uiSize), xTraceStaticBufferGet(ppvData))
+	#else
+		#define xTraceStreamPortAllocate(uiSize, ppvData) ((void)(uiSize), xTraceInternalEventBufferAlloc(uiSize, ppvData))
+	#endif
 #else
-#define xTraceStreamPortAllocate(uiSize, ppvData) ((void)(uiSize), xTraceInternalEventBufferAlloc(uiSize, ppvData))
-#endif
-#else
-#define xTraceStreamPortAllocate(uiSize, ppvData) ((void)(uiSize), xTraceStaticBufferGet(ppvData))
+	#define xTraceStreamPortAllocate(uiSize, ppvData) ((void)(uiSize), xTraceStaticBufferGet(ppvData))
 #endif
 
 /**
  * @brief Commits data to the stream port, depending on the implementation/configuration of the
  * stream port this data might be directly written to the stream port interface, buffered, or
  * something else.
- *
+ * 
  * @param[in] pvData Data to commit
  * @param[in] uiSize Data to commit size
  * @param[out] piBytesCommitted Bytes committed
- *
+ * 
  * @retval TRC_FAIL Commit failed
  * @retval TRC_SUCCESS Success
  */
 #if (TRC_USE_INTERNAL_BUFFER == 1)
-#if (TRC_INTERNAL_EVENT_BUFFER_WRITE_MODE == TRC_INTERNAL_EVENT_BUFFER_OPTION_WRITE_MODE_COPY)
-#define xTraceStreamPortCommit xTraceInternalEventBufferPush
+	#if (TRC_INTERNAL_EVENT_BUFFER_WRITE_MODE == TRC_INTERNAL_EVENT_BUFFER_OPTION_WRITE_MODE_COPY)
+		#define xTraceStreamPortCommit xTraceInternalEventBufferPush
+	#else
+		#define xTraceStreamPortCommit xTraceInternalEventBufferAllocCommit
+	#endif
 #else
-#define xTraceStreamPortCommit xTraceInternalEventBufferAllocCommit
-#endif
-#else
-#define xTraceStreamPortCommit xTraceStreamPortWriteData
+	#define xTraceStreamPortCommit xTraceStreamPortWriteData
 #endif
 
 /**

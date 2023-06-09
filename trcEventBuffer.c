@@ -1,5 +1,5 @@
 /*
-* Percepio Trace Recorder for Tracealyzer v4.8.0
+* Percepio Trace Recorder for Tracealyzer v4.8.0.hotfix1
 * Copyright 2023 Percepio AB
 * www.percepio.com
 *
@@ -499,7 +499,7 @@ traceResult xTraceEventBufferTransferChunk(TraceEventBuffer_t* pxTraceEventBuffe
 			uiBytesToWrite = uiChunkSize;
 		}
 
-		xTraceStreamPortWriteData(&pxTraceEventBuffer->puiBuffer[uiTail], uiBytesToWrite, &iBytesWritten); /*cstat !MISRAC2004-17.4_b We need to access a specific part of the buffer*/
+		(void)xTraceStreamPortWriteData(&pxTraceEventBuffer->puiBuffer[uiTail], uiBytesToWrite, &iBytesWritten); /*cstat !MISRAC2004-17.4_b We need to access a specific part of the buffer*/
 
 		pxTraceEventBuffer->uiTail += (uint32_t)iBytesWritten;
 	}
@@ -511,7 +511,7 @@ traceResult xTraceEventBufferTransferChunk(TraceEventBuffer_t* pxTraceEventBuffe
 			uiBytesToWrite = uiChunkSize;
 		}
 
-		xTraceStreamPortWriteData(&pxTraceEventBuffer->puiBuffer[uiTail], uiBytesToWrite, &iBytesWritten); /*cstat !MISRAC2004-17.4_b We need to access a specific part of the buffer*/
+		(void)xTraceStreamPortWriteData(&pxTraceEventBuffer->puiBuffer[uiTail], uiBytesToWrite, &iBytesWritten); /*cstat !MISRAC2004-17.4_b We need to access a specific part of the buffer*/
 
 		/* Check if we managed to write until the end or not, if we didn't we
 		 * add the number of bytes written. If we managed to write the last

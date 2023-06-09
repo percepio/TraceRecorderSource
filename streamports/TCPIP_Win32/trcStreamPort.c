@@ -1,5 +1,5 @@
 /*
- * Trace Recorder for Tracealyzer v4.8.0
+ * Trace Recorder for Tracealyzer v4.8.0.hotfix1
  * Copyright 2023 Percepio AB
  * www.percepio.com
  *
@@ -25,13 +25,13 @@
 typedef struct TraceStreamPortTCPIP
 {
 #if (TRC_USE_INTERNAL_BUFFER)
-	uint8_t buffer[(TRC_STREAM_PORT_BUFFER_SIZE)];
+	uint8_t buffer[(TRC_ALIGNED_STREAM_PORT_BUFFER_SIZE)];
 #else
 	TraceUnsignedBaseType_t buffer[1];
 #endif
 } TraceStreamPortTCPIP_t;
 
-static TraceStreamPortTCPIP_t* pxStreamPortFile TRC_CFG_RECORDER_DATA_ATTRIBUTE;
+static TraceStreamPortTCPIP_t* pxStreamPortTCPIP TRC_CFG_RECORDER_DATA_ATTRIBUTE;
 static SOCKET server_socket = (UINT_PTR)0, trace_socket = (UINT_PTR)0;
 struct sockaddr_in server, client;
 
@@ -217,10 +217,10 @@ traceResult xTraceStreamPortInitialize(TraceStreamPortBuffer_t* pxBuffer)
 		return TRC_FAIL;
 	}
 
-	pxStreamPortFile = (TraceStreamPortTCPIP_t*)pxBuffer;
+	pxStreamPortTCPIP = (TraceStreamPortTCPIP_t*)pxBuffer;
 
 #if (TRC_USE_INTERNAL_BUFFER == 1)
-	return xTraceInternalEventBufferInitialize(pxStreamPortFile->buffer, sizeof(pxStreamPortFile->buffer));
+	return xTraceInternalEventBufferInitialize(pxStreamPortTCPIP->buffer, sizeof(pxStreamPortTCPIP->buffer));
 #else
 	return TRC_SUCCESS;
 #endif

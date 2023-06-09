@@ -1,5 +1,5 @@
 /*
- * Trace Recorder for Tracealyzer v4.8.0
+ * Trace Recorder for Tracealyzer v4.8.0.hotfix1
  * Copyright 2023 Percepio AB
  * www.percepio.com
  *
@@ -30,16 +30,16 @@ struct sockaddr_in address, remote;
 typedef struct TraceStreamPortTCPIP
 {
 #if (TRC_USE_INTERNAL_BUFFER)
-	uint8_t buffer[(TRC_STREAM_PORT_BUFFER_SIZE)];
+	uint8_t buffer[(TRC_ALIGNED_STREAM_PORT_BUFFER_SIZE)];
 #else
 	TraceUnsignedBaseType_t buffer[1];
 #endif
 } TraceStreamPortTCPIP_t;
 
-static TraceStreamPortTCPIP_t* pxStreamPortFile TRC_CFG_RECORDER_DATA_ATTRIBUTE;
+static TraceStreamPortTCPIP_t* pxStreamPortTCPIP TRC_CFG_RECORDER_DATA_ATTRIBUTE;
 
 static int32_t prvSocketSend(void* pvData, uint32_t uiSize, int32_t* piBytesWritten);
-static int32_t prvSocketReceive(void* pvData, uint32_t uiSize, int32_t* bytesRead);
+static int32_t prvSocketReceive(void* pvData, uint32_t uiSize, int32_t* piBytesRead);
 static int32_t prvSocketInitializeListener();
 static int32_t prvSocketAccept();
 static void prvCloseAllSockets();
@@ -49,38 +49,48 @@ static int32_t prvSocketSend( void* pvData, uint32_t uiSize, int32_t* piBytesWri
   if (new_sd < 0)
     return -1;
   
-  if (piBytesWritten == 0)
+  if (piBytesWritten == (void*)0)
 	return -1;
   
   *piBytesWritten = send( new_sd, pvData, uiSize, 0 );
+  
   if (*piBytesWritten < 0)
   {
+    *piBytesWritten = 0;
+		
     /* EWOULDBLOCK may be expected when buffers are full */
-    if ((errno != 0) && (errno != EWOULDBLOCK))
+    if (errno != EWOULDBLOCK)
 	{
 		closesocket(new_sd);
 		new_sd = -1;
 		return -1;
 	}
-    else
-        *piBytesWritten = 0;
   }
   
   return 0;
 }
 
-static int32_t prvSocketReceive( void* pvData, uint32_t uiSize, int32_t* bytesRead )
+static int32_t prvSocketReceive( void* pvData, uint32_t uiSize, int32_t* piBytesRead )
 {
   if (new_sd < 0)
     return -1;
+  
+  if (piBytesRead == (void*)0)
+	  return -1;
 
-  *bytesRead = recv( new_sd, pvData, uiSize, 0 );
-  /* EWOULDBLOCK may be expected when there is no pvData to receive */
-  if (errno != 0 && errno != EWOULDBLOCK)
+  *piBytesRead = recv( new_sd, pvData, uiSize, 0 );
+  
+  if (*piBytesRead < 0)
   {
-    closesocket(new_sd);
-    new_sd = -1;
-    return -1;
+	  *piBytesRead = 0;
+	  
+		/* EWOULDBLOCK may be expected when there is no pvData to receive */
+	  if (errno != EWOULDBLOCK)
+	  {
+		closesocket(new_sd);
+		new_sd = -1;
+		return -1;
+	  }
   }
 
   return 0;
@@ -89,12 +99,16 @@ static int32_t prvSocketReceive( void* pvData, uint32_t uiSize, int32_t* bytesRe
 static int32_t prvSocketInitializeListener()
 {
   if (sock >= 0)
-	return 0;
+  {
+	  return 0;
+  }
   
   sock = lwip_socket(AF_INET, SOCK_STREAM, 0);
   
   if (sock < 0)
+  {
     return -1;
+  }
 
   address.sin_family = AF_INET;
   address.sin_port = htons(TRC_CFG_STREAM_PORT_TCPIP_PORT);
@@ -184,10 +198,10 @@ traceResult xTraceStreamPortInitialize(TraceStreamPortBuffer_t* pxBuffer)
 		return TRC_FAIL;
 	}
 
-	pxStreamPortFile = (TraceStreamPortTCPIP_t*)pxBuffer;
+	pxStreamPortTCPIP = (TraceStreamPortTCPIP_t*)pxBuffer;
 
 #if (TRC_USE_INTERNAL_BUFFER == 1)
-	return xTraceInternalEventBufferInitialize(pxStreamPortFile->buffer, sizeof(pxStreamPortFile->buffer));
+	return xTraceInternalEventBufferInitialize(pxStreamPortTCPIP->buffer, sizeof(pxStreamPortTCPIP->buffer));
 #else
 	return TRC_SUCCESS;
 #endif

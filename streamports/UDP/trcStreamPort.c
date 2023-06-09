@@ -1,5 +1,5 @@
 /*
- * Trace Recorder for Tracealyzer v4.8.0
+ * Trace Recorder for Tracealyzer v4.8.0.hotfix1
  * Copyright 2023 Percepio AB
  * www.percepio.com
  *
@@ -20,6 +20,7 @@
 /* UDP includes - for lwIP in this case */
 #include <lwip/udp.h>
 #include <lwip/errno.h>
+#include <string.h>
 
 int sock = -1, new_sd = -1;
 int flags = 0;
@@ -30,7 +31,7 @@ struct udp_pcb *pxPCB_recv = (void*)0;
 typedef struct TraceStreamPortUDP
 {
 #if (TRC_USE_INTERNAL_BUFFER)
-	uint8_t buffer[(TRC_STREAM_PORT_BUFFER_SIZE)];
+	uint8_t buffer[(TRC_ALIGNED_STREAM_PORT_BUFFER_SIZE)];
 #else
 	TraceUnsignedBaseType_t buffer[1];
 #endif
@@ -85,7 +86,14 @@ static int32_t prv_udp_send( void* pvData, uint32_t uiSize, int32_t* piBytesWrit
   if (piBytesWritten == (void*)0)
 	return -1;
   
+	*piBytesWritten = 0;
+  
   pvBuf = pbuf_alloc(PBUF_TRANSPORT, uiSize, PBUF_RAM);
+  
+  if (pvBuf == (void*)0)
+  {
+	  return 0;
+  }
   
   memcpy(pvBuf->payload, pvData, uiSize);
   

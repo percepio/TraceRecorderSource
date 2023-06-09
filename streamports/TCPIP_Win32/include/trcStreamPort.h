@@ -1,5 +1,5 @@
 /*
- * Trace Recorder for Tracealyzer v4.8.0
+ * Trace Recorder for Tracealyzer v4.8.0.hotfix1
  * Copyright 2023 Percepio AB
  * www.percepio.com
  *
@@ -25,6 +25,8 @@
 extern "C" {
 #endif
 
+#define TRC_ALIGNED_STREAM_PORT_BUFFER_SIZE ((((TRC_CFG_STREAM_PORT_INTERNAL_BUFFER_SIZE) + sizeof(TraceUnsignedBaseType_t) - 1) / sizeof(TraceUnsignedBaseType_t)) * sizeof(TraceUnsignedBaseType_t))
+
 #define TRC_USE_INTERNAL_BUFFER (TRC_CFG_STREAM_PORT_USE_INTERNAL_BUFFER)
 
 #define TRC_INTERNAL_EVENT_BUFFER_WRITE_MODE (TRC_CFG_STREAM_PORT_INTERNAL_BUFFER_WRITE_MODE)
@@ -37,17 +39,10 @@ extern "C" {
 
 #define TRC_INTERNAL_BUFFER_CHUNK_TRANSFER_AGAIN_COUNT_LIMIT (TRC_CFG_STREAM_PORT_INTERNAL_BUFFER_CHUNK_TRANSFER_AGAIN_COUNT_LIMIT)
 
-/**
- * @def TRC_STREAM_PORT_BUFFER_SIZE
- *
- * @brief The buffer size, aligned to base type.
- */
-#define TRC_STREAM_PORT_BUFFER_SIZE ((((TRC_CFG_STREAM_PORT_BUFFER_SIZE) + sizeof(TraceUnsignedBaseType_t) - 1) / sizeof(TraceUnsignedBaseType_t)) * sizeof(TraceUnsignedBaseType_t))
-
 typedef struct TraceStreamPortBuffer	/* Aligned */
 {
 #if (TRC_USE_INTERNAL_BUFFER)
-	uint8_t buffer[(TRC_STREAM_PORT_BUFFER_SIZE)];
+	uint8_t buffer[(TRC_ALIGNED_STREAM_PORT_BUFFER_SIZE)];
 #else
 	TraceUnsignedBaseType_t buffer[1];
 #endif
@@ -58,14 +53,45 @@ int32_t prvTraceReadFromSocket(void* data, uint32_t bufsize, int32_t* ptrBytesRe
 
 traceResult xTraceStreamPortInitialize(TraceStreamPortBuffer_t* pxBuffer);
 
-#define xTraceStreamPortAllocate(uiSize, ppvData) ((void)(uiSize), xTraceStaticBufferGet(ppvData))
-
+/**
+ * @brief Allocates data from the stream port.
+ * 
+ * @param[in] uiSize Allocation size
+ * @param[out] ppvData Allocation data pointer
+ * 
+ * @retval TRC_FAIL Allocate failed
+ * @retval TRC_SUCCESS Success
+ */
 #if (TRC_USE_INTERNAL_BUFFER == 1)
-/* Push to internal buffer. It will call on xTraceStreamPortWriteData() periodically. */
-#define xTraceStreamPortCommit xTraceInternalEventBufferPush
+	#if (TRC_INTERNAL_EVENT_BUFFER_WRITE_MODE == TRC_INTERNAL_EVENT_BUFFER_OPTION_WRITE_MODE_COPY)
+		#define xTraceStreamPortAllocate(uiSize, ppvData) ((void)(uiSize), xTraceStaticBufferGet(ppvData))
+	#else
+		#define xTraceStreamPortAllocate(uiSize, ppvData) ((void)(uiSize), xTraceInternalEventBufferAlloc(uiSize, ppvData))
+	#endif
 #else
-/* Write directly */
-#define xTraceStreamPortCommit xTraceStreamPortWriteData
+	#define xTraceStreamPortAllocate(uiSize, ppvData) ((void)(uiSize), xTraceStaticBufferGet(ppvData))
+#endif
+
+/**
+ * @brief Commits data to the stream port, depending on the implementation/configuration of the
+ * stream port this data might be directly written to the stream port interface, buffered, or
+ * something else.
+ * 
+ * @param[in] pvData Data to commit
+ * @param[in] uiSize Data to commit size
+ * @param[out] piBytesCommitted Bytes committed
+ * 
+ * @retval TRC_FAIL Commit failed
+ * @retval TRC_SUCCESS Success
+ */
+#if (TRC_USE_INTERNAL_BUFFER == 1)
+	#if (TRC_INTERNAL_EVENT_BUFFER_WRITE_MODE == TRC_INTERNAL_EVENT_BUFFER_OPTION_WRITE_MODE_COPY)
+		#define xTraceStreamPortCommit xTraceInternalEventBufferPush
+	#else
+		#define xTraceStreamPortCommit xTraceInternalEventBufferAllocCommit
+	#endif
+#else
+	#define xTraceStreamPortCommit xTraceStreamPortWriteData
 #endif
 
 #define xTraceStreamPortWriteData(pvData, uiSize, piBytesWritten) (prvTraceWriteToSocket(pvData, uiSize, piBytesWritten) == 0 ? TRC_SUCCESS : TRC_FAIL)
