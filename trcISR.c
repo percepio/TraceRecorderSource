@@ -151,6 +151,7 @@ traceResult xTraceISRBegin(TraceISRHandle_t xISRHandle)
 traceResult xTraceISREnd(TraceBaseType_t xIsTaskSwitchRequired)
 {
 	TraceISRCoreData_t* pxCoreData;
+	(void)xIsTaskSwitchRequired;
 	TRACE_ALLOC_CRITICAL_SECTION();
 
 	/* This should never fail */
