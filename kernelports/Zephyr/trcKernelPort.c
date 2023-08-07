@@ -1,5 +1,5 @@
 /*
- * Trace Recorder for Tracealyzer v4.8.0.hotfix1
+ * Trace Recorder for Tracealyzer v4.8.0.hotfix2
  * Copyright 2023 Percepio AB
  * www.percepio.com
  *
@@ -1401,7 +1401,7 @@ void sys_trace_syscall_enter(uint32_t id, const char *name) {
 		xTraceEventAddUnsignedBaseType(xTraceHandle, (TraceUnsignedBaseType_t)id);
 
 		/* Add name */
-		xTraceEventAddData(xTraceHandle, (void*)name, strlen(name));
+		xTraceEventAddString(xTraceHandle, name, strlen(name));
 
 		xTraceEventEnd(xTraceHandle);
 	}

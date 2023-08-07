@@ -1,4 +1,4 @@
-Percepio Trace Recorder Initialization v4.8.0.hotfix1
+Percepio Trace Recorder Initialization v4.8.0.hotfix2
 Copyright 2023 Percepio AB
 www.percepio.com
 

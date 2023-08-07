@@ -1,5 +1,5 @@
 /*
- * Trace Recorder for Tracealyzer v4.8.0.hotfix1
+ * Trace Recorder for Tracealyzer v4.8.0.hotfix2
  * Copyright 2023 Percepio AB
  * www.percepio.com
  *
@@ -13,6 +13,9 @@
 #include <zephyr/init.h>
 #include <trcRecorder.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /* Legacy trace defines that are pending refactoring/removal by
  * the Zephyr team.
@@ -1255,5 +1258,9 @@ void sys_trace_syscall_exit(uint32_t id, const char *name);
 void sys_trace_idle(void);
 void sys_trace_isr_enter(void);
 void sys_trace_isr_exit(void);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /*_TRACE_TRACERECORDER_H*/
