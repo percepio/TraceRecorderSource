@@ -175,6 +175,7 @@ var NAVTREEINDEX1 =
 "trcRecorder_8h.html#a3b03d1095ea88af99c6e3d0e785834aa":[6,0,2,18,44],
 "trcRecorder_8h.html#a438c3685b1e39f8c507982077e135fe0":[6,0,2,18,62],
 "trcRecorder_8h.html#a4433d7c94ad4000866306078790197fe":[6,0,2,18,22],
+"trcRecorder_8h.html#a49eb54508af420dee28fac922ce42a73":[6,0,2,18,82],
 "trcRecorder_8h.html#a5313aac36d433a500e2036f3fea541aa":[6,0,2,18,69],
 "trcRecorder_8h.html#a53b3131f5fb7c6c23629d2d472d80655":[6,0,2,18,57],
 "trcRecorder_8h.html#a54344b66a74433f50feee5cfdb726f91":[6,0,2,18,30],
@@ -248,6 +249,5 @@ var NAVTREEINDEX1 =
 "trcTask_8h_source.html":[6,0,2,24],
 "trcTimestamp_8h.html":[6,0,2,25],
 "trcTimestamp_8h_source.html":[6,0,2,25],
-"trcTypes_8h_source.html":[6,0,2,26],
-"trcUtility_8h_source.html":[6,0,2,27]
+"trcTypes_8h_source.html":[6,0,2,26]
 };

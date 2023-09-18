@@ -1,5 +1,5 @@
 /*
- * Trace Recorder for Tracealyzer v4.8.0.hotfix2
+ * Trace Recorder for Tracealyzer v4.8.1
  * Copyright 2023 Percepio AB
  * www.percepio.com
  *
@@ -595,8 +595,7 @@ uint32_t uiTraceTimerGetValue(void);
 		#define TRC_IRQ_PRIORITY_ORDER 0
 	#else
 		/**
-		 * @brief 	Fetch core agnostic timestamp using the external 40MHz timer. This is used by tracerecorder
-		 * 			when running with both cores.
+		 * @brief 	Fetch core agnostic timestamp using the external boot timestamp timer used by ESP IDF.
 		 *
 		 * @return 	Ticks since the timer started
 		 */
@@ -604,7 +603,7 @@ uint32_t uiTraceTimerGetValue(void);
 
 		#define TRC_HWTC_TYPE TRC_FREE_RUNNING_32BIT_INCR
 		#define TRC_HWTC_COUNT prvGetSMPTimestamp()
-		#define TRC_HWTC_FREQ_HZ 40000000
+		#define TRC_HWTC_FREQ_HZ 1000000
 		#define TRC_HWTC_PERIOD 0
 		#define TRC_HWTC_DIVISOR 4
 		#define TRC_IRQ_PRIORITY_ORDER 0

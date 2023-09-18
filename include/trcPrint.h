@@ -1,5 +1,5 @@
 /*
-* Percepio Trace Recorder for Tracealyzer v4.8.0.hotfix2
+* Percepio Trace Recorder for Tracealyzer v4.8.1
 * Copyright 2023 Percepio AB
 * www.percepio.com
 *
@@ -74,6 +74,8 @@ traceResult xTracePrintCompactF(const char* szChannel, const char* szFormat, ...
  * This is a compact and fixed version of xTracePrintF(). Only addresses to channel and format strings are stored and an ELF file must be provided to interpret the trace.
  *
  * Example:
+ *	xTraceDependencyRegister("my_project.elf", TRC_DEPENDENCY_TYPE_ELF);
+ *	...
  *	xTracePrintCompactF0("MyChannel", "MyText");
  *
  * @param[in] szChannel Channel string.
@@ -90,6 +92,8 @@ traceResult xTracePrintCompactF(const char* szChannel, const char* szFormat, ...
  * This is a compact and fixed version of xTracePrintF(). Only addresses to channel and format strings are stored and an ELF file must be provided to interpret the trace.
  *
  * Example:
+ *	xTraceDependencyRegister("my_project.elf", TRC_DEPENDENCY_TYPE_ELF);
+ *	...
  *	xTracePrintCompactF1("MyChannel", "MyFormat %u", 1);
  *
  * @param[in] szChannel Channel string.
@@ -106,7 +110,9 @@ traceResult xTracePrintCompactF(const char* szChannel, const char* szFormat, ...
  *
  * This is a compact and fixed version of xTracePrintF(). Only addresses to channel and format strings are stored and an ELF file must be provided to interpret the trace.
  *
- * Examp
+ * Example
+ *	xTraceDependencyRegister("my_project.elf", TRC_DEPENDENCY_TYPE_ELF);
+ *	...
  *	xTracePrintCompactF2("MyChannel", "MyFormat %u %u", 1, 2);
  *
  * @param[in] szChannel Channel string.
@@ -125,6 +131,8 @@ traceResult xTracePrintCompactF(const char* szChannel, const char* szFormat, ...
  * This is a compact and fixed version of xTracePrintF(). Only addresses to channel and format strings are stored and an ELF file must be provided to interpret the trace.
  *
  * Example:
+ *	xTraceDependencyRegister("my_project.elf", TRC_DEPENDENCY_TYPE_ELF);
+ *	...
  *	xTracePrintCompactF3("MyChannel", "MyFormat %u %u %u", 1, 2, 3);
  *
  * @param[in] szChannel Channel string.
@@ -144,6 +152,8 @@ traceResult xTracePrintCompactF(const char* szChannel, const char* szFormat, ...
  * This is a compact and fixed version of xTracePrintF(). Only addresses to channel and format strings are stored and an ELF file must be provided to interpret the trace.
  *
  * Example:
+ *	xTraceDependencyRegister("my_project.elf", TRC_DEPENDENCY_TYPE_ELF);
+ *	...
  *	xTracePrintCompactF4("MyChannel", "MyFormat %u %u %u %u", 1, 2, 3, 4);
  *
  * @param[in] szChannel Channel string.
@@ -397,12 +407,12 @@ traceResult xTracePrintF(TraceStringHandle_t xChannel, const char* szFormat, ...
  * 
  * @param[in] xChannel Channel.
  * @param[in] szFormat Format.
- * @param[in] xVariableList Variable list arguments.
+ * @param[in] pxVariableList Pointer to variable list arguments.
  * 
  * @retval TRC_FAIL Failure
  * @retval TRC_SUCCESS Success
  */
-traceResult xTraceVPrintF(TraceStringHandle_t xChannel, const char* szFormat, va_list xVariableList);
+traceResult xTraceVPrintF(TraceStringHandle_t xChannel, const char* szFormat, va_list* pxVariableList);
 
 #else
 

@@ -16,7 +16,6 @@ traceResult xTraceEventEndOffline_orig(TraceEventHandle_t pxEventHandle);
 		( \
 			(xTraceEventBeginRawOffline_orig(sizeof(TraceEvent0_t) + (uiPayloadSize), pxEventHandle)) == TRC_SUCCESS ? \
 			( \
-				pxTraceEventDataTable->coreEventData[TRC_CFG_GET_CURRENT_CORE()].eventCounter++, \
 				SET_BASE_EVENT_DATA((TraceEvent0_t*)(((TraceEventData_t*)*(pxEventHandle))->pvBlob), \
 					uiEventCode, \
 					(((TraceEventData_t*)*(pxEventHandle))->size - sizeof(TraceEvent0_t)) / sizeof(uint32_t), \

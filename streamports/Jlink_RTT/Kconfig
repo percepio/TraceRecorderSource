@@ -83,9 +83,12 @@ config PERCEPIO_TRC_CFG_STREAM_PORT_RTT_MODE_BLOCK_IF_FIFO_FULL
 	bool "Block: Wait until there is space in the buffer."
 endchoice
 
+menu "Hidden RTT Settings"
+	visible if n
 config PERCEPIO_TRC_CFG_STREAM_PORT_USE_INTERNAL_BUFFER
 	bool "Use internal buffer"
 	default n
+endmenu # Hidden RTT Settings
 
 if PERCEPIO_TRC_CFG_STREAM_PORT_USE_INTERNAL_BUFFER
 config PERCEPIO_TRC_CFG_STREAM_PORT_INTERNAL_BUFFER_SIZE

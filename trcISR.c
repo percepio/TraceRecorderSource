@@ -1,5 +1,5 @@
 /*
-* Percepio Trace Recorder for Tracealyzer v4.8.0.hotfix2
+* Percepio Trace Recorder for Tracealyzer v4.8.1
 * Copyright 2023 Percepio AB
 * www.percepio.com
 *
@@ -152,6 +152,8 @@ traceResult xTraceISREnd(TraceBaseType_t xIsTaskSwitchRequired)
 {
 	TraceISRCoreData_t* pxCoreData;
 	TRACE_ALLOC_CRITICAL_SECTION();
+
+	(void)xIsTaskSwitchRequired;
 
 	/* This should never fail */
 	TRC_ASSERT(xTraceIsComponentInitialized(TRC_RECORDER_COMPONENT_ISR));

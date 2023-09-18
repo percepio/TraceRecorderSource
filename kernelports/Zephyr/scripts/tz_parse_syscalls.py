@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 """
-    Trace Recorder for Tracealyzer v4.8.0.hotfix2
+    Trace Recorder for Tracealyzer v4.8.1
     Copyright 2023 Percepio AB
     www.percepio.com
 
@@ -77,6 +77,7 @@ with open(syscall_list_h, 'r') as fh:
             # Check if syscall K_SYSCALL_LIMIT
             if syscall_name == "LIMIT":
                 syscall_exit_start_id = int(syscall_id) + 1
+                break
 
 if not syscall_exit_start_id:
     print("No K_SYSCALL_LIMIT definition could be found, exiting...")

@@ -1,5 +1,5 @@
 /*
- * Trace Recorder for Tracealyzer v4.8.0.hotfix2
+ * Trace Recorder for Tracealyzer v4.8.1
  * Copyright 2023 Percepio AB
  * www.percepio.com
  *
@@ -49,7 +49,7 @@ extern "C" {
 #define sys_port_trace_k_thread_heap_assign(thread, heap, ...)                      \
     sys_trace_k_thread_heap_assign(thread, heap)
 #undef sys_port_trace_k_thread_join_enter
-#define sys_port_trace_k_thread_join_enter(thread, timeout, ...)     
+#define sys_port_trace_k_thread_join_enter(thread, timeout, ...)
 #undef sys_port_trace_k_thread_join_blocking
 #define sys_port_trace_k_thread_join_blocking(thread, timeout, ...)                 \
     sys_trace_k_thread_join_blocking(thread, timeout)
@@ -99,7 +99,7 @@ extern "C" {
 #define sys_port_trace_k_thread_suspend_enter(thread, ...)                          \
     sys_trace_k_thread_suspend(thread)
 #undef sys_port_trace_k_thread_suspend_exit
-#define sys_port_trace_k_thread_suspend_exit(thread, ...)    
+#define sys_port_trace_k_thread_suspend_exit(thread, ...)
 #undef sys_port_trace_k_thread_resume_enter
 #define sys_port_trace_k_thread_resume_enter(thread, ...)                           \
     sys_trace_k_thread_resume(thread)
@@ -455,7 +455,7 @@ extern "C" {
 #define sys_port_trace_k_queue_merge_slist_exit(queue, ret, ...)                    \
     sys_trace_k_queue_merge_slist_exit(queue, list, ret)
 #undef sys_port_trace_k_queue_get_enter
-#define sys_port_trace_k_queue_get_enter(queue, timeout, ...)        
+#define sys_port_trace_k_queue_get_enter(queue, timeout, ...)
 #undef sys_port_trace_k_queue_get_blocking
 #define sys_port_trace_k_queue_get_blocking(queue, timeout, ...)                    \
     sys_trace_k_queue_get_blocking(queue, timeout)
@@ -589,7 +589,7 @@ extern "C" {
 #define sys_port_trace_k_stack_push_exit(stack, ret, ...)                           \
     sys_trace_k_stack_push_exit(stack, data, ret)
 #undef sys_port_trace_k_stack_pop_enter
-#define sys_port_trace_k_stack_pop_enter(stack, timeout, ...)        
+#define sys_port_trace_k_stack_pop_enter(stack, timeout, ...)
 #undef sys_port_trace_k_stack_pop_blocking
 #define sys_port_trace_k_stack_pop_blocking(stack, timeout, ...)                    \
     sys_trace_k_stack_pop_blocking(stack, data, timeout)
@@ -1135,7 +1135,7 @@ void sys_trace_k_mbox_async_put_enter(struct k_mbox *mbox, struct k_sem *sem);
 void sys_trace_k_mbox_async_put_exit(struct k_mbox *mbox, struct k_sem *sem);
 void sys_trace_k_mbox_get_enter(struct k_mbox *mbox,
     struct k_mbox_msg *rx_msg, void *buffer, k_timeout_t timeout);
-void sys_trace_k_mbox_get_blocking(struct k_mbox *mbox, 
+void sys_trace_k_mbox_get_blocking(struct k_mbox *mbox,
     struct k_mbox_msg *rx_msg, void *buffer, k_timeout_t timeout);
 void sys_trace_k_mbox_get_exit(struct k_mbox *mbox, struct k_mbox_msg *rx_msg,
     void *buffer, k_timeout_t timeout, int ret);

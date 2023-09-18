@@ -14,5 +14,5 @@ var group__trace__print__apis =
     [ "xTracePrint", "group__trace__print__apis.html#gab883a6ad75c359454757ddb0503f5d3b", null ],
     [ "xTracePrintCompactF", "group__trace__print__apis.html#ga37d6564a1d5f6debc318b32b40290539", null ],
     [ "xTracePrintF", "group__trace__print__apis.html#gaf7a1c759021aaf820223232de9173c9c", null ],
-    [ "xTraceVPrintF", "group__trace__print__apis.html#ga5f5225b2f149a1fa4858bc6364fdbacc", null ]
+    [ "xTraceVPrintF", "group__trace__print__apis.html#ga55d9c4107dbd504c2d74b19880a7d307", null ]
 ];

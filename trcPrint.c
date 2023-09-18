@@ -1,5 +1,5 @@
 /*
-* Percepio Trace Recorder for Tracealyzer v4.8.0.hotfix2
+* Percepio Trace Recorder for Tracealyzer v4.8.1
 * Copyright 2023 Percepio AB
 * www.percepio.com
 *
@@ -18,7 +18,7 @@
 
 #include <stdarg.h>
 
-static traceResult prvTraceVPrintF(const TraceStringHandle_t xChannel, const char* szFormat, uint32_t uiLength, uint32_t uiArgs, va_list* const pxVariableList);
+static traceResult prvTraceVPrintF(const TraceStringHandle_t xChannel, const char* szFormat, uint32_t uiLength, uint32_t uiArgs, va_list* pxVariableList);
 
 static TracePrintData_t *pxPrintData TRC_CFG_RECORDER_DATA_ATTRIBUTE;
 
@@ -82,7 +82,7 @@ traceResult xTraceConsoleChannelPrintF(const char* szFormat, ...)
 	}
 
 	va_start(xVariableList, szFormat);
-	xResult = xTraceVPrintF(pxPrintData->consoleChannel, szFormat, xVariableList);
+	xResult = xTraceVPrintF(pxPrintData->consoleChannel, szFormat, &xVariableList);
 	va_end(xVariableList);
 
 	return xResult;
@@ -179,14 +179,14 @@ traceResult xTracePrintF(TraceStringHandle_t xChannel, const char* szFormat, ...
 	}
 
 	va_start(xVariableList, szFormat);
-	xResult = xTraceVPrintF(xChannel, szFormat, xVariableList);
+	xResult = xTraceVPrintF(xChannel, szFormat, &xVariableList);
 	va_end(xVariableList);
 
 	return xResult;
 }
 
 /*cstat !MISRAC2004-6.3 !MISRAC2012-Dir-4.6_a Suppress basic char type usage*/ /*cstat !MISRAC2012-Rule-17.1 Suppress stdarg usage check*/
-traceResult xTraceVPrintF(TraceStringHandle_t xChannel, const char* szFormat, va_list xVariableList)
+traceResult xTraceVPrintF(TraceStringHandle_t xChannel, const char* szFormat, va_list* pxVariableList)
 {
 	uint32_t i;
 	uint32_t uiArgs = 0u;
@@ -226,11 +226,11 @@ traceResult xTraceVPrintF(TraceStringHandle_t xChannel, const char* szFormat, va
 
 	uiLength = i + 1u; /* Null termination */
 
-	return prvTraceVPrintF(xChannel, szFormat, uiLength, uiArgs, &xVariableList);
+	return prvTraceVPrintF(xChannel, szFormat, uiLength, uiArgs, pxVariableList);
 }
 
 /*cstat !MISRAC2004-6.3 !MISRAC2012-Dir-4.6_a Suppress basic char type usage*/ /*cstat !MISRAC2012-Rule-17.1 Suppress stdarg usage check*/
-static traceResult prvTraceVPrintF(TraceStringHandle_t xChannel, const char* szFormat, uint32_t uiLength, uint32_t uiArgs, va_list* const pxVariableList)
+static traceResult prvTraceVPrintF(TraceStringHandle_t xChannel, const char* szFormat, uint32_t uiLength, uint32_t uiArgs, va_list* pxVariableList)
 {
 	TraceEventHandle_t xEventHandle = 0;
 	uint32_t i, uiRemaining = 0u;

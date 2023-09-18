@@ -31,7 +31,6 @@ config PERCEPIO_TRC_CFG_USE_SYSCALL_EXTENSION
       the build/syscalls-v<zephyr-version>.xml file to be loaded as an extension within Tracealyzer.
 endmenu # "RTOS Specific"
 
-
 # Source recorder common config
 rsource "../../config/Kconfig"
 

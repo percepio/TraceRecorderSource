@@ -1,5 +1,5 @@
 /*
- * Trace Recorder for Tracealyzer v4.8.0.hotfix2
+ * Trace Recorder for Tracealyzer v4.8.1
  * Copyright 2023 Percepio AB
  * www.percepio.com
  *
@@ -60,7 +60,7 @@ typedef struct TraceCommandType_t
 #endif
 
 /* Used to interpret the data format */
-#define TRACE_FORMAT_VERSION ((uint16_t)0x000D)
+#define TRACE_FORMAT_VERSION ((uint16_t)0x000E)
 
 /* Used to determine endian of data (big/little) */
 #define TRACE_PSF_ENDIANESS_IDENTIFIER ((uint32_t)0x50534600)
@@ -324,6 +324,13 @@ traceResult xTraceHeaderInitialize(TraceHeaderBuffer_t *pxBuffer)
 	pxHeader->uiPlatformCfgMinor = (uint8_t)TRC_PLATFORM_CFG_MINOR;
 	pxHeader->uiPlatformCfgMajor = (uint8_t)TRC_PLATFORM_CFG_MAJOR;
 	pxHeader->uiNumCores = (uint32_t)TRC_CFG_CORE_COUNT;
+	
+#ifdef TRC_STREAM_PORT_MULTISTREAM_SUPPORT
+	pxHeader->uiNumCores |= 2 << 8;
+#else
+	pxHeader->uiNumCores |= 3 << 8;
+#endif
+	
 	pxHeader->isrTailchainingThreshold = TRC_CFG_ISR_TAILCHAINING_THRESHOLD;
 
 	/* Lowest bit used for TRC_IRQ_PRIORITY_ORDER */

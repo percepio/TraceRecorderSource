@@ -1,4 +1,4 @@
 [mapping:TraceRecorder]
-archive: libTraceRecorder.a
+archive: libESP-IDF_FreeRTOS.a
 entries:
 	* (noflash)

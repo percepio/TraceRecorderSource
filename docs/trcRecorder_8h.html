@@ -25,7 +25,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">Percepio Trace Recorder<span id="projectnumber">&#160;v4.8.0.hotfix2</span>
+   <div id="projectname">Percepio Trace Recorder<span id="projectnumber">&#160;v4.8.1</span>
    </div>
   </td>
  </tr>
@@ -244,7 +244,7 @@ Macros</h2></td></tr>
 <tr class="separator:a017e80004dee99fbe357c86c77940819"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a56704be14a68b7e59a378fac22ff42c7"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="trcRecorder_8h.html#a56704be14a68b7e59a378fac22ff42c7">vTracePrintF</a>&#160;&#160;&#160;(void)<a class="el" href="group__trace__print__apis.html#gaf7a1c759021aaf820223232de9173c9c">xTracePrintF</a></td></tr>
 <tr class="separator:a56704be14a68b7e59a378fac22ff42c7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a548dc97141d6e4d3049da174c5b23e16"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="trcRecorder_8h.html#a548dc97141d6e4d3049da174c5b23e16">vTraceVPrintF</a>&#160;&#160;&#160;(void)<a class="el" href="group__trace__print__apis.html#ga5f5225b2f149a1fa4858bc6364fdbacc">xTraceVPrintF</a></td></tr>
+<tr class="memitem:a548dc97141d6e4d3049da174c5b23e16"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="trcRecorder_8h.html#a548dc97141d6e4d3049da174c5b23e16">vTraceVPrintF</a>&#160;&#160;&#160;(void)<a class="el" href="group__trace__print__apis.html#ga55d9c4107dbd504c2d74b19880a7d307">xTraceVPrintF</a></td></tr>
 <tr class="separator:a548dc97141d6e4d3049da174c5b23e16"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a00d742ca47f84add37a93a8a0f3fb6c5"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="trcRecorder_8h.html#a00d742ca47f84add37a93a8a0f3fb6c5">vTracePrint</a>&#160;&#160;&#160;(void)<a class="el" href="group__trace__print__apis.html#gab883a6ad75c359454757ddb0503f5d3b">xTracePrint</a></td></tr>
 <tr class="separator:a00d742ca47f84add37a93a8a0f3fb6c5"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -306,9 +306,9 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>prvReportStackUsage</
 <tr class="memitem:gaf7a1c759021aaf820223232de9173c9c"><td class="memItemLeft" align="right" valign="top">traceResult&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__trace__print__apis.html#gaf7a1c759021aaf820223232de9173c9c">xTracePrintF</a> (TraceStringHandle_t chn, const char *fmt,...)</td></tr>
 <tr class="memdesc:gaf7a1c759021aaf820223232de9173c9c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Generates "User Events", with formatted text and data, similar to a "printf". User Events can be used for very efficient logging from your application code. It is very fast since the actual string formatting is done on the host side, when the trace is displayed. The execution time is just some microseconds on a 32-bit MCU.  <br /></td></tr>
 <tr class="separator:gaf7a1c759021aaf820223232de9173c9c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga5f5225b2f149a1fa4858bc6364fdbacc"><td class="memItemLeft" align="right" valign="top">traceResult&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__trace__print__apis.html#ga5f5225b2f149a1fa4858bc6364fdbacc">xTraceVPrintF</a> (TraceStringHandle_t eventLabel, const char *formatStr, va_list vl)</td></tr>
-<tr class="memdesc:ga5f5225b2f149a1fa4858bc6364fdbacc"><td class="mdescLeft">&#160;</td><td class="mdescRight">xTracePrintF variant that accepts a va_list. See xTracePrintF documentation for further details.  <br /></td></tr>
-<tr class="separator:ga5f5225b2f149a1fa4858bc6364fdbacc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a49eb54508af420dee28fac922ce42a73"><td class="memItemLeft" align="right" valign="top">traceResult&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="trcRecorder_8h.html#a49eb54508af420dee28fac922ce42a73">xTraceVPrintF</a> (TraceStringHandle_t eventLabel, const char *formatStr, va_list vl)</td></tr>
+<tr class="memdesc:a49eb54508af420dee28fac922ce42a73"><td class="mdescLeft">&#160;</td><td class="mdescRight">xTracePrintF variant that accepts a va_list. See xTracePrintF documentation for further details.  <br /></td></tr>
+<tr class="separator:a49eb54508af420dee28fac922ce42a73"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gab883a6ad75c359454757ddb0503f5d3b"><td class="memItemLeft" align="right" valign="top">traceResult&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__trace__print__apis.html#gab883a6ad75c359454757ddb0503f5d3b">xTracePrint</a> (TraceStringHandle_t chn, const char *str)</td></tr>
 <tr class="memdesc:gab883a6ad75c359454757ddb0503f5d3b"><td class="mdescLeft">&#160;</td><td class="mdescRight">A faster version of xTracePrintF, that only allows for logging a string.  <br /></td></tr>
 <tr class="separator:gab883a6ad75c359454757ddb0503f5d3b"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -1164,7 +1164,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>prvReportStackUsage</
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">#define vTraceVPrintF&#160;&#160;&#160;(void)<a class="el" href="group__trace__print__apis.html#ga5f5225b2f149a1fa4858bc6364fdbacc">xTraceVPrintF</a></td>
+          <td class="memname">#define vTraceVPrintF&#160;&#160;&#160;(void)<a class="el" href="group__trace__print__apis.html#ga55d9c4107dbd504c2d74b19880a7d307">xTraceVPrintF</a></td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -2614,6 +2614,57 @@ vTraceSetFilterGroup(FilterGroup0);
 </div><div class="memdoc">
 
 <p>Call this function periodically. </p>
+<dl class="retval"><dt>Return values</dt><dd>
+  <table class="retval">
+    <tr><td class="paramname">TRC_FAIL</td><td>Failure </td></tr>
+    <tr><td class="paramname">TRC_SUCCESS</td><td>Success </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a49eb54508af420dee28fac922ce42a73" name="a49eb54508af420dee28fac922ce42a73"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a49eb54508af420dee28fac922ce42a73">&#9670;&#160;</a></span>xTraceVPrintF()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">traceResult xTraceVPrintF </td>
+          <td>(</td>
+          <td class="paramtype">TraceStringHandle_t&#160;</td>
+          <td class="paramname"><em>eventLabel</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>formatStr</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">va_list&#160;</td>
+          <td class="paramname"><em>vl</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>xTracePrintF variant that accepts a va_list. See xTracePrintF documentation for further details. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">eventLabel</td><td></td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">formatStr</td><td></td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">vl</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
 <dl class="retval"><dt>Return values</dt><dd>
   <table class="retval">
     <tr><td class="paramname">TRC_FAIL</td><td>Failure </td></tr>

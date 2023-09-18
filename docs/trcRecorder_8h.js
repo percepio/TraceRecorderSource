@@ -82,5 +82,5 @@ var trcRecorder_8h =
     [ "xTraceTaskInstanceFinishedNext", "trcRecorder_8h.html#a16c82bbd9f4fe8df1cd5c544f988e827", null ],
     [ "xTraceTaskInstanceFinishedNow", "trcRecorder_8h.html#a21379c3d2f31b2370bc19c5c2ddce32f", null ],
     [ "xTraceTzCtrl", "trcRecorder_8h.html#a0dc702c30539813811556694b07c806c", null ],
-    [ "xTraceVPrintF", "group__trace__print__apis.html#ga5f5225b2f149a1fa4858bc6364fdbacc", null ]
+    [ "xTraceVPrintF", "trcRecorder_8h.html#a49eb54508af420dee28fac922ce42a73", null ]
 ];

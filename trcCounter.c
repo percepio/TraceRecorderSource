@@ -1,5 +1,5 @@
 /*
-* Trace Recorder for Tracealyzer v4.8.0.hotfix2
+* Trace Recorder for Tracealyzer v4.8.1
 * Copyright 2023 Percepio AB
 * www.percepio.com
 *
@@ -76,7 +76,7 @@ traceResult xTraceCounterSet(TraceCounterHandle_t xCounterHandle, TraceBaseType_
 	TRC_ASSERT(xTraceIsComponentInitialized(TRC_RECORDER_COMPONENT_COUNTER));
 
 	/* This should never fail */
-	TRC_ASSERT_ALWAYS_EVALUATE(xTraceEntrySetState((TraceEntryHandle_t)xCounterHandle, TRC_COUNTER_VALUE_INDEX, (TraceUnsignedBaseType_t)xValue) == TRC_SUCCESS);
+	TRC_ASSERT_ALWAYS_EVALUATE(xTraceObjectSetSpecificState((TraceEntryHandle_t)xCounterHandle, TRC_COUNTER_VALUE_INDEX, (TraceUnsignedBaseType_t)xValue) == TRC_SUCCESS);
 
 	(void)xTraceEventCreate2(PSF_EVENT_COUNTER_CHANGE, (TraceUnsignedBaseType_t)xCounterHandle, (TraceUnsignedBaseType_t)xValue); /*cstat !MISRAC2004-11.3 !MISRAC2012-Rule-11.4 Suppress conversion from pointer to integer check*/
 	

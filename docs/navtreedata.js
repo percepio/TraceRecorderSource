@@ -56,7 +56,8 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 "BareMetal_2config_2trcKernelPortConfig_8h_source.html",
-"group__trace__runnable__apis.html#gac70437d35d979dc2d86a5e84f2468026"
+"group__trace__runnable__apis.html#gac70437d35d979dc2d86a5e84f2468026",
+"trcUtility_8h_source.html"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';
