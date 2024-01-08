@@ -1,5 +1,5 @@
 /*
- * Trace Recorder for Tracealyzer v4.8.1
+ * Trace Recorder for Tracealyzer v4.8.2
  * Copyright 2023 Percepio AB
  * www.percepio.com
  *
@@ -615,8 +615,8 @@ void vTraceSetTimerName(void* object, const char* name);
 #define PSF_EVENT_PIPE_GET_SUCCESS							0xAD
 #define PSF_EVENT_PIPE_GET_BLOCKING							0xAE
 #define PSF_EVENT_PIPE_GET_TIMEOUT							0xAF
-#define PSF_EVENT_PIPE_BLOCK_PUT_ENTER						0xDA
-#define PSF_EVENT_PIPE_BLOCK_PUT_EXIT						0xED
+#define PSF_EVENT_PIPE_BLOCK_PUT_ENTER_DEPRECATED				0xDA
+#define PSF_EVENT_PIPE_BLOCK_PUT_EXIT_DEPRECATED				0xED
 
 #define PSF_EVENT_MESSAGEQUEUE_INIT                 		0x1A
 #define PSF_EVENT_MESSAGEQUEUE_ALLOC_INIT_SUCCESS			0x1E

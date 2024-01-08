@@ -1,5 +1,5 @@
 /*
- * Trace Recorder for Tracealyzer v4.8.1
+ * Trace Recorder for Tracealyzer v4.8.2
  * Copyright 2023 Percepio AB
  * www.percepio.com
  *
@@ -40,9 +40,9 @@ static TraceStreamPortTCPIP_t* pxStreamPortTCPIP TRC_CFG_RECORDER_DATA_ATTRIBUTE
 
 static int32_t prvSocketSend(void* pvData, uint32_t uiSize, int32_t* piBytesWritten);
 static int32_t prvSocketReceive(void* pvData, uint32_t uiSize, int32_t* piBytesRead);
-static int32_t prvSocketInitializeListener();
-static int32_t prvSocketAccept();
-static void prvCloseAllSockets();
+static int32_t prvSocketInitializeListener(void);
+static int32_t prvSocketAccept(void);
+static void prvCloseAllSockets(void);
 
 static int32_t prvSocketSend( void* pvData, uint32_t uiSize, int32_t* piBytesWritten )
 {
@@ -61,7 +61,7 @@ static int32_t prvSocketSend( void* pvData, uint32_t uiSize, int32_t* piBytesWri
     /* EWOULDBLOCK may be expected when buffers are full */
     if (errno != EWOULDBLOCK)
 	{
-		closesocket(new_sd);
+		close(new_sd);
 		new_sd = -1;
 		return -1;
 	}
@@ -87,7 +87,7 @@ static int32_t prvSocketReceive( void* pvData, uint32_t uiSize, int32_t* piBytes
 		/* EWOULDBLOCK may be expected when there is no pvData to receive */
 	  if (errno != EWOULDBLOCK)
 	  {
-		closesocket(new_sd);
+		close(new_sd);
 		new_sd = -1;
 		return -1;
 	  }
@@ -96,14 +96,14 @@ static int32_t prvSocketReceive( void* pvData, uint32_t uiSize, int32_t* piBytes
   return 0;
 }
 
-static int32_t prvSocketInitializeListener()
+static int32_t prvSocketInitializeListener(void)
 {
   if (sock >= 0)
   {
 	  return 0;
   }
   
-  sock = lwip_socket(AF_INET, SOCK_STREAM, 0);
+  sock = socket(AF_INET, SOCK_STREAM, 0);
   
   if (sock < 0)
   {
@@ -116,14 +116,14 @@ static int32_t prvSocketInitializeListener()
 
   if (bind(sock, (struct sockaddr *)&address, sizeof (address)) < 0)
   {
-    closesocket(sock);
+    close(sock);
     sock = -1;
     return -1;
   }
 
-  if (lwip_listen(sock, 5) < 0)
+  if (listen(sock, 5) < 0)
   {
-    closesocket(sock);
+    close(sock);
     sock = -1;
     return -1;
   }
@@ -131,7 +131,7 @@ static int32_t prvSocketInitializeListener()
   return 0;
 }
 
-static int32_t prvSocketAccept()
+static int32_t prvSocketAccept(void)
 {
   if (sock < 0)
       return -1;
@@ -144,9 +144,9 @@ static int32_t prvSocketAccept()
 
   if( new_sd < 0 )
   {
-   	closesocket(new_sd);
+   	close(new_sd);
     new_sd = -1;
-   	closesocket(sock);
+   	close(sock);
     sock = -1;
     return -1;
   }
@@ -157,16 +157,16 @@ static int32_t prvSocketAccept()
   return 0;
 }
 
-static void prvCloseAllSockets()
+static void prvCloseAllSockets(void)
 {
 	if (new_sd > 0)
 	{
-		closesocket(new_sd);
+		close(new_sd);
 	}
 	
 	if (sock > 0)
 	{
-		closesocket(sock);
+		close(sock);
 	}
 }
 /************** MODIFY THE ABOVE PART TO USE YOUR TPC/IP STACK ****************/

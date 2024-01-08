@@ -25,7 +25,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">Percepio Trace Recorder<span id="projectnumber">&#160;v4.8.1</span>
+   <div id="projectname">Percepio Trace Recorder<span id="projectnumber">&#160;v4.8.2</span>
    </div>
   </td>
  </tr>
@@ -93,7 +93,7 @@ $(document).ready(function(){initNavTree('tracing__tracerecorder_8h_source.html'
 </div><!--header-->
 <div class="contents">
 <div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="comment">/*</span></div>
-<div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span><span class="comment"> * Trace Recorder for Tracealyzer v4.8.1</span></div>
+<div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span><span class="comment"> * Trace Recorder for Tracealyzer v4.8.2</span></div>
 <div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span><span class="comment"> * Copyright 2023 Percepio AB</span></div>
 <div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span><span class="comment"> * www.percepio.com</span></div>
 <div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span><span class="comment"> *</span></div>
@@ -1260,104 +1260,99 @@ $(document).ready(function(){initNavTree('tracing__tracerecorder_8h_source.html'
 <div class="line"><a id="l01166" name="l01166"></a><span class="lineno"> 1166</span><span class="keywordtype">void</span> sys_trace_k_pipe_get_exit(<span class="keyword">struct</span> k_pipe *pipe, <span class="keywordtype">void</span> *data,</div>
 <div class="line"><a id="l01167" name="l01167"></a><span class="lineno"> 1167</span>    <span class="keywordtype">size_t</span> bytes_to_read, <span class="keywordtype">size_t</span> *bytes_read, <span class="keywordtype">size_t</span> min_xfer,</div>
 <div class="line"><a id="l01168" name="l01168"></a><span class="lineno"> 1168</span>    k_timeout_t timeout, <span class="keywordtype">int</span> ret);</div>
-<div class="line"><a id="l01169" name="l01169"></a><span class="lineno"> 1169</span><span class="keywordtype">void</span> sys_trace_k_pipe_block_put_enter(<span class="keyword">struct</span> k_pipe *pipe,</div>
-<div class="line"><a id="l01170" name="l01170"></a><span class="lineno"> 1170</span>    <span class="keyword">struct</span> k_mem_block *block, <span class="keywordtype">size_t</span> size, <span class="keyword">struct</span> k_sem *sem);</div>
-<div class="line"><a id="l01171" name="l01171"></a><span class="lineno"> 1171</span><span class="keywordtype">void</span> sys_trace_k_pipe_block_put_exit(<span class="keyword">struct</span> k_pipe *pipe,</div>
-<div class="line"><a id="l01172" name="l01172"></a><span class="lineno"> 1172</span>    <span class="keyword">struct</span> k_mem_block *block, <span class="keywordtype">size_t</span> size, <span class="keyword">struct</span> k_sem *sem);</div>
-<div class="line"><a id="l01173" name="l01173"></a><span class="lineno"> 1173</span> </div>
-<div class="line"><a id="l01174" name="l01174"></a><span class="lineno"> 1174</span> </div>
-<div class="line"><a id="l01175" name="l01175"></a><span class="lineno"> 1175</span><span class="comment">/* Message queue trace function declarations */</span></div>
-<div class="line"><a id="l01176" name="l01176"></a><span class="lineno"> 1176</span><span class="keywordtype">void</span> sys_trace_k_msgq_init(<span class="keyword">struct</span> k_msgq *msgq);</div>
-<div class="line"><a id="l01177" name="l01177"></a><span class="lineno"> 1177</span><span class="keywordtype">void</span> sys_trace_k_msgq_alloc_init_enter(<span class="keyword">struct</span> k_msgq *msgq, <span class="keywordtype">size_t</span> msg_size,</div>
-<div class="line"><a id="l01178" name="l01178"></a><span class="lineno"> 1178</span>    uint32_t max_msgs);</div>
-<div class="line"><a id="l01179" name="l01179"></a><span class="lineno"> 1179</span><span class="keywordtype">void</span> sys_trace_k_msgq_alloc_init_exit(<span class="keyword">struct</span> k_msgq *msgq, <span class="keywordtype">size_t</span> msg_size,</div>
-<div class="line"><a id="l01180" name="l01180"></a><span class="lineno"> 1180</span>    uint32_t max_msgs, <span class="keywordtype">int</span> ret);</div>
-<div class="line"><a id="l01181" name="l01181"></a><span class="lineno"> 1181</span><span class="keywordtype">void</span> sys_trace_k_msgq_cleanup_enter(<span class="keyword">struct</span> k_msgq *msgq);</div>
-<div class="line"><a id="l01182" name="l01182"></a><span class="lineno"> 1182</span><span class="keywordtype">void</span> sys_trace_k_msgq_cleanup_exit(<span class="keyword">struct</span> k_msgq *msgq, <span class="keywordtype">int</span> ret);</div>
-<div class="line"><a id="l01183" name="l01183"></a><span class="lineno"> 1183</span><span class="keywordtype">void</span> sys_trace_k_msgq_put_enter(<span class="keyword">struct</span> k_msgq *msgq, <span class="keyword">const</span> <span class="keywordtype">void</span> *data,</div>
-<div class="line"><a id="l01184" name="l01184"></a><span class="lineno"> 1184</span>    k_timeout_t timeout);</div>
-<div class="line"><a id="l01185" name="l01185"></a><span class="lineno"> 1185</span><span class="keywordtype">void</span> sys_trace_k_msgq_put_blocking(<span class="keyword">struct</span> k_msgq *msgq, <span class="keyword">const</span> <span class="keywordtype">void</span> *data,</div>
-<div class="line"><a id="l01186" name="l01186"></a><span class="lineno"> 1186</span>    k_timeout_t timeout);</div>
-<div class="line"><a id="l01187" name="l01187"></a><span class="lineno"> 1187</span><span class="keywordtype">void</span> sys_trace_k_msgq_put_exit(<span class="keyword">struct</span> k_msgq *msgq, <span class="keyword">const</span> <span class="keywordtype">void</span> *data,</div>
-<div class="line"><a id="l01188" name="l01188"></a><span class="lineno"> 1188</span>    k_timeout_t timeout, <span class="keywordtype">int</span> ret);</div>
-<div class="line"><a id="l01189" name="l01189"></a><span class="lineno"> 1189</span><span class="keywordtype">void</span> sys_trace_k_msgq_get_enter(<span class="keyword">struct</span> k_msgq *msgq, <span class="keyword">const</span> <span class="keywordtype">void</span> *data,</div>
-<div class="line"><a id="l01190" name="l01190"></a><span class="lineno"> 1190</span>    k_timeout_t timeout);</div>
-<div class="line"><a id="l01191" name="l01191"></a><span class="lineno"> 1191</span><span class="keywordtype">void</span> sys_trace_k_msgq_get_blocking(<span class="keyword">struct</span> k_msgq *msgq, <span class="keyword">const</span> <span class="keywordtype">void</span> *data,</div>
-<div class="line"><a id="l01192" name="l01192"></a><span class="lineno"> 1192</span>    k_timeout_t timeout);</div>
-<div class="line"><a id="l01193" name="l01193"></a><span class="lineno"> 1193</span><span class="keywordtype">void</span> sys_trace_k_msgq_get_exit(<span class="keyword">struct</span> k_msgq *msgq, <span class="keyword">const</span> <span class="keywordtype">void</span> *data,</div>
-<div class="line"><a id="l01194" name="l01194"></a><span class="lineno"> 1194</span>    k_timeout_t timeout, <span class="keywordtype">int</span> ret);</div>
-<div class="line"><a id="l01195" name="l01195"></a><span class="lineno"> 1195</span><span class="keywordtype">void</span> sys_trace_k_msgq_peek(<span class="keyword">struct</span> k_msgq *msgq, <span class="keywordtype">void</span> *data, <span class="keywordtype">int</span> ret);</div>
-<div class="line"><a id="l01196" name="l01196"></a><span class="lineno"> 1196</span><span class="keywordtype">void</span> sys_trace_k_msgq_purge(<span class="keyword">struct</span> k_msgq *msgq);</div>
-<div class="line"><a id="l01197" name="l01197"></a><span class="lineno"> 1197</span> </div>
-<div class="line"><a id="l01198" name="l01198"></a><span class="lineno"> 1198</span> </div>
-<div class="line"><a id="l01199" name="l01199"></a><span class="lineno"> 1199</span><span class="comment">/* Heap trace function declarations */</span></div>
-<div class="line"><a id="l01200" name="l01200"></a><span class="lineno"> 1200</span><span class="keywordtype">void</span> sys_trace_k_heap_init(<span class="keyword">struct</span> k_heap *h, <span class="keywordtype">void</span> *mem, <span class="keywordtype">size_t</span> bytes);</div>
-<div class="line"><a id="l01201" name="l01201"></a><span class="lineno"> 1201</span><span class="keywordtype">void</span> sys_trace_k_heap_alloc_enter(<span class="keyword">struct</span> k_heap *h, <span class="keywordtype">size_t</span> bytes,</div>
-<div class="line"><a id="l01202" name="l01202"></a><span class="lineno"> 1202</span>    k_timeout_t timeout);</div>
-<div class="line"><a id="l01203" name="l01203"></a><span class="lineno"> 1203</span><span class="keywordtype">void</span> sys_trace_k_heap_alloc_exit(<span class="keyword">struct</span> k_heap *h, <span class="keywordtype">size_t</span> bytes,</div>
-<div class="line"><a id="l01204" name="l01204"></a><span class="lineno"> 1204</span>    k_timeout_t timeout, <span class="keywordtype">void</span> *ret);</div>
-<div class="line"><a id="l01205" name="l01205"></a><span class="lineno"> 1205</span><span class="keywordtype">void</span> sys_trace_k_heap_aligned_alloc_enter(<span class="keyword">struct</span> k_heap *h, <span class="keywordtype">size_t</span> bytes,</div>
-<div class="line"><a id="l01206" name="l01206"></a><span class="lineno"> 1206</span>    k_timeout_t timeout);</div>
-<div class="line"><a id="l01207" name="l01207"></a><span class="lineno"> 1207</span><span class="keywordtype">void</span> sys_trace_k_heap_aligned_alloc_blocking(<span class="keyword">struct</span> k_heap *h, <span class="keywordtype">size_t</span> bytes,</div>
-<div class="line"><a id="l01208" name="l01208"></a><span class="lineno"> 1208</span>    k_timeout_t timeout);</div>
-<div class="line"><a id="l01209" name="l01209"></a><span class="lineno"> 1209</span><span class="keywordtype">void</span> sys_trace_k_heap_aligned_alloc_exit(<span class="keyword">struct</span> k_heap *h, <span class="keywordtype">size_t</span> bytes,</div>
-<div class="line"><a id="l01210" name="l01210"></a><span class="lineno"> 1210</span>    k_timeout_t timeout, <span class="keywordtype">void</span> *ret);</div>
-<div class="line"><a id="l01211" name="l01211"></a><span class="lineno"> 1211</span><span class="keywordtype">void</span> sys_trace_k_heap_free(<span class="keyword">struct</span> k_heap *h, <span class="keywordtype">void</span> *mem);</div>
-<div class="line"><a id="l01212" name="l01212"></a><span class="lineno"> 1212</span><span class="keywordtype">void</span> sys_trace_k_heap_sys_k_aligned_alloc_enter(<span class="keyword">struct</span> k_heap *h,</div>
-<div class="line"><a id="l01213" name="l01213"></a><span class="lineno"> 1213</span>    <span class="keywordtype">size_t</span> align, <span class="keywordtype">size_t</span> size);</div>
-<div class="line"><a id="l01214" name="l01214"></a><span class="lineno"> 1214</span><span class="keywordtype">void</span> sys_trace_k_heap_sys_k_aligned_alloc_exit(<span class="keyword">struct</span> k_heap *h, <span class="keywordtype">size_t</span> align,</div>
-<div class="line"><a id="l01215" name="l01215"></a><span class="lineno"> 1215</span>    <span class="keywordtype">size_t</span> size, <span class="keywordtype">void</span> *ret);</div>
-<div class="line"><a id="l01216" name="l01216"></a><span class="lineno"> 1216</span><span class="keywordtype">void</span> sys_trace_k_heap_sys_k_malloc_enter(<span class="keyword">struct</span> k_heap *h, <span class="keywordtype">size_t</span> size);</div>
-<div class="line"><a id="l01217" name="l01217"></a><span class="lineno"> 1217</span><span class="keywordtype">void</span> sys_trace_k_heap_sys_k_malloc_exit(<span class="keyword">struct</span> k_heap *h, <span class="keywordtype">size_t</span> size,</div>
-<div class="line"><a id="l01218" name="l01218"></a><span class="lineno"> 1218</span>    <span class="keywordtype">void</span> *ret);</div>
-<div class="line"><a id="l01219" name="l01219"></a><span class="lineno"> 1219</span><span class="keywordtype">void</span> sys_trace_k_heap_sys_k_free_enter(<span class="keyword">struct</span> k_heap *h);</div>
-<div class="line"><a id="l01220" name="l01220"></a><span class="lineno"> 1220</span><span class="keywordtype">void</span> sys_trace_k_heap_sys_k_free_exit(<span class="keyword">struct</span> k_heap *h);</div>
-<div class="line"><a id="l01221" name="l01221"></a><span class="lineno"> 1221</span><span class="keywordtype">void</span> sys_trace_k_heap_sys_k_calloc_enter(<span class="keyword">struct</span> k_heap *h, <span class="keywordtype">size_t</span> nmemb,</div>
-<div class="line"><a id="l01222" name="l01222"></a><span class="lineno"> 1222</span>    <span class="keywordtype">size_t</span> size);</div>
-<div class="line"><a id="l01223" name="l01223"></a><span class="lineno"> 1223</span><span class="keywordtype">void</span> sys_trace_k_heap_sys_k_calloc_exit(<span class="keyword">struct</span> k_heap *h, <span class="keywordtype">size_t</span> nmemb,</div>
-<div class="line"><a id="l01224" name="l01224"></a><span class="lineno"> 1224</span>    <span class="keywordtype">size_t</span> size, <span class="keywordtype">void</span> *ret);</div>
-<div class="line"><a id="l01225" name="l01225"></a><span class="lineno"> 1225</span> </div>
-<div class="line"><a id="l01226" name="l01226"></a><span class="lineno"> 1226</span> </div>
-<div class="line"><a id="l01227" name="l01227"></a><span class="lineno"> 1227</span><span class="comment">/* Memory slab trace function declarations */</span></div>
-<div class="line"><a id="l01228" name="l01228"></a><span class="lineno"> 1228</span><span class="keywordtype">void</span> sys_trace_k_mem_slab_init(<span class="keyword">struct</span> k_mem_slab *slab, <span class="keywordtype">void</span> *buffer,</div>
-<div class="line"><a id="l01229" name="l01229"></a><span class="lineno"> 1229</span>    <span class="keywordtype">size_t</span> block_size, uint32_t num_blocks, <span class="keywordtype">int</span> ret);</div>
-<div class="line"><a id="l01230" name="l01230"></a><span class="lineno"> 1230</span><span class="keywordtype">void</span> sys_trace_k_mem_slab_alloc_enter(<span class="keyword">struct</span> k_mem_slab *slab, <span class="keywordtype">void</span> **mem,</div>
-<div class="line"><a id="l01231" name="l01231"></a><span class="lineno"> 1231</span>    k_timeout_t timeout);</div>
-<div class="line"><a id="l01232" name="l01232"></a><span class="lineno"> 1232</span><span class="keywordtype">void</span> sys_trace_k_mem_slab_alloc_blocking(<span class="keyword">struct</span> k_mem_slab *slab, <span class="keywordtype">void</span> **mem,</div>
-<div class="line"><a id="l01233" name="l01233"></a><span class="lineno"> 1233</span>    k_timeout_t timeout);</div>
-<div class="line"><a id="l01234" name="l01234"></a><span class="lineno"> 1234</span><span class="keywordtype">void</span> sys_trace_k_mem_slab_alloc_exit(<span class="keyword">struct</span> k_mem_slab *slab, <span class="keywordtype">void</span> **mem,</div>
-<div class="line"><a id="l01235" name="l01235"></a><span class="lineno"> 1235</span>    k_timeout_t timeout, <span class="keywordtype">int</span> ret);</div>
-<div class="line"><a id="l01236" name="l01236"></a><span class="lineno"> 1236</span><span class="keywordtype">void</span> sys_trace_k_mem_slab_free_exit(<span class="keyword">struct</span> k_mem_slab *slab, <span class="keywordtype">void</span> **mem);</div>
-<div class="line"><a id="l01237" name="l01237"></a><span class="lineno"> 1237</span> </div>
-<div class="line"><a id="l01238" name="l01238"></a><span class="lineno"> 1238</span> </div>
-<div class="line"><a id="l01239" name="l01239"></a><span class="lineno"> 1239</span><span class="comment">/* Timer trace function declarations */</span></div>
-<div class="line"><a id="l01240" name="l01240"></a><span class="lineno"> 1240</span><span class="keywordtype">void</span> sys_trace_k_timer_init(<span class="keyword">struct</span> k_timer *timer, k_timer_expiry_t expiry_fn,</div>
-<div class="line"><a id="l01241" name="l01241"></a><span class="lineno"> 1241</span>    k_timer_expiry_t stop_fn);</div>
-<div class="line"><a id="l01242" name="l01242"></a><span class="lineno"> 1242</span><span class="keywordtype">void</span> sys_trace_k_timer_start(<span class="keyword">struct</span> k_timer *timer, k_timeout_t duration,</div>
-<div class="line"><a id="l01243" name="l01243"></a><span class="lineno"> 1243</span>    k_timeout_t period);</div>
-<div class="line"><a id="l01244" name="l01244"></a><span class="lineno"> 1244</span><span class="keywordtype">void</span> sys_trace_k_timer_stop(<span class="keyword">struct</span> k_timer *timer);</div>
-<div class="line"><a id="l01245" name="l01245"></a><span class="lineno"> 1245</span><span class="keywordtype">void</span> sys_trace_k_timer_status_sync_blocking(<span class="keyword">struct</span> k_timer *timer);</div>
-<div class="line"><a id="l01246" name="l01246"></a><span class="lineno"> 1246</span><span class="keywordtype">void</span> sys_trace_k_timer_status_sync_exit(<span class="keyword">struct</span> k_timer *timer,</div>
-<div class="line"><a id="l01247" name="l01247"></a><span class="lineno"> 1247</span>    uint32_t result);</div>
+<div class="line"><a id="l01169" name="l01169"></a><span class="lineno"> 1169</span> </div>
+<div class="line"><a id="l01170" name="l01170"></a><span class="lineno"> 1170</span><span class="comment">/* Message queue trace function declarations */</span></div>
+<div class="line"><a id="l01171" name="l01171"></a><span class="lineno"> 1171</span><span class="keywordtype">void</span> sys_trace_k_msgq_init(<span class="keyword">struct</span> k_msgq *msgq);</div>
+<div class="line"><a id="l01172" name="l01172"></a><span class="lineno"> 1172</span><span class="keywordtype">void</span> sys_trace_k_msgq_alloc_init_enter(<span class="keyword">struct</span> k_msgq *msgq, <span class="keywordtype">size_t</span> msg_size,</div>
+<div class="line"><a id="l01173" name="l01173"></a><span class="lineno"> 1173</span>    uint32_t max_msgs);</div>
+<div class="line"><a id="l01174" name="l01174"></a><span class="lineno"> 1174</span><span class="keywordtype">void</span> sys_trace_k_msgq_alloc_init_exit(<span class="keyword">struct</span> k_msgq *msgq, <span class="keywordtype">size_t</span> msg_size,</div>
+<div class="line"><a id="l01175" name="l01175"></a><span class="lineno"> 1175</span>    uint32_t max_msgs, <span class="keywordtype">int</span> ret);</div>
+<div class="line"><a id="l01176" name="l01176"></a><span class="lineno"> 1176</span><span class="keywordtype">void</span> sys_trace_k_msgq_cleanup_enter(<span class="keyword">struct</span> k_msgq *msgq);</div>
+<div class="line"><a id="l01177" name="l01177"></a><span class="lineno"> 1177</span><span class="keywordtype">void</span> sys_trace_k_msgq_cleanup_exit(<span class="keyword">struct</span> k_msgq *msgq, <span class="keywordtype">int</span> ret);</div>
+<div class="line"><a id="l01178" name="l01178"></a><span class="lineno"> 1178</span><span class="keywordtype">void</span> sys_trace_k_msgq_put_enter(<span class="keyword">struct</span> k_msgq *msgq, <span class="keyword">const</span> <span class="keywordtype">void</span> *data,</div>
+<div class="line"><a id="l01179" name="l01179"></a><span class="lineno"> 1179</span>    k_timeout_t timeout);</div>
+<div class="line"><a id="l01180" name="l01180"></a><span class="lineno"> 1180</span><span class="keywordtype">void</span> sys_trace_k_msgq_put_blocking(<span class="keyword">struct</span> k_msgq *msgq, <span class="keyword">const</span> <span class="keywordtype">void</span> *data,</div>
+<div class="line"><a id="l01181" name="l01181"></a><span class="lineno"> 1181</span>    k_timeout_t timeout);</div>
+<div class="line"><a id="l01182" name="l01182"></a><span class="lineno"> 1182</span><span class="keywordtype">void</span> sys_trace_k_msgq_put_exit(<span class="keyword">struct</span> k_msgq *msgq, <span class="keyword">const</span> <span class="keywordtype">void</span> *data,</div>
+<div class="line"><a id="l01183" name="l01183"></a><span class="lineno"> 1183</span>    k_timeout_t timeout, <span class="keywordtype">int</span> ret);</div>
+<div class="line"><a id="l01184" name="l01184"></a><span class="lineno"> 1184</span><span class="keywordtype">void</span> sys_trace_k_msgq_get_enter(<span class="keyword">struct</span> k_msgq *msgq, <span class="keyword">const</span> <span class="keywordtype">void</span> *data,</div>
+<div class="line"><a id="l01185" name="l01185"></a><span class="lineno"> 1185</span>    k_timeout_t timeout);</div>
+<div class="line"><a id="l01186" name="l01186"></a><span class="lineno"> 1186</span><span class="keywordtype">void</span> sys_trace_k_msgq_get_blocking(<span class="keyword">struct</span> k_msgq *msgq, <span class="keyword">const</span> <span class="keywordtype">void</span> *data,</div>
+<div class="line"><a id="l01187" name="l01187"></a><span class="lineno"> 1187</span>    k_timeout_t timeout);</div>
+<div class="line"><a id="l01188" name="l01188"></a><span class="lineno"> 1188</span><span class="keywordtype">void</span> sys_trace_k_msgq_get_exit(<span class="keyword">struct</span> k_msgq *msgq, <span class="keyword">const</span> <span class="keywordtype">void</span> *data,</div>
+<div class="line"><a id="l01189" name="l01189"></a><span class="lineno"> 1189</span>    k_timeout_t timeout, <span class="keywordtype">int</span> ret);</div>
+<div class="line"><a id="l01190" name="l01190"></a><span class="lineno"> 1190</span><span class="keywordtype">void</span> sys_trace_k_msgq_peek(<span class="keyword">struct</span> k_msgq *msgq, <span class="keywordtype">void</span> *data, <span class="keywordtype">int</span> ret);</div>
+<div class="line"><a id="l01191" name="l01191"></a><span class="lineno"> 1191</span><span class="keywordtype">void</span> sys_trace_k_msgq_purge(<span class="keyword">struct</span> k_msgq *msgq);</div>
+<div class="line"><a id="l01192" name="l01192"></a><span class="lineno"> 1192</span> </div>
+<div class="line"><a id="l01193" name="l01193"></a><span class="lineno"> 1193</span> </div>
+<div class="line"><a id="l01194" name="l01194"></a><span class="lineno"> 1194</span><span class="comment">/* Heap trace function declarations */</span></div>
+<div class="line"><a id="l01195" name="l01195"></a><span class="lineno"> 1195</span><span class="keywordtype">void</span> sys_trace_k_heap_init(<span class="keyword">struct</span> k_heap *h, <span class="keywordtype">void</span> *mem, <span class="keywordtype">size_t</span> bytes);</div>
+<div class="line"><a id="l01196" name="l01196"></a><span class="lineno"> 1196</span><span class="keywordtype">void</span> sys_trace_k_heap_alloc_enter(<span class="keyword">struct</span> k_heap *h, <span class="keywordtype">size_t</span> bytes,</div>
+<div class="line"><a id="l01197" name="l01197"></a><span class="lineno"> 1197</span>    k_timeout_t timeout);</div>
+<div class="line"><a id="l01198" name="l01198"></a><span class="lineno"> 1198</span><span class="keywordtype">void</span> sys_trace_k_heap_alloc_exit(<span class="keyword">struct</span> k_heap *h, <span class="keywordtype">size_t</span> bytes,</div>
+<div class="line"><a id="l01199" name="l01199"></a><span class="lineno"> 1199</span>    k_timeout_t timeout, <span class="keywordtype">void</span> *ret);</div>
+<div class="line"><a id="l01200" name="l01200"></a><span class="lineno"> 1200</span><span class="keywordtype">void</span> sys_trace_k_heap_aligned_alloc_enter(<span class="keyword">struct</span> k_heap *h, <span class="keywordtype">size_t</span> bytes,</div>
+<div class="line"><a id="l01201" name="l01201"></a><span class="lineno"> 1201</span>    k_timeout_t timeout);</div>
+<div class="line"><a id="l01202" name="l01202"></a><span class="lineno"> 1202</span><span class="keywordtype">void</span> sys_trace_k_heap_aligned_alloc_blocking(<span class="keyword">struct</span> k_heap *h, <span class="keywordtype">size_t</span> bytes,</div>
+<div class="line"><a id="l01203" name="l01203"></a><span class="lineno"> 1203</span>    k_timeout_t timeout);</div>
+<div class="line"><a id="l01204" name="l01204"></a><span class="lineno"> 1204</span><span class="keywordtype">void</span> sys_trace_k_heap_aligned_alloc_exit(<span class="keyword">struct</span> k_heap *h, <span class="keywordtype">size_t</span> bytes,</div>
+<div class="line"><a id="l01205" name="l01205"></a><span class="lineno"> 1205</span>    k_timeout_t timeout, <span class="keywordtype">void</span> *ret);</div>
+<div class="line"><a id="l01206" name="l01206"></a><span class="lineno"> 1206</span><span class="keywordtype">void</span> sys_trace_k_heap_free(<span class="keyword">struct</span> k_heap *h, <span class="keywordtype">void</span> *mem);</div>
+<div class="line"><a id="l01207" name="l01207"></a><span class="lineno"> 1207</span><span class="keywordtype">void</span> sys_trace_k_heap_sys_k_aligned_alloc_enter(<span class="keyword">struct</span> k_heap *h,</div>
+<div class="line"><a id="l01208" name="l01208"></a><span class="lineno"> 1208</span>    <span class="keywordtype">size_t</span> align, <span class="keywordtype">size_t</span> size);</div>
+<div class="line"><a id="l01209" name="l01209"></a><span class="lineno"> 1209</span><span class="keywordtype">void</span> sys_trace_k_heap_sys_k_aligned_alloc_exit(<span class="keyword">struct</span> k_heap *h, <span class="keywordtype">size_t</span> align,</div>
+<div class="line"><a id="l01210" name="l01210"></a><span class="lineno"> 1210</span>    <span class="keywordtype">size_t</span> size, <span class="keywordtype">void</span> *ret);</div>
+<div class="line"><a id="l01211" name="l01211"></a><span class="lineno"> 1211</span><span class="keywordtype">void</span> sys_trace_k_heap_sys_k_malloc_enter(<span class="keyword">struct</span> k_heap *h, <span class="keywordtype">size_t</span> size);</div>
+<div class="line"><a id="l01212" name="l01212"></a><span class="lineno"> 1212</span><span class="keywordtype">void</span> sys_trace_k_heap_sys_k_malloc_exit(<span class="keyword">struct</span> k_heap *h, <span class="keywordtype">size_t</span> size,</div>
+<div class="line"><a id="l01213" name="l01213"></a><span class="lineno"> 1213</span>    <span class="keywordtype">void</span> *ret);</div>
+<div class="line"><a id="l01214" name="l01214"></a><span class="lineno"> 1214</span><span class="keywordtype">void</span> sys_trace_k_heap_sys_k_free_enter(<span class="keyword">struct</span> k_heap *h);</div>
+<div class="line"><a id="l01215" name="l01215"></a><span class="lineno"> 1215</span><span class="keywordtype">void</span> sys_trace_k_heap_sys_k_free_exit(<span class="keyword">struct</span> k_heap *h);</div>
+<div class="line"><a id="l01216" name="l01216"></a><span class="lineno"> 1216</span><span class="keywordtype">void</span> sys_trace_k_heap_sys_k_calloc_enter(<span class="keyword">struct</span> k_heap *h, <span class="keywordtype">size_t</span> nmemb,</div>
+<div class="line"><a id="l01217" name="l01217"></a><span class="lineno"> 1217</span>    <span class="keywordtype">size_t</span> size);</div>
+<div class="line"><a id="l01218" name="l01218"></a><span class="lineno"> 1218</span><span class="keywordtype">void</span> sys_trace_k_heap_sys_k_calloc_exit(<span class="keyword">struct</span> k_heap *h, <span class="keywordtype">size_t</span> nmemb,</div>
+<div class="line"><a id="l01219" name="l01219"></a><span class="lineno"> 1219</span>    <span class="keywordtype">size_t</span> size, <span class="keywordtype">void</span> *ret);</div>
+<div class="line"><a id="l01220" name="l01220"></a><span class="lineno"> 1220</span> </div>
+<div class="line"><a id="l01221" name="l01221"></a><span class="lineno"> 1221</span> </div>
+<div class="line"><a id="l01222" name="l01222"></a><span class="lineno"> 1222</span><span class="comment">/* Memory slab trace function declarations */</span></div>
+<div class="line"><a id="l01223" name="l01223"></a><span class="lineno"> 1223</span><span class="keywordtype">void</span> sys_trace_k_mem_slab_init(<span class="keyword">struct</span> k_mem_slab *slab, <span class="keywordtype">void</span> *buffer,</div>
+<div class="line"><a id="l01224" name="l01224"></a><span class="lineno"> 1224</span>    <span class="keywordtype">size_t</span> block_size, uint32_t num_blocks, <span class="keywordtype">int</span> ret);</div>
+<div class="line"><a id="l01225" name="l01225"></a><span class="lineno"> 1225</span><span class="keywordtype">void</span> sys_trace_k_mem_slab_alloc_enter(<span class="keyword">struct</span> k_mem_slab *slab, <span class="keywordtype">void</span> **mem,</div>
+<div class="line"><a id="l01226" name="l01226"></a><span class="lineno"> 1226</span>    k_timeout_t timeout);</div>
+<div class="line"><a id="l01227" name="l01227"></a><span class="lineno"> 1227</span><span class="keywordtype">void</span> sys_trace_k_mem_slab_alloc_blocking(<span class="keyword">struct</span> k_mem_slab *slab, <span class="keywordtype">void</span> **mem,</div>
+<div class="line"><a id="l01228" name="l01228"></a><span class="lineno"> 1228</span>    k_timeout_t timeout);</div>
+<div class="line"><a id="l01229" name="l01229"></a><span class="lineno"> 1229</span><span class="keywordtype">void</span> sys_trace_k_mem_slab_alloc_exit(<span class="keyword">struct</span> k_mem_slab *slab, <span class="keywordtype">void</span> **mem,</div>
+<div class="line"><a id="l01230" name="l01230"></a><span class="lineno"> 1230</span>    k_timeout_t timeout, <span class="keywordtype">int</span> ret);</div>
+<div class="line"><a id="l01231" name="l01231"></a><span class="lineno"> 1231</span><span class="keywordtype">void</span> sys_trace_k_mem_slab_free_exit(<span class="keyword">struct</span> k_mem_slab *slab, <span class="keywordtype">void</span> **mem);</div>
+<div class="line"><a id="l01232" name="l01232"></a><span class="lineno"> 1232</span> </div>
+<div class="line"><a id="l01233" name="l01233"></a><span class="lineno"> 1233</span> </div>
+<div class="line"><a id="l01234" name="l01234"></a><span class="lineno"> 1234</span><span class="comment">/* Timer trace function declarations */</span></div>
+<div class="line"><a id="l01235" name="l01235"></a><span class="lineno"> 1235</span><span class="keywordtype">void</span> sys_trace_k_timer_init(<span class="keyword">struct</span> k_timer *timer, k_timer_expiry_t expiry_fn,</div>
+<div class="line"><a id="l01236" name="l01236"></a><span class="lineno"> 1236</span>    k_timer_expiry_t stop_fn);</div>
+<div class="line"><a id="l01237" name="l01237"></a><span class="lineno"> 1237</span><span class="keywordtype">void</span> sys_trace_k_timer_start(<span class="keyword">struct</span> k_timer *timer, k_timeout_t duration,</div>
+<div class="line"><a id="l01238" name="l01238"></a><span class="lineno"> 1238</span>    k_timeout_t period);</div>
+<div class="line"><a id="l01239" name="l01239"></a><span class="lineno"> 1239</span><span class="keywordtype">void</span> sys_trace_k_timer_stop(<span class="keyword">struct</span> k_timer *timer);</div>
+<div class="line"><a id="l01240" name="l01240"></a><span class="lineno"> 1240</span><span class="keywordtype">void</span> sys_trace_k_timer_status_sync_blocking(<span class="keyword">struct</span> k_timer *timer);</div>
+<div class="line"><a id="l01241" name="l01241"></a><span class="lineno"> 1241</span><span class="keywordtype">void</span> sys_trace_k_timer_status_sync_exit(<span class="keyword">struct</span> k_timer *timer,</div>
+<div class="line"><a id="l01242" name="l01242"></a><span class="lineno"> 1242</span>    uint32_t result);</div>
+<div class="line"><a id="l01243" name="l01243"></a><span class="lineno"> 1243</span> </div>
+<div class="line"><a id="l01244" name="l01244"></a><span class="lineno"> 1244</span> </div>
+<div class="line"><a id="l01245" name="l01245"></a><span class="lineno"> 1245</span><span class="comment">/* Syscall trace function declarations */</span></div>
+<div class="line"><a id="l01246" name="l01246"></a><span class="lineno"> 1246</span><span class="keywordtype">void</span> sys_trace_syscall_enter(uint32_t <span class="keywordtype">id</span>, <span class="keyword">const</span> <span class="keywordtype">char</span> *name);</div>
+<div class="line"><a id="l01247" name="l01247"></a><span class="lineno"> 1247</span><span class="keywordtype">void</span> sys_trace_syscall_exit(uint32_t <span class="keywordtype">id</span>, <span class="keyword">const</span> <span class="keywordtype">char</span> *name);</div>
 <div class="line"><a id="l01248" name="l01248"></a><span class="lineno"> 1248</span> </div>
 <div class="line"><a id="l01249" name="l01249"></a><span class="lineno"> 1249</span> </div>
-<div class="line"><a id="l01250" name="l01250"></a><span class="lineno"> 1250</span><span class="comment">/* Syscall trace function declarations */</span></div>
-<div class="line"><a id="l01251" name="l01251"></a><span class="lineno"> 1251</span><span class="keywordtype">void</span> sys_trace_syscall_enter(uint32_t <span class="keywordtype">id</span>, <span class="keyword">const</span> <span class="keywordtype">char</span> *name);</div>
-<div class="line"><a id="l01252" name="l01252"></a><span class="lineno"> 1252</span><span class="keywordtype">void</span> sys_trace_syscall_exit(uint32_t <span class="keywordtype">id</span>, <span class="keyword">const</span> <span class="keywordtype">char</span> *name);</div>
-<div class="line"><a id="l01253" name="l01253"></a><span class="lineno"> 1253</span> </div>
-<div class="line"><a id="l01254" name="l01254"></a><span class="lineno"> 1254</span> </div>
-<div class="line"><a id="l01255" name="l01255"></a><span class="lineno"> 1255</span><span class="comment">/* Legacy trace functions that are pending refactoring/removal by</span></div>
-<div class="line"><a id="l01256" name="l01256"></a><span class="lineno"> 1256</span><span class="comment"> * the Zephyr team.</span></div>
-<div class="line"><a id="l01257" name="l01257"></a><span class="lineno"> 1257</span><span class="comment"> */</span></div>
-<div class="line"><a id="l01258" name="l01258"></a><span class="lineno"> 1258</span><span class="keywordtype">void</span> sys_trace_idle(<span class="keywordtype">void</span>);</div>
-<div class="line"><a id="l01259" name="l01259"></a><span class="lineno"> 1259</span><span class="keywordtype">void</span> sys_trace_isr_enter(<span class="keywordtype">void</span>);</div>
-<div class="line"><a id="l01260" name="l01260"></a><span class="lineno"> 1260</span><span class="keywordtype">void</span> sys_trace_isr_exit(<span class="keywordtype">void</span>);</div>
-<div class="line"><a id="l01261" name="l01261"></a><span class="lineno"> 1261</span> </div>
-<div class="line"><a id="l01262" name="l01262"></a><span class="lineno"> 1262</span><span class="preprocessor">#ifdef __cplusplus</span></div>
-<div class="line"><a id="l01263" name="l01263"></a><span class="lineno"> 1263</span>}</div>
-<div class="line"><a id="l01264" name="l01264"></a><span class="lineno"> 1264</span><span class="preprocessor">#endif</span></div>
-<div class="line"><a id="l01265" name="l01265"></a><span class="lineno"> 1265</span> </div>
-<div class="line"><a id="l01266" name="l01266"></a><span class="lineno"> 1266</span><span class="preprocessor">#endif </span><span class="comment">/*_TRACE_TRACERECORDER_H*/</span><span class="preprocessor"></span></div>
+<div class="line"><a id="l01250" name="l01250"></a><span class="lineno"> 1250</span><span class="comment">/* Legacy trace functions that are pending refactoring/removal by</span></div>
+<div class="line"><a id="l01251" name="l01251"></a><span class="lineno"> 1251</span><span class="comment"> * the Zephyr team.</span></div>
+<div class="line"><a id="l01252" name="l01252"></a><span class="lineno"> 1252</span><span class="comment"> */</span></div>
+<div class="line"><a id="l01253" name="l01253"></a><span class="lineno"> 1253</span><span class="keywordtype">void</span> sys_trace_idle(<span class="keywordtype">void</span>);</div>
+<div class="line"><a id="l01254" name="l01254"></a><span class="lineno"> 1254</span><span class="keywordtype">void</span> sys_trace_isr_enter(<span class="keywordtype">void</span>);</div>
+<div class="line"><a id="l01255" name="l01255"></a><span class="lineno"> 1255</span><span class="keywordtype">void</span> sys_trace_isr_exit(<span class="keywordtype">void</span>);</div>
+<div class="line"><a id="l01256" name="l01256"></a><span class="lineno"> 1256</span> </div>
+<div class="line"><a id="l01257" name="l01257"></a><span class="lineno"> 1257</span><span class="preprocessor">#ifdef __cplusplus</span></div>
+<div class="line"><a id="l01258" name="l01258"></a><span class="lineno"> 1258</span>}</div>
+<div class="line"><a id="l01259" name="l01259"></a><span class="lineno"> 1259</span><span class="preprocessor">#endif</span></div>
+<div class="line"><a id="l01260" name="l01260"></a><span class="lineno"> 1260</span> </div>
+<div class="line"><a id="l01261" name="l01261"></a><span class="lineno"> 1261</span><span class="preprocessor">#endif </span><span class="comment">/*_TRACE_TRACERECORDER_H*/</span><span class="preprocessor"></span></div>
 <div class="ttc" id="atrcRecorder_8h_html"><div class="ttname"><a href="trcRecorder_8h.html">trcRecorder.h</a></div><div class="ttdoc">The public API of the Percepio trace recorder.</div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->

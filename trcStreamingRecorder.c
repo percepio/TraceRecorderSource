@@ -1,5 +1,5 @@
 /*
- * Trace Recorder for Tracealyzer v4.8.1
+ * Trace Recorder for Tracealyzer v4.8.2
  * Copyright 2023 Percepio AB
  * www.percepio.com
  *
@@ -265,7 +265,7 @@ traceResult xTraceInitialize(void)
 
 	pxTraceRecorderData->reserved = 0xFFFFFFFFUL;
 
-	xTraceSetComponentInitialized(TRC_RECORDER_COMPONENT_CORE);
+	(void)xTraceSetComponentInitialized(TRC_RECORDER_COMPONENT_CORE);
 
 	return TRC_SUCCESS;
 }
@@ -474,7 +474,7 @@ traceResult xTraceTzCtrl(void)
 
 		if (xTraceIsRecorderEnabled())
 		{
-			xTraceInternalEventBufferTransfer();
+			(void)xTraceInternalEventBufferTransfer();
 		}
 
 		/* If there was data sent or received (bytes != 0), loop around and repeat, if there is more data to send or receive.

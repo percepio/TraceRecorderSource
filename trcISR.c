@@ -1,5 +1,5 @@
 /*
-* Percepio Trace Recorder for Tracealyzer v4.8.1
+* Percepio Trace Recorder for Tracealyzer v4.8.2
 * Copyright 2023 Percepio AB
 * www.percepio.com
 *
@@ -89,7 +89,7 @@ traceResult xTraceISRRegister(const char* szName, uint32_t uiPriority, TraceISRH
 	if (xTraceEventBegin(PSF_EVENT_DEFINE_ISR, uiLength + sizeof(void*) + sizeof(uint32_t), &xEventHandle) == TRC_SUCCESS)
 	{
 		(void)xTraceEventAddPointer(xEventHandle, (void*)xEntryHandle);
-		(void)xTraceEventAdd32(xEventHandle, uiPriority);
+		(void)xTraceEventAddUnsignedBaseType(xEventHandle, uiPriority);
 		(void)xTraceEventAddString(xEventHandle, szName, uiLength);
 
 		/* Check if we can truncate */

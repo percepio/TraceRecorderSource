@@ -1,5 +1,5 @@
 /*
- * Trace Recorder for Tracealyzer v4.8.1
+ * Trace Recorder for Tracealyzer v4.8.2
  * Copyright 2023 Percepio AB
  * www.percepio.com
  *
@@ -42,9 +42,6 @@ typedef struct TraceStreamPortBuffer	/* Aligned */
 #else
 	TraceUnsignedBaseType_t buffer[1];
 #endif
-	uint8_t recv_buffer[32];
-	uint32_t recv_len;
-	uint32_t reserved;		/* alignment */
 } TraceStreamPortBuffer_t;
 
 int32_t prvTraceUdpWrite(void* pvData, uint32_t uiSize, int32_t* piBytesWritten);
@@ -101,7 +98,7 @@ traceResult xTraceStreamPortInitialize(TraceStreamPortBuffer_t* pxBuffer);
 #define xTraceStreamPortOnEnable(uiStartOption) ((void)(uiStartOption), TRC_SUCCESS)
 
 #define xTraceStreamPortOnDisable() (TRC_SUCCESS)
-	 
+
 #define xTraceStreamPortOnTraceBegin() (TRC_SUCCESS)
 
 traceResult xTraceStreamPortOnTraceEnd(void);

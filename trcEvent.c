@@ -1,5 +1,5 @@
 /*
-* Percepio Trace Recorder for Tracealyzer v4.8.1
+* Percepio Trace Recorder for Tracealyzer v4.8.2
 * Copyright 2023 Percepio AB
 * www.percepio.com
 *
@@ -13,6 +13,8 @@
 #if (TRC_USE_TRACEALYZER_RECORDER == 1)
 
 #if (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING)
+
+#include <string.h>
 
 /*cstat !MISRAC2004-19.4 Suppress macro check*/
 #define VERIFY_EVENT_SIZE(i) \
@@ -511,7 +513,7 @@ traceResult xTraceEventEndOfflineBlocking(TraceEventHandle_t xEventHandle)
 
 traceResult xTraceEventAddData(TraceEventHandle_t xEventHandle, const TraceUnsignedBaseType_t* const puxData, TraceUnsignedBaseType_t uxSize)
 {
-	TraceUnsignedBaseType_t i;
+	TraceEventData_t* pxEventData = (TraceEventData_t*)xEventHandle;
 
 	/* This should never fail */
 	TRC_ASSERT(xTraceIsComponentInitialized(TRC_RECORDER_COMPONENT_EVENT));
@@ -525,10 +527,8 @@ traceResult xTraceEventAddData(TraceEventHandle_t xEventHandle, const TraceUnsig
 	/* This should never fail */
 	TRC_ASSERT((((TraceEventData_t*)xEventHandle)->offset + (uint32_t)(uxSize * sizeof(TraceUnsignedBaseType_t))) <= ((TraceEventData_t*)xEventHandle)->size);
 
-	for (i = 0u; i < uxSize; i++)
-	{
-		TRC_EVENT_ADD_UNSIGNED_BASE_TYPE(xEventHandle, puxData[i]); /*cstat !MISRAC2004-17.4_b We need to access a specific part of the buffer*/
-	}
+	memcpy(&((uint8_t*)pxEventData->pvBlob)[pxEventData->offset], puxData, uxSize * sizeof(TraceUnsignedBaseType_t));
+	pxEventData->offset += uxSize * sizeof(TraceUnsignedBaseType_t);
 
 	return TRC_SUCCESS;
 }

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 """
-    Trace Recorder for Tracealyzer v4.8.1
+    Trace Recorder for Tracealyzer v4.8.2
     Copyright 2023 Percepio AB
     www.percepio.com
 
@@ -55,7 +55,7 @@ with open("{}/VERSION".format(args.zephyr_base), "r") as fh:
         elif matches := re.match('^PATCHLEVEL\s*=\s*(\d+)$', line):
             patch_level = int(matches.group(1))
 
-    if not major or not minor or not patch_level:
+    if major is None or minor is None or patch_level is None:
         print("Invalid version specified: major: {}, minor: {}, patchlevel: {}, exiting...".format(major, minor, patch_level))
         exit(1)
 

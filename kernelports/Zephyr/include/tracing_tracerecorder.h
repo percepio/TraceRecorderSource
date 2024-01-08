@@ -1,5 +1,5 @@
 /*
- * Trace Recorder for Tracealyzer v4.8.1
+ * Trace Recorder for Tracealyzer v4.8.2
  * Copyright 2023 Percepio AB
  * www.percepio.com
  *
@@ -1166,11 +1166,6 @@ void sys_trace_k_pipe_get_blocking(struct k_pipe *pipe, void *data,
 void sys_trace_k_pipe_get_exit(struct k_pipe *pipe, void *data,
     size_t bytes_to_read, size_t *bytes_read, size_t min_xfer,
     k_timeout_t timeout, int ret);
-void sys_trace_k_pipe_block_put_enter(struct k_pipe *pipe,
-    struct k_mem_block *block, size_t size, struct k_sem *sem);
-void sys_trace_k_pipe_block_put_exit(struct k_pipe *pipe,
-    struct k_mem_block *block, size_t size, struct k_sem *sem);
-
 
 /* Message queue trace function declarations */
 void sys_trace_k_msgq_init(struct k_msgq *msgq);
