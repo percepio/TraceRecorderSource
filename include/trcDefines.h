@@ -198,5 +198,6 @@
 #define TRC_HARDWARE_PORT_CYCLONE_V_HPS			        25      /*	Yes			FreeRTOS			        */
 #define TRC_HARDWARE_PORT_ARM_Cortex_M_NRF_SD                   26      /*      Yes                     FreeRTOS                                */
 #define TRC_HARDWARE_PORT_ARMv8AR_A32				27	/*	Yes			Any					*/
+#define TRC_HARDWARE_PORT_ADSP_SC5XX_SHARC			28	/*	No			FreeRTOS                                */
 
 #endif /* TRC_PORTDEFINES_H */
