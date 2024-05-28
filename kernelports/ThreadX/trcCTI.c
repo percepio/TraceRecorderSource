@@ -1,5 +1,5 @@
 /*
- * Trace Recorder for Tracealyzer v4.8.2
+ * Trace Recorder for Tracealyzer v4.9.0
  * Copyright 2023 Percepio AB
  * www.percepio.com
  *
@@ -106,8 +106,24 @@ extern UINT _tx_timer_performance_info_get_orig(TX_TIMER *timer_ptr, ULONG *acti
 
 extern traceResult xTraceISREnd_orig(TraceBaseType_t uxIsTaskSwitchRequired);
 
-extern traceResult xTraceEventBeginRawOffline_orig(uint32_t uiSize, TraceEventHandle_t* pxEventHandle);
-extern traceResult xTraceEventEndOffline_orig(TraceEventHandle_t xEventHandle);
+extern traceResult xTraceEventCreate0_orig(uint32_t uiEventCode);
+extern traceResult xTraceEventCreate1_orig(uint32_t uiEventCode, TraceUnsignedBaseType_t uxParam1);
+extern traceResult xTraceEventCreate2_orig(uint32_t uiEventCode, TraceUnsignedBaseType_t uxParam1, TraceUnsignedBaseType_t uxParam2);
+extern traceResult xTraceEventCreate3_orig(uint32_t uiEventCode, TraceUnsignedBaseType_t uxParam1, TraceUnsignedBaseType_t uxParam2, TraceUnsignedBaseType_t uxParam3);
+extern traceResult xTraceEventCreate4_orig(uint32_t uiEventCode, TraceUnsignedBaseType_t uxParam1, TraceUnsignedBaseType_t uxParam2, TraceUnsignedBaseType_t uxParam3, TraceUnsignedBaseType_t uxParam4);
+extern traceResult xTraceEventCreate5_orig(uint32_t uiEventCode, TraceUnsignedBaseType_t uxParam1, TraceUnsignedBaseType_t uxParam2, TraceUnsignedBaseType_t uxParam3, TraceUnsignedBaseType_t uxParam4, TraceUnsignedBaseType_t uxParam5);
+extern traceResult xTraceEventCreate6_orig(uint32_t uiEventCode, TraceUnsignedBaseType_t uxParam1, TraceUnsignedBaseType_t uxParam2, TraceUnsignedBaseType_t uxParam3, TraceUnsignedBaseType_t uxParam4, TraceUnsignedBaseType_t uxParam5, TraceUnsignedBaseType_t uxParam6);
+
+extern traceResult xTraceEventCreateData0_orig(uint32_t uiEventCode, const TraceUnsignedBaseType_t* const puxData, TraceUnsignedBaseType_t uxSize);
+extern traceResult xTraceEventCreateData1_orig(uint32_t uiEventCode, TraceUnsignedBaseType_t uxParam1, const TraceUnsignedBaseType_t* const puxData, TraceUnsignedBaseType_t uxSize);
+extern traceResult xTraceEventCreateData2_orig(uint32_t uiEventCode, TraceUnsignedBaseType_t uxParam1, TraceUnsignedBaseType_t uxParam2, const TraceUnsignedBaseType_t* const puxData, TraceUnsignedBaseType_t uxSize);
+extern traceResult xTraceEventCreateData3_orig(uint32_t uiEventCode, TraceUnsignedBaseType_t uxParam1, TraceUnsignedBaseType_t uxParam2, TraceUnsignedBaseType_t uxParam3, const TraceUnsignedBaseType_t* const puxData, TraceUnsignedBaseType_t uxSize);
+extern traceResult xTraceEventCreateData4_orig(uint32_t uiEventCode, TraceUnsignedBaseType_t uxParam1, TraceUnsignedBaseType_t uxParam2, TraceUnsignedBaseType_t uxParam3, TraceUnsignedBaseType_t uxParam4, const TraceUnsignedBaseType_t* const puxData, TraceUnsignedBaseType_t uxSize);
+extern traceResult xTraceEventCreateData5_orig(uint32_t uiEventCode, TraceUnsignedBaseType_t uxParam1, TraceUnsignedBaseType_t uxParam2, TraceUnsignedBaseType_t uxParam3, TraceUnsignedBaseType_t uxParam4, TraceUnsignedBaseType_t uxParam5, const TraceUnsignedBaseType_t* const puxData, TraceUnsignedBaseType_t uxSize);
+extern traceResult xTraceEventCreateData6_orig(uint32_t uiEventCode, TraceUnsignedBaseType_t uxParam1, TraceUnsignedBaseType_t uxParam2, TraceUnsignedBaseType_t uxParam3, TraceUnsignedBaseType_t uxParam4, TraceUnsignedBaseType_t uxParam5, TraceUnsignedBaseType_t uxParam6, const TraceUnsignedBaseType_t* const puxData, TraceUnsignedBaseType_t uxSize);
+
+extern traceResult xTraceEventCreateRawBlocking_orig(const void* pxSource, uint32_t ulSize);
+extern traceResult xTraceEventCreateDataOffline0_orig(uint32_t uiEventCode, const TraceUnsignedBaseType_t* const puxData, TraceUnsignedBaseType_t uxSize);
 
 #if !TRC_CFG_SCHEDULING_ONLY
 
@@ -117,41 +133,15 @@ UINT _txe_block_allocate(TX_BLOCK_POOL *pool_ptr, VOID **block_ptr, ULONG wait_o
 
 	if (ret == TX_SUCCESS)
 	{
-		TraceEventHandle_t xTraceHandle;
-
-		if (xTraceEventBegin(PSF_EVENT_BLOCK_ALLOCATE_SUCCESS, sizeof(void*) + sizeof(ULONG) + sizeof(UINT) + sizeof(UINT),
-			&xTraceHandle) == TRC_SUCCESS) {
-			xTraceEventAddPointer(xTraceHandle, (void*)pool_ptr);
-			xTraceEventAddUnsignedBaseType(xTraceHandle, wait_option);
-			xTraceEventAdd32(xTraceHandle, ret);
-			xTraceEventAdd32(xTraceHandle, pool_ptr->tx_block_pool_available);
-			xTraceEventEnd(xTraceHandle);
-		}
+		(void)xTraceEventCreate4(PSF_EVENT_BLOCK_ALLOCATE_SUCCESS, (TraceUnsignedBaseType_t)pool_ptr, (TraceUnsignedBaseType_t)wait_option, (TraceUnsignedBaseType_t)ret, (TraceUnsignedBaseType_t)pool_ptr->tx_block_pool_available);
 	}
 	else if (ret == TX_NO_MEMORY)
 	{
-		TraceEventHandle_t xTraceHandle;
-
-		if (xTraceEventBegin(PSF_EVENT_BLOCK_ALLOCATE_TIMEOUT, sizeof(void*) + sizeof(ULONG) + sizeof(UINT) + sizeof(UINT),
-			&xTraceHandle) == TRC_SUCCESS) {
-			xTraceEventAddPointer(xTraceHandle, (void*)pool_ptr);
-			xTraceEventAddUnsignedBaseType(xTraceHandle, wait_option);
-			xTraceEventAdd32(xTraceHandle, ret);
-			xTraceEventAdd32(xTraceHandle, pool_ptr->tx_block_pool_available);
-			xTraceEventEnd(xTraceHandle);
-		}
+		(void)xTraceEventCreate4(PSF_EVENT_BLOCK_ALLOCATE_TIMEOUT, (TraceUnsignedBaseType_t)pool_ptr, (TraceUnsignedBaseType_t)wait_option, (TraceUnsignedBaseType_t)ret, (TraceUnsignedBaseType_t)pool_ptr->tx_block_pool_available);
 	}
 	else
 	{
-		TraceEventHandle_t xTraceHandle;
-
-		if (xTraceEventBegin(PSF_EVENT_BLOCK_ALLOCATE_FAILED, sizeof(void*) + sizeof(ULONG) + sizeof(UINT),
-			&xTraceHandle) == TRC_SUCCESS) {
-			xTraceEventAddPointer(xTraceHandle, (void*)pool_ptr);
-			xTraceEventAddUnsignedBaseType(xTraceHandle, wait_option);
-			xTraceEventAdd32(xTraceHandle, ret);
-			xTraceEventEnd(xTraceHandle);
-		}
+		(void)xTraceEventCreate3(PSF_EVENT_BLOCK_ALLOCATE_FAILED, (TraceUnsignedBaseType_t)pool_ptr, (TraceUnsignedBaseType_t)wait_option, (TraceUnsignedBaseType_t)ret);
 	}
 
 	return ret;
@@ -163,17 +153,7 @@ UINT _txe_block_pool_create(TX_BLOCK_POOL *pool_ptr, CHAR *name_ptr, ULONG block
 
 	if (ret != TX_SUCCESS)
 	{
-		TraceEventHandle_t xTraceHandle;
-
-		if (xTraceEventBegin(PSF_EVENT_BLOCK_POOL_CREATE_FAILED, sizeof(void*) + sizeof(ULONG) + sizeof(VOID*) + sizeof(ULONG) + sizeof(UINT),
-			&xTraceHandle) == TRC_SUCCESS) {
-			xTraceEventAddPointer(xTraceHandle, (void*)pool_ptr);
-			xTraceEventAddUnsignedBaseType(xTraceHandle, block_size);
-			xTraceEventAddPointer(xTraceHandle, (void*)pool_ptr);
-			xTraceEventAddUnsignedBaseType(xTraceHandle, pool_size);
-			xTraceEventAdd32(xTraceHandle, ret);
-			xTraceEventEnd(xTraceHandle);
-		}
+		(void)xTraceEventCreate5(PSF_EVENT_BLOCK_POOL_CREATE_FAILED, (TraceUnsignedBaseType_t)pool_ptr, (TraceUnsignedBaseType_t)block_size, (TraceUnsignedBaseType_t)pool_ptr, (TraceUnsignedBaseType_t)pool_size, (TraceUnsignedBaseType_t)ret);
 	}
 
 	return ret;
@@ -185,14 +165,7 @@ UINT _txe_block_pool_delete(TX_BLOCK_POOL *pool_ptr)
 
 	if (ret != TX_SUCCESS)
 	{
-		TraceEventHandle_t xTraceHandle;
-
-		if (xTraceEventBegin(PSF_EVENT_BLOCK_POOL_DELETE_FAILED, sizeof(void*) + sizeof(UINT),
-			&xTraceHandle) == TRC_SUCCESS) {
-			xTraceEventAddPointer(xTraceHandle, (void*)pool_ptr);
-			xTraceEventAdd32(xTraceHandle, ret);
-			xTraceEventEnd(xTraceHandle);
-		}
+		(void)xTraceEventCreate2(PSF_EVENT_BLOCK_POOL_DELETE_FAILED, (TraceUnsignedBaseType_t)pool_ptr, (TraceUnsignedBaseType_t)ret);
 	}
 
 	return ret;
@@ -204,14 +177,7 @@ UINT _txe_block_pool_info_get(TX_BLOCK_POOL *pool_ptr, CHAR **name, ULONG *avail
 
 	if (ret != TX_SUCCESS)
 	{
-		TraceEventHandle_t xTraceHandle;
-
-		if (xTraceEventBegin(PSF_EVENT_BLOCK_POOL_INFO_GET_FAILED, sizeof(void*) + sizeof(UINT),
-			&xTraceHandle) == TRC_SUCCESS) {
-			xTraceEventAddPointer(xTraceHandle, (void*)pool_ptr);
-			xTraceEventAdd32(xTraceHandle, ret);
-			xTraceEventEnd(xTraceHandle);
-		}
+		(void)xTraceEventCreate2(PSF_EVENT_BLOCK_POOL_INFO_GET_FAILED, (TraceUnsignedBaseType_t)pool_ptr, (TraceUnsignedBaseType_t)ret);
 	}
 
 	return ret;
@@ -223,14 +189,7 @@ UINT  _tx_block_pool_performance_info_get(TX_BLOCK_POOL *pool_ptr, ULONG *alloca
 
 	if (ret != TX_SUCCESS)
 	{
-		TraceEventHandle_t xTraceHandle;
-
-		if (xTraceEventBegin(PSF_EVENT_BLOCK_POOL_PERFORMANCE_INFO_GET_FAILED, sizeof(void*) + sizeof(UINT),
-			&xTraceHandle) == TRC_SUCCESS) {
-			xTraceEventAddPointer(xTraceHandle, (void*)pool_ptr);
-			xTraceEventAdd32(xTraceHandle, ret);
-			xTraceEventEnd(xTraceHandle);
-		}
+		(void)xTraceEventCreate2(PSF_EVENT_BLOCK_POOL_PERFORMANCE_INFO_GET_FAILED, (TraceUnsignedBaseType_t)pool_ptr, (TraceUnsignedBaseType_t)ret);
 	}
 
 	return ret;
@@ -240,24 +199,8 @@ UINT  _tx_block_pool_performance_system_info_get(ULONG *allocates, ULONG *releas
 {
 	UINT ret = _tx_block_pool_performance_system_info_get_oirg(allocates, releases, suspensions, timeouts);
 
-	if (ret == TX_SUCCESS)
-	{
-		TraceEventHandle_t xTraceHandle;
+	(void)xTraceEventCreate0(ret == TX_SUCCESS ? PSF_EVENT_BLOCK_POOL__PERFORMANCE_SYSTEM_INFO_GET_SUCCESS : PSF_EVENT_BLOCK_POOL__PERFORMANCE_SYSTEM_INFO_GET_FAILED);
 
-		if (xTraceEventBegin(PSF_EVENT_BLOCK_POOL__PERFORMANCE_SYSTEM_INFO_GET_SUCCESS, 0,
-			&xTraceHandle) == TRC_SUCCESS) {
-			xTraceEventEnd(xTraceHandle);
-		}
-	}
-	else
-	{
-		TraceEventHandle_t xTraceHandle;
-
-		if (xTraceEventBegin(PSF_EVENT_BLOCK_POOL__PERFORMANCE_SYSTEM_INFO_GET_FAILED, 0,
-			&xTraceHandle) == TRC_SUCCESS) {
-			xTraceEventEnd(xTraceHandle);
-		}
-	}
 	return ret;
 }
 
@@ -267,14 +210,7 @@ UINT _txe_block_pool_prioritize(TX_BLOCK_POOL *pool_ptr)
 
 	if (ret != TX_SUCCESS)
 	{
-		TraceEventHandle_t xTraceHandle;
-
-		if (xTraceEventBegin(PSF_EVENT_BLOCK_POOL_PRIORITIZE_FAILED, sizeof(void*) + sizeof(UINT),
-			&xTraceHandle) == TRC_SUCCESS) {
-			xTraceEventAddPointer(xTraceHandle, (void*)pool_ptr);
-			xTraceEventAdd32(xTraceHandle, ret);
-			xTraceEventEnd(xTraceHandle);
-		}
+		(void)xTraceEventCreate2(PSF_EVENT_BLOCK_POOL_PRIORITIZE_FAILED, (TraceUnsignedBaseType_t)pool_ptr, (TraceUnsignedBaseType_t)ret);
 	}
 
 	return ret;
@@ -286,14 +222,7 @@ UINT _txe_block_release(VOID *block_ptr)
 
 	if (ret != TX_SUCCESS)
 	{
-		TraceEventHandle_t xTraceHandle;
-
-		if (xTraceEventBegin(PSF_EVENT_BLOCK_POOL_RELEASE_FAILED, sizeof(void*) + sizeof(UINT),
-			&xTraceHandle) == TRC_SUCCESS) {
-			xTraceEventAddPointer(xTraceHandle, (void*)block_ptr);
-			xTraceEventAdd32(xTraceHandle, ret);
-			xTraceEventEnd(xTraceHandle);
-		}
+		(void)xTraceEventCreate2(PSF_EVENT_BLOCK_POOL_RELEASE_FAILED, (TraceUnsignedBaseType_t)block_ptr, (TraceUnsignedBaseType_t)ret);
 	}
 
 	return ret;
@@ -301,50 +230,21 @@ UINT _txe_block_release(VOID *block_ptr)
 
 UINT _txe_byte_allocate(TX_BYTE_POOL *pool_ptr, VOID **memory_ptr, ULONG memory_size,  ULONG wait_option)
 {
-	TraceEventHandle_t xTraceHandle;
-
-	if (xTraceEventBegin(PSF_EVENT_BYTE_ALLOCATE_BLOCKED, sizeof(void*) + sizeof(void*) + sizeof(ULONG) + sizeof(ULONG),
-		&xTraceHandle) == TRC_SUCCESS) {
-		xTraceEventAddPointer(xTraceHandle, (void*)pool_ptr);
-		xTraceEventAddPointer(xTraceHandle, (void*)memory_ptr);
-		xTraceEventAddUnsignedBaseType(xTraceHandle, memory_size);
-		xTraceEventAddUnsignedBaseType(xTraceHandle, wait_option);
-		xTraceEventEnd(xTraceHandle);
-	}
+	(void)xTraceEventCreate4(PSF_EVENT_BYTE_ALLOCATE_BLOCKED, (TraceUnsignedBaseType_t)pool_ptr, (TraceUnsignedBaseType_t)memory_ptr, (TraceUnsignedBaseType_t)memory_size, (TraceUnsignedBaseType_t)wait_option);
 
 	UINT ret = _txe_byte_allocate_orig(pool_ptr, memory_ptr, memory_size, wait_option);
 
 	if (ret == TX_SUCCESS)
 	{
-		if (xTraceEventBegin(PSF_EVENT_BYTE_ALLOCATE_SUCCESS, sizeof(void*) + sizeof(void*) + sizeof(void*),
-			&xTraceHandle) == TRC_SUCCESS) {
-			xTraceEventAddPointer(xTraceHandle, (void*)pool_ptr);
-			xTraceEventAddPointer(xTraceHandle, (void*)memory_ptr);
-			xTraceEventAddPointer(xTraceHandle, (void*)*memory_ptr);
-			xTraceEventEnd(xTraceHandle);
-		}
+		(void)xTraceEventCreate3(PSF_EVENT_BYTE_ALLOCATE_SUCCESS, (TraceUnsignedBaseType_t)pool_ptr, (TraceUnsignedBaseType_t)memory_ptr, (TraceUnsignedBaseType_t)*memory_ptr);
 	}
 	else if (ret == TX_NO_MEMORY)
 	{
-		if (xTraceEventBegin(PSF_EVENT_BYTE_ALLOCATE_TIMEOUT, sizeof(void*) + sizeof(void*) + sizeof(void*),
-			&xTraceHandle) == TRC_SUCCESS) {
-			xTraceEventAddPointer(xTraceHandle, (void*)pool_ptr);
-			xTraceEventAddPointer(xTraceHandle, (void*)memory_ptr);
-			xTraceEventAddPointer(xTraceHandle, (void*)memory_ptr);
-			xTraceEventEnd(xTraceHandle);
-		}
+		(void)xTraceEventCreate3(PSF_EVENT_BYTE_ALLOCATE_TIMEOUT, (TraceUnsignedBaseType_t)pool_ptr, (TraceUnsignedBaseType_t)memory_ptr, (TraceUnsignedBaseType_t)memory_ptr);
 	}
 	else
 	{
-		if (xTraceEventBegin(PSF_EVENT_BYTE_ALLOCATE_FAILED, sizeof(void*) + sizeof(void*) + sizeof(ULONG) + sizeof(ULONG) + sizeof(void*),
-			&xTraceHandle) == TRC_SUCCESS) {
-			xTraceEventAddPointer(xTraceHandle, (void*)pool_ptr);
-			xTraceEventAddPointer(xTraceHandle, (void*)memory_ptr);
-			xTraceEventAddUnsignedBaseType(xTraceHandle, memory_size);
-			xTraceEventAdd32(xTraceHandle, wait_option);
-			xTraceEventAddPointer(xTraceHandle, (void*)memory_ptr);
-			xTraceEventEnd(xTraceHandle);
-		}
+		(void)xTraceEventCreate5(PSF_EVENT_BYTE_ALLOCATE_FAILED, (TraceUnsignedBaseType_t)pool_ptr, (TraceUnsignedBaseType_t)memory_ptr, (TraceUnsignedBaseType_t)memory_size, (TraceUnsignedBaseType_t)wait_option, (TraceUnsignedBaseType_t)memory_ptr);
 	}
 
 	return ret;
@@ -356,16 +256,7 @@ UINT _txe_byte_pool_create(TX_BYTE_POOL *pool_ptr, CHAR *name_ptr, VOID *pool_st
 
 	if (ret != TX_SUCCESS)
 	{
-		TraceEventHandle_t xTraceHandle;
-
-		if (xTraceEventBegin(PSF_EVENT_BYTE_POOL_CREATE_FAILED, sizeof(void*) + sizeof(void*) + sizeof(ULONG) + sizeof(UINT),
-			&xTraceHandle) == TRC_SUCCESS) {
-			xTraceEventAddPointer(xTraceHandle, (void*)pool_ptr);
-			xTraceEventAddPointer(xTraceHandle, (void*)pool_start);
-			xTraceEventAddUnsignedBaseType(xTraceHandle, pool_size);
-			xTraceEventAdd32(xTraceHandle, ret);
-			xTraceEventEnd(xTraceHandle);
-		}
+		(void)xTraceEventCreate4(PSF_EVENT_BYTE_POOL_CREATE_FAILED, (TraceUnsignedBaseType_t)pool_ptr, (TraceUnsignedBaseType_t)pool_start, (TraceUnsignedBaseType_t)pool_size, (TraceUnsignedBaseType_t)ret);
 	}
 
 	return ret;
@@ -377,14 +268,7 @@ UINT _txe_byte_pool_delete(TX_BYTE_POOL *pool_ptr)
 
 	if (ret != TX_SUCCESS)
 	{
-		TraceEventHandle_t xTraceHandle;
-
-		if (xTraceEventBegin(PSF_EVENT_BYTE_POOL_DELETE_FAILED, sizeof(void*) + sizeof(UINT),
-			&xTraceHandle) == TRC_SUCCESS) {
-			xTraceEventAddPointer(xTraceHandle, (void*)pool_ptr);
-			xTraceEventAdd32(xTraceHandle, ret);
-			xTraceEventEnd(xTraceHandle);
-		}
+		(void)xTraceEventCreate2(PSF_EVENT_BYTE_POOL_DELETE_FAILED, (TraceUnsignedBaseType_t)pool_ptr, (TraceUnsignedBaseType_t)ret);
 	}
 
 	return ret;
@@ -396,14 +280,7 @@ UINT _txe_byte_pool_info_get(TX_BYTE_POOL *pool_ptr, CHAR **name, ULONG *availab
 
 	if (ret != TX_SUCCESS)
 	{
-		TraceEventHandle_t xTraceHandle;
-
-		if (xTraceEventBegin(PSF_EVENT_BYTE_POOL_INFO_GET_FAILED, sizeof(void*) + sizeof(UINT),
-			&xTraceHandle) == TRC_SUCCESS) {
-			xTraceEventAddPointer(xTraceHandle, (void*)pool_ptr);
-			xTraceEventAdd32(xTraceHandle, ret);
-			xTraceEventEnd(xTraceHandle);
-		}
+		(void)xTraceEventCreate2(PSF_EVENT_BYTE_POOL_INFO_GET_FAILED, (TraceUnsignedBaseType_t)pool_ptr, (TraceUnsignedBaseType_t)ret);
 	}
 
 	return ret;
@@ -423,14 +300,7 @@ UINT _tx_byte_pool_performance_info_get(TX_BYTE_POOL *pool_ptr,
 
 	if (ret != TX_SUCCESS)
 	{
-		TraceEventHandle_t xTraceHandle;
-
-		if (xTraceEventBegin(PSF_EVENT_BYTE_POOL_PERFORMANCE_INFO_GET_FAILED, sizeof(void*) + sizeof(UINT),
-			&xTraceHandle) == TRC_SUCCESS) {
-			xTraceEventAddPointer(xTraceHandle, (void*)pool_ptr);
-			xTraceEventAdd32(xTraceHandle, ret);
-			xTraceEventEnd(xTraceHandle);
-		}
+		(void)xTraceEventCreate2(PSF_EVENT_BYTE_POOL_PERFORMANCE_INFO_GET_FAILED, (TraceUnsignedBaseType_t)pool_ptr, (TraceUnsignedBaseType_t)ret);
 	}
 
 	return ret;
@@ -449,21 +319,11 @@ UINT  _tx_byte_pool_performance_system_info_get(ULONG *allocates,
 
 	if(ret == TX_SUCCESS)
 	{
-		TraceEventHandle_t xTraceHandle;
-
-		if (xTraceEventBegin(PSF_EVENT_BYTE_POOL__PERFORMANCE_SYSTEM_INFO_GET_SUCCESS, 0,
-			&xTraceHandle) == TRC_SUCCESS) {
-			xTraceEventEnd(xTraceHandle);
-		}
+		(void)xTraceEventCreate0(PSF_EVENT_BYTE_POOL__PERFORMANCE_SYSTEM_INFO_GET_SUCCESS);
 	}
 	else
 	{
-		TraceEventHandle_t xTraceHandle;
-
-		if (xTraceEventBegin(PSF_EVENT_BYTE_POOL__PERFORMANCE_SYSTEM_INFO_GET_FAILED, 0,
-			&xTraceHandle) == TRC_SUCCESS) {
-			xTraceEventEnd(xTraceHandle);
-		}
+		(void)xTraceEventCreate0(PSF_EVENT_BYTE_POOL__PERFORMANCE_SYSTEM_INFO_GET_FAILED);
 	}
 
 	return ret;
@@ -475,14 +335,7 @@ UINT _txe_byte_pool_prioritize(TX_BYTE_POOL *pool_ptr)
 
 	if (ret != TX_SUCCESS)
 	{
-		TraceEventHandle_t xTraceHandle;
-
-		if (xTraceEventBegin(PSF_EVENT_BYTE_POOL_PRIORITIZE_FAILED, sizeof(void*) + sizeof(UINT),
-			&xTraceHandle) == TRC_SUCCESS) {
-			xTraceEventAddPointer(xTraceHandle, (void*)pool_ptr);
-			xTraceEventAdd32(xTraceHandle, ret);
-			xTraceEventEnd(xTraceHandle);
-		}
+		(void)xTraceEventCreate2(PSF_EVENT_BYTE_POOL_PRIORITIZE_FAILED, (TraceUnsignedBaseType_t)pool_ptr, (TraceUnsignedBaseType_t)ret);
 	}
 
 	return ret;
@@ -494,14 +347,7 @@ UINT _txe_byte_release(VOID *memory_ptr)
 
 	if (ret != TX_SUCCESS)
 	{
-		TraceEventHandle_t xTraceHandle;
-
-		if (xTraceEventBegin(PSF_EVENT_BYTE_POOL_RELEASE_FAILED, sizeof(void*) + sizeof(UINT),
-			&xTraceHandle) == TRC_SUCCESS) {
-			xTraceEventAddPointer(xTraceHandle, (void*)memory_ptr);
-			xTraceEventAdd32(xTraceHandle, ret);
-			xTraceEventEnd(xTraceHandle);
-		}
+		(void)xTraceEventCreate2(PSF_EVENT_BYTE_POOL_RELEASE_FAILED, (TraceUnsignedBaseType_t)memory_ptr, (TraceUnsignedBaseType_t)ret);
 	}
 
 	return ret;
@@ -514,14 +360,7 @@ UINT _txe_event_flags_create(TX_EVENT_FLAGS_GROUP *group_ptr, CHAR *name_ptr, UI
 
 	if (ret != TX_SUCCESS)
 	{
-		TraceEventHandle_t xTraceHandle;
-
-		if (xTraceEventBegin(PSF_EVENT_FLAGS_CREATE_FAILED, sizeof(void*) + sizeof(UINT),
-			&xTraceHandle) == TRC_SUCCESS) {
-			xTraceEventAddPointer(xTraceHandle, (void*)group_ptr);
-			xTraceEventAdd32(xTraceHandle, ret);
-			xTraceEventEnd(xTraceHandle);
-		}
+		(void)xTraceEventCreate2(PSF_EVENT_FLAGS_CREATE_FAILED, (TraceUnsignedBaseType_t)group_ptr, (TraceUnsignedBaseType_t)ret);
 	}
 
 	return ret;
@@ -534,14 +373,7 @@ UINT _txe_event_flags_delete(TX_EVENT_FLAGS_GROUP *group_ptr)
 
 	if (ret != TX_SUCCESS)
 	{
-		TraceEventHandle_t xTraceHandle;
-
-		if (xTraceEventBegin(PSF_EVENT_FLAGS_DELETE_FAILED, sizeof(void*) + sizeof(UINT),
-			&xTraceHandle) == TRC_SUCCESS) {
-			xTraceEventAddPointer(xTraceHandle, (void*)group_ptr);
-			xTraceEventAdd32(xTraceHandle, ret);
-			xTraceEventEnd(xTraceHandle);
-		}
+		(void)xTraceEventCreate2(PSF_EVENT_FLAGS_DELETE_FAILED, (TraceUnsignedBaseType_t)group_ptr, (TraceUnsignedBaseType_t)ret);
 	}
 
 	return ret;
@@ -554,41 +386,15 @@ UINT _txe_event_flags_get(TX_EVENT_FLAGS_GROUP *group_ptr, ULONG requested_flags
 
 	if (ret == TX_SUCCESS)
 	{
-		TraceEventHandle_t xTraceHandle;
-
-		if (xTraceEventBegin(PSF_EVENT_FLAGS_GET_SUCCESS, sizeof(void*) + sizeof(ULONG) + sizeof(UINT),
-			&xTraceHandle) == TRC_SUCCESS) {
-			xTraceEventAddPointer(xTraceHandle, (void*)group_ptr);
-			xTraceEventAddUnsignedBaseType(xTraceHandle, requested_flags);
-			xTraceEventAdd32(xTraceHandle, get_option);
-			xTraceEventEnd(xTraceHandle);
-		}
+		(void)xTraceEventCreate3(PSF_EVENT_FLAGS_GET_SUCCESS, (TraceUnsignedBaseType_t)group_ptr, (TraceUnsignedBaseType_t)requested_flags, (TraceUnsignedBaseType_t)get_option);
 	}
 	else if (ret == TX_NO_EVENTS)
 	{
-		TraceEventHandle_t xTraceHandle;
-
-		if (xTraceEventBegin(PSF_EVENT_FLAGS_GET_TIMEOUT, sizeof(void*) + sizeof(ULONG) + sizeof(UINT) + sizeof(UINT),
-			&xTraceHandle) == TRC_SUCCESS) {
-			xTraceEventAddPointer(xTraceHandle, (void*)group_ptr);
-			xTraceEventAddUnsignedBaseType(xTraceHandle, requested_flags);
-			xTraceEventAdd32(xTraceHandle, get_option);
-			xTraceEventAdd32(xTraceHandle, ret);
-			xTraceEventEnd(xTraceHandle);
-		}
+		(void)xTraceEventCreate4(PSF_EVENT_FLAGS_GET_TIMEOUT, (TraceUnsignedBaseType_t)group_ptr, (TraceUnsignedBaseType_t)requested_flags, (TraceUnsignedBaseType_t)get_option, (TraceUnsignedBaseType_t)ret);
 	}
 	else
 	{
-		TraceEventHandle_t xTraceHandle;
-
-		if (xTraceEventBegin(PSF_EVENT_FLAGS_GET_FAILED, sizeof(void*) + sizeof(ULONG) + sizeof(UINT) + sizeof(UINT),
-			&xTraceHandle) == TRC_SUCCESS) {
-			xTraceEventAddPointer(xTraceHandle, (void*)group_ptr);
-			xTraceEventAddUnsignedBaseType(xTraceHandle, requested_flags);
-			xTraceEventAdd32(xTraceHandle, get_option);
-			xTraceEventAdd32(xTraceHandle, ret);
-			xTraceEventEnd(xTraceHandle);
-		}
+		(void)xTraceEventCreate4(PSF_EVENT_FLAGS_GET_FAILED, (TraceUnsignedBaseType_t)group_ptr, (TraceUnsignedBaseType_t)requested_flags, (TraceUnsignedBaseType_t)get_option, (TraceUnsignedBaseType_t)ret);
 	}
 
 	return ret;
@@ -601,14 +407,7 @@ UINT _txe_event_flags_info_get(TX_EVENT_FLAGS_GROUP *group_ptr, CHAR **name, ULO
 
 	if (ret != TX_SUCCESS)
 	{
-		TraceEventHandle_t xTraceHandle;
-
-		if (xTraceEventBegin(PSF_EVENT_FLAGS_INFO_GET_FAILED, sizeof(void*) + sizeof(UINT),
-			&xTraceHandle) == TRC_SUCCESS) {
-			xTraceEventAddPointer(xTraceHandle, (void*)group_ptr);
-			xTraceEventAdd32(xTraceHandle, ret);
-			xTraceEventEnd(xTraceHandle);
-		}
+		(void)xTraceEventCreate2(PSF_EVENT_FLAGS_INFO_GET_FAILED, (TraceUnsignedBaseType_t)group_ptr, (TraceUnsignedBaseType_t)ret);
 	}
 
 	return ret;
@@ -621,14 +420,7 @@ UINT _tx_event_flags_performance_info_get(TX_EVENT_FLAGS_GROUP *group_ptr, ULONG
 
 	if (ret != TX_SUCCESS)
 	{
-		TraceEventHandle_t xTraceHandle;
-
-		if (xTraceEventBegin(PSF_EVENT_FLAGS_PERFORMANCE_INFO_GET_FAILED, sizeof(void*) + sizeof(UINT),
-			&xTraceHandle) == TRC_SUCCESS) {
-			xTraceEventAddPointer(xTraceHandle, (void*)group_ptr);
-			xTraceEventAdd32(xTraceHandle, ret);
-			xTraceEventEnd(xTraceHandle);
-		}
+		(void)xTraceEventCreate2(PSF_EVENT_FLAGS_PERFORMANCE_INFO_GET_FAILED, (TraceUnsignedBaseType_t)group_ptr, (TraceUnsignedBaseType_t)ret);
 	}
 
 	return ret;
@@ -640,21 +432,11 @@ UINT  _tx_event_flags_performance_system_info_get(ULONG *sets, ULONG *gets, ULON
 
 	if(ret == TX_SUCCESS)
 	{
-		TraceEventHandle_t xTraceHandle;
-
-		if (xTraceEventBegin(PSF_EVENT_FLAGS__PERFORMANCE_SYSTEM_INFO_GET_SUCCESS, 0,
-			&xTraceHandle) == TRC_SUCCESS) {
-			xTraceEventEnd(xTraceHandle);
-		}
+		(void)xTraceEventCreate0(PSF_EVENT_FLAGS__PERFORMANCE_SYSTEM_INFO_GET_SUCCESS);
 	}
 	else
 	{
-		TraceEventHandle_t xTraceHandle;
-
-		if (xTraceEventBegin(PSF_EVENT_FLAGS__PERFORMANCE_SYSTEM_INFO_GET_FAILED, 0,
-			&xTraceHandle) == TRC_SUCCESS) {
-			xTraceEventEnd(xTraceHandle);
-		}
+		(void)xTraceEventCreate0(PSF_EVENT_FLAGS__PERFORMANCE_SYSTEM_INFO_GET_FAILED);
 	}
 
 	return ret;
@@ -667,16 +449,7 @@ UINT _txe_event_flags_set(TX_EVENT_FLAGS_GROUP *group_ptr, ULONG flags_to_set, U
 
 	if (ret != TX_SUCCESS)
 	{
-		TraceEventHandle_t xTraceHandle;
-
-		if (xTraceEventBegin(PSF_EVENT_FLAGS_SET_FAILED, sizeof(void*) + sizeof(ULONG) + sizeof(UINT) + sizeof(UINT),
-			&xTraceHandle) == TRC_SUCCESS) {
-			xTraceEventAddPointer(xTraceHandle, (void*)group_ptr);
-			xTraceEventAddUnsignedBaseType(xTraceHandle, flags_to_set);
-			xTraceEventAdd32(xTraceHandle, set_option);
-			xTraceEventAdd32(xTraceHandle, ret);
-			xTraceEventEnd(xTraceHandle);
-		}
+		(void)xTraceEventCreate4(PSF_EVENT_FLAGS_SET_FAILED, (TraceUnsignedBaseType_t)group_ptr, (TraceUnsignedBaseType_t)flags_to_set, (TraceUnsignedBaseType_t)set_option, (TraceUnsignedBaseType_t)ret);
 	}
 
 	return ret;
@@ -689,14 +462,7 @@ UINT _txe_event_flags_set_notify(TX_EVENT_FLAGS_GROUP *group_ptr, VOID (*events_
 
 	if (ret != TX_SUCCESS)
 	{
-		TraceEventHandle_t xTraceHandle;
-
-		if (xTraceEventBegin(PSF_EVENT_FLAGS_SET_NOTIFY_FAILED, sizeof(void*) + sizeof(UINT),
-			&xTraceHandle) == TRC_SUCCESS) {
-			xTraceEventAddPointer(xTraceHandle, (void*)group_ptr);
-			xTraceEventAdd32(xTraceHandle, ret);
-			xTraceEventEnd(xTraceHandle);
-		}
+		(void)xTraceEventCreate2(PSF_EVENT_FLAGS_SET_NOTIFY_FAILED, (TraceUnsignedBaseType_t)group_ptr, (TraceUnsignedBaseType_t)ret);
 	}
 
 	return ret;
@@ -709,15 +475,7 @@ UINT _txe_mutex_create(TX_MUTEX *mutex_ptr, CHAR *name_ptr, UINT inherit, UINT m
 
 	if (ret != TX_SUCCESS)
 	{
-		TraceEventHandle_t xTraceHandle;
-
-		if (xTraceEventBegin(PSF_EVENT_MUTEX_CREATE_FAILED, sizeof(void*) + sizeof(UINT) + sizeof(UINT),
-			&xTraceHandle) == TRC_SUCCESS) {
-			xTraceEventAddPointer(xTraceHandle, (void*)mutex_ptr);
-			xTraceEventAdd32(xTraceHandle, inherit);
-			xTraceEventAdd32(xTraceHandle, ret);
-			xTraceEventEnd(xTraceHandle);
-		}
+		(void)xTraceEventCreate3(PSF_EVENT_MUTEX_CREATE_FAILED, (TraceUnsignedBaseType_t)mutex_ptr, (TraceUnsignedBaseType_t)inherit, (TraceUnsignedBaseType_t)ret);
 	}
 
 	return ret;
@@ -729,14 +487,7 @@ UINT _txe_mutex_delete(TX_MUTEX *mutex_ptr)
 
 	if (ret != TX_SUCCESS)
 	{
-		TraceEventHandle_t xTraceHandle;
-
-		if (xTraceEventBegin(PSF_EVENT_MUTEX_DELETE_FAILED, sizeof(void*) + sizeof(UINT),
-			&xTraceHandle) == TRC_SUCCESS) {
-			xTraceEventAddPointer(xTraceHandle, (void*)mutex_ptr);
-			xTraceEventAdd32(xTraceHandle, ret);
-			xTraceEventEnd(xTraceHandle);
-		}
+		(void)xTraceEventCreate2(PSF_EVENT_MUTEX_DELETE_FAILED, (TraceUnsignedBaseType_t)mutex_ptr, (TraceUnsignedBaseType_t)ret);
 	}
 
 	return ret;
@@ -744,45 +495,21 @@ UINT _txe_mutex_delete(TX_MUTEX *mutex_ptr)
 
 UINT _txe_mutex_get(TX_MUTEX *mutex_ptr, ULONG wait_option)
 {
-	TraceEventHandle_t xTraceHandle;
-
-	if (xTraceEventBegin(PSF_EVENT_MUTEX_GET_BLOCKED, sizeof(void*) + sizeof(ULONG),
-		&xTraceHandle) == TRC_SUCCESS) {
-		xTraceEventAddPointer(xTraceHandle, (void*)mutex_ptr);
-		xTraceEventAddUnsignedBaseType(xTraceHandle, wait_option);
-		xTraceEventEnd(xTraceHandle);
-	}
+	(void)xTraceEventCreate2(PSF_EVENT_MUTEX_GET_BLOCKED, (TraceUnsignedBaseType_t)mutex_ptr, (TraceUnsignedBaseType_t)wait_option);
 
 	UINT ret = _txe_mutex_get_orig(mutex_ptr, wait_option);
 
 	if (ret == TX_SUCCESS)
 	{
-		if (xTraceEventBegin(PSF_EVENT_MUTEX_GET_SUCCESS, sizeof(void*) + sizeof(ULONG),
-			&xTraceHandle) == TRC_SUCCESS) {
-			xTraceEventAddPointer(xTraceHandle, (void*)mutex_ptr);
-			xTraceEventAddUnsignedBaseType(xTraceHandle, wait_option);
-			xTraceEventEnd(xTraceHandle);
-		}
+		(void)xTraceEventCreate2(PSF_EVENT_MUTEX_GET_SUCCESS, (TraceUnsignedBaseType_t)mutex_ptr, (TraceUnsignedBaseType_t)wait_option);
 	}
 	else if (ret == TX_NOT_AVAILABLE || ret == TX_WAIT_ABORTED)
 	{
-		if (xTraceEventBegin(PSF_EVENT_MUTEX_GET_TIMEOUT, sizeof(void*) + sizeof(ULONG) + sizeof(UINT),
-			&xTraceHandle) == TRC_SUCCESS) {
-			xTraceEventAddPointer(xTraceHandle, (void*)mutex_ptr);
-			xTraceEventAddUnsignedBaseType(xTraceHandle, wait_option);
-			xTraceEventAdd32(xTraceHandle, ret);
-			xTraceEventEnd(xTraceHandle);
-		}
+		(void)xTraceEventCreate3(PSF_EVENT_MUTEX_GET_TIMEOUT, (TraceUnsignedBaseType_t)mutex_ptr, (TraceUnsignedBaseType_t)wait_option, (TraceUnsignedBaseType_t)ret);
 	}
 	else
 	{
-		if (xTraceEventBegin(PSF_EVENT_MUTEX_GET_FAILED, sizeof(void*) + sizeof(ULONG) + sizeof(UINT),
-			&xTraceHandle) == TRC_SUCCESS) {
-			xTraceEventAddPointer(xTraceHandle, (void*)mutex_ptr);
-			xTraceEventAddUnsignedBaseType(xTraceHandle, wait_option);
-			xTraceEventAdd32(xTraceHandle, ret);
-			xTraceEventEnd(xTraceHandle);
-		}
+		(void)xTraceEventCreate3(PSF_EVENT_MUTEX_GET_FAILED, (TraceUnsignedBaseType_t)mutex_ptr, (TraceUnsignedBaseType_t)wait_option, (TraceUnsignedBaseType_t)ret);
 	}
 
 	return ret;
@@ -796,14 +523,7 @@ UINT _txe_mutex_info_get(TX_MUTEX *mutex_ptr, CHAR **name, ULONG *count,
 
 	if (ret != TX_SUCCESS)
 	{
-		TraceEventHandle_t xTraceHandle;
-
-		if (xTraceEventBegin(PSF_EVENT_MUTEX_INFO_GET_FAILED, sizeof(void*) + sizeof(UINT),
-			&xTraceHandle) == TRC_SUCCESS) {
-			xTraceEventAddPointer(xTraceHandle, (void*)mutex_ptr);
-			xTraceEventAdd32(xTraceHandle, ret);
-			xTraceEventEnd(xTraceHandle);
-		}
+		(void)xTraceEventCreate2(PSF_EVENT_MUTEX_INFO_GET_FAILED, (TraceUnsignedBaseType_t)mutex_ptr, (TraceUnsignedBaseType_t)ret);
 	}
 
 	return ret;
@@ -815,14 +535,7 @@ UINT _tx_mutex_performance_info_get(TX_MUTEX *mutex_ptr, ULONG *puts, ULONG *get
 
 	if (ret != TX_SUCCESS)
 	{
-		TraceEventHandle_t xTraceHandle;
-
-		if (xTraceEventBegin(PSF_EVENT_MUTEX_PERFORMANCE_INFO_GET_FAILED, sizeof(void*) + sizeof(UINT),
-			&xTraceHandle) == TRC_SUCCESS) {
-			xTraceEventAddPointer(xTraceHandle, (void*)mutex_ptr);
-			xTraceEventAdd32(xTraceHandle, ret);
-			xTraceEventEnd(xTraceHandle);
-		}
+		(void)xTraceEventCreate2(PSF_EVENT_MUTEX_PERFORMANCE_INFO_GET_FAILED, (TraceUnsignedBaseType_t)mutex_ptr, (TraceUnsignedBaseType_t)ret);
 	}
 
 	return ret;
@@ -835,21 +548,11 @@ UINT  _tx_mutex_performance_system_info_get(ULONG *puts, ULONG *gets, ULONG *sus
 
 	if(ret == TX_SUCCESS)
 	{
-		TraceEventHandle_t xTraceHandle;
-
-		if (xTraceEventBegin(PSF_EVENT_MUTEX_PERFORMANCE_SYSTEM_INFO_GET_SUCCESS, 0,
-			&xTraceHandle) == TRC_SUCCESS) {
-			xTraceEventEnd(xTraceHandle);
-		}
+		(void)xTraceEventCreate0(PSF_EVENT_MUTEX_PERFORMANCE_SYSTEM_INFO_GET_SUCCESS);
 	}
 	else
 	{
-		TraceEventHandle_t xTraceHandle;
-
-		if (xTraceEventBegin(PSF_EVENT_BLOCK_POOL__PERFORMANCE_SYSTEM_INFO_GET_FAILED, 0,
-			&xTraceHandle) == TRC_SUCCESS) {
-			xTraceEventEnd(xTraceHandle);
-		}
+		(void)xTraceEventCreate0(PSF_EVENT_BLOCK_POOL__PERFORMANCE_SYSTEM_INFO_GET_FAILED);
 	}
 
 	return ret;
@@ -861,14 +564,7 @@ UINT _txe_mutex_prioritize(TX_MUTEX *mutex_ptr)
 
 	if (ret != TX_SUCCESS)
 	{
-		TraceEventHandle_t xTraceHandle;
-
-		if (xTraceEventBegin(PSF_EVENT_MUTEX_PRIORITIZE_FAILED, sizeof(void*) + sizeof(UINT),
-			&xTraceHandle) == TRC_SUCCESS) {
-			xTraceEventAddPointer(xTraceHandle, (void*)mutex_ptr);
-			xTraceEventAdd32(xTraceHandle, ret);
-			xTraceEventEnd(xTraceHandle);
-		}
+		(void)xTraceEventCreate2(PSF_EVENT_MUTEX_PRIORITIZE_FAILED, (TraceUnsignedBaseType_t)mutex_ptr, (TraceUnsignedBaseType_t)ret);
 	}
 
 	return ret;
@@ -880,14 +576,7 @@ UINT _txe_mutex_put(TX_MUTEX *mutex_ptr)
 
 	if (ret != TX_SUCCESS)
 	{
-		TraceEventHandle_t xTraceHandle;
-
-		if (xTraceEventBegin(PSF_EVENT_MUTEX_PUT_FAILED, sizeof(void*) + sizeof(UINT),
-			&xTraceHandle) == TRC_SUCCESS) {
-			xTraceEventAddPointer(xTraceHandle, (void*)mutex_ptr);
-			xTraceEventAdd32(xTraceHandle, ret);
-			xTraceEventEnd(xTraceHandle);
-		}
+		(void)xTraceEventCreate2(PSF_EVENT_MUTEX_PUT_FAILED, (TraceUnsignedBaseType_t)mutex_ptr, (TraceUnsignedBaseType_t)ret);
 	}
 
 	return ret;
@@ -897,21 +586,11 @@ UINT _txe_mutex_put(TX_MUTEX *mutex_ptr)
 UINT _txe_queue_create(TX_QUEUE *queue_ptr, CHAR *name_ptr, UINT message_size,
                         VOID *queue_start, ULONG queue_size, UINT queue_control_block_size) 
 {
-	TraceEventHandle_t xTraceHandle;
-
 	UINT ret = _txe_queue_create_orig(queue_ptr, name_ptr, message_size, queue_start, queue_size, queue_control_block_size);
 
 	if (ret != TX_SUCCESS)
 	{
-		if (xTraceEventBegin(PSF_EVENT_QUEUE_CREATE_FAILED, sizeof(void*) + sizeof(UINT) + sizeof(void*) + sizeof(ULONG) + sizeof(UINT),
-			&xTraceHandle) == TRC_SUCCESS) {
-			xTraceEventAddPointer(xTraceHandle, (void*)queue_ptr);
-			xTraceEventAdd32(xTraceHandle, message_size);
-			xTraceEventAddPointer(xTraceHandle, (void*)queue_start);
-			xTraceEventAddUnsignedBaseType(xTraceHandle, queue_size);
-			xTraceEventAdd32(xTraceHandle, ret);
-			xTraceEventEnd(xTraceHandle);
-		}
+		(void)xTraceEventCreate5(PSF_EVENT_QUEUE_CREATE_FAILED, (TraceUnsignedBaseType_t)queue_ptr, (TraceUnsignedBaseType_t)message_size, (TraceUnsignedBaseType_t)queue_start, (TraceUnsignedBaseType_t)queue_size, (TraceUnsignedBaseType_t)ret);
 	}
 
 	return ret;
@@ -923,14 +602,7 @@ UINT _txe_queue_delete(TX_QUEUE *queue_ptr)
 
 	if (ret != TX_SUCCESS)
 	{
-		TraceEventHandle_t xTraceHandle;
-
-		if (xTraceEventBegin(PSF_EVENT_QUEUE_DELETE_FAILED, sizeof(void*) + sizeof(UINT),
-			&xTraceHandle) == TRC_SUCCESS) {
-			xTraceEventAddPointer(xTraceHandle, (void*)queue_ptr);
-			xTraceEventAdd32(xTraceHandle, ret);
-			xTraceEventEnd(xTraceHandle);
-		}
+		(void)xTraceEventCreate2(PSF_EVENT_QUEUE_DELETE_FAILED, (TraceUnsignedBaseType_t)queue_ptr, (TraceUnsignedBaseType_t)ret);
 	}
 
 	return ret;
@@ -943,14 +615,7 @@ UINT _txe_queue_flush(TX_QUEUE *queue_ptr)
 
 	if (ret != TX_SUCCESS)
 	{
-		TraceEventHandle_t xTraceHandle;
-
-		if (xTraceEventBegin(PSF_EVENT_QUEUE_FLUSH_FAILED, sizeof(void*) + sizeof(UINT),
-			&xTraceHandle) == TRC_SUCCESS) {
-			xTraceEventAddPointer(xTraceHandle, (void*)queue_ptr);
-			xTraceEventAdd32(xTraceHandle, ret);
-			xTraceEventEnd(xTraceHandle);
-		}
+		(void)xTraceEventCreate2(PSF_EVENT_QUEUE_FLUSH_FAILED, (TraceUnsignedBaseType_t)queue_ptr, (TraceUnsignedBaseType_t)ret);
 	}
 
 	return ret;
@@ -958,49 +623,21 @@ UINT _txe_queue_flush(TX_QUEUE *queue_ptr)
 
 UINT _txe_queue_front_send(TX_QUEUE *queue_ptr, VOID *source_ptr, ULONG wait_option)
 {
-	TraceEventHandle_t xTraceHandle;
-
-	if (xTraceEventBegin(PSF_EVENT_QUEUE_FRONT_SEND_BLOCKED, sizeof(void*) + sizeof(void*) + sizeof(ULONG),
-		&xTraceHandle) == TRC_SUCCESS) {
-		xTraceEventAddPointer(xTraceHandle, (void*)queue_ptr);
-		xTraceEventAddPointer(xTraceHandle, (void*)source_ptr);
-		xTraceEventAddUnsignedBaseType(xTraceHandle, wait_option);
-		xTraceEventEnd(xTraceHandle);
-	}
+	(void)xTraceEventCreate3(PSF_EVENT_QUEUE_FRONT_SEND_BLOCKED, (TraceUnsignedBaseType_t)queue_ptr, (TraceUnsignedBaseType_t)source_ptr, (TraceUnsignedBaseType_t)wait_option);
 
 	UINT ret = _txe_queue_front_send_orig(queue_ptr, source_ptr, wait_option);
 
 	if (ret == TX_SUCCESS)
 	{
-		if (xTraceEventBegin(PSF_EVENT_QUEUE_FRONT_SEND_SUCCESS, sizeof(void*) + sizeof(void*) + sizeof(ULONG),
-			&xTraceHandle) == TRC_SUCCESS) {
-			xTraceEventAddPointer(xTraceHandle, (void*)queue_ptr);
-			xTraceEventAddPointer(xTraceHandle, (void*)source_ptr);
-			xTraceEventAddUnsignedBaseType(xTraceHandle, wait_option);
-			xTraceEventEnd(xTraceHandle);
-		}
+		(void)xTraceEventCreate3(PSF_EVENT_QUEUE_FRONT_SEND_SUCCESS, (TraceUnsignedBaseType_t)queue_ptr, (TraceUnsignedBaseType_t)source_ptr, (TraceUnsignedBaseType_t)wait_option);
 	}
 	else if (ret == TX_QUEUE_FULL)
 	{
-		if (xTraceEventBegin(PSF_EVENT_QUEUE_FRONT_SEND_TIMEOUT, sizeof(void*) + sizeof(void*) + sizeof(ULONG) + sizeof(UINT),
-			&xTraceHandle) == TRC_SUCCESS) {
-			xTraceEventAddPointer(xTraceHandle, (void*)queue_ptr);
-			xTraceEventAddPointer(xTraceHandle, (void*)source_ptr);
-			xTraceEventAddUnsignedBaseType(xTraceHandle, wait_option);
-			xTraceEventAdd32(xTraceHandle, ret);
-			xTraceEventEnd(xTraceHandle);
-		}
+		(void)xTraceEventCreate4(PSF_EVENT_QUEUE_FRONT_SEND_TIMEOUT, (TraceUnsignedBaseType_t)queue_ptr, (TraceUnsignedBaseType_t)source_ptr, (TraceUnsignedBaseType_t)wait_option, (TraceUnsignedBaseType_t)ret);
 	}
 	else
 	{
-		if (xTraceEventBegin(PSF_EVENT_QUEUE_FRONT_SEND_FAILED, sizeof(void*) + sizeof(void*) + sizeof(ULONG) + sizeof(UINT),
-			&xTraceHandle) == TRC_SUCCESS) {
-			xTraceEventAddPointer(xTraceHandle, (void*)queue_ptr);
-			xTraceEventAddPointer(xTraceHandle, (void*)source_ptr);
-			xTraceEventAddUnsignedBaseType(xTraceHandle, wait_option);
-			xTraceEventAdd32(xTraceHandle, ret);
-			xTraceEventEnd(xTraceHandle);
-		}
+		(void)xTraceEventCreate4(PSF_EVENT_QUEUE_FRONT_SEND_FAILED, (TraceUnsignedBaseType_t)queue_ptr, (TraceUnsignedBaseType_t)source_ptr, (TraceUnsignedBaseType_t)wait_option, (TraceUnsignedBaseType_t)ret);
 	}
 
 	return ret;
@@ -1012,14 +649,7 @@ UINT _txe_queue_info_get(TX_QUEUE *queue_ptr, CHAR **name, ULONG *enqueued, ULON
 
 	if (ret != TX_SUCCESS)
 	{
-		TraceEventHandle_t xTraceHandle;
-
-		if (xTraceEventBegin(PSF_EVENT_QUEUE_INFO_GET_FAILED, sizeof(void*) + sizeof(UINT),
-			&xTraceHandle) == TRC_SUCCESS) {
-			xTraceEventAddPointer(xTraceHandle, (void*)queue_ptr);
-			xTraceEventAdd32(xTraceHandle, ret);
-			xTraceEventEnd(xTraceHandle);
-		}
+		(void)xTraceEventCreate2(PSF_EVENT_QUEUE_INFO_GET_FAILED, (TraceUnsignedBaseType_t)queue_ptr, (TraceUnsignedBaseType_t)ret);
 	}
 
 	return ret;
@@ -1032,14 +662,7 @@ UINT  _tx_queue_performance_info_get(TX_QUEUE *queue_ptr, ULONG *messages_sent, 
 
 	if (ret != TX_SUCCESS)
 	{
-		TraceEventHandle_t xTraceHandle;
-
-		if (xTraceEventBegin(PSF_EVENT_QUEUE_PERFORMANCE_INFO_GET_FAILED, sizeof(void*) + sizeof(UINT),
-			&xTraceHandle) == TRC_SUCCESS) {
-			xTraceEventAddPointer(xTraceHandle, (void*)queue_ptr);
-			xTraceEventAdd32(xTraceHandle, ret);
-			xTraceEventEnd(xTraceHandle);
-		}
+		(void)xTraceEventCreate2(PSF_EVENT_QUEUE_PERFORMANCE_INFO_GET_FAILED, (TraceUnsignedBaseType_t)queue_ptr, (TraceUnsignedBaseType_t)ret);
 	}
 
 	return ret;
@@ -1052,21 +675,11 @@ UINT  _tx_queue_performance_system_info_get(ULONG *messages_sent, ULONG *message
 
 	if(ret == TX_SUCCESS)
 	{
-		TraceEventHandle_t xTraceHandle;
-
-		if (xTraceEventBegin(PSF_EVENT_QUEUE_PERFORMANCE_SYSTEM_INFO_GET_SUCCESS, 0,
-			&xTraceHandle) == TRC_SUCCESS) {
-			xTraceEventEnd(xTraceHandle);
-		}
+		(void)xTraceEventCreate0(PSF_EVENT_QUEUE_PERFORMANCE_SYSTEM_INFO_GET_SUCCESS);
 	}
 	else
 	{
-		TraceEventHandle_t xTraceHandle;
-
-		if (xTraceEventBegin(PSF_EVENT_QUEUE_PERFORMANCE_SYSTEM_INFO_GET_FAILED, 0,
-			&xTraceHandle) == TRC_SUCCESS) {
-			xTraceEventEnd(xTraceHandle);
-		}
+		(void)xTraceEventCreate0(PSF_EVENT_QUEUE_PERFORMANCE_SYSTEM_INFO_GET_FAILED);
 	}
 
 	return ret;
@@ -1078,14 +691,7 @@ UINT _txe_queue_prioritize(TX_QUEUE *queue_ptr)
 
 	if (ret != TX_SUCCESS)
 	{
-		TraceEventHandle_t xTraceHandle;
-
-		if (xTraceEventBegin(PSF_EVENT_QUEUE_PRIORITIZE_FAILED, sizeof(void*) + sizeof(UINT),
-			&xTraceHandle) == TRC_SUCCESS) {
-			xTraceEventAddPointer(xTraceHandle, (void*)queue_ptr);
-			xTraceEventAdd32(xTraceHandle, ret);
-			xTraceEventEnd(xTraceHandle);
-		}
+		(void)xTraceEventCreate2(PSF_EVENT_QUEUE_PRIORITIZE_FAILED, (TraceUnsignedBaseType_t)queue_ptr, (TraceUnsignedBaseType_t)ret);
 	}
 
 	return ret;
@@ -1093,49 +699,21 @@ UINT _txe_queue_prioritize(TX_QUEUE *queue_ptr)
 
 UINT _txe_queue_receive(TX_QUEUE *queue_ptr, VOID *destination_ptr, ULONG wait_option)
 {
-	TraceEventHandle_t xTraceHandle;
-
-	if (xTraceEventBegin(PSF_EVENT_QUEUE_RECEIVE_BLOCKED, sizeof(void*) + sizeof(void*) + sizeof(ULONG),
-		&xTraceHandle) == TRC_SUCCESS) {
-		xTraceEventAddPointer(xTraceHandle, (void*)queue_ptr);
-		xTraceEventAddPointer(xTraceHandle, (void*)destination_ptr);
-		xTraceEventAddUnsignedBaseType(xTraceHandle, wait_option);
-		xTraceEventEnd(xTraceHandle);
-	}
+	(void)xTraceEventCreate3(PSF_EVENT_QUEUE_RECEIVE_BLOCKED, (TraceUnsignedBaseType_t)queue_ptr, (TraceUnsignedBaseType_t)destination_ptr, (TraceUnsignedBaseType_t)wait_option);
 
 	UINT ret = _txe_queue_receive_orig(queue_ptr, destination_ptr, wait_option);
 
 	if (ret == TX_SUCCESS)
 	{
-		if (xTraceEventBegin(PSF_EVENT_QUEUE_RECEIVE_SUCCESS, sizeof(void*) + sizeof(void*) + sizeof(ULONG),
-			&xTraceHandle) == TRC_SUCCESS) {
-			xTraceEventAddPointer(xTraceHandle, (void*)queue_ptr);
-			xTraceEventAddPointer(xTraceHandle, (void*)destination_ptr);
-			xTraceEventAddUnsignedBaseType(xTraceHandle, wait_option);
-			xTraceEventEnd(xTraceHandle);
-		}
+		(void)xTraceEventCreate3(PSF_EVENT_QUEUE_RECEIVE_SUCCESS, (TraceUnsignedBaseType_t)queue_ptr, (TraceUnsignedBaseType_t)destination_ptr, (TraceUnsignedBaseType_t)wait_option);
 	}
 	else if (ret == TX_QUEUE_EMPTY)
 	{
-		if (xTraceEventBegin(PSF_EVENT_QUEUE_RECEIVE_TIMEOUT, sizeof(void*) + sizeof(void*) + sizeof(ULONG) + sizeof(UINT),
-			&xTraceHandle) == TRC_SUCCESS) {
-			xTraceEventAddPointer(xTraceHandle, (void*)queue_ptr);
-			xTraceEventAddPointer(xTraceHandle, (void*)destination_ptr);
-			xTraceEventAddUnsignedBaseType(xTraceHandle, wait_option);
-			xTraceEventAdd32(xTraceHandle, ret);
-			xTraceEventEnd(xTraceHandle);
-		}
+		(void)xTraceEventCreate4(PSF_EVENT_QUEUE_RECEIVE_TIMEOUT, (TraceUnsignedBaseType_t)queue_ptr, (TraceUnsignedBaseType_t)destination_ptr, (TraceUnsignedBaseType_t)wait_option, (TraceUnsignedBaseType_t)ret);
 	}
 	else
 	{
-		if (xTraceEventBegin(PSF_EVENT_QUEUE_RECEIVE_FAILED, sizeof(void*) + sizeof(void*) + sizeof(ULONG) + sizeof(UINT),
-			&xTraceHandle) == TRC_SUCCESS) {
-			xTraceEventAddPointer(xTraceHandle, (void*)queue_ptr);
-			xTraceEventAddPointer(xTraceHandle, (void*)destination_ptr);
-			xTraceEventAddUnsignedBaseType(xTraceHandle, wait_option);
-			xTraceEventAdd32(xTraceHandle, ret);
-			xTraceEventEnd(xTraceHandle);
-		}
+		(void)xTraceEventCreate4(PSF_EVENT_QUEUE_RECEIVE_FAILED, (TraceUnsignedBaseType_t)queue_ptr, (TraceUnsignedBaseType_t)destination_ptr, (TraceUnsignedBaseType_t)wait_option, (TraceUnsignedBaseType_t)ret);
 	}
 
 	return ret;
@@ -1147,14 +725,7 @@ UINT _txe_queue_send_notify(TX_QUEUE *queue_ptr, VOID (*queue_send_notify)(TX_QU
 
 	if (ret != TX_SUCCESS)
 	{
-		TraceEventHandle_t xTraceHandle;
-
-		if (xTraceEventBegin(PSF_EVENT_QUEUE_SEND_NOTIFY_FAILED, sizeof(void*) + sizeof(UINT),
-			&xTraceHandle) == TRC_SUCCESS) {
-			xTraceEventAddPointer(xTraceHandle, (void*)queue_ptr);
-			xTraceEventAdd32(xTraceHandle, ret);
-			xTraceEventEnd(xTraceHandle);
-		}
+		(void)xTraceEventCreate2(PSF_EVENT_QUEUE_SEND_NOTIFY_FAILED, (TraceUnsignedBaseType_t)queue_ptr, (TraceUnsignedBaseType_t)ret);
 	}
 
 	return ret;
@@ -1162,49 +733,21 @@ UINT _txe_queue_send_notify(TX_QUEUE *queue_ptr, VOID (*queue_send_notify)(TX_QU
 
 UINT _txe_queue_send(TX_QUEUE *queue_ptr, VOID *source_ptr, ULONG wait_option)
 {
-	TraceEventHandle_t xTraceHandle;
-
-	if (xTraceEventBegin(PSF_EVENT_QUEUE_SEND_BLOCKED, sizeof(void*) + sizeof(void*) + sizeof(ULONG),
-		&xTraceHandle) == TRC_SUCCESS) {
-		xTraceEventAddPointer(xTraceHandle, (void*)queue_ptr);
-		xTraceEventAddPointer(xTraceHandle, (void*)source_ptr);
-		xTraceEventAddUnsignedBaseType(xTraceHandle, wait_option);
-		xTraceEventEnd(xTraceHandle);
-	}
+	(void)xTraceEventCreate3(PSF_EVENT_QUEUE_SEND_BLOCKED, (TraceUnsignedBaseType_t)queue_ptr, (TraceUnsignedBaseType_t)source_ptr, (TraceUnsignedBaseType_t)wait_option);
 
 	UINT ret = _txe_queue_send_orig(queue_ptr, source_ptr, wait_option);
 
 	if (ret == TX_SUCCESS)
 	{
-		if (xTraceEventBegin(PSF_EVENT_QUEUE_SEND_SUCCESS, sizeof(void*) + sizeof(void*) + sizeof(ULONG),
-			&xTraceHandle) == TRC_SUCCESS) {
-			xTraceEventAddPointer(xTraceHandle, (void*)queue_ptr);
-			xTraceEventAddPointer(xTraceHandle, (void*)source_ptr);
-			xTraceEventAddUnsignedBaseType(xTraceHandle, wait_option);
-			xTraceEventEnd(xTraceHandle);
-		}
+		(void)xTraceEventCreate3(PSF_EVENT_QUEUE_SEND_SUCCESS, (TraceUnsignedBaseType_t)queue_ptr, (TraceUnsignedBaseType_t)source_ptr, (TraceUnsignedBaseType_t)wait_option);
 	}
 	else if (ret == TX_QUEUE_FULL)
 	{
-		if (xTraceEventBegin(PSF_EVENT_QUEUE_SEND_TIMEOUT, sizeof(void*) + sizeof(void*) + sizeof(ULONG) + sizeof(UINT),
-			&xTraceHandle) == TRC_SUCCESS) {
-			xTraceEventAddPointer(xTraceHandle, (void*)queue_ptr);
-			xTraceEventAddPointer(xTraceHandle, (void*)source_ptr);
-			xTraceEventAddUnsignedBaseType(xTraceHandle, wait_option);
-			xTraceEventAdd32(xTraceHandle, ret);
-			xTraceEventEnd(xTraceHandle);
-		}
+		(void)xTraceEventCreate4(PSF_EVENT_QUEUE_SEND_TIMEOUT, (TraceUnsignedBaseType_t)queue_ptr, (TraceUnsignedBaseType_t)source_ptr, (TraceUnsignedBaseType_t)wait_option, (TraceUnsignedBaseType_t)ret);
 	}
 	else
 	{
-		if (xTraceEventBegin(PSF_EVENT_QUEUE_SEND_FAILED, sizeof(void*) + sizeof(void*) + sizeof(ULONG) + sizeof(UINT),
-			&xTraceHandle) == TRC_SUCCESS) {
-			xTraceEventAddPointer(xTraceHandle, (void*)queue_ptr);
-			xTraceEventAddPointer(xTraceHandle, (void*)source_ptr);
-			xTraceEventAddUnsignedBaseType(xTraceHandle, wait_option);
-			xTraceEventAdd32(xTraceHandle, ret);
-			xTraceEventEnd(xTraceHandle);
-		}
+		(void)xTraceEventCreate4(PSF_EVENT_QUEUE_SEND_FAILED, (TraceUnsignedBaseType_t)queue_ptr, (TraceUnsignedBaseType_t)source_ptr, (TraceUnsignedBaseType_t)wait_option, (TraceUnsignedBaseType_t)ret);
 	}
 
 	return ret;
@@ -1212,35 +755,17 @@ UINT _txe_queue_send(TX_QUEUE *queue_ptr, VOID *source_ptr, ULONG wait_option)
 
 UINT _txe_semaphore_ceiling_put(TX_SEMAPHORE *semaphore_ptr, ULONG ceiling)
 {
-	TraceEventHandle_t xTraceHandle;
-
-	if (xTraceEventBegin(PSF_EVENT_SEMAPHORE_CEILING_PUT_BLOCKED, sizeof(void*) + sizeof(ULONG),
-		&xTraceHandle) == TRC_SUCCESS) {
-		xTraceEventAddPointer(xTraceHandle, (void*)semaphore_ptr);
-		xTraceEventAddUnsignedBaseType(xTraceHandle, ceiling);
-		xTraceEventEnd(xTraceHandle);
-	}
+	(void)xTraceEventCreate2(PSF_EVENT_SEMAPHORE_CEILING_PUT_BLOCKED, (TraceUnsignedBaseType_t)semaphore_ptr, (TraceUnsignedBaseType_t)ceiling);
 
 	UINT ret = _txe_semaphore_ceiling_put_orig(semaphore_ptr, ceiling);
 
 	if (ret == TX_SUCCESS)
 	{
-		if (xTraceEventBegin(PSF_EVENT_SEMAPHORE_CEILING_PUT_SUCCESS, sizeof(void*) + sizeof(ULONG),
-			&xTraceHandle) == TRC_SUCCESS) {
-			xTraceEventAddPointer(xTraceHandle, (void*)semaphore_ptr);
-			xTraceEventAddUnsignedBaseType(xTraceHandle, ceiling);
-			xTraceEventEnd(xTraceHandle);
-		}
+		(void)xTraceEventCreate2(PSF_EVENT_SEMAPHORE_CEILING_PUT_SUCCESS, (TraceUnsignedBaseType_t)semaphore_ptr, (TraceUnsignedBaseType_t)ceiling);
 	}
 	else
 	{
-		if (xTraceEventBegin(PSF_EVENT_SEMAPHORE_CEILING_PUT_FAILED, sizeof(void*) + sizeof(ULONG) + sizeof(UINT),
-			&xTraceHandle) == TRC_SUCCESS) {
-			xTraceEventAddPointer(xTraceHandle, (void*)semaphore_ptr);
-			xTraceEventAddUnsignedBaseType(xTraceHandle, ceiling);
-			xTraceEventAdd32(xTraceHandle, ret);
-			xTraceEventEnd(xTraceHandle);
-		}
+		(void)xTraceEventCreate3(PSF_EVENT_SEMAPHORE_CEILING_PUT_FAILED, (TraceUnsignedBaseType_t)semaphore_ptr, (TraceUnsignedBaseType_t)ceiling, (TraceUnsignedBaseType_t)ret);
 	}
 
 	return ret;
@@ -1252,15 +777,7 @@ UINT _txe_semaphore_create(TX_SEMAPHORE *semaphore_ptr, CHAR *name_ptr, ULONG in
 
 	if (ret != TX_SUCCESS)
 	{
-		TraceEventHandle_t xTraceHandle;
-
-		if (xTraceEventBegin(PSF_EVENT_SEMAPHORE_CREATE_FAILED, sizeof(void*) + sizeof(ULONG) + sizeof(UINT),
-			&xTraceHandle) == TRC_SUCCESS) {
-			xTraceEventAddPointer(xTraceHandle, (void*)semaphore_ptr);
-			xTraceEventAddUnsignedBaseType(xTraceHandle, initial_count);
-			xTraceEventAdd32(xTraceHandle, ret);
-			xTraceEventEnd(xTraceHandle);
-		}
+		(void)xTraceEventCreate3(PSF_EVENT_SEMAPHORE_CREATE_FAILED, (TraceUnsignedBaseType_t)semaphore_ptr, (TraceUnsignedBaseType_t)initial_count, (TraceUnsignedBaseType_t)ret);
 	}
 
 	return ret;
@@ -1272,14 +789,7 @@ UINT _txe_semaphore_delete(TX_SEMAPHORE *semaphore_ptr)
 
 	if (ret != TX_SUCCESS)
 	{
-		TraceEventHandle_t xTraceHandle;
-
-		if (xTraceEventBegin(PSF_EVENT_SEMAPHORE_DELETE_FAILED, sizeof(void*) + sizeof(UINT),
-			&xTraceHandle) == TRC_SUCCESS) {
-			xTraceEventAddPointer(xTraceHandle, (void*)semaphore_ptr);
-			xTraceEventAdd32(xTraceHandle, ret);
-			xTraceEventEnd(xTraceHandle);
-		}
+		(void)xTraceEventCreate2(PSF_EVENT_SEMAPHORE_DELETE_FAILED, (TraceUnsignedBaseType_t)semaphore_ptr, (TraceUnsignedBaseType_t)ret);
 	}
 
 	return ret;
@@ -1287,45 +797,21 @@ UINT _txe_semaphore_delete(TX_SEMAPHORE *semaphore_ptr)
 
 UINT _txe_semaphore_get(TX_SEMAPHORE *semaphore_ptr, ULONG wait_option)
 {
-	TraceEventHandle_t xTraceHandle;
-
-	if (xTraceEventBegin(PSF_EVENT_SEMAPHORE_GET_BLOCKED, sizeof(void*) + sizeof(ULONG),
-		&xTraceHandle) == TRC_SUCCESS) {
-		xTraceEventAddPointer(xTraceHandle, (void*)semaphore_ptr);
-		xTraceEventAddUnsignedBaseType(xTraceHandle, wait_option);
-		xTraceEventEnd(xTraceHandle);
-	}
+		(void)xTraceEventCreate2(PSF_EVENT_SEMAPHORE_GET_BLOCKED, (TraceUnsignedBaseType_t)semaphore_ptr, (TraceUnsignedBaseType_t)wait_option);
 
 	UINT ret = _txe_semaphore_get_orig(semaphore_ptr, wait_option);
 
 	if (ret == TX_SUCCESS)
 	{
-		if (xTraceEventBegin(PSF_EVENT_SEMAPHORE_GET_SUCCESS, sizeof(void*) + sizeof(ULONG),
-			&xTraceHandle) == TRC_SUCCESS) {
-			xTraceEventAddPointer(xTraceHandle, (void*)semaphore_ptr);
-			xTraceEventAddUnsignedBaseType(xTraceHandle, wait_option);
-			xTraceEventEnd(xTraceHandle);
-		}
+		(void)xTraceEventCreate2(PSF_EVENT_SEMAPHORE_GET_SUCCESS, (TraceUnsignedBaseType_t)semaphore_ptr, (TraceUnsignedBaseType_t)wait_option);
 	}
 	else if (ret == TX_NO_INSTANCE)
 	{
-		if (xTraceEventBegin(PSF_EVENT_SEMAPHORE_GET_TIMEOUT, sizeof(void*) + sizeof(ULONG) + sizeof(UINT),
-			&xTraceHandle) == TRC_SUCCESS) {
-			xTraceEventAddPointer(xTraceHandle, (void*)semaphore_ptr);
-			xTraceEventAddUnsignedBaseType(xTraceHandle, wait_option);
-			xTraceEventAdd32(xTraceHandle, ret);
-			xTraceEventEnd(xTraceHandle);
-		}
+		(void)xTraceEventCreate3(PSF_EVENT_SEMAPHORE_GET_TIMEOUT, (TraceUnsignedBaseType_t)semaphore_ptr, (TraceUnsignedBaseType_t)wait_option, (TraceUnsignedBaseType_t)ret);
 	}
 	else
 	{
-		if (xTraceEventBegin(PSF_EVENT_SEMAPHORE_GET_FAILED, sizeof(void*) + sizeof(ULONG) + sizeof(UINT),
-			&xTraceHandle) == TRC_SUCCESS) {
-			xTraceEventAddPointer(xTraceHandle, (void*)semaphore_ptr);
-			xTraceEventAddUnsignedBaseType(xTraceHandle, wait_option);
-			xTraceEventAdd32(xTraceHandle, ret);
-			xTraceEventEnd(xTraceHandle);
-		}
+		(void)xTraceEventCreate3(PSF_EVENT_SEMAPHORE_GET_FAILED, (TraceUnsignedBaseType_t)semaphore_ptr, (TraceUnsignedBaseType_t)wait_option, (TraceUnsignedBaseType_t)ret);
 	}
 
 	return ret;
@@ -1337,14 +823,7 @@ UINT _txe_semaphore_info_get(TX_SEMAPHORE *semaphore_ptr, CHAR **name, ULONG *cu
 
 	if (ret != TX_SUCCESS)
 	{
-		TraceEventHandle_t xTraceHandle;
-
-		if (xTraceEventBegin(PSF_EVENT_SEMAPHORE_INFO_GET_FAILED, sizeof(void*) + sizeof(UINT),
-			&xTraceHandle) == TRC_SUCCESS) {
-			xTraceEventAddPointer(xTraceHandle, (void*)semaphore_ptr);
-			xTraceEventAdd32(xTraceHandle, ret);
-			xTraceEventEnd(xTraceHandle);
-		}
+		(void)xTraceEventCreate2(PSF_EVENT_SEMAPHORE_INFO_GET_FAILED, (TraceUnsignedBaseType_t)semaphore_ptr, (TraceUnsignedBaseType_t)ret);
 	}
 
 	return ret;
@@ -1356,14 +835,7 @@ UINT _tx_semaphore_performance_info_get(TX_SEMAPHORE *semaphore_ptr, ULONG *puts
 
 	if (ret != TX_SUCCESS)
 	{
-		TraceEventHandle_t xTraceHandle;
-
-		if (xTraceEventBegin(PSF_EVENT_SEMAPHORE_PERFORMANCE_INFO_GET_FAILED, sizeof(void*) + sizeof(UINT),
-			&xTraceHandle) == TRC_SUCCESS) {
-			xTraceEventAddPointer(xTraceHandle, (void*)semaphore_ptr);
-			xTraceEventAdd32(xTraceHandle, ret);
-			xTraceEventEnd(xTraceHandle);
-		}
+		(void)xTraceEventCreate2(PSF_EVENT_SEMAPHORE_PERFORMANCE_INFO_GET_FAILED, (TraceUnsignedBaseType_t)semaphore_ptr, (TraceUnsignedBaseType_t)ret);
 	}
 
 	return ret;
@@ -1375,21 +847,11 @@ UINT  _tx_semaphore_performance_system_info_get(ULONG *puts, ULONG *gets, ULONG 
 
 	if(ret == TX_SUCCESS)
 	{
-		TraceEventHandle_t xTraceHandle;
-
-		if (xTraceEventBegin(PSF_EVENT_SEMAPHORE__PERFORMANCE_SYSTEM_INFO_GET_SUCCESS, 0,
-			&xTraceHandle) == TRC_SUCCESS) {
-			xTraceEventEnd(xTraceHandle);
-		}
+		(void)xTraceEventCreate0(PSF_EVENT_SEMAPHORE__PERFORMANCE_SYSTEM_INFO_GET_SUCCESS);
 	}
 	else
 	{
-		TraceEventHandle_t xTraceHandle;
-
-		if (xTraceEventBegin(PSF_EVENT_SEMAPHORE__PERFORMANCE_SYSTEM_INFO_GET_FAILED, 0,
-			&xTraceHandle) == TRC_SUCCESS) {
-			xTraceEventEnd(xTraceHandle);
-		}
+		(void)xTraceEventCreate0(PSF_EVENT_SEMAPHORE__PERFORMANCE_SYSTEM_INFO_GET_FAILED);
 	}
 
 	return ret;
@@ -1402,14 +864,7 @@ UINT _txe_semaphore_prioritize(TX_SEMAPHORE *semaphore_ptr)
 
 	if (ret != TX_SUCCESS)
 	{
-		TraceEventHandle_t xTraceHandle;
-
-		if (xTraceEventBegin(PSF_EVENT_SEMAPHORE_PRIORITIZE_FAILED, sizeof(void*) + sizeof(UINT),
-			&xTraceHandle) == TRC_SUCCESS) {
-			xTraceEventAddPointer(xTraceHandle, (void*)semaphore_ptr);
-			xTraceEventAdd32(xTraceHandle, ret);
-			xTraceEventEnd(xTraceHandle);
-		}
+		(void)xTraceEventCreate2(PSF_EVENT_SEMAPHORE_PRIORITIZE_FAILED, (TraceUnsignedBaseType_t)semaphore_ptr, (TraceUnsignedBaseType_t)ret);
 	}
 
 	return ret;
@@ -1421,14 +876,7 @@ UINT _txe_semaphore_put_notify(TX_SEMAPHORE *semaphore_ptr, VOID (*semaphore_put
 
 	if (ret != TX_SUCCESS)
 	{
-		TraceEventHandle_t xTraceHandle;
-
-		if (xTraceEventBegin(PSF_EVENT_SEMAPHORE_PUT_NOTIFY_FAILED, sizeof(void*) + sizeof(UINT),
-			&xTraceHandle) == TRC_SUCCESS) {
-			xTraceEventAddPointer(xTraceHandle, (void*)semaphore_ptr);
-			xTraceEventAdd32(xTraceHandle, ret);
-			xTraceEventEnd(xTraceHandle);
-		}
+		(void)xTraceEventCreate2(PSF_EVENT_SEMAPHORE_PUT_NOTIFY_FAILED, (TraceUnsignedBaseType_t)semaphore_ptr, (TraceUnsignedBaseType_t)ret);
 	}
 
 	return ret;
@@ -1440,14 +888,7 @@ UINT _txe_semaphore_put(TX_SEMAPHORE *semaphore_ptr)
 
 	if (ret != TX_SUCCESS)
 	{
-		TraceEventHandle_t xTraceHandle;
-
-		if (xTraceEventBegin(PSF_EVENT_SEMAPHORE_PUT_FAILED, sizeof(void*) + sizeof(UINT),
-			&xTraceHandle) == TRC_SUCCESS) {
-			xTraceEventAddPointer(xTraceHandle, (void*)semaphore_ptr);
-			xTraceEventAdd32(xTraceHandle, ret);
-			xTraceEventEnd(xTraceHandle);
-		}
+		(void)xTraceEventCreate2(PSF_EVENT_SEMAPHORE_PUT_FAILED, (TraceUnsignedBaseType_t)semaphore_ptr, (TraceUnsignedBaseType_t)ret);
 	}
 
 	return ret;
@@ -1455,15 +896,9 @@ UINT _txe_semaphore_put(TX_SEMAPHORE *semaphore_ptr)
 
 ULONG _tx_time_get(VOID)
 {
-	TraceEventHandle_t xTraceHandle;
-
 	ULONG ret = _tx_time_get_orig();
 
-	if (xTraceEventBegin(PSF_EVENT_TIME_GET_SUCCESS, sizeof(ULONG),
-		&xTraceHandle) == TRC_SUCCESS) {
-		xTraceEventAddUnsignedBaseType(xTraceHandle, ret);
-		xTraceEventEnd(xTraceHandle);
-	}
+	(void)xTraceEventCreate1(PSF_EVENT_TIME_GET_SUCCESS, (TraceUnsignedBaseType_t)ret);
 
 	return ret;
 }
@@ -1479,14 +914,7 @@ UINT _txe_timer_activate(TX_TIMER *timer_ptr)
 
 	if (ret != TX_SUCCESS)
 	{
-		TraceEventHandle_t xTraceHandle;
-
-		if (xTraceEventBegin(PSF_EVENT_TIMER_ACTIVATE_FAILED, sizeof(void*) + sizeof(UINT),
-			&xTraceHandle) == TRC_SUCCESS) {
-			xTraceEventAddPointer(xTraceHandle, (void*)timer_ptr);
-			xTraceEventAdd32(xTraceHandle, ret);
-			xTraceEventEnd(xTraceHandle);
-		}
+		(void)xTraceEventCreate2(PSF_EVENT_TIMER_ACTIVATE_FAILED, (TraceUnsignedBaseType_t)timer_ptr, (TraceUnsignedBaseType_t)ret);
 	}
 
 	return ret;
@@ -1498,16 +926,7 @@ UINT _txe_timer_change(TX_TIMER *timer_ptr, ULONG initial_ticks, ULONG reschedul
 
 	if (ret != TX_SUCCESS)
 	{
-		TraceEventHandle_t xTraceHandle;
-
-		if (xTraceEventBegin(PSF_EVENT_TIMER_CHANGE_FAILED, sizeof(void*) + sizeof(ULONG) + sizeof(ULONG) + sizeof(UINT),
-			&xTraceHandle) == TRC_SUCCESS) {
-			xTraceEventAddPointer(xTraceHandle, (void*)timer_ptr);
-			xTraceEventAddUnsignedBaseType(xTraceHandle, initial_ticks);
-			xTraceEventAddUnsignedBaseType(xTraceHandle, reschedule_ticks);
-			xTraceEventAdd32(xTraceHandle, ret);
-			xTraceEventEnd(xTraceHandle);
-		}
+		(void)xTraceEventCreate4(PSF_EVENT_TIMER_CHANGE_FAILED, (TraceUnsignedBaseType_t)timer_ptr, (TraceUnsignedBaseType_t)initial_ticks, (TraceUnsignedBaseType_t)reschedule_ticks, (TraceUnsignedBaseType_t)ret);
 	}
 
 	return ret;
@@ -1522,17 +941,7 @@ UINT _txe_timer_create(TX_TIMER *timer_ptr, CHAR *name_ptr,
 
 	if (ret != TX_SUCCESS)
 	{
-		TraceEventHandle_t xTraceHandle;
-
-		if (xTraceEventBegin(PSF_EVENT_TIMER_CREATE_FAILED, sizeof(void*) + sizeof(ULONG) + sizeof(ULONG) + sizeof(ULONG) + sizeof(UINT),
-			&xTraceHandle) == TRC_SUCCESS) {
-			xTraceEventAddPointer(xTraceHandle, (void*)timer_ptr);
-			xTraceEventAddUnsignedBaseType(xTraceHandle, initial_ticks);
-			xTraceEventAddUnsignedBaseType(xTraceHandle, reschedule_ticks);
-			xTraceEventAddUnsignedBaseType(xTraceHandle, auto_activate);
-			xTraceEventAdd32(xTraceHandle, ret);
-			xTraceEventEnd(xTraceHandle);
-		}
+		(void)xTraceEventCreate5(PSF_EVENT_TIMER_CREATE_FAILED, (TraceUnsignedBaseType_t)timer_ptr, (TraceUnsignedBaseType_t)initial_ticks, (TraceUnsignedBaseType_t)reschedule_ticks, (TraceUnsignedBaseType_t)auto_activate, (TraceUnsignedBaseType_t)ret);
 	}
 
 	return ret;
@@ -1544,14 +953,7 @@ UINT _txe_timer_deactivate(TX_TIMER *timer_ptr)
 
 	if (ret != TX_SUCCESS)
 	{
-		TraceEventHandle_t xTraceHandle;
-
-		if (xTraceEventBegin(PSF_EVENT_TIMER_DEACTIVATE_FAILED, sizeof(void*) + sizeof(UINT),
-			&xTraceHandle) == TRC_SUCCESS) {
-			xTraceEventAddPointer(xTraceHandle, (void*)timer_ptr);
-			xTraceEventAdd32(xTraceHandle, ret);
-			xTraceEventEnd(xTraceHandle);
-		}
+		(void)xTraceEventCreate2(PSF_EVENT_TIMER_DEACTIVATE_FAILED, (TraceUnsignedBaseType_t)timer_ptr, (TraceUnsignedBaseType_t)ret);
 	}
 
 	return ret;
@@ -1563,14 +965,7 @@ UINT _txe_timer_delete(TX_TIMER *timer_ptr)
 
 	if (ret != TX_SUCCESS)
 	{
-		TraceEventHandle_t xTraceHandle;
-
-		if (xTraceEventBegin(PSF_EVENT_TIMER_DELETE_FAILED, sizeof(void*) + sizeof(UINT),
-			&xTraceHandle) == TRC_SUCCESS) {
-			xTraceEventAddPointer(xTraceHandle, (void*)timer_ptr);
-			xTraceEventAdd32(xTraceHandle, ret);
-			xTraceEventEnd(xTraceHandle);
-		}
+		(void)xTraceEventCreate2(PSF_EVENT_TIMER_DELETE_FAILED, (TraceUnsignedBaseType_t)timer_ptr, (TraceUnsignedBaseType_t)ret);
 	}
 
 	return ret;
@@ -1582,14 +977,7 @@ UINT _txe_timer_info_get(TX_TIMER *timer_ptr, CHAR **name, UINT *active, ULONG *
 
 	if (ret != TX_SUCCESS)
 	{
-		TraceEventHandle_t xTraceHandle;
-
-		if (xTraceEventBegin(PSF_EVENT_TIMER_INFO_GET_FAILED, sizeof(void*) + sizeof(UINT),
-			&xTraceHandle) == TRC_SUCCESS) {
-			xTraceEventAddPointer(xTraceHandle, (void*)timer_ptr);
-			xTraceEventAdd32(xTraceHandle, ret);
-			xTraceEventEnd(xTraceHandle);
-		}
+		(void)xTraceEventCreate2(PSF_EVENT_TIMER_INFO_GET_FAILED, (TraceUnsignedBaseType_t)timer_ptr, (TraceUnsignedBaseType_t)ret);
 	}
 
 	return ret;
@@ -1601,14 +989,7 @@ UINT _tx_timer_performance_info_get(TX_TIMER *timer_ptr, ULONG *activates, ULONG
 
 	if (ret != TX_SUCCESS)
 	{
-		TraceEventHandle_t xTraceHandle;
-
-		if (xTraceEventBegin(PSF_EVENT_TIMER_PERFORMANCE_INFO_GET_FAILED, sizeof(void*) + sizeof(UINT),
-			&xTraceHandle) == TRC_SUCCESS) {
-			xTraceEventAddPointer(xTraceHandle, (void*)timer_ptr);
-			xTraceEventAdd32(xTraceHandle, ret);
-			xTraceEventEnd(xTraceHandle);
-		}
+		(void)xTraceEventCreate2(PSF_EVENT_TIMER_PERFORMANCE_INFO_GET_FAILED, (TraceUnsignedBaseType_t)timer_ptr, (TraceUnsignedBaseType_t)ret);
 	}
 
 	return ret;
@@ -1624,14 +1005,7 @@ UINT _txe_thread_create(TX_THREAD *thread_ptr, CHAR *name_ptr, VOID (*entry_func
 
 	if (ret != TX_SUCCESS)
 	{
-		TraceEventHandle_t xTraceHandle;
-
-		if (xTraceEventBegin(PSF_EVENT_THREAD_CREATE_FAILED, sizeof(void*) + sizeof(UINT),
-			&xTraceHandle) == TRC_SUCCESS) {
-			xTraceEventAddPointer(xTraceHandle, (void*)thread_ptr);
-			xTraceEventAdd32(xTraceHandle, ret);
-			xTraceEventEnd(xTraceHandle);
-		}
+		(void)xTraceEventCreate2(PSF_EVENT_THREAD_CREATE_FAILED, (TraceUnsignedBaseType_t)thread_ptr, (TraceUnsignedBaseType_t)ret);
 	}
 
 	return ret;
@@ -1643,14 +1017,7 @@ UINT _txe_thread_delete(TX_THREAD *thread_ptr)
 
 	if (ret != TX_SUCCESS)
 	{
-		TraceEventHandle_t xTraceHandle;
-
-		if (xTraceEventBegin(PSF_EVENT_THREAD_DELETE_FAILED, sizeof(void*) + sizeof(UINT),
-			&xTraceHandle) == TRC_SUCCESS) {
-			xTraceEventAddPointer(xTraceHandle, (void*)thread_ptr);
-			xTraceEventAdd32(xTraceHandle, ret);
-			xTraceEventEnd(xTraceHandle);
-		}
+		(void)xTraceEventCreate2(PSF_EVENT_THREAD_DELETE_FAILED, (TraceUnsignedBaseType_t)thread_ptr, (TraceUnsignedBaseType_t)ret);
 	}
 
 	return ret;
@@ -1662,14 +1029,7 @@ UINT _txe_thread_entry_exit_notify(TX_THREAD *thread_ptr, VOID (*thread_entry_ex
 
 	if (ret != TX_SUCCESS)
 	{
-		TraceEventHandle_t xTraceHandle;
-
-		if (xTraceEventBegin(PSF_EVENT_THREAD_ENTRY_EXIT_NOTIFY_FAILED, sizeof(void*) + sizeof(UINT),
-			&xTraceHandle) == TRC_SUCCESS) {
-			xTraceEventAddPointer(xTraceHandle, (void*)thread_ptr);
-			xTraceEventAdd32(xTraceHandle, ret);
-			xTraceEventEnd(xTraceHandle);
-		}
+		(void)xTraceEventCreate2(PSF_EVENT_THREAD_ENTRY_EXIT_NOTIFY_FAILED, (TraceUnsignedBaseType_t)thread_ptr, (TraceUnsignedBaseType_t)ret);
 	}
 
 	return ret;
@@ -1681,14 +1041,7 @@ UINT _txe_thread_info_get(TX_THREAD *thread_ptr, CHAR **name, UINT *state, ULONG
 
 	if (ret != TX_SUCCESS)
 	{
-		TraceEventHandle_t xTraceHandle;
-
-		if (xTraceEventBegin(PSF_EVENT_THREAD_INFO_GET_FAILED, sizeof(void*) + sizeof(UINT),
-			&xTraceHandle) == TRC_SUCCESS) {
-			xTraceEventAddPointer(xTraceHandle, (void*)thread_ptr);
-			xTraceEventAdd32(xTraceHandle, ret);
-			xTraceEventEnd(xTraceHandle);
-		}
+		(void)xTraceEventCreate2(PSF_EVENT_THREAD_INFO_GET_FAILED, (TraceUnsignedBaseType_t)thread_ptr, (TraceUnsignedBaseType_t)ret);
 	}
 
 	return ret;
@@ -1702,14 +1055,7 @@ UINT _tx_thread_performance_info_get(TX_THREAD *thread_ptr, ULONG *resumptions, 
 
 	if (ret != TX_SUCCESS)
 	{
-		TraceEventHandle_t xTraceHandle;
-
-		if (xTraceEventBegin(PSF_EVENT_THREAD_PERFORMANCE_INFO_GET_FAILED, sizeof(void*) + sizeof(UINT),
-			&xTraceHandle) == TRC_SUCCESS) {
-			xTraceEventAddPointer(xTraceHandle, (void*)thread_ptr);
-			xTraceEventAdd32(xTraceHandle, ret);
-			xTraceEventEnd(xTraceHandle);
-		}
+		(void)xTraceEventCreate2(PSF_EVENT_THREAD_PERFORMANCE_INFO_GET_FAILED, (TraceUnsignedBaseType_t)thread_ptr, (TraceUnsignedBaseType_t)ret);
 	}
 
 	return ret;
@@ -1724,21 +1070,11 @@ UINT  _tx_thread_performance_system_info_get(ULONG *resumptions, ULONG *suspensi
 
 	if(ret == TX_SUCCESS)
 	{
-		TraceEventHandle_t xTraceHandle;
-
-		if (xTraceEventBegin(PSF_EVENT_THREAD_PERFORMANCE_SYSTEM_INFO_GET_SUCCESS, 0,
-			&xTraceHandle) == TRC_SUCCESS) {
-			xTraceEventEnd(xTraceHandle);
-		}
+		(void)xTraceEventCreate0(PSF_EVENT_THREAD_PERFORMANCE_SYSTEM_INFO_GET_SUCCESS);
 	}
 	else
 	{
-		TraceEventHandle_t xTraceHandle;
-
-		if (xTraceEventBegin(PSF_EVENT_THREAD_PERFORMANCE_SYSTEM_INFO_GET_FAILED, 0,
-			&xTraceHandle) == TRC_SUCCESS) {
-			xTraceEventEnd(xTraceHandle);
-		}
+		(void)xTraceEventCreate0(PSF_EVENT_THREAD_PERFORMANCE_SYSTEM_INFO_GET_FAILED);
 	}
 
 	return ret;
@@ -1750,15 +1086,7 @@ UINT _txe_thread_preemption_change(TX_THREAD *thread_ptr, UINT new_threshold, UI
 
 	if (ret != TX_SUCCESS)
 	{
-		TraceEventHandle_t xTraceHandle;
-
-		if (xTraceEventBegin(PSF_EVENT_THREAD_PREEMPTION_CHANGE_FAILED, sizeof(void*) + sizeof(UINT) + sizeof(UINT),
-			&xTraceHandle) == TRC_SUCCESS) {
-			xTraceEventAddPointer(xTraceHandle, (void*)thread_ptr);
-			xTraceEventAdd32(xTraceHandle, new_threshold);
-			xTraceEventAdd32(xTraceHandle, ret);
-			xTraceEventEnd(xTraceHandle);
-		}
+		(void)xTraceEventCreate3(PSF_EVENT_THREAD_PREEMPTION_CHANGE_FAILED, (TraceUnsignedBaseType_t)thread_ptr, (TraceUnsignedBaseType_t)new_threshold, (TraceUnsignedBaseType_t)ret);
 	}
 
 	return ret;
@@ -1770,15 +1098,7 @@ UINT _txe_thread_priority_change(TX_THREAD *thread_ptr, UINT new_priority, UINT 
 
 	if (ret != TX_SUCCESS)
 	{
-		TraceEventHandle_t xTraceHandle;
-
-		if (xTraceEventBegin(PSF_EVENT_THREAD_PRIORITY_CHANGE_FAILED, sizeof(void*) + sizeof(UINT) + sizeof(UINT),
-			&xTraceHandle) == TRC_SUCCESS) {
-			xTraceEventAddPointer(xTraceHandle, (void*)thread_ptr);
-			xTraceEventAdd32(xTraceHandle, new_priority);
-			xTraceEventAdd32(xTraceHandle, ret);
-			xTraceEventEnd(xTraceHandle);
-		}
+		(void)xTraceEventCreate3(PSF_EVENT_THREAD_PRIORITY_CHANGE_FAILED, (TraceUnsignedBaseType_t)thread_ptr, (TraceUnsignedBaseType_t)new_priority, (TraceUnsignedBaseType_t)ret);
 	}
 
 	return ret;
@@ -1790,14 +1110,7 @@ UINT _txe_thread_reset(TX_THREAD *thread_ptr)
 
 	if (ret != TX_SUCCESS)
 	{
-		TraceEventHandle_t xTraceHandle;
-
-		if (xTraceEventBegin(PSF_EVENT_THREAD_RESET_FAILED, sizeof(void*) + sizeof(UINT),
-			&xTraceHandle) == TRC_SUCCESS) {
-			xTraceEventAddPointer(xTraceHandle, (void*)thread_ptr);
-			xTraceEventAdd32(xTraceHandle, ret);
-			xTraceEventEnd(xTraceHandle);
-		}
+		(void)xTraceEventCreate2(PSF_EVENT_THREAD_RESET_FAILED, (TraceUnsignedBaseType_t)thread_ptr, (TraceUnsignedBaseType_t)ret);
 	}
 
 	return ret;
@@ -1809,14 +1122,7 @@ UINT _txe_thread_resume(TX_THREAD *thread_ptr)
 
 	if (ret != TX_SUCCESS)
 	{
-		TraceEventHandle_t xTraceHandle;
-
-		if (xTraceEventBegin(PSF_EVENT_THREAD_RESUME_FAILED, sizeof(void*) + sizeof(UINT),
-			&xTraceHandle) == TRC_SUCCESS) {
-			xTraceEventAddPointer(xTraceHandle, (void*)thread_ptr);
-			xTraceEventAdd32(xTraceHandle, ret);
-			xTraceEventEnd(xTraceHandle);
-		}
+		(void)xTraceEventCreate2(PSF_EVENT_THREAD_RESUME_FAILED, (TraceUnsignedBaseType_t)thread_ptr, (TraceUnsignedBaseType_t)ret);
 	}
 
 	return ret;
@@ -1824,30 +1130,17 @@ UINT _txe_thread_resume(TX_THREAD *thread_ptr)
 
 UINT _tx_thread_sleep(ULONG timer_ticks)
 {
-	TraceEventHandle_t xTraceHandle;
-
-	if (xTraceEventBegin(PSF_EVENT_THREAD_SLEEP_BLOCKED, sizeof(UINT),
-		&xTraceHandle) == TRC_SUCCESS) {
-		xTraceEventAddUnsignedBaseType(xTraceHandle, timer_ticks);
-		xTraceEventEnd(xTraceHandle);
-	}
+	(void)xTraceEventCreate1(PSF_EVENT_THREAD_SLEEP_BLOCKED, (TraceUnsignedBaseType_t)timer_ticks);
 
 	UINT ret = _tx_thread_sleep_orig(timer_ticks);
 
-	if (ret == TX_SUCCESS) {
-		if (xTraceEventBegin(PSF_EVENT_THREAD_SLEEP_SUCCESS, sizeof(UINT), &xTraceHandle) == TRC_SUCCESS) {
-			xTraceEventAddUnsignedBaseType(xTraceHandle, timer_ticks);
-			xTraceEventEnd(xTraceHandle);
-		}
+	if (ret == TX_SUCCESS)
+	{
+		(void)xTraceEventCreate1(PSF_EVENT_THREAD_SLEEP_SUCCESS, (TraceUnsignedBaseType_t)timer_ticks);
 	}
 	else
 	{
-		if (xTraceEventBegin(PSF_EVENT_THREAD_SLEEP_FAILED, sizeof(UINT) + sizeof(ULONG),
-			&xTraceHandle) == TRC_SUCCESS) {
-			xTraceEventAddUnsignedBaseType(xTraceHandle, timer_ticks);
-			xTraceEventAdd32(xTraceHandle, ret);
-			xTraceEventEnd(xTraceHandle);
-		}
+		(void)xTraceEventCreate2(PSF_EVENT_THREAD_SLEEP_FAILED, (TraceUnsignedBaseType_t)timer_ticks, (TraceUnsignedBaseType_t)ret);
 	}
 
 	return ret;
@@ -1855,15 +1148,9 @@ UINT _tx_thread_sleep(ULONG timer_ticks)
 
 UINT _tx_thread_stack_error_notify(VOID (*stack_error_handler)(TX_THREAD *thread_ptr))
 {
-	TraceEventHandle_t xTraceHandle;
-
 	UINT ret = _tx_thread_stack_error_notify_orig(stack_error_handler);
 
-	if (xTraceEventBegin(TX_TRACE_THREAD_STACK_ERROR_NOTIFY, sizeof(UINT),
-		&xTraceHandle) == TRC_SUCCESS) {
-		xTraceEventAdd32(xTraceHandle, ret);
-		xTraceEventEnd(xTraceHandle);
-	}
+	(void)xTraceEventCreate1(TX_TRACE_THREAD_STACK_ERROR_NOTIFY, (TraceUnsignedBaseType_t)ret);
 
 	return ret;
 }
@@ -1874,14 +1161,7 @@ UINT _txe_thread_suspend(TX_THREAD *thread_ptr)
 
 	if (ret != TX_SUCCESS)
 	{
-		TraceEventHandle_t xTraceHandle;
-
-		if (xTraceEventBegin(PSF_EVENT_THREAD_SUSPEND_FAILED, sizeof(void*) + sizeof(UINT),
-			&xTraceHandle) == TRC_SUCCESS) {
-			xTraceEventAddPointer(xTraceHandle, (void*)thread_ptr);
-			xTraceEventAdd32(xTraceHandle, ret);
-			xTraceEventEnd(xTraceHandle);
-		}
+		(void)xTraceEventCreate2(PSF_EVENT_THREAD_SUSPEND_FAILED, (TraceUnsignedBaseType_t)thread_ptr, (TraceUnsignedBaseType_t)ret);
 	}
 
 	return ret;
@@ -1893,14 +1173,7 @@ UINT _txe_thread_terminate(TX_THREAD *thread_ptr)
 
 	if (ret != TX_SUCCESS)
 	{
-		TraceEventHandle_t xTraceHandle;
-
-		if (xTraceEventBegin(PSF_EVENT_THREAD_TERMINATE_FAILED, sizeof(void*) + sizeof(UINT),
-			&xTraceHandle) == TRC_SUCCESS) {
-			xTraceEventAddPointer(xTraceHandle, (void*)thread_ptr);
-			xTraceEventAdd32(xTraceHandle, ret);
-			xTraceEventEnd(xTraceHandle);
-		}
+		(void)xTraceEventCreate2(PSF_EVENT_THREAD_TERMINATE_FAILED, (TraceUnsignedBaseType_t)thread_ptr, (TraceUnsignedBaseType_t)ret);
 	}
 
 	return ret;
@@ -1917,15 +1190,7 @@ UINT _txe_thread_time_slice_change(TX_THREAD *thread_ptr, ULONG new_time_slice, 
 
 	if (ret != TX_SUCCESS)
 	{
-		TraceEventHandle_t xTraceHandle;
-
-		if (xTraceEventBegin(PSF_EVENT_THREAD_TIME_SLICE_CHANGE_FAILED, sizeof(void*) + sizeof(ULONG) + sizeof(UINT),
-			&xTraceHandle) == TRC_SUCCESS) {
-			xTraceEventAddPointer(xTraceHandle, (void*)thread_ptr);
-			xTraceEventAddUnsignedBaseType(xTraceHandle, new_time_slice);
-			xTraceEventAdd32(xTraceHandle, ret);
-			xTraceEventEnd(xTraceHandle);
-		}
+		(void)xTraceEventCreate3(PSF_EVENT_THREAD_TIME_SLICE_CHANGE_FAILED, (TraceUnsignedBaseType_t)thread_ptr, (TraceUnsignedBaseType_t)new_time_slice, (TraceUnsignedBaseType_t)ret);
 	}
 
 	return ret;
@@ -1937,14 +1202,7 @@ UINT _txe_thread_wait_abort(TX_THREAD  *thread_ptr)
 
 	if (ret != TX_SUCCESS)
 	{
-		TraceEventHandle_t xTraceHandle;
-
-		if (xTraceEventBegin(PSF_EVENT_THREAD_WAIT_ABORT_FAILED, sizeof(void*) + sizeof(UINT),
-			&xTraceHandle) == TRC_SUCCESS) {
-			xTraceEventAddPointer(xTraceHandle, (void*)thread_ptr);
-			xTraceEventAdd32(xTraceHandle, ret);
-			xTraceEventEnd(xTraceHandle);
-		}
+		(void)xTraceEventCreate2(PSF_EVENT_THREAD_WAIT_ABORT_FAILED, (TraceUnsignedBaseType_t)thread_ptr, (TraceUnsignedBaseType_t)ret);
 	}
 
 	return ret;
@@ -1965,11 +1223,10 @@ traceResult xTraceISREnd(TraceBaseType_t uxIsTaskSwitchRequired)
 	return xResult;
 }
 
-static TRACE_ALLOC_CRITICAL_SECTION()
-
-traceResult xTraceEventBeginRawOffline(uint32_t uiSize, TraceEventHandle_t* pxEventHandle)
+traceResult xTraceEventCreate0(uint32_t uiEventCode)
 {
 	traceResult xResult;
+	TRACE_ALLOC_CRITICAL_SECTION();
 
 	/* We must use a critical section here or there is a chance that an interrupt
 	 * could fire in the time between checking for a thread switch and the event
@@ -1982,21 +1239,367 @@ traceResult xTraceEventBeginRawOffline(uint32_t uiSize, TraceEventHandle_t* pxEv
 	 */
 	xTraceCheckThreadSwitch();
 
-	xResult = xTraceEventBeginRawOffline_orig(uiSize, pxEventHandle);
+	xResult = xTraceEventCreate0_orig(uiEventCode);
 
-	if (xResult == TRC_FAIL) {
-		/* Exit wrapped critical section */
-		TRACE_EXIT_CRITICAL_SECTION();
-	}
+	/* Exit wrapped critical section */
+	TRACE_EXIT_CRITICAL_SECTION();
 
 	return xResult;
 }
 
-traceResult xTraceEventEndOffline(TraceEventHandle_t xEventHandle)
+traceResult xTraceEventCreate1(uint32_t uiEventCode, TraceUnsignedBaseType_t uxParam1)
 {
 	traceResult xResult;
+	TRACE_ALLOC_CRITICAL_SECTION();
 
-	xResult = xTraceEventEndOffline_orig(xEventHandle);
+	/* We must use a critical section here or there is a chance that an interrupt
+	 * could fire in the time between checking for a thread switch and the event
+	 * being sent.
+	 */
+	TRACE_ENTER_CRITICAL_SECTION();
+
+	/* Perform a thread switch check before each event to see if ThreadX has switched to a new
+	 * thread without informing us.
+	 */
+	xTraceCheckThreadSwitch();
+
+	xResult = xTraceEventCreate1_orig(uiEventCode, uxParam1);
+
+	/* Exit wrapped critical section */
+	TRACE_EXIT_CRITICAL_SECTION();
+
+	return xResult;
+}
+
+traceResult xTraceEventCreate2(uint32_t uiEventCode, TraceUnsignedBaseType_t uxParam1, TraceUnsignedBaseType_t uxParam2)
+{
+	traceResult xResult;
+	TRACE_ALLOC_CRITICAL_SECTION();
+
+	/* We must use a critical section here or there is a chance that an interrupt
+	 * could fire in the time between checking for a thread switch and the event
+	 * being sent.
+	 */
+	TRACE_ENTER_CRITICAL_SECTION();
+
+	/* Perform a thread switch check before each event to see if ThreadX has switched to a new
+	 * thread without informing us.
+	 */
+	xTraceCheckThreadSwitch();
+
+	xResult = xTraceEventCreate2_orig(uiEventCode, uxParam1, uxParam2);
+
+	/* Exit wrapped critical section */
+	TRACE_EXIT_CRITICAL_SECTION();
+
+	return xResult;
+}
+
+traceResult xTraceEventCreate3(uint32_t uiEventCode, TraceUnsignedBaseType_t uxParam1, TraceUnsignedBaseType_t uxParam2, TraceUnsignedBaseType_t uxParam3)
+{
+	traceResult xResult;
+	TRACE_ALLOC_CRITICAL_SECTION();
+
+	/* We must use a critical section here or there is a chance that an interrupt
+	 * could fire in the time between checking for a thread switch and the event
+	 * being sent.
+	 */
+	TRACE_ENTER_CRITICAL_SECTION();
+
+	/* Perform a thread switch check before each event to see if ThreadX has switched to a new
+	 * thread without informing us.
+	 */
+	xTraceCheckThreadSwitch();
+
+	xResult = xTraceEventCreate3_orig(uiEventCode, uxParam1, uxParam2, uxParam3);
+
+	/* Exit wrapped critical section */
+	TRACE_EXIT_CRITICAL_SECTION();
+
+	return xResult;
+}
+
+traceResult xTraceEventCreate4(uint32_t uiEventCode, TraceUnsignedBaseType_t uxParam1, TraceUnsignedBaseType_t uxParam2, TraceUnsignedBaseType_t uxParam3, TraceUnsignedBaseType_t uxParam4)
+{
+	traceResult xResult;
+	TRACE_ALLOC_CRITICAL_SECTION();
+
+	/* We must use a critical section here or there is a chance that an interrupt
+	 * could fire in the time between checking for a thread switch and the event
+	 * being sent.
+	 */
+	TRACE_ENTER_CRITICAL_SECTION();
+
+	/* Perform a thread switch check before each event to see if ThreadX has switched to a new
+	 * thread without informing us.
+	 */
+	xTraceCheckThreadSwitch();
+
+	xResult = xTraceEventCreate4_orig(uiEventCode, uxParam1, uxParam2, uxParam3, uxParam4);
+
+	/* Exit wrapped critical section */
+	TRACE_EXIT_CRITICAL_SECTION();
+
+	return xResult;
+}
+
+traceResult xTraceEventCreate5(uint32_t uiEventCode, TraceUnsignedBaseType_t uxParam1, TraceUnsignedBaseType_t uxParam2, TraceUnsignedBaseType_t uxParam3, TraceUnsignedBaseType_t uxParam4, TraceUnsignedBaseType_t uxParam5)
+{
+	traceResult xResult;
+	TRACE_ALLOC_CRITICAL_SECTION();
+
+	/* We must use a critical section here or there is a chance that an interrupt
+	 * could fire in the time between checking for a thread switch and the event
+	 * being sent.
+	 */
+	TRACE_ENTER_CRITICAL_SECTION();
+
+	/* Perform a thread switch check before each event to see if ThreadX has switched to a new
+	 * thread without informing us.
+	 */
+	xTraceCheckThreadSwitch();
+
+	xResult = xTraceEventCreate5_orig(uiEventCode, uxParam1, uxParam2, uxParam3, uxParam4, uxParam5);
+
+	/* Exit wrapped critical section */
+	TRACE_EXIT_CRITICAL_SECTION();
+
+	return xResult;
+}
+
+traceResult xTraceEventCreate6(uint32_t uiEventCode, TraceUnsignedBaseType_t uxParam1, TraceUnsignedBaseType_t uxParam2, TraceUnsignedBaseType_t uxParam3, TraceUnsignedBaseType_t uxParam4, TraceUnsignedBaseType_t uxParam5, TraceUnsignedBaseType_t uxParam6)
+{
+	traceResult xResult;
+	TRACE_ALLOC_CRITICAL_SECTION();
+
+	/* We must use a critical section here or there is a chance that an interrupt
+	 * could fire in the time between checking for a thread switch and the event
+	 * being sent.
+	 */
+	TRACE_ENTER_CRITICAL_SECTION();
+
+	/* Perform a thread switch check before each event to see if ThreadX has switched to a new
+	 * thread without informing us.
+	 */
+	xTraceCheckThreadSwitch();
+
+	xResult = xTraceEventCreate6_orig(uiEventCode, uxParam1, uxParam2, uxParam3, uxParam4, uxParam5, uxParam6);
+
+	/* Exit wrapped critical section */
+	TRACE_EXIT_CRITICAL_SECTION();
+
+	return xResult;
+}
+
+traceResult xTraceEventCreateData0(uint32_t uiEventCode, const TraceUnsignedBaseType_t* const puxData, TraceUnsignedBaseType_t uxSize)
+{
+	traceResult xResult;
+	TRACE_ALLOC_CRITICAL_SECTION();
+
+	/* We must use a critical section here or there is a chance that an interrupt
+	 * could fire in the time between checking for a thread switch and the event
+	 * being sent.
+	 */
+	TRACE_ENTER_CRITICAL_SECTION();
+
+	/* Perform a thread switch check before each event to see if ThreadX has switched to a new
+	 * thread without informing us.
+	 */
+	xTraceCheckThreadSwitch();
+
+	xResult = xTraceEventCreateData0_orig(uiEventCode, puxData, uxSize);
+
+	/* Exit wrapped critical section */
+	TRACE_EXIT_CRITICAL_SECTION();
+
+	return xResult;
+}
+
+traceResult xTraceEventCreateData1(uint32_t uiEventCode, TraceUnsignedBaseType_t uxParam1, const TraceUnsignedBaseType_t* const puxData, TraceUnsignedBaseType_t uxSize)
+{
+	traceResult xResult;
+	TRACE_ALLOC_CRITICAL_SECTION();
+
+	/* We must use a critical section here or there is a chance that an interrupt
+	 * could fire in the time between checking for a thread switch and the event
+	 * being sent.
+	 */
+	TRACE_ENTER_CRITICAL_SECTION();
+
+	/* Perform a thread switch check before each event to see if ThreadX has switched to a new
+	 * thread without informing us.
+	 */
+	xTraceCheckThreadSwitch();
+
+	xResult = xTraceEventCreateData1_orig(uiEventCode, uxParam1, puxData, uxSize);
+
+	/* Exit wrapped critical section */
+	TRACE_EXIT_CRITICAL_SECTION();
+
+	return xResult;
+}
+
+traceResult xTraceEventCreateData2(uint32_t uiEventCode, TraceUnsignedBaseType_t uxParam1, TraceUnsignedBaseType_t uxParam2, const TraceUnsignedBaseType_t* const puxData, TraceUnsignedBaseType_t uxSize)
+{
+	traceResult xResult;
+	TRACE_ALLOC_CRITICAL_SECTION();
+
+	/* We must use a critical section here or there is a chance that an interrupt
+	 * could fire in the time between checking for a thread switch and the event
+	 * being sent.
+	 */
+	TRACE_ENTER_CRITICAL_SECTION();
+
+	/* Perform a thread switch check before each event to see if ThreadX has switched to a new
+	 * thread without informing us.
+	 */
+	xTraceCheckThreadSwitch();
+
+	xResult = xTraceEventCreateData2_orig(uiEventCode, uxParam1, uxParam2, puxData, uxSize);
+
+	/* Exit wrapped critical section */
+	TRACE_EXIT_CRITICAL_SECTION();
+
+	return xResult;
+}
+
+traceResult xTraceEventCreateData3(uint32_t uiEventCode, TraceUnsignedBaseType_t uxParam1, TraceUnsignedBaseType_t uxParam2, TraceUnsignedBaseType_t uxParam3, const TraceUnsignedBaseType_t* const puxData, TraceUnsignedBaseType_t uxSize)
+{
+	traceResult xResult;
+	TRACE_ALLOC_CRITICAL_SECTION();
+
+	/* We must use a critical section here or there is a chance that an interrupt
+	 * could fire in the time between checking for a thread switch and the event
+	 * being sent.
+	 */
+	TRACE_ENTER_CRITICAL_SECTION();
+
+	/* Perform a thread switch check before each event to see if ThreadX has switched to a new
+	 * thread without informing us.
+	 */
+	xTraceCheckThreadSwitch();
+
+	xResult = xTraceEventCreateData3_orig(uiEventCode, uxParam1, uxParam2, uxParam3, puxData, uxSize);
+
+	/* Exit wrapped critical section */
+	TRACE_EXIT_CRITICAL_SECTION();
+
+	return xResult;
+}
+
+traceResult xTraceEventCreateData4(uint32_t uiEventCode, TraceUnsignedBaseType_t uxParam1, TraceUnsignedBaseType_t uxParam2, TraceUnsignedBaseType_t uxParam3, TraceUnsignedBaseType_t uxParam4, const TraceUnsignedBaseType_t* const puxData, TraceUnsignedBaseType_t uxSize)
+{
+	traceResult xResult;
+	TRACE_ALLOC_CRITICAL_SECTION();
+
+	/* We must use a critical section here or there is a chance that an interrupt
+	 * could fire in the time between checking for a thread switch and the event
+	 * being sent.
+	 */
+	TRACE_ENTER_CRITICAL_SECTION();
+
+	/* Perform a thread switch check before each event to see if ThreadX has switched to a new
+	 * thread without informing us.
+	 */
+	xTraceCheckThreadSwitch();
+
+	xResult = xTraceEventCreateData4_orig(uiEventCode, uxParam1, uxParam2, uxParam3, uxParam4, puxData, uxSize);
+
+	/* Exit wrapped critical section */
+	TRACE_EXIT_CRITICAL_SECTION();
+
+	return xResult;
+}
+
+traceResult xTraceEventCreateData5(uint32_t uiEventCode, TraceUnsignedBaseType_t uxParam1, TraceUnsignedBaseType_t uxParam2, TraceUnsignedBaseType_t uxParam3, TraceUnsignedBaseType_t uxParam4, TraceUnsignedBaseType_t uxParam5, const TraceUnsignedBaseType_t* const puxData, TraceUnsignedBaseType_t uxSize)
+{
+	traceResult xResult;
+	TRACE_ALLOC_CRITICAL_SECTION();
+
+	/* We must use a critical section here or there is a chance that an interrupt
+	 * could fire in the time between checking for a thread switch and the event
+	 * being sent.
+	 */
+	TRACE_ENTER_CRITICAL_SECTION();
+
+	/* Perform a thread switch check before each event to see if ThreadX has switched to a new
+	 * thread without informing us.
+	 */
+	xTraceCheckThreadSwitch();
+
+	xResult = xTraceEventCreateData5_orig(uiEventCode, uxParam1, uxParam2, uxParam3, uxParam4, uxParam5, puxData, uxSize);
+
+	/* Exit wrapped critical section */
+	TRACE_EXIT_CRITICAL_SECTION();
+
+	return xResult;
+}
+
+traceResult xTraceEventCreateData6(uint32_t uiEventCode, TraceUnsignedBaseType_t uxParam1, TraceUnsignedBaseType_t uxParam2, TraceUnsignedBaseType_t uxParam3, TraceUnsignedBaseType_t uxParam4, TraceUnsignedBaseType_t uxParam5, TraceUnsignedBaseType_t uxParam6, const TraceUnsignedBaseType_t* const puxData, TraceUnsignedBaseType_t uxSize)
+{
+	traceResult xResult;
+	TRACE_ALLOC_CRITICAL_SECTION();
+
+	/* We must use a critical section here or there is a chance that an interrupt
+	 * could fire in the time between checking for a thread switch and the event
+	 * being sent.
+	 */
+	TRACE_ENTER_CRITICAL_SECTION();
+
+	/* Perform a thread switch check before each event to see if ThreadX has switched to a new
+	 * thread without informing us.
+	 */
+	xTraceCheckThreadSwitch();
+
+	xResult = xTraceEventCreateData6_orig(uiEventCode, uxParam1, uxParam2, uxParam3, uxParam4, uxParam5, uxParam6, puxData, uxSize);
+
+	/* Exit wrapped critical section */
+	TRACE_EXIT_CRITICAL_SECTION();
+
+	return xResult;
+}
+
+traceResult xTraceEventCreateRawBlocking(const void* pxSource, uint32_t ulSize)
+{
+	traceResult xResult;
+	TRACE_ALLOC_CRITICAL_SECTION();
+
+	/* We must use a critical section here or there is a chance that an interrupt
+	 * could fire in the time between checking for a thread switch and the event
+	 * being sent.
+	 */
+	TRACE_ENTER_CRITICAL_SECTION();
+
+	/* Perform a thread switch check before each event to see if ThreadX has switched to a new
+	 * thread without informing us.
+	 */
+	xTraceCheckThreadSwitch();
+
+	xResult = xTraceEventCreateRawBlocking_orig(pxSource, ulSize);
+
+	/* Exit wrapped critical section */
+	TRACE_EXIT_CRITICAL_SECTION();
+
+	return xResult;
+}
+
+traceResult xTraceEventCreateDataOffline0(uint32_t uiEventCode, const TraceUnsignedBaseType_t* const puxData, TraceUnsignedBaseType_t uxSize)
+{
+	traceResult xResult;
+	TRACE_ALLOC_CRITICAL_SECTION();
+
+	/* We must use a critical section here or there is a chance that an interrupt
+	 * could fire in the time between checking for a thread switch and the event
+	 * being sent.
+	 */
+	TRACE_ENTER_CRITICAL_SECTION();
+
+	/* Perform a thread switch check before each event to see if ThreadX has switched to a new
+	 * thread without informing us.
+	 */
+	xTraceCheckThreadSwitch();
+
+	xResult = xTraceEventCreateDataOffline0_orig(uiEventCode, puxData, uxSize);
 
 	/* Exit wrapped critical section */
 	TRACE_EXIT_CRITICAL_SECTION();

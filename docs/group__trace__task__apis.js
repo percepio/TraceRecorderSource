@@ -11,9 +11,9 @@ var group__trace__task__apis =
     [ "xTraceTaskSetCurrentOnCore", "group__trace__task__apis.html#ga610f41daf3d5b7f78d52de894dfbe964", null ],
     [ "xTraceTaskSetName", "group__trace__task__apis.html#ga84c72328cb3f2ae3e940123365a8a665", null ],
     [ "xTraceTaskSetNameWithoutHandle", "group__trace__task__apis.html#ga5a7babc5816a7584864f6f12cf225190", null ],
+    [ "xTraceTaskUnregister", "group__trace__task__apis.html#ga182deca6445d8703089a28dfe6206950", null ],
     [ "xTraceTaskUnregisterWithoutHandle", "group__trace__task__apis.html#ga41fcd9011bf48e5892a0b19928899bc0", null ],
     [ "xTraceTaskSetPriority", "group__trace__task__apis.html#ga3ba2b866e34a2d0ba076feb11f5488bf", null ],
     [ "xTraceTaskSetPriorityWithoutHandle", "group__trace__task__apis.html#gad18180891f26ad2e1d7d6d3fd85757fe", null ],
-    [ "xTraceTaskSwitch", "group__trace__task__apis.html#ga9c9cd4b8927c3dd7af9fc7c834fef31b", null ],
-    [ "xTraceTaskUnregister", "group__trace__task__apis.html#ga008c1439e57449718389f865dff32c1e", null ]
+    [ "xTraceTaskSwitch", "group__trace__task__apis.html#ga9c9cd4b8927c3dd7af9fc7c834fef31b", null ]
 ];

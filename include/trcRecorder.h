@@ -1,5 +1,5 @@
 /*
- * Trace Recorder for Tracealyzer v4.8.2
+ * Trace Recorder for Tracealyzer v4.9.0
  * Copyright 2023 Percepio AB
  * www.percepio.com
  *
@@ -155,6 +155,8 @@ typedef struct TraceHeaderBuffer	/* Aligned */
 #include <trcAssert.h>
 #include <trcRunnable.h>
 #include <trcDependency.h>
+#include <trcProcess.h>
+#include <trcThread.h>
 
 #endif /* (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING) */
 
@@ -1835,6 +1837,8 @@ traceResult xTraceGetEventBuffer(void** ppvBuffer, TraceUnsignedBaseType_t * pui
 #define xTraceInitialize() (TRC_SUCCESS)
 #define xTraceEnable(x) ((void)(x), TRC_SUCCESS)
 #define xTraceDisable() (TRC_SUCCESS)
+
+#if (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_SNAPSHOT)
 #define xTraceStringRegister(x, y) ((void)(x), (void)y, TRC_SUCCESS) /* Comma operator in parenthesis is used to avoid "unused variable" compiler warnings and return 0 in a single statement */
 #define xTracePrint(chn, ...) ((void)(chn), TRC_SUCCESS)
 #define xTracePrintF(chn, fmt, ...) ((void)(chn), (void)(fmt), TRC_SUCCESS) /* Comma operator is used to avoid "unused variable" compiler warnings in a single statement */
@@ -1846,6 +1850,21 @@ traceResult xTraceGetEventBuffer(void** ppvBuffer, TraceUnsignedBaseType_t * pui
 #define xTraceSetISRProperties(a, b) ((void)(a), (void)(b), (traceHandle)0) /* Comma operator in parenthesis is used to avoid "unused variable" compiler warnings and return 0 in a single statement */
 #define xTraceRegisterChannelFormat(eventLabel, formatStr) ((void)(eventLabel), (void)(formatStr), 0) /* Comma operator in parenthesis is used to avoid "unused variable" compiler warnings and return 0 in a single statement */
 #define vTraceUBData(label, ...) (void)(label)
+#endif
+
+#define prvTraceStoreEvent_None(_eventID) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_2((void)(_eventID), TRC_SUCCESS)
+
+#define prvTraceStoreEvent_Handle(_eventID, _handle) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_3((void)(_eventID), (void)(_handle), TRC_SUCCESS)
+
+#define prvTraceStoreEvent_Param(_eventID, _param1)  TRC_COMMA_EXPR_TO_STATEMENT_EXPR_3((void)(_eventID), (void)(_param1), TRC_SUCCESS)
+
+#define prvTraceStoreEvent_HandleParam(_eventID, _handle, _param1) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_4((void)(_eventID), (void)(_handle), (void)(_param1), TRC_SUCCESS)
+
+#define prvTraceStoreEvent_ParamParam(_eventID, _param1, _param2) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_4((void)(_eventID), (void)(_param1), (void)(_param2), TRC_SUCCESS)
+
+#define prvTraceStoreEvent_HandleParamParam(_eventID, _handle, _param1, _param2) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_5((void)(_eventID), (void)(_handle), (void)(_param1), (void)(_param2), TRC_SUCCESS)
+
+#define prvTraceStoreEvent_ParamParamParam(_eventID, _param1, _param2, _param3) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_5((void)(_eventID), (void)(_param1), (void)(_param2), (void)(_param3), TRC_SUCCESS)
 
 #define vTraceSetFilterGroup(x) (void)(x)
 #define vTraceSetFilterMask(x) (void)(x)

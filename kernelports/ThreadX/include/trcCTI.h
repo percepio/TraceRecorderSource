@@ -1,5 +1,5 @@
 /*
- * Trace Recorder for Tracealyzer v4.8.2
+ * Trace Recorder for Tracealyzer v4.9.0
  * Copyright 2023 Percepio AB
  * www.percepio.com
  *
@@ -1346,16 +1346,94 @@ UINT _txe_thread_wait_abort_orig(TX_THREAD  *thread_ptr) __attribute__((alias("_
 
 #include <trcRecorder.h>
 
-traceResult xTraceEventBeginRawOffline(uint32_t uiSize, TraceEventHandle_t* pxEventHandle) __attribute__((weak));
-traceResult xTraceEventBeginRawOffline_orig(uint32_t uiSize, TraceEventHandle_t* pxEventHandle) __attribute__((alias("xTraceEventBeginRawOffline")));
-traceResult xTraceEventEndOffline(TraceEventHandle_t xEventHandle) __attribute__((weak));
-traceResult xTraceEventEndOffline_orig(TraceEventHandle_t xEventHandle) __attribute__((alias("xTraceEventEndOffline")));
+traceResult xTraceEventCreate0(uint32_t uiEventCode) __attribute__((weak));
+traceResult xTraceEventCreate1(uint32_t uiEventCode, TraceUnsignedBaseType_t uxParam1) __attribute__((weak));
+traceResult xTraceEventCreate2(uint32_t uiEventCode, TraceUnsignedBaseType_t uxParam1, TraceUnsignedBaseType_t uxParam2) __attribute__((weak));
+traceResult xTraceEventCreate3(uint32_t uiEventCode, TraceUnsignedBaseType_t uxParam1, TraceUnsignedBaseType_t uxParam2, TraceUnsignedBaseType_t uxParam3) __attribute__((weak));
+traceResult xTraceEventCreate4(uint32_t uiEventCode, TraceUnsignedBaseType_t uxParam1, TraceUnsignedBaseType_t uxParam2, TraceUnsignedBaseType_t uxParam3, TraceUnsignedBaseType_t uxParam4) __attribute__((weak));
+traceResult xTraceEventCreate5(uint32_t uiEventCode, TraceUnsignedBaseType_t uxParam1, TraceUnsignedBaseType_t uxParam2, TraceUnsignedBaseType_t uxParam3, TraceUnsignedBaseType_t uxParam4, TraceUnsignedBaseType_t uxParam5) __attribute__((weak));
+traceResult xTraceEventCreate6(uint32_t uiEventCode, TraceUnsignedBaseType_t uxParam1, TraceUnsignedBaseType_t uxParam2, TraceUnsignedBaseType_t uxParam3, TraceUnsignedBaseType_t uxParam4, TraceUnsignedBaseType_t uxParam5, TraceUnsignedBaseType_t uxParam6) __attribute__((weak));
+
+traceResult xTraceEventCreateData0(uint32_t uiEventCode, const TraceUnsignedBaseType_t* const puxData, TraceUnsignedBaseType_t uxSize) __attribute__((weak));
+traceResult xTraceEventCreateData1(uint32_t uiEventCode, TraceUnsignedBaseType_t uxParam1, const TraceUnsignedBaseType_t* const puxData, TraceUnsignedBaseType_t uxSize) __attribute__((weak));
+traceResult xTraceEventCreateData2(uint32_t uiEventCode, TraceUnsignedBaseType_t uxParam1, TraceUnsignedBaseType_t uxParam2, const TraceUnsignedBaseType_t* const puxData, TraceUnsignedBaseType_t uxSize) __attribute__((weak));
+traceResult xTraceEventCreateData3(uint32_t uiEventCode, TraceUnsignedBaseType_t uxParam1, TraceUnsignedBaseType_t uxParam2, TraceUnsignedBaseType_t uxParam3, const TraceUnsignedBaseType_t* const puxData, TraceUnsignedBaseType_t uxSize) __attribute__((weak));
+traceResult xTraceEventCreateData4(uint32_t uiEventCode, TraceUnsignedBaseType_t uxParam1, TraceUnsignedBaseType_t uxParam2, TraceUnsignedBaseType_t uxParam3, TraceUnsignedBaseType_t uxParam4, const TraceUnsignedBaseType_t* const puxData, TraceUnsignedBaseType_t uxSize) __attribute__((weak));
+traceResult xTraceEventCreateData5(uint32_t uiEventCode, TraceUnsignedBaseType_t uxParam1, TraceUnsignedBaseType_t uxParam2, TraceUnsignedBaseType_t uxParam3, TraceUnsignedBaseType_t uxParam4, TraceUnsignedBaseType_t uxParam5, const TraceUnsignedBaseType_t* const puxData, TraceUnsignedBaseType_t uxSize) __attribute__((weak));
+traceResult xTraceEventCreateData6(uint32_t uiEventCode, TraceUnsignedBaseType_t uxParam1, TraceUnsignedBaseType_t uxParam2, TraceUnsignedBaseType_t uxParam3, TraceUnsignedBaseType_t uxParam4, TraceUnsignedBaseType_t uxParam5, TraceUnsignedBaseType_t uxParam6, const TraceUnsignedBaseType_t* const puxData, TraceUnsignedBaseType_t uxSize) __attribute__((weak));
+
+traceResult xTraceEventCreateRawBlocking(const void* pxSource, uint32_t ulSize) __attribute__((weak));
+traceResult xTraceEventCreateDataOffline0(uint32_t uiEventCode, const TraceUnsignedBaseType_t* const puxData, TraceUnsignedBaseType_t uxSize) __attribute__((weak));
+
+traceResult xTraceEventCreate0_orig(uint32_t uiEventCode) __attribute__((alias("xTraceEventCreate0")));
+traceResult xTraceEventCreate1_orig(uint32_t uiEventCode, TraceUnsignedBaseType_t uxParam1) __attribute__((alias("xTraceEventCreate1")));
+traceResult xTraceEventCreate2_orig(uint32_t uiEventCode, TraceUnsignedBaseType_t uxParam1, TraceUnsignedBaseType_t uxParam2) __attribute__((alias("xTraceEventCreate2")));
+traceResult xTraceEventCreate3_orig(uint32_t uiEventCode, TraceUnsignedBaseType_t uxParam1, TraceUnsignedBaseType_t uxParam2, TraceUnsignedBaseType_t uxParam3) __attribute__((alias("xTraceEventCreate3")));
+traceResult xTraceEventCreate4_orig(uint32_t uiEventCode, TraceUnsignedBaseType_t uxParam1, TraceUnsignedBaseType_t uxParam2, TraceUnsignedBaseType_t uxParam3, TraceUnsignedBaseType_t uxParam4) __attribute__((alias("xTraceEventCreate4")));
+traceResult xTraceEventCreate5_orig(uint32_t uiEventCode, TraceUnsignedBaseType_t uxParam1, TraceUnsignedBaseType_t uxParam2, TraceUnsignedBaseType_t uxParam3, TraceUnsignedBaseType_t uxParam4, TraceUnsignedBaseType_t uxParam5) __attribute__((alias("xTraceEventCreate5")));
+traceResult xTraceEventCreate6_orig(uint32_t uiEventCode, TraceUnsignedBaseType_t uxParam1, TraceUnsignedBaseType_t uxParam2, TraceUnsignedBaseType_t uxParam3, TraceUnsignedBaseType_t uxParam4, TraceUnsignedBaseType_t uxParam5, TraceUnsignedBaseType_t uxParam6) __attribute__((alias("xTraceEventCreate6")));
+
+traceResult xTraceEventCreateData0_orig(uint32_t uiEventCode, const TraceUnsignedBaseType_t* const puxData, TraceUnsignedBaseType_t uxSize) __attribute__((alias("xTraceEventCreateData0")));
+traceResult xTraceEventCreateData1_orig(uint32_t uiEventCode, TraceUnsignedBaseType_t uxParam1, const TraceUnsignedBaseType_t* const puxData, TraceUnsignedBaseType_t uxSize) __attribute__((alias("xTraceEventCreateData1")));
+traceResult xTraceEventCreateData2_orig(uint32_t uiEventCode, TraceUnsignedBaseType_t uxParam1, TraceUnsignedBaseType_t uxParam2, const TraceUnsignedBaseType_t* const puxData, TraceUnsignedBaseType_t uxSize) __attribute__((alias("xTraceEventCreateData2")));
+traceResult xTraceEventCreateData3_orig(uint32_t uiEventCode, TraceUnsignedBaseType_t uxParam1, TraceUnsignedBaseType_t uxParam2, TraceUnsignedBaseType_t uxParam3, const TraceUnsignedBaseType_t* const puxData, TraceUnsignedBaseType_t uxSize) __attribute__((alias("xTraceEventCreateData3")));
+traceResult xTraceEventCreateData4_orig(uint32_t uiEventCode, TraceUnsignedBaseType_t uxParam1, TraceUnsignedBaseType_t uxParam2, TraceUnsignedBaseType_t uxParam3, TraceUnsignedBaseType_t uxParam4, const TraceUnsignedBaseType_t* const puxData, TraceUnsignedBaseType_t uxSize) __attribute__((alias("xTraceEventCreateData4")));
+traceResult xTraceEventCreateData5_orig(uint32_t uiEventCode, TraceUnsignedBaseType_t uxParam1, TraceUnsignedBaseType_t uxParam2, TraceUnsignedBaseType_t uxParam3, TraceUnsignedBaseType_t uxParam4, TraceUnsignedBaseType_t uxParam5, const TraceUnsignedBaseType_t* const puxData, TraceUnsignedBaseType_t uxSize) __attribute__((alias("xTraceEventCreateData5")));
+traceResult xTraceEventCreateData6_orig(uint32_t uiEventCode, TraceUnsignedBaseType_t uxParam1, TraceUnsignedBaseType_t uxParam2, TraceUnsignedBaseType_t uxParam3, TraceUnsignedBaseType_t uxParam4, TraceUnsignedBaseType_t uxParam5, TraceUnsignedBaseType_t uxParam6, const TraceUnsignedBaseType_t* const puxData, TraceUnsignedBaseType_t uxSize) __attribute__((alias("xTraceEventCreateData6")));
+
+traceResult xTraceEventCreateRawBlocking_orig(const void* pxSource, uint32_t ulSize) __attribute__((alias("xTraceEventCreateRawBlocking")));
+traceResult xTraceEventCreateDataOffline0_orig(uint32_t uiEventCode, const TraceUnsignedBaseType_t* const puxData, TraceUnsignedBaseType_t uxSize) __attribute__((alias("xTraceEventCreateDataOffline0")));
 
 #ifdef __IAR_SYSTEMS_ICC__
-#pragma weak xTraceEventBeginRawOffline
-#pragma weak xTraceEventBeginRawOffline_orig=xTraceEventBeginRawOffline
-#pragma weak xTraceEventEndOffline
-#pragma weak xTraceEventEndOffline_orig=xTraceEventEndOffline
+
+#pragma weak xTraceEventCreate0
+#pragma weak xTraceEventCreate0_orig=xTraceEventCreate0
+
+#pragma weak xTraceEventCreate1
+#pragma weak xTraceEventCreate1_orig=xTraceEventCreate1
+
+#pragma weak xTraceEventCreate2
+#pragma weak xTraceEventCreate2_orig=xTraceEventCreate2
+
+#pragma weak xTraceEventCreate3
+#pragma weak xTraceEventCreate3_orig=xTraceEventCreate3
+
+#pragma weak xTraceEventCreate4
+#pragma weak xTraceEventCreate4_orig=xTraceEventCreate4
+
+#pragma weak xTraceEventCreate5
+#pragma weak xTraceEventCreate5_orig=xTraceEventCreate5
+
+#pragma weak xTraceEventCreate6
+#pragma weak xTraceEventCreate6_orig=xTraceEventCreate6
+
+#pragma weak xTraceEventCreateData0
+#pragma weak xTraceEventCreateData0_orig=xTraceEventCreateData0
+
+#pragma weak xTraceEventCreateData1
+#pragma weak xTraceEventCreateData1_orig=xTraceEventCreateData1
+
+#pragma weak xTraceEventCreateData2
+#pragma weak xTraceEventCreateData2_orig=xTraceEventCreateData2
+
+#pragma weak xTraceEventCreateData3
+#pragma weak xTraceEventCreateData3_orig=xTraceEventCreateData3
+
+#pragma weak xTraceEventCreateData4
+#pragma weak xTraceEventCreateData4_orig=xTraceEventCreateData4
+
+#pragma weak xTraceEventCreateData5
+#pragma weak xTraceEventCreateData5_orig=xTraceEventCreateData5
+
+#pragma weak xTraceEventCreateData6
+#pragma weak xTraceEventCreateData6_orig=xTraceEventCreateData6
+
+#pragma weak xTraceEventCreateRawBlocking
+#pragma weak xTraceEventCreateRawBlocking_orig=xTraceEventCreateRawBlocking
+
+#pragma weak xTraceEventCreateDataOffline0
+#pragma weak xTraceEventCreateDataOffline0_orig=xTraceEventCreateDataOffline0
+
 #endif /* __IAR_SYSTEMS_ICC__ */
 
 #endif /* __inside_trcEvent */

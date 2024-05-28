@@ -1,5 +1,5 @@
 /*
- * Trace Recorder for Tracealyzer v4.8.2
+ * Trace Recorder for Tracealyzer v4.9.0
  * Copyright 2023 Percepio AB
  * www.percepio.com
  *
@@ -47,7 +47,7 @@ void TzCtrlThreadEntry(ULONG _arg)
 
 	while (1)
 	{
-		xTraceTzCtrl();
+		(void)xTraceTzCtrl();
 
 		tx_thread_sleep((TRC_CFG_CTRL_TASK_DELAY));
 	}
@@ -105,7 +105,7 @@ traceResult xTraceKernelPortEnable(void)
 				}
 			}
 
-			xTraceEntrySetSymbol(xEntryHandle, pxTxThreadPtr->tx_thread_name, strlen(pxTxThreadPtr->tx_thread_name));
+			(void)xTraceEntrySetSymbol(xEntryHandle, pxTxThreadPtr->tx_thread_name, strlen(pxTxThreadPtr->tx_thread_name));
 
 			pxTxThreadPtr = pxTxThreadPtr->tx_thread_created_next;
 		}
@@ -128,7 +128,7 @@ traceResult xTraceKernelPortEnable(void)
 	 * that Tz can track when the system is not actively running another thread. We map
 	 * idle to a generic Tz variable to avoid clashing with other potential objects
 	 * in the system. */
-	xTraceTaskRegister((void*)&pxIdleTxThreadDummy, "IDLE", TX_MAX_PRIORITIES, &xTaskHandle);
+	(void)xTraceTaskRegister((void*)&pxIdleTxThreadDummy, "IDLE", TX_MAX_PRIORITIES, &xTaskHandle);
 
 	return TRC_SUCCESS;
 }

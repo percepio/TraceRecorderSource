@@ -25,7 +25,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">Percepio Trace Recorder<span id="projectnumber">&#160;v4.8.2</span>
+   <div id="projectname">Percepio Trace Recorder<span id="projectnumber">&#160;v4.9.0</span>
    </div>
   </td>
  </tr>
@@ -93,7 +93,7 @@ $(document).ready(function(){initNavTree('trcInterval_8h_source.html',''); initR
 </div><!--header-->
 <div class="contents">
 <a href="trcInterval_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="comment">/*</span></div>
-<div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span><span class="comment">* Percepio Trace Recorder for Tracealyzer v4.8.2</span></div>
+<div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span><span class="comment">* Percepio Trace Recorder for Tracealyzer v4.9.0</span></div>
 <div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span><span class="comment">* Copyright 2023 Percepio AB</span></div>
 <div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span><span class="comment">* www.percepio.com</span></div>
 <div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span><span class="comment">*</span></div>
@@ -103,53 +103,49 @@ $(document).ready(function(){initNavTree('trcInterval_8h_source.html',''); initR
 <div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span><span class="preprocessor">#ifndef TRC_INTERVAL_H</span></div>
 <div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span><span class="preprocessor">#define TRC_INTERVAL_H</span></div>
 <div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span> </div>
-<div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span><span class="preprocessor">#if (TRC_USE_TRACEALYZER_RECORDER == 1)</span></div>
+<div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span><span class="preprocessor">#if (TRC_USE_TRACEALYZER_RECORDER == 1) &amp;&amp; (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING)</span></div>
 <div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span> </div>
 <div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span><span class="preprocessor">#ifdef __cplusplus</span></div>
 <div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span><span class="keyword">extern</span> <span class="stringliteral">&quot;C&quot;</span> {</div>
 <div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span><span class="preprocessor">#endif</span></div>
 <div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span> </div>
-<div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span><span class="preprocessor">#if (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING)</span></div>
+<div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span><span class="preprocessor">#include &lt;trcTypes.h&gt;</span></div>
 <div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span> </div>
-<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span><span class="preprocessor">#include &lt;trcTypes.h&gt;</span></div>
+<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span><span class="preprocessor">#define TRC_INTERVAL_CHANNEL_SET_INDEX 0u</span></div>
 <div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span> </div>
-<div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span><span class="preprocessor">#define TRC_INTERVAL_CHANNEL_SET_INDEX 0u</span></div>
-<div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span> </div>
-<div class="line"><a id="l00045" name="l00045"></a><span class="lineno">   45</span>    traceResult <a class="code hl_function" href="group__trace__interval__apis.html#ga2c063328c943bd5ea5204c9e0ede0d92">xTraceIntervalChannelSetCreate</a>(<span class="keyword">const</span> <span class="keywordtype">char</span>* szName, TraceIntervalChannelSetHandle_t* pxIntervalChannelSetHandle);</div>
-<div class="line"><a id="l00046" name="l00046"></a><span class="lineno">   46</span> </div>
-<div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span>traceResult <a class="code hl_function" href="group__trace__interval__apis.html#ga8da416874dad91a32ba16169ddff0f2b">xTraceIntervalChannelCreate</a>(<span class="keyword">const</span> <span class="keywordtype">char</span> *szName, TraceIntervalChannelSetHandle_t xIntervalChannelSetHandle, TraceIntervalChannelHandle_t *pxIntervalChannelHandle);</div>
-<div class="line"><a id="l00058" name="l00058"></a><span class="lineno">   58</span> </div>
-<div class="line"><a id="l00069" name="l00069"></a><span class="lineno">   69</span>traceResult <a class="code hl_function" href="group__trace__interval__apis.html#ga73cc0d9d3d2e2f20ecfbd97692474cad">xTraceIntervalStart</a>(TraceIntervalChannelHandle_t xIntervalChannelHandle, TraceUnsignedBaseType_t uxValue, TraceIntervalInstanceHandle_t* pxIntervalInstanceHandle);</div>
-<div class="line"><a id="l00070" name="l00070"></a><span class="lineno">   70</span> </div>
-<div class="line"><a id="l00080" name="l00080"></a><span class="lineno">   80</span>traceResult <a class="code hl_function" href="group__trace__interval__apis.html#gacc8dc6b0c53429b9e5d6d65999f323d5">xTraceIntervalStop</a>(TraceIntervalChannelHandle_t xIntervalChannelHandle, TraceIntervalInstanceHandle_t xIntervalInstanceHandle);</div>
-<div class="line"><a id="l00081" name="l00081"></a><span class="lineno">   81</span> </div>
-<div class="line"><a id="l00091" name="l00091"></a><span class="lineno"><a class="line" href="group__trace__interval__apis.html#gace44148737e5a86e3dc0978dad7846ad">   91</a></span><span class="preprocessor">#define xTraceIntervalGetState(xIntervalChannelHandle, puxState) xTraceEntryGetState((TraceEntryHandle_t)(xIntervalChannelHandle), TRC_INTERVAL_CHANNEL_SET_INDEX, puxState)</span></div>
-<div class="line"><a id="l00092" name="l00092"></a><span class="lineno">   92</span> </div>
-<div class="line"><a id="l00095" name="l00095"></a><span class="lineno">   95</span><span class="preprocessor">#else</span></div>
+<div class="line"><a id="l00043" name="l00043"></a><span class="lineno">   43</span>    traceResult <a class="code hl_function" href="group__trace__interval__apis.html#ga2c063328c943bd5ea5204c9e0ede0d92">xTraceIntervalChannelSetCreate</a>(<span class="keyword">const</span> <span class="keywordtype">char</span>* szName, TraceIntervalChannelSetHandle_t* pxIntervalChannelSetHandle);</div>
+<div class="line"><a id="l00044" name="l00044"></a><span class="lineno">   44</span> </div>
+<div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span>traceResult <a class="code hl_function" href="group__trace__interval__apis.html#ga8da416874dad91a32ba16169ddff0f2b">xTraceIntervalChannelCreate</a>(<span class="keyword">const</span> <span class="keywordtype">char</span> *szName, TraceIntervalChannelSetHandle_t xIntervalChannelSetHandle, TraceIntervalChannelHandle_t *pxIntervalChannelHandle);</div>
+<div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span> </div>
+<div class="line"><a id="l00067" name="l00067"></a><span class="lineno">   67</span>traceResult <a class="code hl_function" href="group__trace__interval__apis.html#ga73cc0d9d3d2e2f20ecfbd97692474cad">xTraceIntervalStart</a>(TraceIntervalChannelHandle_t xIntervalChannelHandle, TraceUnsignedBaseType_t uxValue, TraceIntervalInstanceHandle_t* pxIntervalInstanceHandle);</div>
+<div class="line"><a id="l00068" name="l00068"></a><span class="lineno">   68</span> </div>
+<div class="line"><a id="l00078" name="l00078"></a><span class="lineno">   78</span>traceResult <a class="code hl_function" href="group__trace__interval__apis.html#gacc8dc6b0c53429b9e5d6d65999f323d5">xTraceIntervalStop</a>(TraceIntervalChannelHandle_t xIntervalChannelHandle, TraceIntervalInstanceHandle_t xIntervalInstanceHandle);</div>
+<div class="line"><a id="l00079" name="l00079"></a><span class="lineno">   79</span> </div>
+<div class="line"><a id="l00089" name="l00089"></a><span class="lineno"><a class="line" href="group__trace__interval__apis.html#gace44148737e5a86e3dc0978dad7846ad">   89</a></span><span class="preprocessor">#define xTraceIntervalGetState(xIntervalChannelHandle, puxState) xTraceEntryGetState((TraceEntryHandle_t)(xIntervalChannelHandle), TRC_INTERVAL_CHANNEL_SET_INDEX, puxState)</span></div>
+<div class="line"><a id="l00090" name="l00090"></a><span class="lineno">   90</span> </div>
+<div class="line"><a id="l00093" name="l00093"></a><span class="lineno">   93</span><span class="preprocessor">#ifdef __cplusplus</span></div>
+<div class="line"><a id="l00094" name="l00094"></a><span class="lineno">   94</span>}</div>
+<div class="line"><a id="l00095" name="l00095"></a><span class="lineno">   95</span><span class="preprocessor">#endif</span></div>
 <div class="line"><a id="l00096" name="l00096"></a><span class="lineno">   96</span> </div>
-<div class="line"><a id="l00100" name="l00100"></a><span class="lineno">  100</span><span class="preprocessor">#define xTraceIntervalChannelSetCreate(__szName, __pxIntervalChannelSetHandle) ((void)(__szName), *(__pxIntervalChannelSetHandle) = 0, TRC_SUCCESS)</span></div>
-<div class="line"><a id="l00101" name="l00101"></a><span class="lineno">  101</span> </div>
-<div class="line"><a id="l00105" name="l00105"></a><span class="lineno">  105</span><span class="preprocessor">#define xTraceIntervalChannelCreate(__szName, __xIntervalChannelSetHandle, __pxIntervalChannelHandle) ((void)(__szName), (void)(__xIntervalChannelSetHandle), *(__pxIntervalChannelHandle) = 0, TRC_SUCCESS)</span></div>
+<div class="line"><a id="l00097" name="l00097"></a><span class="lineno">   97</span><span class="preprocessor">#else</span></div>
+<div class="line"><a id="l00098" name="l00098"></a><span class="lineno">   98</span> </div>
+<div class="line"><a id="l00099" name="l00099"></a><span class="lineno">   99</span><span class="preprocessor">#define xTraceIntervalChannelSetCreate(_szName, _pxIntervalChannelSetHandle) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_3((void)(_szName), (void)(_pxIntervalChannelSetHandle), TRC_SUCCESS)</span></div>
+<div class="line"><a id="l00100" name="l00100"></a><span class="lineno">  100</span> </div>
+<div class="line"><a id="l00101" name="l00101"></a><span class="lineno">  101</span><span class="preprocessor">#define xTraceIntervalChannelCreate(_szName, _xIntervalChannelSetHandle, _pxIntervalChannelHandle) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_4((void)(_szName), (void)(_xIntervalChannelSetHandle), (void)(_pxIntervalChannelHandle), TRC_SUCCESS)</span></div>
+<div class="line"><a id="l00102" name="l00102"></a><span class="lineno">  102</span> </div>
+<div class="line"><a id="l00103" name="l00103"></a><span class="lineno">  103</span><span class="preprocessor">#define xTraceIntervalStart(_xIntervalHandle, _uxValue, _pxIntervalInstanceHandle) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_4((void)(_xIntervalHandle), (void)(_uxValue), (void)(_pxIntervalInstanceHandle), TRC_SUCCESS)</span></div>
+<div class="line"><a id="l00104" name="l00104"></a><span class="lineno">  104</span> </div>
+<div class="line"><a id="l00105" name="l00105"></a><span class="lineno">  105</span><span class="preprocessor">#define xTraceIntervalStop(_xIntervalHandle, _xIntervalInstanceHandle) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_3((void)(_xIntervalHandle), (void)(_xIntervalInstanceHandle), TRC_SUCCESS)</span></div>
 <div class="line"><a id="l00106" name="l00106"></a><span class="lineno">  106</span> </div>
-<div class="line"><a id="l00110" name="l00110"></a><span class="lineno">  110</span><span class="preprocessor">#define xTraceIntervalStart(__xIntervalHandle, __uxValue, __pxIntervalInstanceHandle) ((void)(__xIntervalHandle), (void)(__uxValue), *(__pxIntervalInstanceHandle) = 0, TRC_SUCCESS)</span></div>
-<div class="line"><a id="l00111" name="l00111"></a><span class="lineno">  111</span> </div>
-<div class="line"><a id="l00115" name="l00115"></a><span class="lineno">  115</span><span class="preprocessor">#define xTraceIntervalStop(__xIntervalHandle, __xIntervalInstanceHandle) ((void)(__xIntervalHandle), (void)(__xIntervalInstanceHandle), TRC_SUCCESS)</span></div>
-<div class="line"><a id="l00116" name="l00116"></a><span class="lineno">  116</span> </div>
-<div class="line"><a id="l00120" name="l00120"></a><span class="lineno">  120</span><span class="preprocessor">#define xTraceIntervalGetState(__xIntervalHandle, __puxState) ((void)(__xIntervalHandle), *(__puxState) = 0, TRC_SUCCESS)</span></div>
-<div class="line"><a id="l00121" name="l00121"></a><span class="lineno">  121</span> </div>
-<div class="line"><a id="l00122" name="l00122"></a><span class="lineno">  122</span><span class="preprocessor">#endif</span></div>
-<div class="line"><a id="l00123" name="l00123"></a><span class="lineno">  123</span> </div>
-<div class="line"><a id="l00124" name="l00124"></a><span class="lineno">  124</span><span class="preprocessor">#ifdef __cplusplus</span></div>
-<div class="line"><a id="l00125" name="l00125"></a><span class="lineno">  125</span>}</div>
-<div class="line"><a id="l00126" name="l00126"></a><span class="lineno">  126</span><span class="preprocessor">#endif</span></div>
-<div class="line"><a id="l00127" name="l00127"></a><span class="lineno">  127</span> </div>
-<div class="line"><a id="l00128" name="l00128"></a><span class="lineno">  128</span><span class="preprocessor">#endif</span></div>
-<div class="line"><a id="l00129" name="l00129"></a><span class="lineno">  129</span> </div>
-<div class="line"><a id="l00130" name="l00130"></a><span class="lineno">  130</span><span class="preprocessor">#endif</span></div>
-<div class="ttc" id="agroup__trace__interval__apis_html_ga2c063328c943bd5ea5204c9e0ede0d92"><div class="ttname"><a href="group__trace__interval__apis.html#ga2c063328c943bd5ea5204c9e0ede0d92">xTraceIntervalChannelSetCreate</a></div><div class="ttdeci">traceResult xTraceIntervalChannelSetCreate(const char *szName, TraceIntervalChannelSetHandle_t *pxIntervalChannelSetHandle)</div><div class="ttdoc">Creates trace interval channel set.</div><div class="ttdef"><b>Definition:</b> trcInterval.c:18</div></div>
-<div class="ttc" id="agroup__trace__interval__apis_html_ga73cc0d9d3d2e2f20ecfbd97692474cad"><div class="ttname"><a href="group__trace__interval__apis.html#ga73cc0d9d3d2e2f20ecfbd97692474cad">xTraceIntervalStart</a></div><div class="ttdeci">traceResult xTraceIntervalStart(TraceIntervalChannelHandle_t xIntervalChannelHandle, TraceUnsignedBaseType_t uxValue, TraceIntervalInstanceHandle_t *pxIntervalInstanceHandle)</div><div class="ttdoc">Starts trace interval instance.</div><div class="ttdef"><b>Definition:</b> trcInterval.c:64</div></div>
-<div class="ttc" id="agroup__trace__interval__apis_html_ga8da416874dad91a32ba16169ddff0f2b"><div class="ttname"><a href="group__trace__interval__apis.html#ga8da416874dad91a32ba16169ddff0f2b">xTraceIntervalChannelCreate</a></div><div class="ttdeci">traceResult xTraceIntervalChannelCreate(const char *szName, TraceIntervalChannelSetHandle_t xIntervalChannelSetHandle, TraceIntervalChannelHandle_t *pxIntervalChannelHandle)</div><div class="ttdoc">Creates trace interval channel.</div><div class="ttdef"><b>Definition:</b> trcInterval.c:40</div></div>
-<div class="ttc" id="agroup__trace__interval__apis_html_gacc8dc6b0c53429b9e5d6d65999f323d5"><div class="ttname"><a href="group__trace__interval__apis.html#gacc8dc6b0c53429b9e5d6d65999f323d5">xTraceIntervalStop</a></div><div class="ttdeci">traceResult xTraceIntervalStop(TraceIntervalChannelHandle_t xIntervalChannelHandle, TraceIntervalInstanceHandle_t xIntervalInstanceHandle)</div><div class="ttdoc">Stops trace interval instance.</div><div class="ttdef"><b>Definition:</b> trcInterval.c:80</div></div>
+<div class="line"><a id="l00107" name="l00107"></a><span class="lineno">  107</span><span class="preprocessor">#define xTraceIntervalGetState(_xIntervalHandle, _puxState) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_3((void)(_xIntervalHandle), (void)(_puxState), TRC_SUCCESS)</span></div>
+<div class="line"><a id="l00108" name="l00108"></a><span class="lineno">  108</span> </div>
+<div class="line"><a id="l00109" name="l00109"></a><span class="lineno">  109</span><span class="preprocessor">#endif</span></div>
+<div class="line"><a id="l00110" name="l00110"></a><span class="lineno">  110</span> </div>
+<div class="line"><a id="l00111" name="l00111"></a><span class="lineno">  111</span><span class="preprocessor">#endif</span></div>
+<div class="ttc" id="agroup__trace__interval__apis_html_ga2c063328c943bd5ea5204c9e0ede0d92"><div class="ttname"><a href="group__trace__interval__apis.html#ga2c063328c943bd5ea5204c9e0ede0d92">xTraceIntervalChannelSetCreate</a></div><div class="ttdeci">traceResult xTraceIntervalChannelSetCreate(const char *szName, TraceIntervalChannelSetHandle_t *pxIntervalChannelSetHandle)</div><div class="ttdoc">Creates trace interval channel set.</div><div class="ttdef"><b>Definition:</b> trcInterval.c:16</div></div>
+<div class="ttc" id="agroup__trace__interval__apis_html_ga73cc0d9d3d2e2f20ecfbd97692474cad"><div class="ttname"><a href="group__trace__interval__apis.html#ga73cc0d9d3d2e2f20ecfbd97692474cad">xTraceIntervalStart</a></div><div class="ttdeci">traceResult xTraceIntervalStart(TraceIntervalChannelHandle_t xIntervalChannelHandle, TraceUnsignedBaseType_t uxValue, TraceIntervalInstanceHandle_t *pxIntervalInstanceHandle)</div><div class="ttdoc">Starts trace interval instance.</div><div class="ttdef"><b>Definition:</b> trcInterval.c:62</div></div>
+<div class="ttc" id="agroup__trace__interval__apis_html_ga8da416874dad91a32ba16169ddff0f2b"><div class="ttname"><a href="group__trace__interval__apis.html#ga8da416874dad91a32ba16169ddff0f2b">xTraceIntervalChannelCreate</a></div><div class="ttdeci">traceResult xTraceIntervalChannelCreate(const char *szName, TraceIntervalChannelSetHandle_t xIntervalChannelSetHandle, TraceIntervalChannelHandle_t *pxIntervalChannelHandle)</div><div class="ttdoc">Creates trace interval channel.</div><div class="ttdef"><b>Definition:</b> trcInterval.c:38</div></div>
+<div class="ttc" id="agroup__trace__interval__apis_html_gacc8dc6b0c53429b9e5d6d65999f323d5"><div class="ttname"><a href="group__trace__interval__apis.html#gacc8dc6b0c53429b9e5d6d65999f323d5">xTraceIntervalStop</a></div><div class="ttdeci">traceResult xTraceIntervalStop(TraceIntervalChannelHandle_t xIntervalChannelHandle, TraceIntervalInstanceHandle_t xIntervalInstanceHandle)</div><div class="ttdoc">Stops trace interval instance.</div><div class="ttdef"><b>Definition:</b> trcInterval.c:78</div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->

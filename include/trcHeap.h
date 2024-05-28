@@ -1,5 +1,5 @@
 /*
-* Percepio Trace Recorder for Tracealyzer v4.8.2
+* Percepio Trace Recorder for Tracealyzer v4.9.0
 * Copyright 2023 Percepio AB
 * www.percepio.com
 *
@@ -15,15 +15,11 @@
 #ifndef TRC_HEAP_H
 #define TRC_HEAP_H
 
-#if (TRC_USE_TRACEALYZER_RECORDER == 1)
-
-#if (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING)
-
 #ifndef TRC_USE_HEAPS
 #define TRC_USE_HEAPS 1
 #endif
 
-#if (TRC_USE_HEAPS == 1)
+#if (TRC_USE_TRACEALYZER_RECORDER == 1) && (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING) && (TRC_USE_HEAPS == 1)
 
 #include <trcTypes.h>
 
@@ -151,22 +147,18 @@ traceResult xTraceHeapFree(TraceHeapHandle_t xHeapHandle, void* pvAddress, Trace
 
 #else
 
-#define xTraceHeapCreate(szName, uxCurrent, uxHighWaterMark, uxMax, pxHeapHandle) ((void)szName, (void)uxCurrent, (void)uxHighWaterMark, (void)uxMax, pxHeapHandle != 0 ? TRC_SUCCESS : TRC_FAIL)
+#define xTraceHeapCreate(__szName, __uxCurrent, __uxHighWaterMark, __uxMax, __pxHeapHandle) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_6((void)(__szName), (void)(__uxCurrent), (void)(__uxHighWaterMark), (void)(__uxMax), (void)(__pxHeapHandle), TRC_SUCCESS)
 
-#define xTraceHeapAlloc(xHeapHandle, pvAddress, uxSize) ((void)xHeapHandle, (void)pvAddress, (void)uxSize, TRC_SUCCESS)
+#define xTraceHeapAlloc(__xHeapHandle, __pvAddress, __uxSize) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_4((void)(__xHeapHandle), (void)(__pvAddress), (void)(__uxSize), TRC_SUCCESS)
 
-#define xTraceHeapFree(xHeapHandle, pvAddress, uxSize) ((void)xHeapHandle, (void)pvAddress, (void)uxSize, TRC_SUCCESS)
+#define xTraceHeapFree(__xHeapHandle, __pvAddress, __uxSize) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_4((void)(__xHeapHandle), (void)(__pvAddress), (void)(__uxSize), TRC_SUCCESS)
 
-#define xTraceHeapGetCurrent(xHeapHandle, puxCurrent) ((void)xHeapHandle, puxCurrent != 0 ? *puxCurrent = 0 : 0, puxCurrent != 0 ? TRC_SUCCESS : TRC_FAIL)
+#define xTraceHeapGetCurrent(__xHeapHandle, __puxCurrent) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_3((void)(__xHeapHandle), (void)(__puxCurrent), TRC_SUCCESS)
 
-#define xTraceHeapGetHighWaterMark(xHeapHandle, puxHighWaterMark) ((void)xHeapHandle, puxHighWaterMark != 0 ? *puxHighWaterMark = 0 : 0, puxHighWaterMark != 0 ? TRC_SUCCESS : TRC_FAIL)
+#define xTraceHeapGetHighWaterMark(__xHeapHandle, __puxHighWaterMark) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_3((void)(__xHeapHandle), (void)(__puxHighWaterMark), TRC_SUCCESS)
 
-#define xTraceHeapGetMax(xHeapHandle, puxMax) ((void)xHeapHandle, puxMax != 0 ? *puxMax = 0 : 0, puxMax != 0 ? TRC_SUCCESS : TRC_FAIL)
+#define xTraceHeapGetMax(__xHeapHandle, __puxMax) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_3((void)(__xHeapHandle), (void)(__puxMax), TRC_SUCCESS)
 
-#endif /* (TRC_USE_HEAPS == 1) */
+#endif
 
-#endif /* (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING) */
-
-#endif /* (TRC_USE_TRACEALYZER_RECORDER == 1) */
-
-#endif /* TRC_HEAP_H */
+#endif

@@ -1,5 +1,5 @@
 /*
-* Percepio Trace Recorder for Tracealyzer v4.8.2
+* Percepio Trace Recorder for Tracealyzer v4.9.0
 * Copyright 2023 Percepio AB
 * www.percepio.com
 *
@@ -15,9 +15,7 @@
 #ifndef TRC_TASK_H
 #define TRC_TASK_H
 
-#if (TRC_USE_TRACEALYZER_RECORDER == 1)
-
-#if (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING)
+#if (TRC_USE_TRACEALYZER_RECORDER == 1) && (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING)
 
 #include <trcTypes.h>
 
@@ -78,7 +76,7 @@ traceResult xTraceTaskInitialize(TraceTaskData_t* pxBuffer);
  * @retval TRC_FAIL Failure
  * @retval TRC_SUCCESS Success
  */
-traceResult xTraceTaskUnregister(TraceTaskHandle_t xTaskHandle, TraceUnsignedBaseType_t uxPriority);
+#define xTraceTaskUnregister(xTaskHandle, uxPriority) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_2((void)xTraceStackMonitorRemove(xTraceEntryGetAddressReturn((TraceEntryHandle_t)(xTaskHandle))), xTraceObjectUnregister((TraceObjectHandle_t)(xTaskHandle), PSF_EVENT_TASK_DELETE, uxPriority))
 
 /**
  * @brief Sets trace task name. 
@@ -255,8 +253,42 @@ traceResult xTraceTaskSwitch(void* pvTask, TraceUnsignedBaseType_t uxPriority);
 }
 #endif
 
-#endif /* (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING) */
+#else
 
-#endif /* (TRC_USE_TRACEALYZER_RECORDER == 1) */
+#define xTraceTaskRegister(__pvTask, ___szName, __uxPriority, __pxTaskHandle) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_5((void)(__pvTask), (void)(__szName), (void)(__uxPriority), (void)(__pxTaskHandle), TRC_SUCCESS)
 
-#endif /* TRC_TASK_H */
+#define xTraceTaskUnregister(__xTaskHandle, __uxPriority) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_3((void)(__xTaskHandle), (void)(__uxPriority), TRC_SUCCESS)
+
+#define xTraceTaskSetName(__xTaskHandle, __szName) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_3((void)(__xTaskHandle), (void)(__szName), TRC_SUCCESS)
+
+#define xTraceTaskSetPriority(__xTaskHandle, __uxPriority) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_3((void)(__xTaskHandle), (void)(__uxPriority), TRC_SUCCESS)
+
+#define xTraceTaskRegisterWithoutHandle(__pvTask, __szName, __uxPriority) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_4((void)(__pvTask), (void)(__szName), (void)(__uxPriority), TRC_SUCCESS)
+
+#define xTraceTaskUnregisterWithoutHandle(__pvTask, __uxPriority) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_3((void)(__pvTask), (void)(__uxPriority), TRC_SUCCESS)
+
+#define xTraceTaskSetNameWithoutHandle(__pvTask, __szName) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_3((void)(__pvTask), (void)(__szName), TRC_SUCCESS)
+
+#define xTraceTaskSetPriorityWithoutHandle(__pvTask, __uxPriority) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_3((void)(__pvTask), (void)(__uxPriority), TRC_SUCCESS)
+
+#define xTraceTaskSwitch(__pvTask, __uxPriority) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_3((void)(__pvTask), (void)(__uxPriority), TRC_SUCCESS)
+
+#define xTraceTaskReady(__pvTask) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_2((void)(__pvTask), TRC_SUCCESS)
+
+#define xTraceTaskSetCurrent(__pvTask) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_2((void)(__pvTask), TRC_SUCCESS)
+
+#define xTraceTaskSetCurrentOnCore(__coreId, __pvTask) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_3((void)(__coreId), (void)(__pvTask), TRC_SUCCESS)
+
+#define xTraceTaskGetCurrent(__ppvTask) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_2((void)(__ppvTask), TRC_SUCCESS)
+
+#define xTraceTaskGetCurrentOnCore(__coreId, __ppvTask) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_3((void)(__coreId), (void)(__ppvTask), TRC_SUCCESS)
+
+#define xTraceTaskGetCurrentReturn() (0)
+
+#define xTraceTaskInstanceFinishedNow() (TRC_SUCCESS)
+
+#define xTraceTaskInstanceFinishedNext() (TRC_SUCCESS)
+
+#endif
+
+#endif

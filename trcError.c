@@ -1,5 +1,5 @@
 /*
-* Percepio Trace Recorder for Tracealyzer v4.8.2
+* Percepio Trace Recorder for Tracealyzer v4.9.0
 * Copyright 2023 Percepio AB
 * www.percepio.com
 *
@@ -10,9 +10,7 @@
 
 #include <trcRecorder.h>
 
-#if (TRC_USE_TRACEALYZER_RECORDER == 1)
-
-#if (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING)
+#if (TRC_USE_TRACEALYZER_RECORDER == 1) && (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING)
 
 /* We skip the slot for TRC_ERROR_NONE so error code 1 is the first bit */
 #define GET_ERROR_WARNING_FLAG(errorCode) (pxErrorInfo->uiErrorAndWarningFlags & (1UL << ((errorCode) - 1UL)))
@@ -168,14 +166,12 @@ static traceResult prvTraceErrorPrint(uint32_t uiErrorCode)
 		}
 		(void)xTracePrintF(pxErrorInfo->xWarningChannel, szDesc, xFileName, (uint32_t)uxLineNumber);
 		return TRC_SUCCESS;
-		break;
 		
 	default:
 		/* No error, or an unknown error occurred */
 		(void)xTracePrintF(pxErrorInfo->xWarningChannel, "Unknown error code: 0x%08X", uiErrorCode);
 		
 		return TRC_FAIL;
-		break;
 	}
 
 	return TRC_SUCCESS;
@@ -191,14 +187,13 @@ static traceResult prvTraceErrorGetDescription(uint32_t uiErrorCode, const char*
 	{
 	case TRC_ERROR_NONE:
 		return TRC_FAIL;
-		break;
 
 	case TRC_WARNING_ENTRY_TABLE_SLOTS:
-		/* There was not enough symbol table slots for storing symbol names.
-		The number of missing slots is counted by NoRoomForSymbol. Inspect this
-		variable and increase TRC_CFG_ENTRY_TABLE_SLOTS by at least that value. */
+		/* There were not enough symbol table slots for storing symbol names.
+		The number of missing slots is counted by pxDiagnostics->metrics[TRC_DIAGNOSTICS_ENTRY_SLOTS_NO_ROOM]. Inspect this
+		variable and increase TRC_CFG_ENTRY_SLOTS by at least that value. */
 
-		*pszDesc = "Exceeded TRC_CFG_ENTRY_TABLE_SLOTS";
+		*pszDesc = "Exceeded TRC_CFG_ENTRY_SLOTS";
 		break;
 
 	case TRC_WARNING_ENTRY_SYMBOL_MAX_LENGTH:
@@ -311,7 +306,5 @@ static traceResult prvTraceErrorGetDescription(uint32_t uiErrorCode, const char*
 
 	return TRC_SUCCESS;
 }
-
-#endif
 
 #endif

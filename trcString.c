@@ -1,5 +1,5 @@
 /*
-* Percepio Trace Recorder for Tracealyzer v4.8.2
+* Percepio Trace Recorder for Tracealyzer v4.9.0
 * Copyright 2023 Percepio AB
 * www.percepio.com
 *
@@ -10,17 +10,14 @@
 
 #include <trcRecorder.h>
 
-#if (TRC_USE_TRACEALYZER_RECORDER == 1)
-
-#if (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING)
+#if (TRC_USE_TRACEALYZER_RECORDER == 1) && (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING)
 
 /*cstat !MISRAC2004-6.3 !MISRAC2012-Dir-4.6_a Suppress basic char type usage*/
 traceResult xTraceStringRegister(const char* szString, TraceStringHandle_t *pString)
 {
 	TraceEntryHandle_t xEntryHandle;
-	TraceEventHandle_t xEventHandle = 0;
 	int32_t i;
-	uint32_t uiLength, uiValue = 0u;
+	uint32_t uiLength = 0u;
 
 	/* This should never fail */
 	TRC_ASSERT(szString != (void*)0);
@@ -44,23 +41,7 @@ traceResult xTraceStringRegister(const char* szString, TraceStringHandle_t *pStr
 
 	*pString = (TraceStringHandle_t)xEntryHandle;
 
-	/* We need to check this */
-	if (xTraceEventBegin(PSF_EVENT_OBJ_NAME, sizeof(void*) + uiLength, &xEventHandle) == TRC_SUCCESS)
-	{
-		(void)xTraceEventAddPointer(xEventHandle, (void*)xEntryHandle);
-		(void)xTraceEventAddString(xEventHandle, szString, uiLength);
-
-		/* Check if we can truncate */
-		(void)xTraceEventPayloadRemaining(xEventHandle, &uiValue);
-		if (uiValue > 0u)
-		{
-			(void)xTraceEventAdd8(xEventHandle, 0u);
-		}
-		
-		(void)xTraceEventEnd(xEventHandle); /*cstat !MISRAC2012-Rule-17.7 Suppress ignored return value check (inside macro)*/
-	}
-
-	return TRC_SUCCESS;
+	return xTraceEventCreateData1(PSF_EVENT_OBJ_NAME, (TraceUnsignedBaseType_t)xEntryHandle, (TraceUnsignedBaseType_t*)szString, uiLength + 1);
 }
 
 /*cstat !MISRAC2004-6.3 !MISRAC2012-Dir-4.6_a Suppress basic char type usage*/
@@ -72,6 +53,4 @@ TraceStringHandle_t xTraceRegisterString(const char *name)
 	return trcStr;
 }
 
-#endif /* (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING) */
-
-#endif /* (TRC_USE_TRACEALYZER_RECORDER == 1) */
+#endif

@@ -25,7 +25,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">Percepio Trace Recorder<span id="projectnumber">&#160;v4.8.2</span>
+   <div id="projectname">Percepio Trace Recorder<span id="projectnumber">&#160;v4.9.0</span>
    </div>
   </td>
  </tr>
@@ -93,7 +93,7 @@ $(document).ready(function(){initNavTree('trcCounter_8h_source.html',''); initRe
 </div><!--header-->
 <div class="contents">
 <a href="trcCounter_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="comment">/*</span></div>
-<div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span><span class="comment">* Percepio Trace Recorder for Tracealyzer v4.8.2</span></div>
+<div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span><span class="comment">* Percepio Trace Recorder for Tracealyzer v4.9.0</span></div>
 <div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span><span class="comment">* Copyright 2023 Percepio AB</span></div>
 <div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span><span class="comment">* www.percepio.com</span></div>
 <div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span><span class="comment">*</span></div>
@@ -103,82 +103,78 @@ $(document).ready(function(){initNavTree('trcCounter_8h_source.html',''); initRe
 <div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span><span class="preprocessor">#ifndef TRC_COUNTER_H</span></div>
 <div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span><span class="preprocessor">#define TRC_COUNTER_H</span></div>
 <div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span> </div>
-<div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span><span class="preprocessor">#if (TRC_USE_TRACEALYZER_RECORDER == 1)</span></div>
+<div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span><span class="preprocessor">#if (TRC_USE_TRACEALYZER_RECORDER == 1) &amp;&amp; (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING)</span></div>
 <div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span> </div>
-<div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span><span class="preprocessor">#if (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING)</span></div>
-<div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span> </div>
-<div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span><span class="preprocessor">#define TRC_COUNTER_VALUE_INDEX 0</span></div>
-<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span><span class="preprocessor">#define TRC_COUNTER_LOWER_LIMIT_INDEX 1</span></div>
-<div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span><span class="preprocessor">#define TRC_COUNTER_UPPER_LIMIT_INDEX 2</span></div>
+<div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span><span class="preprocessor">#define TRC_COUNTER_VALUE_INDEX 0</span></div>
+<div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span><span class="preprocessor">#define TRC_COUNTER_LOWER_LIMIT_INDEX 1</span></div>
+<div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span><span class="preprocessor">#define TRC_COUNTER_UPPER_LIMIT_INDEX 2</span></div>
+<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span> </div>
+<div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span><span class="preprocessor">#include &lt;trcTypes.h&gt;</span></div>
 <div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span> </div>
-<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span><span class="preprocessor">#include &lt;trcTypes.h&gt;</span></div>
-<div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span> </div>
-<div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span><span class="preprocessor">#ifdef __cplusplus</span></div>
-<div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span><span class="keyword">extern</span> <span class="stringliteral">&quot;C&quot;</span> {</div>
-<div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span><span class="preprocessor">#endif</span></div>
-<div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span> </div>
-<div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span><span class="keyword">typedef</span> <span class="keyword">struct </span>TraceCounterData <span class="comment">/* Aligned */</span></div>
-<div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span>{</div>
-<div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span>    TraceCounterCallback_t xCallbackFunction;</div>
-<div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span>} TraceCounterData_t;</div>
-<div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span> </div>
-<div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span>traceResult <a class="code hl_function" href="group__trace__counter__apis.html#ga4feede3ee8b5b78ec2ec8ac534b9ef7e">xTraceCounterInitialize</a>(TraceCounterData_t *pxBuffer);</div>
-<div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span> </div>
-<div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span>traceResult <a class="code hl_function" href="group__trace__counter__apis.html#ga2e9567e1b12afeea68e415f46963c5ca">xTraceCounterSetCallback</a>(TraceCounterCallback_t xCallback);</div>
-<div class="line"><a id="l00062" name="l00062"></a><span class="lineno">   62</span> </div>
-<div class="line"><a id="l00075" name="l00075"></a><span class="lineno">   75</span>traceResult <a class="code hl_function" href="group__trace__counter__apis.html#gabc5ffcf7218f9b9dfde860aa3f0f2632">xTraceCounterCreate</a>(<span class="keyword">const</span> <span class="keywordtype">char</span>* szName, TraceBaseType_t xInitialValue, TraceBaseType_t xLowerLimit, TraceBaseType_t xUpperLimit, TraceCounterHandle_t* pxCounterHandle);</div>
-<div class="line"><a id="l00076" name="l00076"></a><span class="lineno">   76</span> </div>
-<div class="line"><a id="l00086" name="l00086"></a><span class="lineno"><a class="line" href="group__trace__counter__apis.html#ga4d812ffb5d2d1f54b8fd94bc5d8596d5">   86</a></span><span class="preprocessor">#define xTraceCounterAdd(xCounterHandle, xValue) xTraceCounterSet(xCounterHandle, (TraceBaseType_t)(xTraceEntryGetStateReturn((TraceEntryHandle_t)(xCounterHandle), TRC_COUNTER_VALUE_INDEX)) + (xValue))</span></div>
-<div class="line"><a id="l00087" name="l00087"></a><span class="lineno">   87</span> </div>
-<div class="line"><a id="l00097" name="l00097"></a><span class="lineno">   97</span>traceResult <a class="code hl_function" href="group__trace__counter__apis.html#gaab9ced4239f659fbe9390187e05cbd4a">xTraceCounterSet</a>(TraceCounterHandle_t xCounterHandle, TraceBaseType_t xValue);</div>
-<div class="line"><a id="l00098" name="l00098"></a><span class="lineno">   98</span> </div>
-<div class="line"><a id="l00108" name="l00108"></a><span class="lineno"><a class="line" href="group__trace__counter__apis.html#ga0ac6b92f37a58f899fab057331c25f39">  108</a></span><span class="preprocessor">#define xTraceCounterGet(xCounterHandle, pxValue) xTraceEntryGetState((TraceEntryHandle_t)(xCounterHandle), TRC_COUNTER_VALUE_INDEX, (TraceUnsignedBaseType_t*)(pxValue))</span></div>
-<div class="line"><a id="l00109" name="l00109"></a><span class="lineno">  109</span> </div>
-<div class="line"><a id="l00118" name="l00118"></a><span class="lineno"><a class="line" href="group__trace__counter__apis.html#ga6374de3cf1de24d354ea095c75a54742">  118</a></span><span class="preprocessor">#define xTraceCounterIncrease(xCounterHandle) xTraceCounterAdd(xCounterHandle, 1)</span></div>
-<div class="line"><a id="l00119" name="l00119"></a><span class="lineno">  119</span> </div>
-<div class="line"><a id="l00128" name="l00128"></a><span class="lineno"><a class="line" href="group__trace__counter__apis.html#gaa9d39eb5516a05710a2db79cc7dcc181">  128</a></span><span class="preprocessor">#define xTraceCounterDecrease(xCounterHandle) xTraceCounterAdd(xCounterHandle, -1)</span></div>
-<div class="line"><a id="l00129" name="l00129"></a><span class="lineno">  129</span> </div>
-<div class="line"><a id="l00139" name="l00139"></a><span class="lineno"><a class="line" href="group__trace__counter__apis.html#ga692a007ff950ec87f1988782ca1145c0">  139</a></span><span class="preprocessor">#define xTraceCounterGetUpperLimit(xCounterHandle, pxValue) xTraceEntryGetState((TraceEntryHandle_t)(xCounterHandle), TRC_COUNTER_UPPER_LIMIT_INDEX, (TraceUnsignedBaseType_t*)(pxValue))</span></div>
-<div class="line"><a id="l00140" name="l00140"></a><span class="lineno">  140</span> </div>
-<div class="line"><a id="l00150" name="l00150"></a><span class="lineno"><a class="line" href="group__trace__counter__apis.html#gaba3f1e8fc86f08abb8451d7cb4503c76">  150</a></span><span class="preprocessor">#define xTraceCounterGetLowerLimit(xCounterHandle, pxValue) xTraceEntryGetState((TraceEntryHandle_t)(xCounterHandle), TRC_COUNTER_LOWER_LIMIT_INDEX, (TraceUnsignedBaseType_t*)(pxValue))</span></div>
-<div class="line"><a id="l00151" name="l00151"></a><span class="lineno">  151</span> </div>
-<div class="line"><a id="l00161" name="l00161"></a><span class="lineno"><a class="line" href="group__trace__counter__apis.html#gab04248a0d3ad6abe5e9a787b26091524">  161</a></span><span class="preprocessor">#define xTraceCounterGetName(xCounterHandle, pszName) xTraceEntryGetSymbol((TraceEntryHandle_t)(xCounterHandle), pszName)</span></div>
-<div class="line"><a id="l00162" name="l00162"></a><span class="lineno">  162</span> </div>
-<div class="line"><a id="l00165" name="l00165"></a><span class="lineno">  165</span><span class="preprocessor">#ifdef __cplusplus</span></div>
-<div class="line"><a id="l00166" name="l00166"></a><span class="lineno">  166</span>}</div>
-<div class="line"><a id="l00167" name="l00167"></a><span class="lineno">  167</span><span class="preprocessor">#endif</span></div>
+<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span><span class="preprocessor">#ifdef __cplusplus</span></div>
+<div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span><span class="keyword">extern</span> <span class="stringliteral">&quot;C&quot;</span> {</div>
+<div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span><span class="preprocessor">#endif</span></div>
+<div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span> </div>
+<div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span><span class="keyword">typedef</span> <span class="keyword">struct </span>TraceCounterData <span class="comment">/* Aligned */</span></div>
+<div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span>{</div>
+<div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span>    TraceCounterCallback_t xCallbackFunction;</div>
+<div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span>} TraceCounterData_t;</div>
+<div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span> </div>
+<div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span>traceResult <a class="code hl_function" href="group__trace__counter__apis.html#ga4feede3ee8b5b78ec2ec8ac534b9ef7e">xTraceCounterInitialize</a>(TraceCounterData_t *pxBuffer);</div>
+<div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span> </div>
+<div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span>traceResult <a class="code hl_function" href="group__trace__counter__apis.html#ga2e9567e1b12afeea68e415f46963c5ca">xTraceCounterSetCallback</a>(TraceCounterCallback_t xCallback);</div>
+<div class="line"><a id="l00060" name="l00060"></a><span class="lineno">   60</span> </div>
+<div class="line"><a id="l00073" name="l00073"></a><span class="lineno">   73</span>traceResult <a class="code hl_function" href="group__trace__counter__apis.html#gabc5ffcf7218f9b9dfde860aa3f0f2632">xTraceCounterCreate</a>(<span class="keyword">const</span> <span class="keywordtype">char</span>* szName, TraceBaseType_t xInitialValue, TraceBaseType_t xLowerLimit, TraceBaseType_t xUpperLimit, TraceCounterHandle_t* pxCounterHandle);</div>
+<div class="line"><a id="l00074" name="l00074"></a><span class="lineno">   74</span> </div>
+<div class="line"><a id="l00084" name="l00084"></a><span class="lineno"><a class="line" href="group__trace__counter__apis.html#ga4d812ffb5d2d1f54b8fd94bc5d8596d5">   84</a></span><span class="preprocessor">#define xTraceCounterAdd(xCounterHandle, xValue) xTraceCounterSet(xCounterHandle, (TraceBaseType_t)(xTraceEntryGetStateReturn((TraceEntryHandle_t)(xCounterHandle), TRC_COUNTER_VALUE_INDEX)) + (xValue))</span></div>
+<div class="line"><a id="l00085" name="l00085"></a><span class="lineno">   85</span> </div>
+<div class="line"><a id="l00095" name="l00095"></a><span class="lineno">   95</span>traceResult <a class="code hl_function" href="group__trace__counter__apis.html#gaab9ced4239f659fbe9390187e05cbd4a">xTraceCounterSet</a>(TraceCounterHandle_t xCounterHandle, TraceBaseType_t xValue);</div>
+<div class="line"><a id="l00096" name="l00096"></a><span class="lineno">   96</span> </div>
+<div class="line"><a id="l00106" name="l00106"></a><span class="lineno"><a class="line" href="group__trace__counter__apis.html#ga0ac6b92f37a58f899fab057331c25f39">  106</a></span><span class="preprocessor">#define xTraceCounterGet(xCounterHandle, pxValue) xTraceEntryGetState((TraceEntryHandle_t)(xCounterHandle), TRC_COUNTER_VALUE_INDEX, (TraceUnsignedBaseType_t*)(pxValue))</span></div>
+<div class="line"><a id="l00107" name="l00107"></a><span class="lineno">  107</span> </div>
+<div class="line"><a id="l00116" name="l00116"></a><span class="lineno"><a class="line" href="group__trace__counter__apis.html#ga6374de3cf1de24d354ea095c75a54742">  116</a></span><span class="preprocessor">#define xTraceCounterIncrease(xCounterHandle) xTraceCounterAdd(xCounterHandle, 1)</span></div>
+<div class="line"><a id="l00117" name="l00117"></a><span class="lineno">  117</span> </div>
+<div class="line"><a id="l00126" name="l00126"></a><span class="lineno"><a class="line" href="group__trace__counter__apis.html#gaa9d39eb5516a05710a2db79cc7dcc181">  126</a></span><span class="preprocessor">#define xTraceCounterDecrease(xCounterHandle) xTraceCounterAdd(xCounterHandle, -1)</span></div>
+<div class="line"><a id="l00127" name="l00127"></a><span class="lineno">  127</span> </div>
+<div class="line"><a id="l00137" name="l00137"></a><span class="lineno"><a class="line" href="group__trace__counter__apis.html#ga692a007ff950ec87f1988782ca1145c0">  137</a></span><span class="preprocessor">#define xTraceCounterGetUpperLimit(xCounterHandle, pxValue) xTraceEntryGetState((TraceEntryHandle_t)(xCounterHandle), TRC_COUNTER_UPPER_LIMIT_INDEX, (TraceUnsignedBaseType_t*)(pxValue))</span></div>
+<div class="line"><a id="l00138" name="l00138"></a><span class="lineno">  138</span> </div>
+<div class="line"><a id="l00148" name="l00148"></a><span class="lineno"><a class="line" href="group__trace__counter__apis.html#gaba3f1e8fc86f08abb8451d7cb4503c76">  148</a></span><span class="preprocessor">#define xTraceCounterGetLowerLimit(xCounterHandle, pxValue) xTraceEntryGetState((TraceEntryHandle_t)(xCounterHandle), TRC_COUNTER_LOWER_LIMIT_INDEX, (TraceUnsignedBaseType_t*)(pxValue))</span></div>
+<div class="line"><a id="l00149" name="l00149"></a><span class="lineno">  149</span> </div>
+<div class="line"><a id="l00159" name="l00159"></a><span class="lineno"><a class="line" href="group__trace__counter__apis.html#gab04248a0d3ad6abe5e9a787b26091524">  159</a></span><span class="preprocessor">#define xTraceCounterGetName(xCounterHandle, pszName) xTraceEntryGetSymbol((TraceEntryHandle_t)(xCounterHandle), pszName)</span></div>
+<div class="line"><a id="l00160" name="l00160"></a><span class="lineno">  160</span> </div>
+<div class="line"><a id="l00163" name="l00163"></a><span class="lineno">  163</span><span class="preprocessor">#ifdef __cplusplus</span></div>
+<div class="line"><a id="l00164" name="l00164"></a><span class="lineno">  164</span>}</div>
+<div class="line"><a id="l00165" name="l00165"></a><span class="lineno">  165</span><span class="preprocessor">#endif</span></div>
+<div class="line"><a id="l00166" name="l00166"></a><span class="lineno">  166</span> </div>
+<div class="line"><a id="l00167" name="l00167"></a><span class="lineno">  167</span><span class="preprocessor">#else</span></div>
 <div class="line"><a id="l00168" name="l00168"></a><span class="lineno">  168</span> </div>
-<div class="line"><a id="l00169" name="l00169"></a><span class="lineno">  169</span><span class="preprocessor">#else</span></div>
+<div class="line"><a id="l00169" name="l00169"></a><span class="lineno">  169</span><span class="preprocessor">#define xTraceCounterSetCallback(_xCallback) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_2((void)(_xCallback), TRC_SUCCESS)</span></div>
 <div class="line"><a id="l00170" name="l00170"></a><span class="lineno">  170</span> </div>
-<div class="line"><a id="l00174" name="l00174"></a><span class="lineno">  174</span><span class="preprocessor">#define xTraceCounterSetCallback(__xCallback) ((void)(__xCallback), TRC_SUCCESS)</span></div>
-<div class="line"><a id="l00175" name="l00175"></a><span class="lineno">  175</span> </div>
-<div class="line"><a id="l00179" name="l00179"></a><span class="lineno">  179</span><span class="preprocessor">#define xTraceCounterCreate(__szName, __xInitialValue, __xLowerLimit, __xUpperLimit, __pxCounterHandle) ((void)(__szName), (void)(__xInitialValue), (void)(__xLowerLimit), (void)(__xUpperLimit), *(__pxCounterHandle) = 0, TRC_SUCCESS)</span></div>
+<div class="line"><a id="l00171" name="l00171"></a><span class="lineno">  171</span><span class="preprocessor">#define xTraceCounterCreate(_szName, _xInitialValue, _xLowerLimit, _xUpperLimit, _pxCounterHandle) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_6((void)(_szName), (void)(_xInitialValue), (void)(_xLowerLimit), (void)(_xUpperLimit), (void)(_pxCounterHandle), TRC_SUCCESS)</span></div>
+<div class="line"><a id="l00172" name="l00172"></a><span class="lineno">  172</span> </div>
+<div class="line"><a id="l00173" name="l00173"></a><span class="lineno">  173</span><span class="preprocessor">#define xTraceCounterAdd(_xCounterHandle, _xValue) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_3((void)(_xCounterHandle), (void)(_xValue), TRC_SUCCESS)</span></div>
+<div class="line"><a id="l00174" name="l00174"></a><span class="lineno">  174</span> </div>
+<div class="line"><a id="l00175" name="l00175"></a><span class="lineno">  175</span><span class="preprocessor">#define xTraceCounterSet(_xCounterHandle, _xValue) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_3((void)(_xCounterHandle), (void)(_xValue), TRC_SUCCESS)</span></div>
+<div class="line"><a id="l00176" name="l00176"></a><span class="lineno">  176</span> </div>
+<div class="line"><a id="l00177" name="l00177"></a><span class="lineno">  177</span><span class="preprocessor">#define xTraceCounterGet(_xCounterHandle, _pxValue) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_3((void)(_xCounterHandle), (void)(_pxValue), TRC_SUCCESS)</span></div>
+<div class="line"><a id="l00178" name="l00178"></a><span class="lineno">  178</span> </div>
+<div class="line"><a id="l00179" name="l00179"></a><span class="lineno">  179</span><span class="preprocessor">#define xTraceCounterIncrease(_xCounterHandle) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_2((void)(_xCounterHandle), TRC_SUCCESS)</span></div>
 <div class="line"><a id="l00180" name="l00180"></a><span class="lineno">  180</span> </div>
-<div class="line"><a id="l00184" name="l00184"></a><span class="lineno">  184</span><span class="preprocessor">#define xTraceCounterAdd(__xCounterHandle, __xValue) ((void)(__xCounterHandle), (void)(__xValue), TRC_SUCCESS)</span></div>
-<div class="line"><a id="l00185" name="l00185"></a><span class="lineno">  185</span> </div>
-<div class="line"><a id="l00189" name="l00189"></a><span class="lineno">  189</span><span class="preprocessor">#define xTraceCounterSet(__xCounterHandle, __xValue) ((void)(__xCounterHandle), (void)(__xValue), TRC_SUCCESS)</span></div>
+<div class="line"><a id="l00181" name="l00181"></a><span class="lineno">  181</span><span class="preprocessor">#define xTraceCounterDecrease(_xCounterHandle) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_2((void)(_xCounterHandle), TRC_SUCCESS)</span></div>
+<div class="line"><a id="l00182" name="l00182"></a><span class="lineno">  182</span> </div>
+<div class="line"><a id="l00183" name="l00183"></a><span class="lineno">  183</span><span class="preprocessor">#define xTraceCounterGetUpperLimit(_xCounterHandle, _pxValue) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_3((void)(_xCounterHandle), (void)(_pxValue), TRC_SUCCESS)</span></div>
+<div class="line"><a id="l00184" name="l00184"></a><span class="lineno">  184</span> </div>
+<div class="line"><a id="l00185" name="l00185"></a><span class="lineno">  185</span><span class="preprocessor">#define xTraceCounterGetLowerLimit(_xCounterHandle, _pxValue) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_3((void)(_xCounterHandle), (void)(_pxValue), TRC_SUCCESS)</span></div>
+<div class="line"><a id="l00186" name="l00186"></a><span class="lineno">  186</span> </div>
+<div class="line"><a id="l00187" name="l00187"></a><span class="lineno">  187</span><span class="preprocessor">#define xTraceCounterGetName(_xCounterHandle, _pszName) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_3((void)(_xCounterHandle), (void)(_pszName), TRC_SUCCESS)</span></div>
+<div class="line"><a id="l00188" name="l00188"></a><span class="lineno">  188</span> </div>
+<div class="line"><a id="l00189" name="l00189"></a><span class="lineno">  189</span><span class="preprocessor">#endif</span></div>
 <div class="line"><a id="l00190" name="l00190"></a><span class="lineno">  190</span> </div>
-<div class="line"><a id="l00194" name="l00194"></a><span class="lineno">  194</span><span class="preprocessor">#define xTraceCounterGet(__xCounterHandle, __pxValue) ((void)(__xCounterHandle), *(__pxValue) = 0, TRC_SUCCESS)</span></div>
-<div class="line"><a id="l00195" name="l00195"></a><span class="lineno">  195</span> </div>
-<div class="line"><a id="l00199" name="l00199"></a><span class="lineno">  199</span><span class="preprocessor">#define xTraceCounterIncrease(__xCounterHandle) ((void)(__xCounterHandle), TRC_SUCCESS)</span></div>
-<div class="line"><a id="l00200" name="l00200"></a><span class="lineno">  200</span> </div>
-<div class="line"><a id="l00204" name="l00204"></a><span class="lineno">  204</span><span class="preprocessor">#define xTraceCounterDecrease(__xCounterHandle) ((void)(__xCounterHandle), TRC_SUCCESS)</span></div>
-<div class="line"><a id="l00205" name="l00205"></a><span class="lineno">  205</span> </div>
-<div class="line"><a id="l00209" name="l00209"></a><span class="lineno">  209</span><span class="preprocessor">#define xTraceCounterGetUpperLimit(__xCounterHandle, __pxValue) ((void)(__xCounterHandle), *(__pxValue) = 0, TRC_SUCCESS)</span></div>
-<div class="line"><a id="l00210" name="l00210"></a><span class="lineno">  210</span> </div>
-<div class="line"><a id="l00214" name="l00214"></a><span class="lineno">  214</span><span class="preprocessor">#define xTraceCounterGetLowerLimit(__xCounterHandle, __pxValue) ((void)(__xCounterHandle), *(__pxValue) = 0, TRC_SUCCESS)</span></div>
-<div class="line"><a id="l00215" name="l00215"></a><span class="lineno">  215</span> </div>
-<div class="line"><a id="l00219" name="l00219"></a><span class="lineno">  219</span><span class="preprocessor">#define xTraceCounterGetName(__xCounterHandle, __pszName) ((void)(__xCounterHandle), *(__pszName) = &quot;N/A&quot;</span>, TRC_SUCCESS)</div>
-<div class="line"><a id="l00220" name="l00220"></a><span class="lineno">  220</span> </div>
-<div class="line"><a id="l00221" name="l00221"></a><span class="lineno">  221</span><span class="preprocessor">#endif</span></div>
-<div class="line"><a id="l00222" name="l00222"></a><span class="lineno">  222</span> </div>
-<div class="line"><a id="l00223" name="l00223"></a><span class="lineno">  223</span><span class="preprocessor">#endif</span></div>
-<div class="line"><a id="l00224" name="l00224"></a><span class="lineno">  224</span> </div>
-<div class="line"><a id="l00225" name="l00225"></a><span class="lineno">  225</span><span class="preprocessor">#endif</span></div>
-<div class="ttc" id="agroup__trace__counter__apis_html_ga2e9567e1b12afeea68e415f46963c5ca"><div class="ttname"><a href="group__trace__counter__apis.html#ga2e9567e1b12afeea68e415f46963c5ca">xTraceCounterSetCallback</a></div><div class="ttdeci">traceResult xTraceCounterSetCallback(TraceCounterCallback_t xCallback)</div><div class="ttdoc">Sets trace counter callback.</div><div class="ttdef"><b>Definition:</b> trcCounter.c:32</div></div>
-<div class="ttc" id="agroup__trace__counter__apis_html_ga4feede3ee8b5b78ec2ec8ac534b9ef7e"><div class="ttname"><a href="group__trace__counter__apis.html#ga4feede3ee8b5b78ec2ec8ac534b9ef7e">xTraceCounterInitialize</a></div><div class="ttdeci">traceResult xTraceCounterInitialize(TraceCounterData_t *pxBuffer)</div><div class="ttdoc">Initializes the Counter trace system.</div><div class="ttdef"><b>Definition:</b> trcCounter.c:19</div></div>
-<div class="ttc" id="agroup__trace__counter__apis_html_gaab9ced4239f659fbe9390187e05cbd4a"><div class="ttname"><a href="group__trace__counter__apis.html#gaab9ced4239f659fbe9390187e05cbd4a">xTraceCounterSet</a></div><div class="ttdeci">traceResult xTraceCounterSet(TraceCounterHandle_t xCounterHandle, TraceBaseType_t xValue)</div><div class="ttdoc">Sets trace counter value.</div><div class="ttdef"><b>Definition:</b> trcCounter.c:71</div></div>
-<div class="ttc" id="agroup__trace__counter__apis_html_gabc5ffcf7218f9b9dfde860aa3f0f2632"><div class="ttname"><a href="group__trace__counter__apis.html#gabc5ffcf7218f9b9dfde860aa3f0f2632">xTraceCounterCreate</a></div><div class="ttdeci">traceResult xTraceCounterCreate(const char *szName, TraceBaseType_t xInitialValue, TraceBaseType_t xLowerLimit, TraceBaseType_t xUpperLimit, TraceCounterHandle_t *pxCounterHandle)</div><div class="ttdoc">Creates trace counter.</div><div class="ttdef"><b>Definition:</b> trcCounter.c:44</div></div>
+<div class="line"><a id="l00191" name="l00191"></a><span class="lineno">  191</span><span class="preprocessor">#endif</span></div>
+<div class="ttc" id="agroup__trace__counter__apis_html_ga2e9567e1b12afeea68e415f46963c5ca"><div class="ttname"><a href="group__trace__counter__apis.html#ga2e9567e1b12afeea68e415f46963c5ca">xTraceCounterSetCallback</a></div><div class="ttdeci">traceResult xTraceCounterSetCallback(TraceCounterCallback_t xCallback)</div><div class="ttdoc">Sets trace counter callback.</div><div class="ttdef"><b>Definition:</b> trcCounter.c:30</div></div>
+<div class="ttc" id="agroup__trace__counter__apis_html_ga4feede3ee8b5b78ec2ec8ac534b9ef7e"><div class="ttname"><a href="group__trace__counter__apis.html#ga4feede3ee8b5b78ec2ec8ac534b9ef7e">xTraceCounterInitialize</a></div><div class="ttdeci">traceResult xTraceCounterInitialize(TraceCounterData_t *pxBuffer)</div><div class="ttdoc">Initializes the Counter trace system.</div><div class="ttdef"><b>Definition:</b> trcCounter.c:17</div></div>
+<div class="ttc" id="agroup__trace__counter__apis_html_gaab9ced4239f659fbe9390187e05cbd4a"><div class="ttname"><a href="group__trace__counter__apis.html#gaab9ced4239f659fbe9390187e05cbd4a">xTraceCounterSet</a></div><div class="ttdeci">traceResult xTraceCounterSet(TraceCounterHandle_t xCounterHandle, TraceBaseType_t xValue)</div><div class="ttdoc">Sets trace counter value.</div><div class="ttdef"><b>Definition:</b> trcCounter.c:69</div></div>
+<div class="ttc" id="agroup__trace__counter__apis_html_gabc5ffcf7218f9b9dfde860aa3f0f2632"><div class="ttname"><a href="group__trace__counter__apis.html#gabc5ffcf7218f9b9dfde860aa3f0f2632">xTraceCounterCreate</a></div><div class="ttdeci">traceResult xTraceCounterCreate(const char *szName, TraceBaseType_t xInitialValue, TraceBaseType_t xLowerLimit, TraceBaseType_t xUpperLimit, TraceCounterHandle_t *pxCounterHandle)</div><div class="ttdoc">Creates trace counter.</div><div class="ttdef"><b>Definition:</b> trcCounter.c:42</div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->

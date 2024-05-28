@@ -25,7 +25,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">Percepio Trace Recorder<span id="projectnumber">&#160;v4.8.2</span>
+   <div id="projectname">Percepio Trace Recorder<span id="projectnumber">&#160;v4.9.0</span>
    </div>
   </td>
  </tr>
@@ -93,7 +93,7 @@ $(document).ready(function(){initNavTree('trcString_8h_source.html',''); initRes
 </div><!--header-->
 <div class="contents">
 <a href="trcString_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="comment">/*</span></div>
-<div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span><span class="comment">* Percepio Trace Recorder for Tracealyzer v4.8.2</span></div>
+<div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span><span class="comment">* Percepio Trace Recorder for Tracealyzer v4.9.0</span></div>
 <div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span><span class="comment">* Copyright 2023 Percepio AB</span></div>
 <div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span><span class="comment">* www.percepio.com</span></div>
 <div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span><span class="comment">*</span></div>
@@ -103,29 +103,29 @@ $(document).ready(function(){initNavTree('trcString_8h_source.html',''); initRes
 <div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span><span class="preprocessor">#ifndef TRC_STRING_H</span></div>
 <div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span><span class="preprocessor">#define TRC_STRING_H</span></div>
 <div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span> </div>
-<div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span><span class="preprocessor">#if (TRC_USE_TRACEALYZER_RECORDER == 1)</span></div>
+<div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span><span class="preprocessor">#if (TRC_USE_TRACEALYZER_RECORDER == 1) &amp;&amp; (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING)</span></div>
 <div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span> </div>
-<div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span><span class="preprocessor">#if (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING)</span></div>
+<div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span><span class="preprocessor">#include &lt;trcTypes.h&gt;</span></div>
 <div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span> </div>
-<div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span><span class="preprocessor">#include &lt;trcTypes.h&gt;</span></div>
-<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span> </div>
-<div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span><span class="preprocessor">#ifdef __cplusplus</span></div>
-<div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span><span class="keyword">extern</span> <span class="stringliteral">&quot;C&quot;</span> {</div>
-<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span><span class="preprocessor">#endif</span></div>
-<div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span> </div>
-<div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span>traceResult <a class="code hl_function" href="group__trace__string__apis.html#ga51ea65506aa39cfbec7fec7f71fd6ff0">xTraceStringRegister</a>(<span class="keyword">const</span> <span class="keywordtype">char</span> *szString, TraceStringHandle_t* pString);</div>
-<div class="line"><a id="l00053" name="l00053"></a><span class="lineno">   53</span> </div>
-<div class="line"><a id="l00064" name="l00064"></a><span class="lineno">   64</span>TraceStringHandle_t <a class="code hl_function" href="group__trace__string__apis.html#gafd44a44fe62cd56a66a998e87dae821b">xTraceRegisterString</a>(<span class="keyword">const</span> <span class="keywordtype">char</span> *name);</div>
-<div class="line"><a id="l00065" name="l00065"></a><span class="lineno">   65</span> </div>
-<div class="line"><a id="l00068" name="l00068"></a><span class="lineno">   68</span><span class="preprocessor">#ifdef __cplusplus</span></div>
-<div class="line"><a id="l00069" name="l00069"></a><span class="lineno">   69</span>}</div>
-<div class="line"><a id="l00070" name="l00070"></a><span class="lineno">   70</span><span class="preprocessor">#endif</span></div>
+<div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span><span class="preprocessor">#ifdef __cplusplus</span></div>
+<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span><span class="keyword">extern</span> <span class="stringliteral">&quot;C&quot;</span> {</div>
+<div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span><span class="preprocessor">#endif</span></div>
+<div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span> </div>
+<div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span>traceResult <a class="code hl_function" href="group__trace__string__apis.html#ga51ea65506aa39cfbec7fec7f71fd6ff0">xTraceStringRegister</a>(<span class="keyword">const</span> <span class="keywordtype">char</span> *szString, TraceStringHandle_t* pString);</div>
+<div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span> </div>
+<div class="line"><a id="l00062" name="l00062"></a><span class="lineno">   62</span>TraceStringHandle_t <a class="code hl_function" href="group__trace__string__apis.html#gafd44a44fe62cd56a66a998e87dae821b">xTraceRegisterString</a>(<span class="keyword">const</span> <span class="keywordtype">char</span> *name);</div>
+<div class="line"><a id="l00063" name="l00063"></a><span class="lineno">   63</span> </div>
+<div class="line"><a id="l00066" name="l00066"></a><span class="lineno">   66</span><span class="preprocessor">#ifdef __cplusplus</span></div>
+<div class="line"><a id="l00067" name="l00067"></a><span class="lineno">   67</span>}</div>
+<div class="line"><a id="l00068" name="l00068"></a><span class="lineno">   68</span><span class="preprocessor">#endif</span></div>
+<div class="line"><a id="l00069" name="l00069"></a><span class="lineno">   69</span> </div>
+<div class="line"><a id="l00070" name="l00070"></a><span class="lineno">   70</span><span class="preprocessor">#else</span></div>
 <div class="line"><a id="l00071" name="l00071"></a><span class="lineno">   71</span> </div>
-<div class="line"><a id="l00072" name="l00072"></a><span class="lineno">   72</span><span class="preprocessor">#endif </span><span class="comment">/* (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING) */</span><span class="preprocessor"></span></div>
+<div class="line"><a id="l00072" name="l00072"></a><span class="lineno">   72</span><span class="preprocessor">#define xTraceStringRegister(__szString, __pString) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_3((void)(__szString), (void)(__pString), TRC_SUCCESS)</span></div>
 <div class="line"><a id="l00073" name="l00073"></a><span class="lineno">   73</span> </div>
-<div class="line"><a id="l00074" name="l00074"></a><span class="lineno">   74</span><span class="preprocessor">#endif </span><span class="comment">/* (TRC_USE_TRACEALYZER_RECORDER == 1) */</span><span class="preprocessor"></span></div>
+<div class="line"><a id="l00074" name="l00074"></a><span class="lineno">   74</span><span class="preprocessor">#endif</span></div>
 <div class="line"><a id="l00075" name="l00075"></a><span class="lineno">   75</span> </div>
-<div class="line"><a id="l00076" name="l00076"></a><span class="lineno">   76</span><span class="preprocessor">#endif </span><span class="comment">/* TRC_STRING_H */</span><span class="preprocessor"></span></div>
+<div class="line"><a id="l00076" name="l00076"></a><span class="lineno">   76</span><span class="preprocessor">#endif</span></div>
 <div class="ttc" id="agroup__trace__string__apis_html_ga51ea65506aa39cfbec7fec7f71fd6ff0"><div class="ttname"><a href="group__trace__string__apis.html#ga51ea65506aa39cfbec7fec7f71fd6ff0">xTraceStringRegister</a></div><div class="ttdeci">traceResult xTraceStringRegister(const char *szString, TraceStringHandle_t *pString)</div><div class="ttdoc">Registers a trace string.</div><div class="ttdef"><b>Definition:</b> trcSnapshotRecorder.c:1611</div></div>
 <div class="ttc" id="agroup__trace__string__apis_html_gafd44a44fe62cd56a66a998e87dae821b"><div class="ttname"><a href="group__trace__string__apis.html#gafd44a44fe62cd56a66a998e87dae821b">xTraceRegisterString</a></div><div class="ttdeci">TraceStringHandle_t xTraceRegisterString(const char *name)</div><div class="ttdoc">Registers a trace string.</div><div class="ttdef"><b>Definition:</b> trcSnapshotRecorder.c:1622</div></div>
 </div><!-- fragment --></div><!-- contents -->

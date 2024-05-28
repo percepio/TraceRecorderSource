@@ -1,5 +1,5 @@
 /*
-* Percepio Trace Recorder for Tracealyzer v4.8.2
+* Percepio Trace Recorder for Tracealyzer v4.9.0
 * Copyright 2023 Percepio AB
 * www.percepio.com
 *
@@ -10,9 +10,7 @@
 
 #include <trcRecorder.h>
 
-#if (TRC_USE_TRACEALYZER_RECORDER == 1)
-
-#if (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING)
+#if (TRC_USE_TRACEALYZER_RECORDER == 1) && (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING)
 
 TraceISRData_t* pxTraceISRData TRC_CFG_RECORDER_DATA_ATTRIBUTE;
 
@@ -49,8 +47,7 @@ traceResult xTraceISRInitialize(TraceISRData_t *pxBuffer)
 traceResult xTraceISRRegister(const char* szName, uint32_t uiPriority, TraceISRHandle_t *pxISRHandle)
 {
 	TraceEntryHandle_t xEntryHandle;
-	TraceEventHandle_t xEventHandle = 0;
-	uint32_t i, uiLength, uiValue = 0u;
+	uint32_t i, uiLength = 0u;
 
 	/* We need to check this */
 	if (xTraceIsComponentInitialized(TRC_RECORDER_COMPONENT_ISR) == 0U)
@@ -85,24 +82,13 @@ traceResult xTraceISRRegister(const char* szName, uint32_t uiPriority, TraceISRH
 
 	*pxISRHandle = (TraceISRHandle_t)xEntryHandle;
 
-	/* We need to check this */
-	if (xTraceEventBegin(PSF_EVENT_DEFINE_ISR, uiLength + sizeof(void*) + sizeof(uint32_t), &xEventHandle) == TRC_SUCCESS)
-	{
-		(void)xTraceEventAddPointer(xEventHandle, (void*)xEntryHandle);
-		(void)xTraceEventAddUnsignedBaseType(xEventHandle, uiPriority);
-		(void)xTraceEventAddString(xEventHandle, szName, uiLength);
-
-		/* Check if we can truncate */
-		(void)xTraceEventPayloadRemaining(xEventHandle, &uiValue);
-		if (uiValue > 0u)
-		{
-			(void)xTraceEventAdd8(xEventHandle, 0u);
-		}
-
-		(void)xTraceEventEnd(xEventHandle); /*cstat !MISRAC2012-Rule-17.7*/
-	}
-
-	return TRC_SUCCESS;
+	return xTraceEventCreateData2(
+		PSF_EVENT_DEFINE_ISR,
+		(TraceUnsignedBaseType_t)xEntryHandle,
+		(TraceUnsignedBaseType_t)uiPriority,
+		(TraceUnsignedBaseType_t*)szName,
+		uiLength + 1
+	);
 }
 
 traceResult xTraceISRBegin(TraceISRHandle_t xISRHandle)
@@ -245,6 +231,4 @@ TraceISRHandle_t xTraceSetISRProperties(const char* szName, uint32_t uiPriority)
 	return xISRHandle;
 }
 
-#endif /* (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING) */
-
-#endif /* (TRC_USE_TRACEALYZER_RECORDER == 1) */
+#endif

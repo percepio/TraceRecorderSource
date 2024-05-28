@@ -1,5 +1,5 @@
 /*
-* Percepio Trace Recorder for Tracealyzer v4.8.2
+* Percepio Trace Recorder for Tracealyzer v4.9.0
 * Copyright 2023 Percepio AB
 * www.percepio.com
 *
@@ -10,9 +10,7 @@
 
 #include <trcRecorder.h>
 
-#if (TRC_USE_TRACEALYZER_RECORDER == 1)
-
-#if (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING)
+#if (TRC_USE_TRACEALYZER_RECORDER == 1) && (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING)
 
 #ifndef TRC_KERNEL_PORT_KERNEL_CAN_SWITCH_TO_SAME_TASK
 #define TRC_KERNEL_PORT_KERNEL_CAN_SWITCH_TO_SAME_TASK 1
@@ -43,18 +41,6 @@ traceResult xTraceTaskInitialize(TraceTaskData_t *pxBuffer)
 	xTraceSetComponentInitialized(TRC_RECORDER_COMPONENT_TASK);
 
 	return TRC_SUCCESS;
-}
-
-traceResult xTraceTaskUnregister(TraceTaskHandle_t xTaskHandle, TraceUnsignedBaseType_t uxPriority)
-{
-	void* pvTask = (void*)0;
-	
-	/* This should never fail */
-	TRC_ASSERT_ALWAYS_EVALUATE(xTraceEntryGetAddress((TraceEntryHandle_t)xTaskHandle, &pvTask) == TRC_SUCCESS);
-	
-	xTraceStackMonitorRemove(pvTask);
-	
-	return xTraceObjectUnregister((TraceObjectHandle_t)xTaskHandle, PSF_EVENT_TASK_DELETE, uxPriority);
 }
 
 traceResult xTraceTaskSetPriority(TraceTaskHandle_t xTaskHandle, TraceUnsignedBaseType_t uxPriority)
@@ -136,6 +122,4 @@ traceResult xTraceTaskSwitch(void *pvTask, TraceUnsignedBaseType_t uxPriority)
 	return xResult;
 }
 
-#endif /* (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING) */
-
-#endif /* (TRC_USE_TRACEALYZER_RECORDER == 1) */
+#endif

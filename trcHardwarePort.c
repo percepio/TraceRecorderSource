@@ -1,5 +1,5 @@
 /*
- * Trace Recorder for Tracealyzer v4.8.2
+ * Trace Recorder for Tracealyzer v4.9.0
  * Copyright 2023 Percepio AB
  * www.percepio.com
  *
@@ -87,7 +87,7 @@ TraceUnsignedBaseType_t cortex_a9_r5_enter_critical(void)
 {
 	TraceUnsignedBaseType_t cs_type = CS_TYPE_INVALID;
 #if (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING)
-	TraceunsignedBaseType_t uxTraceSystemState;
+	TraceUnsignedBaseType_t uxTraceSystemState;
 
 	xTraceStateGet(&uxTraceSystemState);
 #endif

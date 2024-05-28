@@ -1,5 +1,5 @@
 /*
-* Trace Recorder for Tracealyzer v4.8.2
+* Trace Recorder for Tracealyzer v4.9.0
 * Copyright 2023 Percepio AB
 * www.percepio.com
 *
@@ -10,9 +10,7 @@
 
 #include <trcRecorder.h>
 
-#if (TRC_USE_TRACEALYZER_RECORDER == 1)
-
-#if (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING)
+#if (TRC_USE_TRACEALYZER_RECORDER == 1) && (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING)
 
 #include <string.h>
 
@@ -141,7 +139,7 @@ traceResult xTraceEntryDelete(TraceEntryHandle_t xEntryHandle)
 	/* This should never fail */
 	xIndex = CALCULATE_ENTRY_INDEX(xEntryHandle); /*cstat !MISRAC2004-11.3 !MISRAC2012-Rule-11.4 Suppress conversion from pointer to integer check*/ /*cstat !MISRAC2004-17.2 !MISRAC2012-Rule-18.2 !MISRAC2012-Rule-18.4 Suppress pointer comparison check*/
 
-	TRC_ASSERT(xIndex < (TraceEntryIndex_t)TRC_ENTRY_TABLE_SLOTS);
+	TRC_ASSERT((uint32_t)xIndex < (uint32_t)(TRC_ENTRY_TABLE_SLOTS));
 
 	TRACE_ENTER_CRITICAL_SECTION();
 
@@ -321,6 +319,18 @@ traceResult xTraceEntryGetAddress(const TraceEntryHandle_t xEntryHandle, void **
 	return TRC_ENTRY_GET_ADDRESS(xEntryHandle, ppvAddress);
 }
 
+void* xTraceEntryGetAddressReturn(const TraceEntryHandle_t xEntryHandle)
+{
+	/* This should never fail */
+	TRC_ASSERT_CUSTOM_ON_FAIL(xTraceIsComponentInitialized(TRC_RECORDER_COMPONENT_ENTRY), return (void*)0);
+
+	/* Does not need to be locked. */
+	/* This should never fail */
+	TRC_ASSERT_CUSTOM_ON_FAIL(VALIDATE_ENTRY_HANDLE(xEntryHandle), return (void*)0); /*cstat !MISRAC2004-17.3 !MISRAC2012-Rule-18.3 Suppress pointer comparison check*/
+
+	return TRC_ENTRY_GET_ADDRESS_RETURN(xEntryHandle);
+}
+
 /*cstat !MISRAC2004-6.3 !MISRAC2012-Dir-4.6_a Suppress basic char type usage*/
 traceResult xTraceEntryGetSymbol(const TraceEntryHandle_t xEntryHandle, const char** pszSymbol)
 {
@@ -421,6 +431,4 @@ static traceResult prvEntryIndexTake(TraceEntryIndex_t *pxIndex)
 	return TRC_SUCCESS;
 }
 
-#endif /* (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING) */
-
-#endif /* (TRC_USE_TRACEALYZER_RECORDER == 1) */
+#endif

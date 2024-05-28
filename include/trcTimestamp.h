@@ -1,5 +1,5 @@
 /*
-* Percepio Trace Recorder for Tracealyzer v4.8.2
+* Percepio Trace Recorder for Tracealyzer v4.9.0
 * Copyright 2023 Percepio AB
 * www.percepio.com
 *
@@ -15,9 +15,7 @@
 #ifndef TRC_TIMESTAMP_H
 #define TRC_TIMESTAMP_H
 
-#if (TRC_USE_TRACEALYZER_RECORDER == 1)
-
-#if (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING)
+#if (TRC_USE_TRACEALYZER_RECORDER == 1) && (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING)
 
 #include <trcTypes.h>
 
@@ -236,8 +234,6 @@ traceResult xTraceTimestampGetOsTickCount(uint32_t *puiOsTickCount);
 }
 #endif
 
-#endif /* (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING) */
+#endif
 
-#endif /* (TRC_USE_TRACEALYZER_RECORDER == 1) */
-
-#endif /* TRC_TIMESTAMP_H */
+#endif

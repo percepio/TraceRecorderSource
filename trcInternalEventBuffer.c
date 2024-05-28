@@ -1,5 +1,5 @@
 /*
- * Trace Recorder for Tracealyzer v4.8.2
+ * Trace Recorder for Tracealyzer v4.9.0
  * Copyright 2023 Percepio AB
  * www.percepio.com
  *
@@ -10,11 +10,7 @@
 
 #include <trcRecorder.h>
 
-#if (TRC_USE_TRACEALYZER_RECORDER == 1)
-
-#if (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING)
-
-#if (TRC_USE_INTERNAL_BUFFER == 1)
+#if (TRC_USE_TRACEALYZER_RECORDER == 1) && (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING) && (TRC_USE_INTERNAL_BUFFER == 1)
 
 #include <stdio.h>
 #include <string.h>
@@ -110,8 +106,4 @@ traceResult xTraceInternalEventBufferClear()
 	return xTraceMultiCoreEventBufferClear(pxInternalEventBuffer);
 }
 
-#endif /* (TRC_USE_INTERNAL_BUFFER == 1) */
-
-#endif /* (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING) */
-
-#endif /* (TRC_USE_TRACEALYZER_RECORDER == 1) */
+#endif

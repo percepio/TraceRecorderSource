@@ -1,5 +1,5 @@
 /*
- * Trace Recorder for Tracealyzer v4.8.2
+ * Trace Recorder for Tracealyzer v4.9.0
  * Copyright 2023 Percepio AB
  * www.percepio.com
  *
@@ -1380,16 +1380,7 @@ void sys_trace_syscall_enter(uint32_t id, const char *name) {
 	if (xTraceIsRecorderEnabled())
 		xSyscallsExtensionEnter(id);
 #else
-	TraceEventHandle_t xTraceHandle;
-
-	if (xTraceEventBegin(PSF_EVENT_SYSTEM_SYSCALL_ENTER, sizeof(uint32_t) + strlen(name), &xTraceHandle) == TRC_SUCCESS) {
-		xTraceEventAddUnsignedBaseType(xTraceHandle, (TraceUnsignedBaseType_t)id);
-
-		/* Add name */
-		xTraceEventAddString(xTraceHandle, name, strlen(name));
-
-		xTraceEventEnd(xTraceHandle);
-	}
+	xTraceEventCreateData1(PSF_EVENT_SYSTEM_SYSCALL_ENTER, (TraceUnsignedBaseType_t)id, name, strlen(name) + 1);
 #endif
 }
 
@@ -1398,11 +1389,7 @@ void sys_trace_syscall_exit(uint32_t id, const char *name) {
 	if (xTraceIsRecorderEnabled())
 		xSyscallsExtensionExit(id);
 #else
-	TraceEventHandle_t xTraceHandle;
-	
-	if (xTraceEventBegin(PSF_EVENT_SYSTEM_SYSCALL_EXIT, 0, &xTraceHandle) == TRC_SUCCESS) {
-		xTraceEventEnd(xTraceHandle);
-	}
+	xTraceEventCreate1(PSF_EVENT_SYSTEM_SYSCALL_EXIT, 0);
 #endif
 }
 

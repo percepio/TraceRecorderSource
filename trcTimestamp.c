@@ -1,5 +1,5 @@
 /*
-* Trace Recorder for Tracealyzer v4.8.2
+* Trace Recorder for Tracealyzer v4.9.0
 * Copyright 2023 Percepio AB
 * www.percepio.com
 *
@@ -10,9 +10,7 @@
 
 #include <trcRecorder.h>
 
-#if (TRC_USE_TRACEALYZER_RECORDER == 1)
-
-#if (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING)
+#if (TRC_USE_TRACEALYZER_RECORDER == 1) && (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING)
 
 TraceTimestampData_t *pxTraceTimestamp TRC_CFG_RECORDER_DATA_ATTRIBUTE;
 
@@ -78,7 +76,6 @@ traceResult xTraceTimestampGet(uint32_t *puiTimestamp)
 		break;
 	default:
 		return TRC_FAIL;
-		break;
 	}
 
 	pxTraceTimestamp->latestTimestamp = *puiTimestamp;
@@ -168,8 +165,6 @@ traceResult xTraceTimestampGetOsTickCount(uint32_t* puiOsTickCount)
 	return TRC_SUCCESS;
 }
 
-#endif /* ((TRC_CFG_USE_TRACE_ASSERT) == 1) */
+#endif
 
-#endif /* (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING) */
-
-#endif /* (TRC_USE_TRACEALYZER_RECORDER == 1) */
+#endif

@@ -25,7 +25,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">Percepio Trace Recorder<span id="projectnumber">&#160;v4.8.2</span>
+   <div id="projectname">Percepio Trace Recorder<span id="projectnumber">&#160;v4.9.0</span>
    </div>
   </td>
  </tr>
@@ -93,7 +93,7 @@ $(document).ready(function(){initNavTree('trcStateMachine_8h_source.html',''); i
 </div><!--header-->
 <div class="contents">
 <a href="trcStateMachine_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="comment">/*</span></div>
-<div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span><span class="comment">* Percepio Trace Recorder for Tracealyzer v4.8.2</span></div>
+<div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span><span class="comment">* Percepio Trace Recorder for Tracealyzer v4.9.0</span></div>
 <div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span><span class="comment">* Copyright 2023 Percepio AB</span></div>
 <div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span><span class="comment">* www.percepio.com</span></div>
 <div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span><span class="comment">*</span></div>
@@ -105,40 +105,36 @@ $(document).ready(function(){initNavTree('trcStateMachine_8h_source.html',''); i
 <div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span> </div>
 <div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span><span class="preprocessor">#include &lt;trcTypes.h&gt;</span></div>
 <div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span> </div>
-<div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span><span class="preprocessor">#if (TRC_USE_TRACEALYZER_RECORDER == 1)</span></div>
+<div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span><span class="preprocessor">#if (TRC_USE_TRACEALYZER_RECORDER == 1) &amp;&amp; (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING)</span></div>
 <div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span> </div>
-<div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span><span class="preprocessor">#if (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING)</span></div>
-<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span> </div>
-<div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span><span class="preprocessor">#ifdef __cplusplus</span></div>
-<div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span><span class="keyword">extern</span> <span class="stringliteral">&quot;C&quot;</span> {</div>
-<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span><span class="preprocessor">#endif</span></div>
-<div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span> </div>
-<div class="line"><a id="l00043" name="l00043"></a><span class="lineno">   43</span>traceResult <a class="code hl_function" href="group__trace__state__machine__apis.html#gac691111d8fabfe234f17d69e52e0dafb">xTraceStateMachineCreate</a>(<span class="keyword">const</span> <span class="keywordtype">char</span> *szName, TraceStateMachineHandle_t *pxStateMachineHandle);</div>
-<div class="line"><a id="l00044" name="l00044"></a><span class="lineno">   44</span> </div>
-<div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span>traceResult <a class="code hl_function" href="group__trace__state__machine__apis.html#ga1d3028aa3aa57396da34ce275209aec6">xTraceStateMachineStateCreate</a>(TraceStateMachineHandle_t xStateMachineHandle, <span class="keyword">const</span> <span class="keywordtype">char</span> *szName, TraceStateMachineStateHandle_t *pxStateHandle);</div>
-<div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span> </div>
-<div class="line"><a id="l00066" name="l00066"></a><span class="lineno">   66</span>traceResult <a class="code hl_function" href="group__trace__state__machine__apis.html#ga0a9b6de85b470f027e218e7730ee4b62">xTraceStateMachineSetState</a>(TraceStateMachineHandle_t xStateMachineHandle, TraceStateMachineStateHandle_t xStateHandle);</div>
-<div class="line"><a id="l00067" name="l00067"></a><span class="lineno">   67</span> </div>
-<div class="line"><a id="l00070" name="l00070"></a><span class="lineno">   70</span><span class="preprocessor">#ifdef __cplusplus</span></div>
-<div class="line"><a id="l00071" name="l00071"></a><span class="lineno">   71</span>}</div>
-<div class="line"><a id="l00072" name="l00072"></a><span class="lineno">   72</span><span class="preprocessor">#endif</span></div>
+<div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span><span class="preprocessor">#ifdef __cplusplus</span></div>
+<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span><span class="keyword">extern</span> <span class="stringliteral">&quot;C&quot;</span> {</div>
+<div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span><span class="preprocessor">#endif</span></div>
+<div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span> </div>
+<div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span>traceResult <a class="code hl_function" href="group__trace__state__machine__apis.html#gac691111d8fabfe234f17d69e52e0dafb">xTraceStateMachineCreate</a>(<span class="keyword">const</span> <span class="keywordtype">char</span> *szName, TraceStateMachineHandle_t *pxStateMachineHandle);</div>
+<div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span> </div>
+<div class="line"><a id="l00053" name="l00053"></a><span class="lineno">   53</span>traceResult <a class="code hl_function" href="group__trace__state__machine__apis.html#ga1d3028aa3aa57396da34ce275209aec6">xTraceStateMachineStateCreate</a>(TraceStateMachineHandle_t xStateMachineHandle, <span class="keyword">const</span> <span class="keywordtype">char</span> *szName, TraceStateMachineStateHandle_t *pxStateHandle);</div>
+<div class="line"><a id="l00054" name="l00054"></a><span class="lineno">   54</span> </div>
+<div class="line"><a id="l00064" name="l00064"></a><span class="lineno">   64</span>traceResult <a class="code hl_function" href="group__trace__state__machine__apis.html#ga0a9b6de85b470f027e218e7730ee4b62">xTraceStateMachineSetState</a>(TraceStateMachineHandle_t xStateMachineHandle, TraceStateMachineStateHandle_t xStateHandle);</div>
+<div class="line"><a id="l00065" name="l00065"></a><span class="lineno">   65</span> </div>
+<div class="line"><a id="l00068" name="l00068"></a><span class="lineno">   68</span><span class="preprocessor">#ifdef __cplusplus</span></div>
+<div class="line"><a id="l00069" name="l00069"></a><span class="lineno">   69</span>}</div>
+<div class="line"><a id="l00070" name="l00070"></a><span class="lineno">   70</span><span class="preprocessor">#endif</span></div>
+<div class="line"><a id="l00071" name="l00071"></a><span class="lineno">   71</span> </div>
+<div class="line"><a id="l00072" name="l00072"></a><span class="lineno">   72</span><span class="preprocessor">#else</span></div>
 <div class="line"><a id="l00073" name="l00073"></a><span class="lineno">   73</span> </div>
-<div class="line"><a id="l00074" name="l00074"></a><span class="lineno">   74</span><span class="preprocessor">#else</span></div>
+<div class="line"><a id="l00074" name="l00074"></a><span class="lineno">   74</span><span class="preprocessor">#define xTraceStateMachineCreate(__szName, __pxStateMachineHandle) ((void)(__szName), (void)(__pxStateMachineHandle), TRC_SUCCESS)</span></div>
 <div class="line"><a id="l00075" name="l00075"></a><span class="lineno">   75</span> </div>
-<div class="line"><a id="l00079" name="l00079"></a><span class="lineno">   79</span><span class="preprocessor">#define xTraceStateMachineCreate(__szName, __pxStateMachineHandle) ((void)(__szName), *(__pxStateMachineHandle) = 0, TRC_SUCCESS)</span></div>
-<div class="line"><a id="l00080" name="l00080"></a><span class="lineno">   80</span> </div>
-<div class="line"><a id="l00084" name="l00084"></a><span class="lineno">   84</span><span class="preprocessor">#define xTraceStateMachineStateCreate(__xStateMachineHandle, __szName, __pxStateHandle) ((void)(__xStateMachineHandle), (void)(__szName), *(__pxStateHandle) = 0, TRC_SUCCESS)</span></div>
-<div class="line"><a id="l00085" name="l00085"></a><span class="lineno">   85</span> </div>
-<div class="line"><a id="l00089" name="l00089"></a><span class="lineno">   89</span><span class="preprocessor">#define xTraceStateMachineSetState(__xStateMachineHandle, __xStateHandle) ((void)(__xStateMachineHandle), (void)(__xStateHandle), TRC_SUCCESS)</span></div>
-<div class="line"><a id="l00090" name="l00090"></a><span class="lineno">   90</span> </div>
-<div class="line"><a id="l00091" name="l00091"></a><span class="lineno">   91</span><span class="preprocessor">#endif</span></div>
-<div class="line"><a id="l00092" name="l00092"></a><span class="lineno">   92</span> </div>
-<div class="line"><a id="l00093" name="l00093"></a><span class="lineno">   93</span><span class="preprocessor">#endif</span></div>
-<div class="line"><a id="l00094" name="l00094"></a><span class="lineno">   94</span> </div>
-<div class="line"><a id="l00095" name="l00095"></a><span class="lineno">   95</span><span class="preprocessor">#endif</span></div>
-<div class="ttc" id="agroup__trace__state__machine__apis_html_ga0a9b6de85b470f027e218e7730ee4b62"><div class="ttname"><a href="group__trace__state__machine__apis.html#ga0a9b6de85b470f027e218e7730ee4b62">xTraceStateMachineSetState</a></div><div class="ttdeci">traceResult xTraceStateMachineSetState(TraceStateMachineHandle_t xStateMachineHandle, TraceStateMachineStateHandle_t xStateHandle)</div><div class="ttdoc">Sets trace state machine state.</div><div class="ttdef"><b>Definition:</b> trcStateMachine.c:67</div></div>
-<div class="ttc" id="agroup__trace__state__machine__apis_html_ga1d3028aa3aa57396da34ce275209aec6"><div class="ttname"><a href="group__trace__state__machine__apis.html#ga1d3028aa3aa57396da34ce275209aec6">xTraceStateMachineStateCreate</a></div><div class="ttdeci">traceResult xTraceStateMachineStateCreate(TraceStateMachineHandle_t xStateMachineHandle, const char *szName, TraceStateMachineStateHandle_t *pxStateHandle)</div><div class="ttdoc">Creates trace state machine state.</div><div class="ttdef"><b>Definition:</b> trcStateMachine.c:43</div></div>
-<div class="ttc" id="agroup__trace__state__machine__apis_html_gac691111d8fabfe234f17d69e52e0dafb"><div class="ttname"><a href="group__trace__state__machine__apis.html#gac691111d8fabfe234f17d69e52e0dafb">xTraceStateMachineCreate</a></div><div class="ttdeci">traceResult xTraceStateMachineCreate(const char *szName, TraceStateMachineHandle_t *pxStateMachineHandle)</div><div class="ttdoc">Creates trace state machine.</div><div class="ttdef"><b>Definition:</b> trcStateMachine.c:21</div></div>
+<div class="line"><a id="l00076" name="l00076"></a><span class="lineno">   76</span><span class="preprocessor">#define xTraceStateMachineStateCreate(__xStateMachineHandle, __szName, __pxStateHandle) ((void)(__xStateMachineHandle), (void)(__szName), (void)(__pxStateHandle), TRC_SUCCESS)</span></div>
+<div class="line"><a id="l00077" name="l00077"></a><span class="lineno">   77</span> </div>
+<div class="line"><a id="l00078" name="l00078"></a><span class="lineno">   78</span><span class="preprocessor">#define xTraceStateMachineSetState(__xStateMachineHandle, __xStateHandle) ((void)(__xStateMachineHandle), (void)(__xStateHandle), TRC_SUCCESS)</span></div>
+<div class="line"><a id="l00079" name="l00079"></a><span class="lineno">   79</span> </div>
+<div class="line"><a id="l00080" name="l00080"></a><span class="lineno">   80</span><span class="preprocessor">#endif</span></div>
+<div class="line"><a id="l00081" name="l00081"></a><span class="lineno">   81</span> </div>
+<div class="line"><a id="l00082" name="l00082"></a><span class="lineno">   82</span><span class="preprocessor">#endif</span></div>
+<div class="ttc" id="agroup__trace__state__machine__apis_html_ga0a9b6de85b470f027e218e7730ee4b62"><div class="ttname"><a href="group__trace__state__machine__apis.html#ga0a9b6de85b470f027e218e7730ee4b62">xTraceStateMachineSetState</a></div><div class="ttdeci">traceResult xTraceStateMachineSetState(TraceStateMachineHandle_t xStateMachineHandle, TraceStateMachineStateHandle_t xStateHandle)</div><div class="ttdoc">Sets trace state machine state.</div><div class="ttdef"><b>Definition:</b> trcStateMachine.c:65</div></div>
+<div class="ttc" id="agroup__trace__state__machine__apis_html_ga1d3028aa3aa57396da34ce275209aec6"><div class="ttname"><a href="group__trace__state__machine__apis.html#ga1d3028aa3aa57396da34ce275209aec6">xTraceStateMachineStateCreate</a></div><div class="ttdeci">traceResult xTraceStateMachineStateCreate(TraceStateMachineHandle_t xStateMachineHandle, const char *szName, TraceStateMachineStateHandle_t *pxStateHandle)</div><div class="ttdoc">Creates trace state machine state.</div><div class="ttdef"><b>Definition:</b> trcStateMachine.c:41</div></div>
+<div class="ttc" id="agroup__trace__state__machine__apis_html_gac691111d8fabfe234f17d69e52e0dafb"><div class="ttname"><a href="group__trace__state__machine__apis.html#gac691111d8fabfe234f17d69e52e0dafb">xTraceStateMachineCreate</a></div><div class="ttdeci">traceResult xTraceStateMachineCreate(const char *szName, TraceStateMachineHandle_t *pxStateMachineHandle)</div><div class="ttdoc">Creates trace state machine.</div><div class="ttdef"><b>Definition:</b> trcStateMachine.c:19</div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->

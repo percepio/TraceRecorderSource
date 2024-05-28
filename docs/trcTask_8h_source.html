@@ -25,7 +25,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">Percepio Trace Recorder<span id="projectnumber">&#160;v4.8.2</span>
+   <div id="projectname">Percepio Trace Recorder<span id="projectnumber">&#160;v4.9.0</span>
    </div>
   </td>
  </tr>
@@ -93,7 +93,7 @@ $(document).ready(function(){initNavTree('trcTask_8h_source.html',''); initResiz
 </div><!--header-->
 <div class="contents">
 <a href="trcTask_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="comment">/*</span></div>
-<div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span><span class="comment">* Percepio Trace Recorder for Tracealyzer v4.8.2</span></div>
+<div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span><span class="comment">* Percepio Trace Recorder for Tracealyzer v4.9.0</span></div>
 <div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span><span class="comment">* Copyright 2023 Percepio AB</span></div>
 <div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span><span class="comment">* www.percepio.com</span></div>
 <div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span><span class="comment">*</span></div>
@@ -103,80 +103,111 @@ $(document).ready(function(){initNavTree('trcTask_8h_source.html',''); initResiz
 <div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span><span class="preprocessor">#ifndef TRC_TASK_H</span></div>
 <div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span><span class="preprocessor">#define TRC_TASK_H</span></div>
 <div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span> </div>
-<div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span><span class="preprocessor">#if (TRC_USE_TRACEALYZER_RECORDER == 1)</span></div>
+<div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span><span class="preprocessor">#if (TRC_USE_TRACEALYZER_RECORDER == 1) &amp;&amp; (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING)</span></div>
 <div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span> </div>
-<div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span><span class="preprocessor">#if (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING)</span></div>
+<div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span><span class="preprocessor">#include &lt;trcTypes.h&gt;</span></div>
 <div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span> </div>
-<div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span><span class="preprocessor">#include &lt;trcTypes.h&gt;</span></div>
-<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span> </div>
-<div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span><span class="preprocessor">#ifdef __cplusplus</span></div>
-<div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span><span class="keyword">extern</span> <span class="stringliteral">&quot;C&quot;</span> {</div>
-<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span><span class="preprocessor">#endif</span></div>
-<div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span> </div>
-<div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span><span class="preprocessor">#ifndef TRC_CFG_ENABLE_STACK_MONITOR</span></div>
-<div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span><span class="preprocessor">#define TRC_CFG_ENABLE_STACK_MONITOR 0</span></div>
-<div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span><span class="preprocessor">#endif</span></div>
-<div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span> </div>
-<div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span><span class="keyword">typedef</span> <span class="keyword">struct </span>TraceTaskData    <span class="comment">/* Aligned */</span></div>
-<div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span>{</div>
-<div class="line"><a id="l00043" name="l00043"></a><span class="lineno">   43</span>    <span class="keywordtype">void</span>* coreTasks[TRC_CFG_CORE_COUNT];</div>
-<div class="line"><a id="l00044" name="l00044"></a><span class="lineno">   44</span>} TraceTaskData_t;</div>
+<div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span><span class="preprocessor">#ifdef __cplusplus</span></div>
+<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span><span class="keyword">extern</span> <span class="stringliteral">&quot;C&quot;</span> {</div>
+<div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span><span class="preprocessor">#endif</span></div>
+<div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span> </div>
+<div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span><span class="preprocessor">#ifndef TRC_CFG_ENABLE_STACK_MONITOR</span></div>
+<div class="line"><a id="l00033" name="l00033"></a><span class="lineno">   33</span><span class="preprocessor">#define TRC_CFG_ENABLE_STACK_MONITOR 0</span></div>
+<div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span><span class="preprocessor">#endif</span></div>
+<div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span> </div>
+<div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span><span class="keyword">typedef</span> <span class="keyword">struct </span>TraceTaskData    <span class="comment">/* Aligned */</span></div>
+<div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span>{</div>
+<div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span>    <span class="keywordtype">void</span>* coreTasks[TRC_CFG_CORE_COUNT];</div>
+<div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span>} TraceTaskData_t;</div>
+<div class="line"><a id="l00043" name="l00043"></a><span class="lineno">   43</span> </div>
+<div class="line"><a id="l00044" name="l00044"></a><span class="lineno">   44</span><span class="keyword">extern</span> TraceTaskData_t* pxTraceTaskData;</div>
 <div class="line"><a id="l00045" name="l00045"></a><span class="lineno">   45</span> </div>
-<div class="line"><a id="l00046" name="l00046"></a><span class="lineno">   46</span><span class="keyword">extern</span> TraceTaskData_t* pxTraceTaskData;</div>
-<div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span> </div>
-<div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span>traceResult xTraceTaskInitialize(TraceTaskData_t* pxBuffer);</div>
-<div class="line"><a id="l00058" name="l00058"></a><span class="lineno">   58</span> </div>
-<div class="line"><a id="l00070" name="l00070"></a><span class="lineno"><a class="line" href="group__trace__task__apis.html#ga29f9e9e93c05081cdef7a555beaf2205">   70</a></span><span class="preprocessor">#define xTraceTaskRegister(pvTask, szName, uxPriority, pxTaskHandle) ((((pvTask) != 0) &amp;&amp; (xTraceObjectRegister(PSF_EVENT_TASK_CREATE, pvTask, szName, uxPriority, (TraceObjectHandle_t*)(pxTaskHandle)) == TRC_SUCCESS)) ? (xTraceStackMonitorAdd(pvTask), TRC_SUCCESS) : TRC_FAIL)</span></div>
-<div class="line"><a id="l00071" name="l00071"></a><span class="lineno">   71</span> </div>
-<div class="line"><a id="l00081" name="l00081"></a><span class="lineno">   81</span>traceResult <a class="code hl_function" href="group__trace__task__apis.html#ga008c1439e57449718389f865dff32c1e">xTraceTaskUnregister</a>(TraceTaskHandle_t xTaskHandle, TraceUnsignedBaseType_t uxPriority);</div>
-<div class="line"><a id="l00082" name="l00082"></a><span class="lineno">   82</span> </div>
-<div class="line"><a id="l00092" name="l00092"></a><span class="lineno"><a class="line" href="group__trace__task__apis.html#ga84c72328cb3f2ae3e940123365a8a665">   92</a></span><span class="preprocessor">#define xTraceTaskSetName xTraceObjectSetName</span></div>
-<div class="line"><a id="l00093" name="l00093"></a><span class="lineno">   93</span> </div>
-<div class="line"><a id="l00103" name="l00103"></a><span class="lineno">  103</span>traceResult <a class="code hl_function" href="group__trace__task__apis.html#ga3ba2b866e34a2d0ba076feb11f5488bf">xTraceTaskSetPriority</a>(TraceTaskHandle_t xTaskHandle, TraceUnsignedBaseType_t uxPriority);</div>
-<div class="line"><a id="l00104" name="l00104"></a><span class="lineno">  104</span> </div>
-<div class="line"><a id="l00115" name="l00115"></a><span class="lineno"><a class="line" href="group__trace__task__apis.html#ga8ea2a55eb73dbc50150f337fa1e88666">  115</a></span><span class="preprocessor">#define xTraceTaskRegisterWithoutHandle(pvTask, szName, uxPriority) ((((pvTask) != 0) &amp;&amp; (xTraceObjectRegisterWithoutHandle(PSF_EVENT_TASK_CREATE, pvTask, szName, uxPriority) == TRC_SUCCESS)) ? (xTraceStackMonitorAdd(pvTask), TRC_SUCCESS) : TRC_FAIL)</span></div>
-<div class="line"><a id="l00116" name="l00116"></a><span class="lineno">  116</span> </div>
-<div class="line"><a id="l00126" name="l00126"></a><span class="lineno"><a class="line" href="group__trace__task__apis.html#ga41fcd9011bf48e5892a0b19928899bc0">  126</a></span><span class="preprocessor">#define xTraceTaskUnregisterWithoutHandle(pvTask, uxPriority) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_2(xTraceStackMonitorRemove(pvTask), xTraceObjectUnregisterWithoutHandle(PSF_EVENT_TASK_DELETE, pvTask, uxPriority))</span></div>
-<div class="line"><a id="l00127" name="l00127"></a><span class="lineno">  127</span> </div>
-<div class="line"><a id="l00137" name="l00137"></a><span class="lineno"><a class="line" href="group__trace__task__apis.html#ga5a7babc5816a7584864f6f12cf225190">  137</a></span><span class="preprocessor">#define xTraceTaskSetNameWithoutHandle xTraceObjectSetNameWithoutHandle</span></div>
-<div class="line"><a id="l00138" name="l00138"></a><span class="lineno">  138</span> </div>
-<div class="line"><a id="l00148" name="l00148"></a><span class="lineno">  148</span>traceResult <a class="code hl_function" href="group__trace__task__apis.html#gad18180891f26ad2e1d7d6d3fd85757fe">xTraceTaskSetPriorityWithoutHandle</a>(<span class="keywordtype">void</span>* pvTask, TraceUnsignedBaseType_t uxPriority);</div>
-<div class="line"><a id="l00149" name="l00149"></a><span class="lineno">  149</span> </div>
-<div class="line"><a id="l00159" name="l00159"></a><span class="lineno">  159</span>traceResult <a class="code hl_function" href="group__trace__task__apis.html#ga9c9cd4b8927c3dd7af9fc7c834fef31b">xTraceTaskSwitch</a>(<span class="keywordtype">void</span>* pvTask, TraceUnsignedBaseType_t uxPriority);</div>
-<div class="line"><a id="l00160" name="l00160"></a><span class="lineno">  160</span> </div>
-<div class="line"><a id="l00161" name="l00161"></a><span class="lineno">  161</span><span class="preprocessor">#if (TRC_CFG_INCLUDE_READY_EVENTS == 1)</span></div>
-<div class="line"><a id="l00170" name="l00170"></a><span class="lineno">  170</span><span class="preprocessor">#define xTraceTaskReady(pvTask) xTraceEventCreate1(PSF_EVENT_TASK_READY, (TraceUnsignedBaseType_t)(pvTask))</span></div>
-<div class="line"><a id="l00171" name="l00171"></a><span class="lineno">  171</span><span class="preprocessor">#else</span></div>
-<div class="line"><a id="l00172" name="l00172"></a><span class="lineno">  172</span><span class="preprocessor">#define xTraceTaskReady(p) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_2((void)p, TRC_SUCCESS)</span></div>
-<div class="line"><a id="l00173" name="l00173"></a><span class="lineno">  173</span><span class="preprocessor">#endif</span></div>
-<div class="line"><a id="l00174" name="l00174"></a><span class="lineno">  174</span> </div>
-<div class="line"><a id="l00183" name="l00183"></a><span class="lineno"><a class="line" href="group__trace__task__apis.html#gaceae9df07a3de7b2dbc44ad8cf103699">  183</a></span><span class="preprocessor">#define xTraceTaskSetCurrent(pvTask) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_2(pxTraceTaskData-&gt;coreTasks[TRC_CFG_GET_CURRENT_CORE()] = (pvTask), TRC_SUCCESS)</span></div>
-<div class="line"><a id="l00184" name="l00184"></a><span class="lineno">  184</span> </div>
-<div class="line"><a id="l00194" name="l00194"></a><span class="lineno"><a class="line" href="group__trace__task__apis.html#ga610f41daf3d5b7f78d52de894dfbe964">  194</a></span><span class="preprocessor">#define xTraceTaskSetCurrentOnCore(coreId, pvTask) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_2(pxTraceTaskData-&gt;coreTasks[coreId] = (pvTask), TRC_SUCCESS)</span></div>
-<div class="line"><a id="l00195" name="l00195"></a><span class="lineno">  195</span> </div>
-<div class="line"><a id="l00204" name="l00204"></a><span class="lineno"><a class="line" href="group__trace__task__apis.html#gac08ea98341bfa43f0c33c81a182fef47">  204</a></span><span class="preprocessor">#define xTraceTaskGetCurrent(ppvTask) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_2(*(ppvTask) = pxTraceTaskData-&gt;coreTasks[TRC_CFG_GET_CURRENT_CORE()], TRC_SUCCESS)</span></div>
-<div class="line"><a id="l00205" name="l00205"></a><span class="lineno">  205</span> </div>
-<div class="line"><a id="l00215" name="l00215"></a><span class="lineno"><a class="line" href="group__trace__task__apis.html#ga7784373b2261728466d28d9adfc33f50">  215</a></span><span class="preprocessor">#define xTraceTaskGetCurrentOnCore(coreId, ppvTask) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_2(*(ppvTask) = pxTraceTaskData-&gt;coreTasks[coreId], TRC_SUCCESS)</span></div>
-<div class="line"><a id="l00216" name="l00216"></a><span class="lineno">  216</span> </div>
-<div class="line"><a id="l00222" name="l00222"></a><span class="lineno"><a class="line" href="group__trace__task__apis.html#gaa146ad087b3e41880f382a3035ca3478">  222</a></span><span class="preprocessor">#define xTraceTaskGetCurrentReturn() (pxTraceTaskData-&gt;coreTasks[TRC_CFG_GET_CURRENT_CORE()])</span></div>
-<div class="line"><a id="l00223" name="l00223"></a><span class="lineno">  223</span> </div>
-<div class="line"><a id="l00235" name="l00235"></a><span class="lineno"><a class="line" href="group__trace__task__apis.html#ga3db6f1905d1011b561e11b1ff642dd59">  235</a></span><span class="preprocessor">#define xTraceTaskInstanceFinishedNow() xTraceEventCreate0(PSF_EVENT_IFE_DIRECT)</span></div>
-<div class="line"><a id="l00236" name="l00236"></a><span class="lineno">  236</span> </div>
-<div class="line"><a id="l00250" name="l00250"></a><span class="lineno"><a class="line" href="group__trace__task__apis.html#ga4e1fbd5cc3c8db1f98748094f970b85e">  250</a></span><span class="preprocessor">#define xTraceTaskInstanceFinishedNext() xTraceEventCreate0(PSF_EVENT_IFE_NEXT)</span></div>
-<div class="line"><a id="l00251" name="l00251"></a><span class="lineno">  251</span> </div>
-<div class="line"><a id="l00254" name="l00254"></a><span class="lineno">  254</span><span class="preprocessor">#ifdef __cplusplus</span></div>
-<div class="line"><a id="l00255" name="l00255"></a><span class="lineno">  255</span>}</div>
-<div class="line"><a id="l00256" name="l00256"></a><span class="lineno">  256</span><span class="preprocessor">#endif</span></div>
+<div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span>traceResult xTraceTaskInitialize(TraceTaskData_t* pxBuffer);</div>
+<div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span> </div>
+<div class="line"><a id="l00068" name="l00068"></a><span class="lineno"><a class="line" href="group__trace__task__apis.html#ga29f9e9e93c05081cdef7a555beaf2205">   68</a></span><span class="preprocessor">#define xTraceTaskRegister(pvTask, szName, uxPriority, pxTaskHandle) ((((pvTask) != 0) &amp;&amp; (xTraceObjectRegister(PSF_EVENT_TASK_CREATE, pvTask, szName, uxPriority, (TraceObjectHandle_t*)(pxTaskHandle)) == TRC_SUCCESS)) ? (xTraceStackMonitorAdd(pvTask), TRC_SUCCESS) : TRC_FAIL)</span></div>
+<div class="line"><a id="l00069" name="l00069"></a><span class="lineno">   69</span> </div>
+<div class="line"><a id="l00079" name="l00079"></a><span class="lineno"><a class="line" href="group__trace__task__apis.html#ga182deca6445d8703089a28dfe6206950">   79</a></span><span class="preprocessor">#define xTraceTaskUnregister(xTaskHandle, uxPriority) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_2((void)xTraceStackMonitorRemove(xTraceEntryGetAddressReturn((TraceEntryHandle_t)(xTaskHandle))), xTraceObjectUnregister((TraceObjectHandle_t)(xTaskHandle), PSF_EVENT_TASK_DELETE, uxPriority))</span></div>
+<div class="line"><a id="l00080" name="l00080"></a><span class="lineno">   80</span> </div>
+<div class="line"><a id="l00090" name="l00090"></a><span class="lineno"><a class="line" href="group__trace__task__apis.html#ga84c72328cb3f2ae3e940123365a8a665">   90</a></span><span class="preprocessor">#define xTraceTaskSetName xTraceObjectSetName</span></div>
+<div class="line"><a id="l00091" name="l00091"></a><span class="lineno">   91</span> </div>
+<div class="line"><a id="l00101" name="l00101"></a><span class="lineno">  101</span>traceResult <a class="code hl_function" href="group__trace__task__apis.html#ga3ba2b866e34a2d0ba076feb11f5488bf">xTraceTaskSetPriority</a>(TraceTaskHandle_t xTaskHandle, TraceUnsignedBaseType_t uxPriority);</div>
+<div class="line"><a id="l00102" name="l00102"></a><span class="lineno">  102</span> </div>
+<div class="line"><a id="l00113" name="l00113"></a><span class="lineno"><a class="line" href="group__trace__task__apis.html#ga8ea2a55eb73dbc50150f337fa1e88666">  113</a></span><span class="preprocessor">#define xTraceTaskRegisterWithoutHandle(pvTask, szName, uxPriority) ((((pvTask) != 0) &amp;&amp; (xTraceObjectRegisterWithoutHandle(PSF_EVENT_TASK_CREATE, pvTask, szName, uxPriority) == TRC_SUCCESS)) ? (xTraceStackMonitorAdd(pvTask), TRC_SUCCESS) : TRC_FAIL)</span></div>
+<div class="line"><a id="l00114" name="l00114"></a><span class="lineno">  114</span> </div>
+<div class="line"><a id="l00124" name="l00124"></a><span class="lineno"><a class="line" href="group__trace__task__apis.html#ga41fcd9011bf48e5892a0b19928899bc0">  124</a></span><span class="preprocessor">#define xTraceTaskUnregisterWithoutHandle(pvTask, uxPriority) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_2(xTraceStackMonitorRemove(pvTask), xTraceObjectUnregisterWithoutHandle(PSF_EVENT_TASK_DELETE, pvTask, uxPriority))</span></div>
+<div class="line"><a id="l00125" name="l00125"></a><span class="lineno">  125</span> </div>
+<div class="line"><a id="l00135" name="l00135"></a><span class="lineno"><a class="line" href="group__trace__task__apis.html#ga5a7babc5816a7584864f6f12cf225190">  135</a></span><span class="preprocessor">#define xTraceTaskSetNameWithoutHandle xTraceObjectSetNameWithoutHandle</span></div>
+<div class="line"><a id="l00136" name="l00136"></a><span class="lineno">  136</span> </div>
+<div class="line"><a id="l00146" name="l00146"></a><span class="lineno">  146</span>traceResult <a class="code hl_function" href="group__trace__task__apis.html#gad18180891f26ad2e1d7d6d3fd85757fe">xTraceTaskSetPriorityWithoutHandle</a>(<span class="keywordtype">void</span>* pvTask, TraceUnsignedBaseType_t uxPriority);</div>
+<div class="line"><a id="l00147" name="l00147"></a><span class="lineno">  147</span> </div>
+<div class="line"><a id="l00157" name="l00157"></a><span class="lineno">  157</span>traceResult <a class="code hl_function" href="group__trace__task__apis.html#ga9c9cd4b8927c3dd7af9fc7c834fef31b">xTraceTaskSwitch</a>(<span class="keywordtype">void</span>* pvTask, TraceUnsignedBaseType_t uxPriority);</div>
+<div class="line"><a id="l00158" name="l00158"></a><span class="lineno">  158</span> </div>
+<div class="line"><a id="l00159" name="l00159"></a><span class="lineno">  159</span><span class="preprocessor">#if (TRC_CFG_INCLUDE_READY_EVENTS == 1)</span></div>
+<div class="line"><a id="l00168" name="l00168"></a><span class="lineno">  168</span><span class="preprocessor">#define xTraceTaskReady(pvTask) xTraceEventCreate1(PSF_EVENT_TASK_READY, (TraceUnsignedBaseType_t)(pvTask))</span></div>
+<div class="line"><a id="l00169" name="l00169"></a><span class="lineno">  169</span><span class="preprocessor">#else</span></div>
+<div class="line"><a id="l00170" name="l00170"></a><span class="lineno">  170</span><span class="preprocessor">#define xTraceTaskReady(p) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_2((void)p, TRC_SUCCESS)</span></div>
+<div class="line"><a id="l00171" name="l00171"></a><span class="lineno">  171</span><span class="preprocessor">#endif</span></div>
+<div class="line"><a id="l00172" name="l00172"></a><span class="lineno">  172</span> </div>
+<div class="line"><a id="l00181" name="l00181"></a><span class="lineno"><a class="line" href="group__trace__task__apis.html#gaceae9df07a3de7b2dbc44ad8cf103699">  181</a></span><span class="preprocessor">#define xTraceTaskSetCurrent(pvTask) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_2(pxTraceTaskData-&gt;coreTasks[TRC_CFG_GET_CURRENT_CORE()] = (pvTask), TRC_SUCCESS)</span></div>
+<div class="line"><a id="l00182" name="l00182"></a><span class="lineno">  182</span> </div>
+<div class="line"><a id="l00192" name="l00192"></a><span class="lineno"><a class="line" href="group__trace__task__apis.html#ga610f41daf3d5b7f78d52de894dfbe964">  192</a></span><span class="preprocessor">#define xTraceTaskSetCurrentOnCore(coreId, pvTask) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_2(pxTraceTaskData-&gt;coreTasks[coreId] = (pvTask), TRC_SUCCESS)</span></div>
+<div class="line"><a id="l00193" name="l00193"></a><span class="lineno">  193</span> </div>
+<div class="line"><a id="l00202" name="l00202"></a><span class="lineno"><a class="line" href="group__trace__task__apis.html#gac08ea98341bfa43f0c33c81a182fef47">  202</a></span><span class="preprocessor">#define xTraceTaskGetCurrent(ppvTask) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_2(*(ppvTask) = pxTraceTaskData-&gt;coreTasks[TRC_CFG_GET_CURRENT_CORE()], TRC_SUCCESS)</span></div>
+<div class="line"><a id="l00203" name="l00203"></a><span class="lineno">  203</span> </div>
+<div class="line"><a id="l00213" name="l00213"></a><span class="lineno"><a class="line" href="group__trace__task__apis.html#ga7784373b2261728466d28d9adfc33f50">  213</a></span><span class="preprocessor">#define xTraceTaskGetCurrentOnCore(coreId, ppvTask) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_2(*(ppvTask) = pxTraceTaskData-&gt;coreTasks[coreId], TRC_SUCCESS)</span></div>
+<div class="line"><a id="l00214" name="l00214"></a><span class="lineno">  214</span> </div>
+<div class="line"><a id="l00220" name="l00220"></a><span class="lineno"><a class="line" href="group__trace__task__apis.html#gaa146ad087b3e41880f382a3035ca3478">  220</a></span><span class="preprocessor">#define xTraceTaskGetCurrentReturn() (pxTraceTaskData-&gt;coreTasks[TRC_CFG_GET_CURRENT_CORE()])</span></div>
+<div class="line"><a id="l00221" name="l00221"></a><span class="lineno">  221</span> </div>
+<div class="line"><a id="l00233" name="l00233"></a><span class="lineno"><a class="line" href="group__trace__task__apis.html#ga3db6f1905d1011b561e11b1ff642dd59">  233</a></span><span class="preprocessor">#define xTraceTaskInstanceFinishedNow() xTraceEventCreate0(PSF_EVENT_IFE_DIRECT)</span></div>
+<div class="line"><a id="l00234" name="l00234"></a><span class="lineno">  234</span> </div>
+<div class="line"><a id="l00248" name="l00248"></a><span class="lineno"><a class="line" href="group__trace__task__apis.html#ga4e1fbd5cc3c8db1f98748094f970b85e">  248</a></span><span class="preprocessor">#define xTraceTaskInstanceFinishedNext() xTraceEventCreate0(PSF_EVENT_IFE_NEXT)</span></div>
+<div class="line"><a id="l00249" name="l00249"></a><span class="lineno">  249</span> </div>
+<div class="line"><a id="l00252" name="l00252"></a><span class="lineno">  252</span><span class="preprocessor">#ifdef __cplusplus</span></div>
+<div class="line"><a id="l00253" name="l00253"></a><span class="lineno">  253</span>}</div>
+<div class="line"><a id="l00254" name="l00254"></a><span class="lineno">  254</span><span class="preprocessor">#endif</span></div>
+<div class="line"><a id="l00255" name="l00255"></a><span class="lineno">  255</span> </div>
+<div class="line"><a id="l00256" name="l00256"></a><span class="lineno">  256</span><span class="preprocessor">#else</span></div>
 <div class="line"><a id="l00257" name="l00257"></a><span class="lineno">  257</span> </div>
-<div class="line"><a id="l00258" name="l00258"></a><span class="lineno">  258</span><span class="preprocessor">#endif </span><span class="comment">/* (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING) */</span><span class="preprocessor"></span></div>
+<div class="line"><a id="l00258" name="l00258"></a><span class="lineno">  258</span><span class="preprocessor">#define xTraceTaskRegister(__pvTask, ___szName, __uxPriority, __pxTaskHandle) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_5((void)(__pvTask), (void)(__szName), (void)(__uxPriority), (void)(__pxTaskHandle), TRC_SUCCESS)</span></div>
 <div class="line"><a id="l00259" name="l00259"></a><span class="lineno">  259</span> </div>
-<div class="line"><a id="l00260" name="l00260"></a><span class="lineno">  260</span><span class="preprocessor">#endif </span><span class="comment">/* (TRC_USE_TRACEALYZER_RECORDER == 1) */</span><span class="preprocessor"></span></div>
+<div class="line"><a id="l00260" name="l00260"></a><span class="lineno">  260</span><span class="preprocessor">#define xTraceTaskUnregister(__xTaskHandle, __uxPriority) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_3((void)(__xTaskHandle), (void)(__uxPriority), TRC_SUCCESS)</span></div>
 <div class="line"><a id="l00261" name="l00261"></a><span class="lineno">  261</span> </div>
-<div class="line"><a id="l00262" name="l00262"></a><span class="lineno">  262</span><span class="preprocessor">#endif </span><span class="comment">/* TRC_TASK_H */</span><span class="preprocessor"></span></div>
-<div class="ttc" id="agroup__trace__task__apis_html_ga008c1439e57449718389f865dff32c1e"><div class="ttname"><a href="group__trace__task__apis.html#ga008c1439e57449718389f865dff32c1e">xTraceTaskUnregister</a></div><div class="ttdeci">traceResult xTraceTaskUnregister(TraceTaskHandle_t xTaskHandle, TraceUnsignedBaseType_t uxPriority)</div><div class="ttdoc">Unregister trace task from trace.</div><div class="ttdef"><b>Definition:</b> trcTask.c:48</div></div>
-<div class="ttc" id="agroup__trace__task__apis_html_ga3ba2b866e34a2d0ba076feb11f5488bf"><div class="ttname"><a href="group__trace__task__apis.html#ga3ba2b866e34a2d0ba076feb11f5488bf">xTraceTaskSetPriority</a></div><div class="ttdeci">traceResult xTraceTaskSetPriority(TraceTaskHandle_t xTaskHandle, TraceUnsignedBaseType_t uxPriority)</div><div class="ttdoc">Sets trace task priority.</div><div class="ttdef"><b>Definition:</b> trcTask.c:60</div></div>
-<div class="ttc" id="agroup__trace__task__apis_html_ga9c9cd4b8927c3dd7af9fc7c834fef31b"><div class="ttname"><a href="group__trace__task__apis.html#ga9c9cd4b8927c3dd7af9fc7c834fef31b">xTraceTaskSwitch</a></div><div class="ttdeci">traceResult xTraceTaskSwitch(void *pvTask, TraceUnsignedBaseType_t uxPriority)</div><div class="ttdoc">Registers trace task switch event.</div><div class="ttdef"><b>Definition:</b> trcTask.c:93</div></div>
-<div class="ttc" id="agroup__trace__task__apis_html_gad18180891f26ad2e1d7d6d3fd85757fe"><div class="ttname"><a href="group__trace__task__apis.html#gad18180891f26ad2e1d7d6d3fd85757fe">xTraceTaskSetPriorityWithoutHandle</a></div><div class="ttdeci">traceResult xTraceTaskSetPriorityWithoutHandle(void *pvTask, TraceUnsignedBaseType_t uxPriority)</div><div class="ttdoc">Sets trace task priority without trace task handle.</div><div class="ttdef"><b>Definition:</b> trcTask.c:75</div></div>
+<div class="line"><a id="l00262" name="l00262"></a><span class="lineno">  262</span><span class="preprocessor">#define xTraceTaskSetName(__xTaskHandle, __szName) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_3((void)(__xTaskHandle), (void)(__szName), TRC_SUCCESS)</span></div>
+<div class="line"><a id="l00263" name="l00263"></a><span class="lineno">  263</span> </div>
+<div class="line"><a id="l00264" name="l00264"></a><span class="lineno">  264</span><span class="preprocessor">#define xTraceTaskSetPriority(__xTaskHandle, __uxPriority) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_3((void)(__xTaskHandle), (void)(__uxPriority), TRC_SUCCESS)</span></div>
+<div class="line"><a id="l00265" name="l00265"></a><span class="lineno">  265</span> </div>
+<div class="line"><a id="l00266" name="l00266"></a><span class="lineno">  266</span><span class="preprocessor">#define xTraceTaskRegisterWithoutHandle(__pvTask, __szName, __uxPriority) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_4((void)(__pvTask), (void)(__szName), (void)(__uxPriority), TRC_SUCCESS)</span></div>
+<div class="line"><a id="l00267" name="l00267"></a><span class="lineno">  267</span> </div>
+<div class="line"><a id="l00268" name="l00268"></a><span class="lineno">  268</span><span class="preprocessor">#define xTraceTaskUnregisterWithoutHandle(__pvTask, __uxPriority) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_3((void)(__pvTask), (void)(__uxPriority), TRC_SUCCESS)</span></div>
+<div class="line"><a id="l00269" name="l00269"></a><span class="lineno">  269</span> </div>
+<div class="line"><a id="l00270" name="l00270"></a><span class="lineno">  270</span><span class="preprocessor">#define xTraceTaskSetNameWithoutHandle(__pvTask, __szName) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_3((void)(__pvTask), (void)(__szName), TRC_SUCCESS)</span></div>
+<div class="line"><a id="l00271" name="l00271"></a><span class="lineno">  271</span> </div>
+<div class="line"><a id="l00272" name="l00272"></a><span class="lineno">  272</span><span class="preprocessor">#define xTraceTaskSetPriorityWithoutHandle(__pvTask, __uxPriority) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_3((void)(__pvTask), (void)(__uxPriority), TRC_SUCCESS)</span></div>
+<div class="line"><a id="l00273" name="l00273"></a><span class="lineno">  273</span> </div>
+<div class="line"><a id="l00274" name="l00274"></a><span class="lineno">  274</span><span class="preprocessor">#define xTraceTaskSwitch(__pvTask, __uxPriority) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_3((void)(__pvTask), (void)(__uxPriority), TRC_SUCCESS)</span></div>
+<div class="line"><a id="l00275" name="l00275"></a><span class="lineno">  275</span> </div>
+<div class="line"><a id="l00276" name="l00276"></a><span class="lineno">  276</span><span class="preprocessor">#define xTraceTaskReady(__pvTask) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_2((void)(__pvTask), TRC_SUCCESS)</span></div>
+<div class="line"><a id="l00277" name="l00277"></a><span class="lineno">  277</span> </div>
+<div class="line"><a id="l00278" name="l00278"></a><span class="lineno">  278</span><span class="preprocessor">#define xTraceTaskSetCurrent(__pvTask) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_2((void)(__pvTask), TRC_SUCCESS)</span></div>
+<div class="line"><a id="l00279" name="l00279"></a><span class="lineno">  279</span> </div>
+<div class="line"><a id="l00280" name="l00280"></a><span class="lineno">  280</span><span class="preprocessor">#define xTraceTaskSetCurrentOnCore(__coreId, __pvTask) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_3((void)(__coreId), (void)(__pvTask), TRC_SUCCESS)</span></div>
+<div class="line"><a id="l00281" name="l00281"></a><span class="lineno">  281</span> </div>
+<div class="line"><a id="l00282" name="l00282"></a><span class="lineno">  282</span><span class="preprocessor">#define xTraceTaskGetCurrent(__ppvTask) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_2((void)(__ppvTask), TRC_SUCCESS)</span></div>
+<div class="line"><a id="l00283" name="l00283"></a><span class="lineno">  283</span> </div>
+<div class="line"><a id="l00284" name="l00284"></a><span class="lineno">  284</span><span class="preprocessor">#define xTraceTaskGetCurrentOnCore(__coreId, __ppvTask) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_3((void)(__coreId), (void)(__ppvTask), TRC_SUCCESS)</span></div>
+<div class="line"><a id="l00285" name="l00285"></a><span class="lineno">  285</span> </div>
+<div class="line"><a id="l00286" name="l00286"></a><span class="lineno">  286</span><span class="preprocessor">#define xTraceTaskGetCurrentReturn() (0)</span></div>
+<div class="line"><a id="l00287" name="l00287"></a><span class="lineno">  287</span> </div>
+<div class="line"><a id="l00288" name="l00288"></a><span class="lineno">  288</span><span class="preprocessor">#define xTraceTaskInstanceFinishedNow() (TRC_SUCCESS)</span></div>
+<div class="line"><a id="l00289" name="l00289"></a><span class="lineno">  289</span> </div>
+<div class="line"><a id="l00290" name="l00290"></a><span class="lineno">  290</span><span class="preprocessor">#define xTraceTaskInstanceFinishedNext() (TRC_SUCCESS)</span></div>
+<div class="line"><a id="l00291" name="l00291"></a><span class="lineno">  291</span> </div>
+<div class="line"><a id="l00292" name="l00292"></a><span class="lineno">  292</span><span class="preprocessor">#endif</span></div>
+<div class="line"><a id="l00293" name="l00293"></a><span class="lineno">  293</span> </div>
+<div class="line"><a id="l00294" name="l00294"></a><span class="lineno">  294</span><span class="preprocessor">#endif</span></div>
+<div class="ttc" id="agroup__trace__task__apis_html_ga3ba2b866e34a2d0ba076feb11f5488bf"><div class="ttname"><a href="group__trace__task__apis.html#ga3ba2b866e34a2d0ba076feb11f5488bf">xTraceTaskSetPriority</a></div><div class="ttdeci">traceResult xTraceTaskSetPriority(TraceTaskHandle_t xTaskHandle, TraceUnsignedBaseType_t uxPriority)</div><div class="ttdoc">Sets trace task priority.</div><div class="ttdef"><b>Definition:</b> trcTask.c:46</div></div>
+<div class="ttc" id="agroup__trace__task__apis_html_ga9c9cd4b8927c3dd7af9fc7c834fef31b"><div class="ttname"><a href="group__trace__task__apis.html#ga9c9cd4b8927c3dd7af9fc7c834fef31b">xTraceTaskSwitch</a></div><div class="ttdeci">traceResult xTraceTaskSwitch(void *pvTask, TraceUnsignedBaseType_t uxPriority)</div><div class="ttdoc">Registers trace task switch event.</div><div class="ttdef"><b>Definition:</b> trcTask.c:79</div></div>
+<div class="ttc" id="agroup__trace__task__apis_html_gad18180891f26ad2e1d7d6d3fd85757fe"><div class="ttname"><a href="group__trace__task__apis.html#gad18180891f26ad2e1d7d6d3fd85757fe">xTraceTaskSetPriorityWithoutHandle</a></div><div class="ttdeci">traceResult xTraceTaskSetPriorityWithoutHandle(void *pvTask, TraceUnsignedBaseType_t uxPriority)</div><div class="ttdoc">Sets trace task priority without trace task handle.</div><div class="ttdef"><b>Definition:</b> trcTask.c:61</div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->

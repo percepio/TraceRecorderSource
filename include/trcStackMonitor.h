@@ -1,5 +1,5 @@
 /*
-* Percepio Trace Recorder SDK for Tracealyzer v4.8.2
+* Percepio Trace Recorder SDK for Tracealyzer v4.9.0
 * Copyright 2023 Percepio AB
 * www.percepio.com
 *
@@ -15,9 +15,7 @@
 #ifndef TRC_STACK_MONITOR_H
 #define TRC_STACK_MONITOR_H
 
-#if (TRC_USE_TRACEALYZER_RECORDER == 1)
-
-#if (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING)
+#if (TRC_USE_TRACEALYZER_RECORDER == 1) && (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING) && ((TRC_CFG_ENABLE_STACK_MONITOR) == 1) && ((TRC_CFG_SCHEDULING_ONLY) == 0)
 
 #include <stdint.h>
 #include <trcRecorder.h>
@@ -31,8 +29,6 @@ extern "C" {
  * @ingroup trace_recorder_apis
  * @{
  */
-
-#if (((TRC_CFG_ENABLE_STACK_MONITOR) == 1) && ((TRC_CFG_SCHEDULING_ONLY) == 0))
 
 typedef struct TraceStackMonitorEntry	/* Aligned */
 {
@@ -102,6 +98,12 @@ traceResult xTraceStackMonitorGetAtIndex(uint32_t uiIndex, void** ppvTask, Trace
  */
 traceResult xTraceStackMonitorReport(void);
 
+/** @} */
+
+#ifdef __cplusplus
+}
+#endif
+
 #else
 
 typedef struct TraceStackMonitorData
@@ -109,29 +111,19 @@ typedef struct TraceStackMonitorData
 	uint32_t buffer[1];
 } TraceStackMonitorData_t;
 
-#define xTraceStackMonitorInitialize(pxBuffer) ((void)(pxBuffer), TRC_SUCCESS)
+#define xTraceStackMonitorInitialize(__pxBuffer) ((void)(__pxBuffer), TRC_SUCCESS)
 
-#define xTraceStackMonitorDiagnosticsGet(xType, puiValue) ((void)(xType), (puiValue) != 0 ? *(puiValue) = 0 : 0, (puiValue) != 0 ? TRC_SUCCESS : TRC_FAIL)
+#define xTraceStackMonitorDiagnosticsGet(__xType, __puiValue) ((void)(__xType), (__puiValue) != 0 ? *(__puiValue) = 0 : 0, (__puiValue) != 0 ? TRC_SUCCESS : TRC_FAIL)
 
-#define xTraceStackMonitorDiagnosticsSet(xType, uiValue) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_3((void)(xType), (void)(uiValue), TRC_SUCCESS)
+#define xTraceStackMonitorDiagnosticsSet(__xType, __uiValue) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_3((void)(__xType), (void)(__uiValue), TRC_SUCCESS)
 
-#define xTraceStackMonitorAdd(pvTask) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_2((void)(pvTask), TRC_SUCCESS)
+#define xTraceStackMonitorAdd(__pvTask) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_2((void)(__pvTask), TRC_SUCCESS)
 
-#define xTraceStackMonitorRemove(pvTask) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_2((void)(pvTask), TRC_SUCCESS)
+#define xTraceStackMonitorRemove(__pvTask) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_2((void)(__pvTask), TRC_SUCCESS)
 
-#define xTraceStackMonitorGetAtIndex(uiIndex, ppvTask, puxLowWaterMark) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_4((void)(uiIndex), (void)(ppvTask), (void)(puxLowWaterMark), TRC_SUCCESS)
+#define xTraceStackMonitorGetAtIndex(__uiIndex, __ppvTask, __puxLowWaterMark) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_4((void)(__uiIndex), (void)_(ppvTask), (void)(__puxLowWaterMark), TRC_SUCCESS)
 
 #define xTraceStackMonitorReport() TRC_COMMA_EXPR_TO_STATEMENT_EXPR_1(TRC_SUCCESS)
-
-#endif
-
-/** @} */
-
-#ifdef __cplusplus
-}
-#endif
-
-#endif
 
 #endif
 

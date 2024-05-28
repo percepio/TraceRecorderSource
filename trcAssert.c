@@ -1,5 +1,5 @@
 /*
-* Percepio Trace Recorder for Tracealyzer v4.8.2
+* Percepio Trace Recorder for Tracealyzer v4.9.0
 * Copyright 2023 Percepio AB
 * www.percepio.com
 *
@@ -10,11 +10,7 @@
 
 #include <trcRecorder.h>
 
-#if (TRC_USE_TRACEALYZER_RECORDER == 1)
-
-#if (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING)
-
-#if ((TRC_CFG_USE_TRACE_ASSERT) == 1)
+#if (TRC_USE_TRACEALYZER_RECORDER == 1) && (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING) && ((TRC_CFG_USE_TRACE_ASSERT) == 1)
 
 #if (defined(TRC_CFG_TEST_MODE) && (TRC_CFG_TEST_MODE) == 1)
 
@@ -112,8 +108,4 @@ traceResult xTraceAssertGet(TraceStringHandle_t *pxFileNameStringHandle, TraceUn
 	return TRC_SUCCESS;
 }
 
-#endif /* ((TRC_CFG_USE_TRACE_ASSERT) == 1) */
-
-#endif /* (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING) */
-
-#endif /* (TRC_USE_TRACEALYZER_RECORDER == 1) */
+#endif

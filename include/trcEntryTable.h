@@ -1,5 +1,5 @@
 /*
-* Percepio Trace Recorder for Tracealyzer v4.8.2
+* Percepio Trace Recorder for Tracealyzer v4.9.0
 * Copyright 2023 Percepio AB
 * www.percepio.com
 *
@@ -15,9 +15,7 @@
 #ifndef TRC_ENTRY_TABLE_H
 #define TRC_ENTRY_TABLE_H
 
-#if (TRC_USE_TRACEALYZER_RECORDER == 1)
-
-#if (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING)
+#if (TRC_USE_TRACEALYZER_RECORDER == 1) && (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING)
 
 #include <trcTypes.h>
 
@@ -36,6 +34,7 @@ extern "C" {
 #define TRC_ENTRY_SET_OPTIONS(xEntryHandle, uiMask) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_2(((TraceEntry_t*)(xEntryHandle))->uiOptions |= (uiMask), TRC_SUCCESS)
 #define TRC_ENTRY_CLEAR_OPTIONS(xEntryHandle, uiMask) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_2(((TraceEntry_t*)(xEntryHandle))->uiOptions &= ~(uiMask), TRC_SUCCESS)
 #define TRC_ENTRY_GET_ADDRESS(xEntryHandle, ppvAddress) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_2(*(ppvAddress) = ((TraceEntry_t*)(xEntryHandle))->pvAddress, TRC_SUCCESS)
+#define TRC_ENTRY_GET_ADDRESS_RETURN(xEntryHandle) (((TraceEntry_t*)(xEntryHandle))->pvAddress)
 #define TRC_ENTRY_GET_SYMBOL(xEntryHandle, pszSymbol) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_2(*(pszSymbol) = ((TraceEntry_t*)(xEntryHandle))->szSymbol, TRC_SUCCESS)
 #define TRC_ENTRY_GET_STATE(xEntryHandle, uxStateIndex, puxState) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_2(*(puxState) = ((TraceEntry_t*)(xEntryHandle))->xStates[uxStateIndex], TRC_SUCCESS)
 #define TRC_ENTRY_GET_STATE_RETURN(xEntryHandle, uxStateIndex) (((TraceEntry_t*)(xEntryHandle))->xStates[uxStateIndex])
@@ -230,6 +229,15 @@ traceResult xTraceEntryClearOptions(const TraceEntryHandle_t xEntryHandle, uint3
 traceResult xTraceEntryGetAddress(const TraceEntryHandle_t xEntryHandle, void **ppvAddress);
 
 /**
+ * @brief Returns linked address for trace entry.
+ * 
+ * @param[in] xEntryHandle Trace entry handle.
+ * 
+ * @returns Address.
+ */
+void* xTraceEntryGetAddressReturn(const TraceEntryHandle_t xEntryHandle);
+
+/**
  * @brief Gets symbol for trace entry.
  * 
  * @param[in] xEntryHandle Pointer to initialized trace entry handle.
@@ -282,6 +290,7 @@ traceResult xTraceEntryGetOptions(const TraceEntryHandle_t xEntryHandle, uint32_
 #define xTraceEntryClearOptions TRC_ENTRY_CLEAR_OPTIONS
 
 #define xTraceEntryGetAddress TRC_ENTRY_GET_ADDRESS
+#define xTraceEntryGetAddressReturn TRC_ENTRY_GET_ADDRESS_RETURN
 #define xTraceEntryGetSymbol TRC_ENTRY_GET_SYMBOL
 #define xTraceEntryGetState TRC_ENTRY_GET_STATE
 #define xTraceEntryGetStateReturn TRC_ENTRY_GET_STATE_RETURN
@@ -295,8 +304,40 @@ traceResult xTraceEntryGetOptions(const TraceEntryHandle_t xEntryHandle, uint32_
 }
 #endif
 
-#endif /* (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING) */
+#else
 
-#endif /* (TRC_USE_TRACEALYZER_RECORDER == 1) */
+#define xTraceEntryCreate(_pxEntryHandle) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_2((void)(_pxEntryHandle), TRC_SUCCESS)
 
-#endif /* TRC_ENTRY_TABLE_H */
+#define xTraceEntryDelete(_xEntryHandle) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_2((void)(_xEntryHandle), TRC_SUCCESS)
+
+#define xTraceEntryFind(_pvAddress, _pxEntryHandle) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_3((void)(_pvAddress), (void)(_pxEntryHandle), TRC_SUCCESS)
+
+#define xTraceEntryGetCount(_puiCount) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_2((void)(_puiCount), TRC_SUCCESS)
+
+#define xTraceEntryGetAtIndex(_index, _pxEntryHandle) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_3((void)(_index), (void)(_pxEntryHandle), TRC_SUCCESS)
+
+#define xTraceEntrySetSymbol(_xEntryHandle, _szSymbol, _uiLength) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_4((void)(_xEntryHandle), (void)(_szSymbol), (void)(_uiLength), TRC_SUCCESS)
+
+#define xTraceEntryCreateWithAddress(_pvAddress, _pxEntryHandle) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_3((void)(_pvAddress), (void)(_pxEntryHandle), TRC_SUCCESS)
+
+#define xTraceEntrySetState(_xEntryHandle, _uxStateIndex, _uxState) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_4((void)(_xEntryHandle), (void)(_uxStateIndex), (void)(_uxState), TRC_SUCCESS)
+
+#define xTraceEntrySetOptions(_xEntryHandle, _uiMask) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_3((void)(_xEntryHandle), (void)(_uiMask), TRC_SUCCESS)
+
+#define xTraceEntryClearOptions(_xEntryHandle, _uiMask) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_3((void)(_xEntryHandle), (void)(_uiMask), TRC_SUCCESS)
+
+#define xTraceEntryGetAddress(_xEntryHandle, _ppvAddress) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_3((void)(_xEntryHandle), (void)(_ppvAddress), TRC_SUCCESS)
+
+#define xTraceEntryGetAddressReturn(_xEntryHandle) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_2((void)(_xEntryHandle), (void*)0)
+
+#define xTraceEntryGetSymbol(_xEntryHandle, _pszSymbol) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_3((void)(_xEntryHandle), (void)(_pszSymbol), TRC_SUCCESS)
+
+#define xTraceEntryGetState(_xEntryHandle, _uxStateIndex, _puxState) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_4((void)(_xEntryHandle), (void)(_uxStateIndex), (void)(_puxState), TRC_SUCCESS)
+
+#define xTraceEntryGetStateReturn(_xEntryHandle, _uxStateIndex) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_3((void)(_xEntryHandle), (void)(_uxStateIndex), 0)
+
+#define xTraceEntryGetOptions(_xEntryHandle, _puiOptions) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_3((void)(_xEntryHandle), (void)(_puiOptions), TRC_SUCCESS)
+
+#endif
+
+#endif

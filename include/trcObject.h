@@ -1,5 +1,5 @@
 /*
-* Percepio Trace Recorder for Tracealyzer v4.8.2
+* Percepio Trace Recorder for Tracealyzer v4.9.0
 * Copyright 2023 Percepio AB
 * www.percepio.com
 *
@@ -15,9 +15,7 @@
 #ifndef TRC_OBJECT_H
 #define TRC_OBJECT_H
 
-#if (TRC_USE_TRACEALYZER_RECORDER == 1)
-
-#if (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING)
+#if (TRC_USE_TRACEALYZER_RECORDER == 1) && (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING)
 
 #include <trcTypes.h>
 
@@ -60,6 +58,21 @@ traceResult xTraceObjectRegisterInternal(uint32_t uiEventCode, void* const pvObj
  * @retval TRC_SUCCESS Success
  */
 traceResult xTraceObjectRegister(uint32_t uiEventCode, void* const pvObject, const char* szName, TraceUnsignedBaseType_t uxState, TraceObjectHandle_t *pxObjectHandle);
+
+/**
+ * @brief Registers trace object with two initial states.
+ * 
+ * @param[in] uiEventCode Event code.
+ * @param[in] pvObject Object.
+ * @param[in] szName Name.
+ * @param[in] uxState1 State 1.
+ * @param[in] uxState2 State 2.
+ * @param[out] pxObjectHandle Pointer to uninitialized trace object.
+ * 
+ * @retval TRC_FAIL Failure
+ * @retval TRC_SUCCESS Success
+ */
+traceResult xTraceObjectRegister2(uint32_t uiEventCode, void* const pvObject, const char* szName, TraceUnsignedBaseType_t uxState1,  TraceUnsignedBaseType_t uxState2, TraceObjectHandle_t *pxObjectHandle);
 
 /**
  * @brief Unregisters trace object.
@@ -132,6 +145,20 @@ traceResult xTraceObjectSetName(TraceObjectHandle_t xObjectHandle, const char *s
 traceResult xTraceObjectRegisterWithoutHandle(uint32_t uiEventCode, void* pvObject, const char* szName, TraceUnsignedBaseType_t uxState);
 
 /**
+ * @brief Registers trace object with two initial states without trace object handle.
+ * 
+ * @param[in] uiEventCode Event code.
+ * @param[in] pvObject Object.
+ * @param[in] szName Name.
+ * @param[in] uxState1 State 1.
+ * @param[in] uxState2 State 2.
+ * 
+ * @retval TRC_FAIL Failure
+ * @retval TRC_SUCCESS Success
+ */
+traceResult xTraceObjectRegisterWithoutHandle2(uint32_t uiEventCode, void* pvObject, const char* szName, TraceUnsignedBaseType_t uxState1, TraceUnsignedBaseType_t uxState2);
+
+/**
  * @brief Unregisters trace object without trace object handle.
  * 
  * @param[in] uiEventCode Event code.
@@ -195,8 +222,34 @@ traceResult xTraceObjectSetOptionsWithoutHandle(void* pvObject, uint32_t uiOptio
 }
 #endif
 
-#endif /* (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING) */
+#else
 
-#endif /* (TRC_USE_TRACEALYZER_RECORDER == 1) */
+#define xTraceObjectRegisterInternal(_uiEventCode, _pvObject, _szName, _uxStateCount, _uxStates, _uxOptions, _pxObjectHandle) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_8((void)(_uiEventCode), (void)(_pvObject), (void)(_szName), (void)(_uxStateCount), (void)(_uxStates), (void)(_uxOptions), (void)(_pxObjectHandle), TRC_SUCCESS)
 
-#endif /* TRC_OBJECT_H */
+#define xTraceObjectRegister(_uiEventCode, _pvObject, _szName, _uxState, _pxObjectHandle) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_6((void)(_uiEventCode), (void)(_pvObject), (void)(_szName), (void)(_uxState), (void)(_pxObjectHandle), TRC_SUCCESS)
+
+#define xTraceObjectUnregister(_xObjectHandle, _uiEventCode, _uxState) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_4((void)(_xObjectHandle), (void)(_uiEventCode), (void)(_uxState), TRC_SUCCESS)
+
+#define xTraceObjectSetName(_xObjectHandle, _szName) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_3((void)(_xObjectHandle), (void)(_szName), TRC_SUCCESS)
+
+#define xTraceObjectSetState(_xObjectHandle, _uxState) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_3((void)(_xObjectHandle), (void)(_uxState), TRC_SUCCESS)
+
+#define xTraceObjectSetSpecificState(_xObjectHandle, _uiIndex, _uxState) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_4((void)(_xObjectHandle), (void)(_uiIndex), (void)(_uxState), TRC_SUCCESS)
+
+#define xTraceObjectSetOptions(_xObjectHandle, _uiOptions) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_3((void)(_xObjectHandle), (void)(_uiOptions), TRC_SUCCESS)
+
+#define xTraceObjectRegisterWithoutHandle(_uiEventCode, _pvObject, _szName, _uxState) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_5((void)(_uiEventCode), (void)(_pvObject), (void)(_szName), (void)(_uxState), TRC_SUCCESS)
+
+#define xTraceObjectUnregisterWithoutHandle(_uiEventCode, _pvObject, _uxState) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_4((void)(_uiEventCode), (void)(_pvObject), (void)(_uxState), TRC_SUCCESS)
+
+#define xTraceObjectSetNameWithoutHandle(_pvObject, _szName) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_3((void)(_pvObject), (void)(_szName), TRC_SUCCESS)
+
+#define xTraceObjectSetStateWithoutHandle(_pvObject, _uxState) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_3((void)(_pvObject), (void)(_uxState), TRC_SUCCESS)
+
+#define xTraceObjectSetSpecificStateWithoutHandle(_pvObject, _uiIndex, _uxState) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_4((void)(_pvObject), (void)(_uiIndex), (void)(_uxState), TRC_SUCCESS)
+
+#define xTraceObjectSetOptionsWithoutHandle(_pvObject, _uiOptions) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_3((void)(_pvObject), (void)(_uiOptions), TRC_SUCCESS)
+
+#endif
+
+#endif

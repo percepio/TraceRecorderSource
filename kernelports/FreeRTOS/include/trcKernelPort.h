@@ -1,5 +1,5 @@
 /*
- * Trace Recorder for Tracealyzer v4.8.2
+ * Trace Recorder for Tracealyzer v4.9.0
  * Copyright 2023 Percepio AB
  * www.percepio.com
  *
@@ -425,6 +425,9 @@ traceResult xTraceKernelPortGetUnusedStack(void* pvTask, TraceUnsignedBaseType_t
 
 #endif
 
+#if (TRC_CFG_SCHEDULING_ONLY == 0)
+/* We only do this if we're using it */
+
 /* Helpers needed to correctly expand names */
 #define TZ__CAT2(a,b) a ## b
 #define TZ__CAT(a,b) TZ__CAT2(a, b)
@@ -443,6 +446,8 @@ BaseType_t MyWrapper_xQueueGiveFromISR(__a, __b, const BaseType_t xCopyPosition)
 
 /* If not in queue.c, "uxQueueType" isn't expanded */
 #define xQueueGiveFromISR__uxQueueType(__a, __b) xQueueGiveFromISR(__a,__b)
+
+#endif
 
 #if (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_SNAPSHOT)
 

@@ -1,5 +1,5 @@
 /*
-* Percepio Trace Recorder for Tracealyzer v4.8.2
+* Percepio Trace Recorder for Tracealyzer v4.9.0
 * Copyright 2023 Percepio AB
 * www.percepio.com
 *
@@ -15,9 +15,14 @@
 #ifndef TRC_RUNNABLE_H
 #define TRC_RUNNABLE_H
 
-#if (TRC_USE_TRACEALYZER_RECORDER == 1)
+typedef enum TraceRunnableRegisterMethod
+{
+	TRC_RUNNABLE_REGISTER_METHOD_USE_ENTRY_TABLE,
+	TRC_RUNNABLE_REGISTER_METHOD_USE_STRING_ADDRESS,
+	TRC_RUNNABLE_REGISTER_METHOD_USE_HANDLE_ADDRESS,
+} TraceRunnableRegisterMethod_t;
 
-#if (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING)
+#if (TRC_USE_TRACEALYZER_RECORDER == 1) && (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING)
 
 #include <trcTypes.h>
 
@@ -31,13 +36,6 @@ extern "C" {
  * @{
  */
 
-typedef enum TraceRunnableRegisterMethod
-{
-	TRC_RUNNABLE_REGISTER_METHOD_USE_ENTRY_TABLE,
-	TRC_RUNNABLE_REGISTER_METHOD_USE_STRING_ADDRESS,
-	TRC_RUNNABLE_REGISTER_METHOD_USE_HANDLE_ADDRESS,
-} TraceRunnableRegisterMethod_t;
-
 /**
  * @brief Registers a runnable. Can be called multiple times, will not create additional entries.
  * 
@@ -46,7 +44,7 @@ typedef enum TraceRunnableRegisterMethod
  *				TRC_RUNNABLE_REGISTER_METHOD_USE_ENTRY_TABLE: Store in entry table normally and handle will point to entry.
  *				TRC_RUNNABLE_REGISTER_METHOD_USE_STRING_ADDRESS: For this method the string address must be unique and will be used as handle value.
  *				TRC_RUNNABLE_REGISTER_METHOD_USE_HANDLE_ADDRESS: For this method the handle address must be unique and will be used as handle value.
- * @param[out] pxRunnableHandle Pointer to 0 initialized TraceRunnableHandle_t. If handle that is pointed to is not 0 no entry will be created.
+ * @param[out] pxRunnableHandle Pointer to zero-initialized TraceRunnableHandle_t. If handle that is pointed to is not 0 no entry will be created.
  * 
  * @retval TRC_FAIL Failure
  * @retval TRC_SUCCESS Success
@@ -89,8 +87,8 @@ traceResult xTraceRunnableRegister(const char* szName, TraceRunnableRegisterMeth
 /**
  * @brief Start a static runnable. Requires XML configuration to properly interpret.
  *
- * @param[in] xRunnableSetHandle Pointer to initialized runnable set handle.
- * @param[out] puiBaseEventId Base event id.
+ * @param[in] xRunnableSetHandle Handle to initialized runnable set.
+ * @param[in] uiRunnableId Index in the runnable set.
  *
  * @retval TRC_FAIL Failure
  * @retval TRC_SUCCESS Success
@@ -113,33 +111,20 @@ traceResult xTraceRunnableRegister(const char* szName, TraceRunnableRegisterMeth
 
 #else
 
-#ifndef xTraceRunnableRegister
-#define xTraceRunnableRegister(szName, uxRegisterMethod, pxRunnableHandle) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_4((void)(szName), (void)(uxRegisterMethod), (void)(pxRunnableHandle), TRC_SUCCESS)
-#endif
+#define xTraceRunnableRegister(_szName, _uxRegisterMethod, _pxRunnableHandle) \
+	TRC_COMMA_EXPR_TO_STATEMENT_EXPR_4((void)(_szName), (void)(_uxRegisterMethod), (void)(_pxRunnableHandle), TRC_SUCCESS)
 
-#ifndef xTraceRunnableStart
-#define xTraceRunnableStart(xRunnableHandle) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_2((void)(xRunnableHandle), TRC_SUCCESS)
-#endif
+#define xTraceRunnableStart(_xRunnableHandle) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_2((void)(_xRunnableHandle), TRC_SUCCESS)
 
-#ifndef xTraceRunnableStop
 #define xTraceRunnableStop() (TRC_SUCCESS)
-#endif
 
-#endif
+#define xTraceRunnableRegisterStaticSet(_szName, _uiMajor, _uiMinor, _uiPatch, _uiRunnableCount, _pxRunnableSetHandle) \
+	TRC_COMMA_EXPR_TO_STATEMENT_EXPR_7((void)(_szName), (void)(_uiMajor), (void)(_uiMinor), (void)(_uiPatch), (void)(_uiRunnableCount), (void)(_pxRunnableSetHandle), TRC_SUCCESS)
 
-#else
+#define xTraceRunnableStartStatic(_xRunnableSetHandle, _uiRunnableId) \
+	TRC_COMMA_EXPR_TO_STATEMENT_EXPR_3((void)(_xRunnableSetHandle), (void)(_uiRunnableId), TRC_SUCCESS)
 
-#ifndef xTraceRunnableRegister
-#define xTraceRunnableRegister(szName, uxRegisterMethod, pxRunnableHandle) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_4((void)(szName), (void)(uxRegisterMethod), (void)(pxRunnableHandle), TRC_SUCCESS)
-#endif
-
-#ifndef xTraceRunnableStart
-#define xTraceRunnableStart(xRunnableHandle) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_2((void)(xRunnableHandle), TRC_SUCCESS)
-#endif
-
-#ifndef xTraceRunnableStop
-#define xTraceRunnableStop() (TRC_SUCCESS)
-#endif
+#define xTraceRunnableStopStatic() (TRC_SUCCESS)
 
 #endif
 

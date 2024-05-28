@@ -1,5 +1,5 @@
 /*
-* Percepio Trace Recorder for Tracealyzer v4.8.2
+* Percepio Trace Recorder for Tracealyzer v4.9.0
 * Copyright 2023 Percepio AB
 * www.percepio.com
 *
@@ -15,9 +15,7 @@
 #ifndef TRC_PRINT_H
 #define TRC_PRINT_H
 
-#if (TRC_USE_TRACEALYZER_RECORDER == 1)
-
-#if (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING)
+#if (TRC_USE_TRACEALYZER_RECORDER == 1) && (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING) && (TRC_CFG_INCLUDE_USER_EVENTS == 1)
 
 #include <stdarg.h>
 #include <trcTypes.h>
@@ -31,8 +29,6 @@ extern "C" {
  * @ingroup trace_recorder_apis
  * @{
  */
-
-#if (TRC_CFG_INCLUDE_USER_EVENTS == 1)
 
 typedef struct TracePrintData	/* Aligned */
 {
@@ -421,7 +417,7 @@ typedef struct TracePrintData
 	TraceUnsignedBaseType_t buffer[1];
 } TracePrintData_t;
 
-#define xTracePrintInitialize(p) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_2((void)p, p != 0 ? TRC_SUCCESS : TRC_FAIL)
+#define xTracePrintInitialize(__pvBuffer) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_2((void)(__pvBuffer), TRC_SUCCESS)
 
 #define xTracePrint(_c, _s) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_3((void)(_c), (void)(_s), TRC_SUCCESS)
 
@@ -445,16 +441,5 @@ typedef struct TracePrintData
 #define xTracePrintCompactF4 xTracePrintF4
 
 #endif
-
-/** @} */
-
-#ifdef __cplusplus
-}
-#endif
-
-#endif
-
-#endif
-
 
 #endif

@@ -1,5 +1,5 @@
 /*
-* Percepio Trace Recorder for Tracealyzer v4.8.2
+* Percepio Trace Recorder for Tracealyzer v4.9.0
 * Copyright 2023 Percepio AB
 * www.percepio.com
 *
@@ -15,9 +15,7 @@
 #ifndef TRC_EXTENSION_H
 #define TRC_EXTENSION_H
 
-#if (TRC_USE_TRACEALYZER_RECORDER == 1)
-
-#if (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING)
+#if (TRC_USE_TRACEALYZER_RECORDER == 1) && (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING)
 
 #include <trcTypes.h>
 
@@ -103,8 +101,16 @@ traceResult xTraceExtensionGetConfigName(TraceExtensionHandle_t xExtensionHandle
 }
 #endif
 
-#endif /* (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING) */
+#else
 
-#endif /* (TRC_USE_TRACEALYZER_RECORDER == 1) */
+#define xTraceExtensionCreate(szName, uiMajor, uiMinor, uiPatch, uiEventCount, pxExtensionHandle) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_7((void)(szName), (void)(uiMajor), (void)(uiMinor), (void)(uiPatch), (void)(uiEventCount), (void)(pxExtensionHandle), TRC_SUCCESS)
 
-#endif /* TRC_EXTENSION_H */
+#define xTraceExtensionGetBaseEventId(xExtensionHandle, puiBaseEventId) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_3((void)(xExtensionHandle), (void)(puiBaseEventId), TRC_SUCCESS)
+
+#define xTraceExtensionGetConfigName(xExtensionHandle, pszName) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_3((void)(xExtensionHandle), (void)(pszName), TRC_SUCCESS)
+
+#define xTraceExtensionGetEventId(xExtensionHandle, uiLocalEventId) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_3((void)(xExtensionHandle), (void)(uiLocalEventId), 0)
+
+#endif
+
+#endif

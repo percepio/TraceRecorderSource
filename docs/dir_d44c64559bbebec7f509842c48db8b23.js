@@ -18,6 +18,7 @@ var dir_d44c64559bbebec7f509842c48db8b23 =
     [ "trcMultiCoreEventBuffer.h", "trcMultiCoreEventBuffer_8h.html", "trcMultiCoreEventBuffer_8h" ],
     [ "trcObject.h", "trcObject_8h.html", "trcObject_8h" ],
     [ "trcPrint.h", "trcPrint_8h.html", "trcPrint_8h" ],
+    [ "trcProcess.h", "trcProcess_8h.html", "trcProcess_8h" ],
     [ "trcRecorder.h", "trcRecorder_8h.html", "trcRecorder_8h" ],
     [ "trcRunnable.h", "trcRunnable_8h.html", "trcRunnable_8h" ],
     [ "trcStackMonitor.h", "trcStackMonitor_8h.html", "trcStackMonitor_8h" ],
@@ -25,6 +26,7 @@ var dir_d44c64559bbebec7f509842c48db8b23 =
     [ "trcStaticBuffer.h", "trcStaticBuffer_8h.html", "trcStaticBuffer_8h" ],
     [ "trcString.h", "trcString_8h.html", "trcString_8h" ],
     [ "trcTask.h", "trcTask_8h.html", "trcTask_8h" ],
+    [ "trcThread.h", "trcThread_8h.html", "trcThread_8h" ],
     [ "trcTimestamp.h", "trcTimestamp_8h.html", "trcTimestamp_8h" ],
     [ "trcTypes.h", "trcTypes_8h_source.html", null ],
     [ "trcUtility.h", "trcUtility_8h_source.html", null ]

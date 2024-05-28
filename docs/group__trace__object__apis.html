@@ -25,7 +25,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">Percepio Trace Recorder<span id="projectnumber">&#160;v4.8.2</span>
+   <div id="projectname">Percepio Trace Recorder<span id="projectnumber">&#160;v4.9.0</span>
    </div>
   </td>
  </tr>
@@ -119,6 +119,9 @@ Functions</h2></td></tr>
 <tr class="memitem:ga25d702dc46bb776c99c3ebd48f46c529"><td class="memItemLeft" align="right" valign="top">traceResult&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__trace__object__apis.html#ga25d702dc46bb776c99c3ebd48f46c529">xTraceObjectRegister</a> (uint32_t uiEventCode, void *const pvObject, const char *szName, TraceUnsignedBaseType_t uxState, TraceObjectHandle_t *pxObjectHandle)</td></tr>
 <tr class="memdesc:ga25d702dc46bb776c99c3ebd48f46c529"><td class="mdescLeft">&#160;</td><td class="mdescRight">Registers trace object.  <br /></td></tr>
 <tr class="separator:ga25d702dc46bb776c99c3ebd48f46c529"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga605478977388e7ef2057eb4f5f35480a"><td class="memItemLeft" align="right" valign="top">traceResult&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__trace__object__apis.html#ga605478977388e7ef2057eb4f5f35480a">xTraceObjectRegister2</a> (uint32_t uiEventCode, void *const pvObject, const char *szName, TraceUnsignedBaseType_t uxState1, TraceUnsignedBaseType_t uxState2, TraceObjectHandle_t *pxObjectHandle)</td></tr>
+<tr class="memdesc:ga605478977388e7ef2057eb4f5f35480a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Registers trace object with two initial states.  <br /></td></tr>
+<tr class="separator:ga605478977388e7ef2057eb4f5f35480a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga20b1def504b1c9b237c711b3aaa49e29"><td class="memItemLeft" align="right" valign="top">traceResult&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__trace__object__apis.html#ga20b1def504b1c9b237c711b3aaa49e29">xTraceObjectUnregister</a> (TraceObjectHandle_t xObjectHandle, uint32_t uiEventCode, TraceUnsignedBaseType_t uxState)</td></tr>
 <tr class="memdesc:ga20b1def504b1c9b237c711b3aaa49e29"><td class="mdescLeft">&#160;</td><td class="mdescRight">Unregisters trace object.  <br /></td></tr>
 <tr class="separator:ga20b1def504b1c9b237c711b3aaa49e29"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -128,6 +131,9 @@ Functions</h2></td></tr>
 <tr class="memitem:gacd88161ed7cc325b7a343d9ec8fad34e"><td class="memItemLeft" align="right" valign="top">traceResult&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__trace__object__apis.html#gacd88161ed7cc325b7a343d9ec8fad34e">xTraceObjectRegisterWithoutHandle</a> (uint32_t uiEventCode, void *pvObject, const char *szName, TraceUnsignedBaseType_t uxState)</td></tr>
 <tr class="memdesc:gacd88161ed7cc325b7a343d9ec8fad34e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Registers trace object without trace object handle.  <br /></td></tr>
 <tr class="separator:gacd88161ed7cc325b7a343d9ec8fad34e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga957e43ad6d5cc89c0ace01b1c1449996"><td class="memItemLeft" align="right" valign="top">traceResult&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__trace__object__apis.html#ga957e43ad6d5cc89c0ace01b1c1449996">xTraceObjectRegisterWithoutHandle2</a> (uint32_t uiEventCode, void *pvObject, const char *szName, TraceUnsignedBaseType_t uxState1, TraceUnsignedBaseType_t uxState2)</td></tr>
+<tr class="memdesc:ga957e43ad6d5cc89c0ace01b1c1449996"><td class="mdescLeft">&#160;</td><td class="mdescRight">Registers trace object with two initial states without trace object handle.  <br /></td></tr>
+<tr class="separator:ga957e43ad6d5cc89c0ace01b1c1449996"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga304a75a1c8a64e02b0f8fe2355305555"><td class="memItemLeft" align="right" valign="top">traceResult&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__trace__object__apis.html#ga304a75a1c8a64e02b0f8fe2355305555">xTraceObjectUnregisterWithoutHandle</a> (uint32_t uiEventCode, void *pvObject, TraceUnsignedBaseType_t uxState)</td></tr>
 <tr class="memdesc:ga304a75a1c8a64e02b0f8fe2355305555"><td class="mdescLeft">&#160;</td><td class="mdescRight">Unregisters trace object without trace object handle.  <br /></td></tr>
 <tr class="separator:ga304a75a1c8a64e02b0f8fe2355305555"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -392,6 +398,78 @@ Functions</h2></td></tr>
 
 </div>
 </div>
+<a id="ga605478977388e7ef2057eb4f5f35480a" name="ga605478977388e7ef2057eb4f5f35480a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga605478977388e7ef2057eb4f5f35480a">&#9670;&#160;</a></span>xTraceObjectRegister2()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">traceResult xTraceObjectRegister2 </td>
+          <td>(</td>
+          <td class="paramtype">uint32_t&#160;</td>
+          <td class="paramname"><em>uiEventCode</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">void *const&#160;</td>
+          <td class="paramname"><em>pvObject</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>szName</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">TraceUnsignedBaseType_t&#160;</td>
+          <td class="paramname"><em>uxState1</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">TraceUnsignedBaseType_t&#160;</td>
+          <td class="paramname"><em>uxState2</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">TraceObjectHandle_t *&#160;</td>
+          <td class="paramname"><em>pxObjectHandle</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Registers trace object with two initial states. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">uiEventCode</td><td>Event code. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">pvObject</td><td>Object. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">szName</td><td>Name. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">uxState1</td><td>State 1. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">uxState2</td><td>State 2. </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">pxObjectHandle</td><td>Pointer to uninitialized trace object.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="retval"><dt>Return values</dt><dd>
+  <table class="retval">
+    <tr><td class="paramname">TRC_FAIL</td><td>Failure </td></tr>
+    <tr><td class="paramname">TRC_SUCCESS</td><td>Success </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <a id="gac5d5b90ac8b8422dbf99fdd2dab3b83e" name="gac5d5b90ac8b8422dbf99fdd2dab3b83e"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#gac5d5b90ac8b8422dbf99fdd2dab3b83e">&#9670;&#160;</a></span>xTraceObjectRegisterInternal()</h2>
 
@@ -516,6 +594,71 @@ Functions</h2></td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">pvObject</td><td>Object. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">szName</td><td>Name. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">uxState</td><td>State.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="retval"><dt>Return values</dt><dd>
+  <table class="retval">
+    <tr><td class="paramname">TRC_FAIL</td><td>Failure </td></tr>
+    <tr><td class="paramname">TRC_SUCCESS</td><td>Success </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="ga957e43ad6d5cc89c0ace01b1c1449996" name="ga957e43ad6d5cc89c0ace01b1c1449996"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga957e43ad6d5cc89c0ace01b1c1449996">&#9670;&#160;</a></span>xTraceObjectRegisterWithoutHandle2()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">traceResult xTraceObjectRegisterWithoutHandle2 </td>
+          <td>(</td>
+          <td class="paramtype">uint32_t&#160;</td>
+          <td class="paramname"><em>uiEventCode</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">void *&#160;</td>
+          <td class="paramname"><em>pvObject</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>szName</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">TraceUnsignedBaseType_t&#160;</td>
+          <td class="paramname"><em>uxState1</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">TraceUnsignedBaseType_t&#160;</td>
+          <td class="paramname"><em>uxState2</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Registers trace object with two initial states without trace object handle. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">uiEventCode</td><td>Event code. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">pvObject</td><td>Object. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">szName</td><td>Name. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">uxState1</td><td>State 1. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">uxState2</td><td>State 2.</td></tr>
   </table>
   </dd>
 </dl>

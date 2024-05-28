@@ -1,5 +1,5 @@
 /*
- * Trace Recorder for Tracealyzer v4.8.2
+ * Trace Recorder for Tracealyzer v4.9.0
  * Copyright 2023 Percepio AB
  * www.percepio.com
  *
@@ -12,7 +12,6 @@
 #define TRC_KERNEL_PORT_H
 
 #include <zephyr/kernel.h>
-#include <version.h>
 #include <trcRecorder.h>
 
 #ifdef __cplusplus
@@ -249,17 +248,6 @@ void vTraceSetMemorySlabName(void* object, const char* name);
  * @param[in] name name
  */
 void vTraceSetTimerName(void* object, const char* name);
-
-
-/* Flag an error if the user is trying to use the tracerecorder in a version of
- * Zephyr that predates the new tracing system on which the recorder relies
- * (Zephyr 2.6.0).
- */
-#if ((KERNEL_VERSION_MAJOR) < 2)
-	#error "Tracerecorder is not compatible with Zephyr versions older than v2.6.0"
-#elif (((KERNEL_VERSION_MAJOR) == 2) && ((KERNEL_VERSION_MINOR) < 6))
-	#error "Tracerecorder is not compatible with Zephyr versions lower than v2.6.0"
-#endif
 
 /* Ensure that CONFIG_MEM_POOL has been set when the user selects dynamic
  * allocation of the recorder buffer.

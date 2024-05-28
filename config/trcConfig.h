@@ -1,5 +1,5 @@
 /*
- * Trace Recorder for Tracealyzer v4.8.2
+ * Trace Recorder for Tracealyzer v4.9.0
  * Copyright 2023 Percepio AB
  * www.percepio.com
  *
@@ -275,7 +275,7 @@ extern "C" {
 
 /**
  * @def TRC_CFG_RECORDER_DATA_INIT
- * @brief Macro which states wether the recorder data should have an initial value.
+ * @brief Macro which states whether the recorder data should have an initial value.
  *
  * In very specific cases where traced objects are created before main(),
  * the recorder will need to be started even before that. In these cases,

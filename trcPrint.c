@@ -1,5 +1,5 @@
 /*
-* Percepio Trace Recorder for Tracealyzer v4.8.2
+* Percepio Trace Recorder for Tracealyzer v4.9.0
 * Copyright 2023 Percepio AB
 * www.percepio.com
 *
@@ -10,11 +10,7 @@
 
 #include <trcRecorder.h>
 
-#if (TRC_USE_TRACEALYZER_RECORDER == 1)
-
-#if (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING)
-
-#if (TRC_CFG_INCLUDE_USER_EVENTS == 1)
+#if (TRC_USE_TRACEALYZER_RECORDER == 1) && (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING) && (TRC_CFG_INCLUDE_USER_EVENTS == 1)
 
 #include <stdarg.h>
 
@@ -232,11 +228,13 @@ traceResult xTraceVPrintF(TraceStringHandle_t xChannel, const char* szFormat, va
 /*cstat !MISRAC2004-6.3 !MISRAC2012-Dir-4.6_a Suppress basic char type usage*/ /*cstat !MISRAC2012-Rule-17.1 Suppress stdarg usage check*/
 static traceResult prvTraceVPrintF(TraceStringHandle_t xChannel, const char* szFormat, uint32_t uiLength, uint32_t uiArgs, va_list* pxVariableList)
 {
-	TraceEventHandle_t xEventHandle = 0;
-	uint32_t i, uiRemaining = 0u;
-	uint32_t uiValue = 0u;
 	const uint32_t uiEventCode = PSF_EVENT_USER_EVENT + 1u + uiArgs; /* Add channel (1) */
-	const uint32_t uiSize = sizeof(void*) + (uiArgs * sizeof(TraceUnsignedBaseType_t)) + uiLength; /* Add channel (sizeof(void*)) */
+	traceResult xResult;
+	TraceUnsignedBaseType_t uxParam1;
+	TraceUnsignedBaseType_t uxParam2;
+	TraceUnsignedBaseType_t uxParam3;
+	TraceUnsignedBaseType_t uxParam4;
+	TraceUnsignedBaseType_t uxParam5;
 
 	if (xChannel == 0)
 	{
@@ -252,44 +250,87 @@ static traceResult prvTraceVPrintF(TraceStringHandle_t xChannel, const char* szF
 		xChannel = pxPrintData->defaultChannel; /*cstat !MISRAC2012-Rule-17.8 Suppress modified function parameter check*/
 	}
 
-	/* Added channel to uiEventCode and uiSize */
-	if (xTraceEventBegin(uiEventCode, uiSize , &xEventHandle) == TRC_FAIL)
+	switch (uiArgs)
 	{
-		return TRC_FAIL;
+		case 0:
+			xResult = xTraceEventCreateData1(uiEventCode, (TraceUnsignedBaseType_t)xChannel, (TraceUnsignedBaseType_t*)szFormat, uiLength);
+			break;
+		case 1:
+			uxParam1 = va_arg(*pxVariableList, TraceUnsignedBaseType_t);
+			xResult = xTraceEventCreateData2(
+				uiEventCode,
+				(TraceUnsignedBaseType_t)xChannel,
+				uxParam1,
+				(TraceUnsignedBaseType_t*)szFormat,
+				uiLength
+			);
+			break;
+		case 2:
+			uxParam1 = va_arg(*pxVariableList, TraceUnsignedBaseType_t);
+			uxParam2 = va_arg(*pxVariableList, TraceUnsignedBaseType_t);
+			xResult = xTraceEventCreateData3(
+				uiEventCode,
+				(TraceUnsignedBaseType_t)xChannel,
+				uxParam1,
+				uxParam2,
+				(TraceUnsignedBaseType_t*)szFormat,
+				uiLength
+			);
+			break;
+		case 3:
+			uxParam1 = va_arg(*pxVariableList, TraceUnsignedBaseType_t);
+			uxParam2 = va_arg(*pxVariableList, TraceUnsignedBaseType_t);
+			uxParam3 = va_arg(*pxVariableList, TraceUnsignedBaseType_t);
+			xResult = xTraceEventCreateData4(
+				uiEventCode,
+				(TraceUnsignedBaseType_t)xChannel,
+				uxParam1,
+				uxParam2,
+				uxParam3,
+				(TraceUnsignedBaseType_t*)szFormat,
+				uiLength
+			);
+			break;
+		case 4:
+			uxParam1 = va_arg(*pxVariableList, TraceUnsignedBaseType_t);
+			uxParam2 = va_arg(*pxVariableList, TraceUnsignedBaseType_t);
+			uxParam3 = va_arg(*pxVariableList, TraceUnsignedBaseType_t);
+			uxParam4 = va_arg(*pxVariableList, TraceUnsignedBaseType_t);
+			xResult = xTraceEventCreateData5(
+				uiEventCode,
+				(TraceUnsignedBaseType_t)xChannel,
+				uxParam1,
+				uxParam2,
+				uxParam3,
+				uxParam4,
+				(TraceUnsignedBaseType_t*)szFormat,
+				uiLength
+			);
+			break;
+		case 5:
+			uxParam1 = va_arg(*pxVariableList, TraceUnsignedBaseType_t);
+			uxParam2 = va_arg(*pxVariableList, TraceUnsignedBaseType_t);
+			uxParam3 = va_arg(*pxVariableList, TraceUnsignedBaseType_t);
+			uxParam4 = va_arg(*pxVariableList, TraceUnsignedBaseType_t);
+			uxParam5 = va_arg(*pxVariableList, TraceUnsignedBaseType_t);
+			xResult = xTraceEventCreateData6(
+				uiEventCode,
+				(TraceUnsignedBaseType_t)xChannel,
+				uxParam1,
+				uxParam2,
+				uxParam3,
+				uxParam4,
+				uxParam5,
+				(TraceUnsignedBaseType_t*)szFormat,
+				uiLength
+			);
+			break;
+		default:
+			xResult = TRC_FAIL;
+			break;
 	}
 
-	/* Add xChannel */
-	(void)xTraceEventAddPointer(xEventHandle, (void*)xChannel);
-
-	/* Add all arguments */
-	for (i = 0u; i < uiArgs; i++)
-	{
-		(void)xTraceEventAddUnsignedBaseType(xEventHandle, va_arg(*pxVariableList, TraceUnsignedBaseType_t));
-	}
-
-	(void)xTraceEventPayloadRemaining(xEventHandle, &uiRemaining);
-	if (uiRemaining < uiLength)
-	{
-		uiLength = uiRemaining - 1u; /* Make room for null termination */ /*cstat !MISRAC2012-Rule-17.8 Suppress modified function parameter check*/
-	}
-
-	/* Add format string */
-	(void)xTraceEventAddString(xEventHandle, szFormat, uiLength);
-
-	/* Check if we can truncate */
-	(void)xTraceEventPayloadRemaining(xEventHandle, &uiValue);
-	if (uiValue > 0u)
-	{
-		(void)xTraceEventAdd8(xEventHandle, 0u);
-	}
-
-	(void)xTraceEventEnd(xEventHandle); /*cstat !MISRAC2012-Rule-17.7 Suppress ignored return value check (inside macro)*/
-
-	return TRC_SUCCESS;
+	return xResult;
 }
-
-#endif
-
-#endif
 
 #endif

@@ -1,3 +1,13 @@
+/*
+ * Trace Recorder for Tracealyzer v4.9.0
+ * Copyright 2023 Percepio AB
+ * www.percepio.com
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ *
+ * ThreadX specific hooks
+ */
+
 #include <trcRecorder.h>
 
 extern volatile ULONG _tx_thread_system_state;
@@ -6,25 +16,7 @@ extern TX_THREAD *_tx_thread_current_ptr;
 extern TX_THREAD pxIdleTxThreadDummy;
 static TX_THREAD *pxLastRunningTxThread = TX_NULL;
 
-traceResult xTraceEventBeginRawOffline_orig(uint32_t uiSize, TraceEventHandle_t* pxEventHandle);
-traceResult xTraceEventEndOffline_orig(TraceEventHandle_t pxEventHandle);
-
-/* Original version of TRC_EVENT_BEGIN which uses xTraceEventBeginRawOffline_orig for the purpose
- * of allowing interrupt locking for xTraceCheckThreadSwitch together with event posting. */
-#define TRC_EVENT_BEGIN_OFFLINE_ORIG(uiEventCode, uiPayloadSize, pxEventHandle) \
-	(xTraceIsRecorderEnabled() ? \
-		( \
-			(xTraceEventBeginRawOffline_orig(sizeof(TraceEvent0_t) + (uiPayloadSize), pxEventHandle)) == TRC_SUCCESS ? \
-			( \
-				SET_BASE_EVENT_DATA((TraceEvent0_t*)(((TraceEventData_t*)*(pxEventHandle))->pvBlob), \
-					uiEventCode, \
-					(((TraceEventData_t*)*(pxEventHandle))->size - sizeof(TraceEvent0_t)) / sizeof(uint32_t), \
-					pxTraceEventDataTable->coreEventData[TRC_CFG_GET_CURRENT_CORE()].eventCounter), \
-				((TraceEventData_t*)*(pxEventHandle))->offset += sizeof(TraceEvent0_t), \
-				TRC_SUCCESS \
-			) : TRC_FAIL \
-		) : TRC_FAIL \
-	)
+traceResult xTraceEventCreate1_orig(uint32_t uiEventCode, TraceUnsignedBaseType_t uxParam1);
 
 void xTraceResetCurrentThread()
 {
@@ -42,15 +34,7 @@ void xTraceCheckThreadSwitch()
 		/* Update */
 		pxLastRunningTxThread = _tx_thread_execute_ptr;
 
-		TraceEventHandle_t xTraceHandle;
-
-		/* Since the regular xTraceEventBegin and xTraceEventEnd are wrapped via CTI, which calls this
-		 * function, we have to use the original (non CTI wrapped) begin/end functions.
-		 */
-		if (TRC_EVENT_BEGIN_OFFLINE_ORIG(PSF_EVENT_THREAD_SYSTEM_SUSPEND_SUCCESS, sizeof(void*), &xTraceHandle) == TRC_SUCCESS) {
-			xTraceEventAddPointer(xTraceHandle, (void*)_tx_thread_execute_ptr);
-			xTraceEventEndOffline_orig(xTraceHandle);
-		}
+		(void)xTraceEventCreate1_orig(PSF_EVENT_THREAD_SYSTEM_SUSPEND_SUCCESS, (TraceUnsignedBaseType_t)_tx_thread_execute_ptr);
 	}
 
 	if (uiFirstThreadSwitch)
@@ -58,20 +42,12 @@ void xTraceCheckThreadSwitch()
 		/* Handle thread swapping while considering our dummy idle thread mapping. */
 		TX_THREAD *pxCurrentTxThread = _tx_thread_current_ptr == TX_NULL ? &pxIdleTxThreadDummy : _tx_thread_current_ptr;
 
-		if (pxCurrentTxThread != pxLastRunningTxThread) {
+		if (pxCurrentTxThread != pxLastRunningTxThread)
+		{
 			/* Update */
 			pxLastRunningTxThread = pxCurrentTxThread;
 
-			/* There has been a thread switch */
-			TraceEventHandle_t xTraceHandle;
-
-			/* Since the regular xTraceEventBegin and xTraceEventEnd are wrapped via CTI, which calls this
-			 * function, we have to use the original (non CTI wrapped) begin/end functions.
-			 */
-			if (TRC_EVENT_BEGIN_OFFLINE_ORIG(PSF_EVENT_TASK_POTENTIAL_SWITCH_RESULT, sizeof(void*), &xTraceHandle) == TRC_SUCCESS) {
-				xTraceEventAddPointer(xTraceHandle, (void*)pxCurrentTxThread);
-				xTraceEventEndOffline_orig(xTraceHandle);
-			}
+			(void)xTraceEventCreate1_orig(PSF_EVENT_TASK_POTENTIAL_SWITCH_RESULT, (TraceUnsignedBaseType_t)pxCurrentTxThread);
 		}
 	}
 }
@@ -90,73 +66,41 @@ void xTraceISRExitHook(UINT uiTxEventCode)
 
 void xTraceTimeSliceHook(UINT uiTxEventCode, TX_THREAD *pxNextThreadPtr)
 {
-	TraceEventHandle_t xTraceHandle;
-
-	if (xTraceEventBegin(uiTxEventCode, sizeof(void*), &xTraceHandle) == TRC_SUCCESS) {
-		xTraceEventAddPointer(xTraceHandle, (void*)pxNextThreadPtr);
-		xTraceEventEnd(xTraceHandle);
-	}
+	(void)xTraceEventCreate1(uiTxEventCode, (TraceUnsignedBaseType_t)pxNextThreadPtr);
 
 	/* Due to the design of ThreadX tracing we have to insert a potential switch
 	 * check here. */
-	if (xTraceEventBegin(PSF_EVENT_TASK_POTENTIAL_SWITCH, 0, &xTraceHandle) == TRC_SUCCESS) {
-		xTraceEventEnd(xTraceHandle);
-	}
+	(void)xTraceEventCreate0(PSF_EVENT_TASK_POTENTIAL_SWITCH);
 }
 
 
 void xTraceBlockAllocateHook(UINT uiTxEventCode, TX_BLOCK_POOL *pxBlockPool, ULONG uiWaitOption, UINT uiRemainingBlocks)
 {
-	TraceEventHandle_t xTraceHandle;
-
-	if (xTraceEventBegin(uiTxEventCode, sizeof(void*) + sizeof(ULONG) + sizeof(UINT), &xTraceHandle) == TRC_SUCCESS) {
-		xTraceEventAddPointer(xTraceHandle, (void*)pxBlockPool);
-		xTraceEventAddUnsignedBaseType(xTraceHandle, uiWaitOption);
-		xTraceEventAdd32(xTraceHandle, uiRemainingBlocks);
-		xTraceEventEnd(xTraceHandle);
-	}
+	(void)xTraceEventCreate3(uiTxEventCode, (TraceUnsignedBaseType_t)pxBlockPool, (TraceUnsignedBaseType_t)uiWaitOption, (TraceUnsignedBaseType_t)uiRemainingBlocks);
 }
 
 void xTraceBlockPoolCreateHook(UINT uiTxEventCode, TX_BLOCK_POOL *pxBlockPool, ULONG uiBlockSize, VOID *pvPoolStart, ULONG uiTotalBlocks)
 {
-	TraceEventHandle_t xTraceHandle;
-
 	if (pxBlockPool->tx_block_pool_name != 0) {
-		xTraceObjectSetNameWithoutHandle((void*)pxBlockPool, pxBlockPool->tx_block_pool_name);
+		(void)xTraceObjectSetNameWithoutHandle((void*)pxBlockPool, pxBlockPool->tx_block_pool_name);
 	}
 
-	if (xTraceEventBegin(uiTxEventCode, sizeof(void*) + sizeof(ULONG) + sizeof(void*) + sizeof(ULONG), &xTraceHandle) == TRC_SUCCESS) {
-		xTraceEventAddPointer(xTraceHandle, (void*)pxBlockPool);
-		xTraceEventAddUnsignedBaseType(xTraceHandle, uiBlockSize);
-		xTraceEventAddPointer(xTraceHandle, (void*)pvPoolStart);
-		xTraceEventAddUnsignedBaseType(xTraceHandle, uiTotalBlocks);
-		xTraceEventEnd(xTraceHandle);
-	}
+	(void)xTraceEventCreate4(uiTxEventCode, (TraceUnsignedBaseType_t)pxBlockPool, (TraceUnsignedBaseType_t)uiBlockSize, (TraceUnsignedBaseType_t)pvPoolStart, (TraceUnsignedBaseType_t)uiTotalBlocks);
 }
 
 void xTraceBlockPoolDeleteHook(UINT uiTxEventCode, TX_BLOCK_POOL *pxBlockPool)
 {
-	xTraceObjectUnregisterWithoutHandle(uiTxEventCode, (void*)pxBlockPool, 0);
+	(void)xTraceObjectUnregisterWithoutHandle(uiTxEventCode, (void*)pxBlockPool, 0);
 }
 
 void xTraceBlockPoolInfoGetHook(UINT uiTxEventCode, TX_BLOCK_POOL *pxBlockPool)
 {
-	TraceEventHandle_t xTraceHandle;
-
-	if (xTraceEventBegin(uiTxEventCode, sizeof(void*), &xTraceHandle) == TRC_SUCCESS) {
-		xTraceEventAddPointer(xTraceHandle, (void*)pxBlockPool);
-		xTraceEventEnd(xTraceHandle);
-	}
+	(void)xTraceEventCreate1(uiTxEventCode, (TraceUnsignedBaseType_t)pxBlockPool);
 }
 
 void xTraceBlockPoolPerformanceInfoGetHook(UINT uiTxEventCode, TX_BLOCK_POOL *pxBlockPool)
 {
-	TraceEventHandle_t xTraceHandle;
-
-	if (xTraceEventBegin(uiTxEventCode, sizeof(void*), &xTraceHandle) == TRC_SUCCESS) {
-		xTraceEventAddPointer(xTraceHandle, (void*)pxBlockPool);
-		xTraceEventEnd(xTraceHandle);
-	}
+	(void)xTraceEventCreate1(uiTxEventCode, (TraceUnsignedBaseType_t)pxBlockPool);
 }
 
 void xTraceBlockPoolPerformanceSystemInfoGetHook(UINT uiTxEventCode)
@@ -167,22 +111,12 @@ void xTraceBlockPoolPerformanceSystemInfoGetHook(UINT uiTxEventCode)
 
 void xTraceBlockPoolPrioritizeHook(UINT uiTxEventCode, TX_BLOCK_POOL *pxBlockPool)
 {
-	TraceEventHandle_t xTraceHandle;
-
-	if (xTraceEventBegin(uiTxEventCode, sizeof(void*), &xTraceHandle) == TRC_SUCCESS) {
-		xTraceEventAddPointer(xTraceHandle, (void*)pxBlockPool);
-		xTraceEventEnd(xTraceHandle);
-	}
+	(void)xTraceEventCreate1(uiTxEventCode, (TraceUnsignedBaseType_t)pxBlockPool);
 }
 
 void xTraceBlockReleaseHook(UINT uiTxEventCode, VOID *pvBlockPool)
 {
-	TraceEventHandle_t xTraceHandle;
-
-	if (xTraceEventBegin(uiTxEventCode, sizeof(void*), &xTraceHandle) == TRC_SUCCESS) {
-		xTraceEventAddPointer(xTraceHandle, (void*)pvBlockPool);
-		xTraceEventEnd(xTraceHandle);
-	}
+	(void)xTraceEventCreate1(uiTxEventCode, (TraceUnsignedBaseType_t)pvBlockPool);
 }
 
 
@@ -194,44 +128,26 @@ void xTraceByteAllocateHook(UINT uiTxEventCode)
 
 void xTraceBytePoolCreateHook(UINT uiTxEventCode, TX_BYTE_POOL *pxBytePool, VOID *pvStartPtr, ULONG uiPoolSize)
 {
-	TraceEventHandle_t xTraceHandle;
-
 	if (pxBytePool->tx_byte_pool_name != 0) {
-		xTraceObjectSetNameWithoutHandle((void*)pxBytePool, pxBytePool->tx_byte_pool_name);
+		(void)xTraceObjectSetNameWithoutHandle((void*)pxBytePool, pxBytePool->tx_byte_pool_name);
 	}
 
-	if (xTraceEventBegin(uiTxEventCode, sizeof(void*) + sizeof(void*) + sizeof(ULONG),
-		&xTraceHandle) == TRC_SUCCESS) {
-		xTraceEventAddPointer(xTraceHandle, (void*)pxBytePool);
-		xTraceEventAddPointer(xTraceHandle, (void*)pvStartPtr);
-		xTraceEventAddUnsignedBaseType(xTraceHandle, uiPoolSize);
-		xTraceEventEnd(xTraceHandle);
-	}
+	(void)xTraceEventCreate3(uiTxEventCode, (TraceUnsignedBaseType_t)pxBytePool, (TraceUnsignedBaseType_t)pvStartPtr, (TraceUnsignedBaseType_t)uiPoolSize);
 }
 
 void xTraceBytePoolDeleteHook(UINT uiTxEventCode, TX_BYTE_POOL *pxBytePool)
 {
-	xTraceObjectUnregisterWithoutHandle(uiTxEventCode, (void*)pxBytePool, 0);
+	(void)xTraceObjectUnregisterWithoutHandle(uiTxEventCode, (void*)pxBytePool, 0);
 }
 
 void xTraceBytePoolInfoGetHook(UINT uiTxEventCode, TX_BYTE_POOL *pxBytePool)
 {
-	TraceEventHandle_t xTraceHandle;
-
-	if (xTraceEventBegin(uiTxEventCode, sizeof(void*), &xTraceHandle) == TRC_SUCCESS) {
-		xTraceEventAddPointer(xTraceHandle, (void*)pxBytePool);
-		xTraceEventEnd(xTraceHandle);
-	}
+	(void)xTraceEventCreate1(uiTxEventCode, (TraceUnsignedBaseType_t)pxBytePool);
 }
 
 void xTraceBytePoolPerformanceInfoGetHook(UINT uiTxEventCode, TX_BYTE_POOL *pxBytePool)
 {
-	TraceEventHandle_t xTraceHandle;
-
-	if (xTraceEventBegin(uiTxEventCode, sizeof(void*), &xTraceHandle) == TRC_SUCCESS) {
-		xTraceEventAddPointer(xTraceHandle, (void*)pxBytePool);
-		xTraceEventEnd(xTraceHandle);
-	}
+	(void)xTraceEventCreate1(uiTxEventCode, (TraceUnsignedBaseType_t)pxBytePool);
 }
 
 void xTraceBytePoolPerformanceSystemInfoGetHook(UINT uiTxEventCode)
@@ -242,77 +158,42 @@ void xTraceBytePoolPerformanceSystemInfoGetHook(UINT uiTxEventCode)
 
 void xTraceBytePoolPrioritizeHook(UINT uiTxEventCode, TX_BYTE_POOL *pxBytePool)
 {
-	TraceEventHandle_t xTraceHandle;
-
-	if (xTraceEventBegin(uiTxEventCode, sizeof(void*), &xTraceHandle) == TRC_SUCCESS) {
-		xTraceEventAddPointer(xTraceHandle, (void*)pxBytePool);
-		xTraceEventEnd(xTraceHandle);
-	}
+	(void)xTraceEventCreate1(uiTxEventCode, (TraceUnsignedBaseType_t)pxBytePool);
 }
 
 void xTraceByteReleaseHook(UINT uiTxEventCode, TX_BYTE_POOL *pxBytePool, VOID *pvMemory, UINT uiAvailableBytes)
 {
-	TraceEventHandle_t xTraceHandle;
-
-	if (xTraceEventBegin(uiTxEventCode, sizeof(void*) + sizeof(void*) + sizeof(UINT),
-		&xTraceHandle) == TRC_SUCCESS) {
-		xTraceEventAddPointer(xTraceHandle, (void*)pxBytePool);
-		xTraceEventAddPointer(xTraceHandle, (void*)pvMemory);
-		xTraceEventAdd32(xTraceHandle, uiAvailableBytes);
-		xTraceEventEnd(xTraceHandle);
-	}
+	(void)xTraceEventCreate3(uiTxEventCode, (TraceUnsignedBaseType_t)pxBytePool, (TraceUnsignedBaseType_t)pvMemory, (TraceUnsignedBaseType_t)uiAvailableBytes);
 }
 
 
 void xTraceEventFlagsCreateHook(UINT uiTxEventCode, TX_EVENT_FLAGS_GROUP *pxFlagsGroup)
 {
-	TraceEventHandle_t xTraceHandle;
-
 	if (pxFlagsGroup->tx_event_flags_group_name != 0) {
-		xTraceObjectSetNameWithoutHandle((void*)pxFlagsGroup, pxFlagsGroup->tx_event_flags_group_name);
+		(void)xTraceObjectSetNameWithoutHandle((void*)pxFlagsGroup, pxFlagsGroup->tx_event_flags_group_name);
 	}
 
-	if (xTraceEventBegin(uiTxEventCode, sizeof(void*), &xTraceHandle) == TRC_SUCCESS) {
-		xTraceEventAddPointer(xTraceHandle, (void*)pxFlagsGroup);
-		xTraceEventEnd(xTraceHandle);
-	}
+	(void)xTraceEventCreate1(uiTxEventCode, (TraceUnsignedBaseType_t)pxFlagsGroup);
 }
 
 void xTraceEventFlagsDeleteHook(UINT uiTxEventCode, TX_EVENT_FLAGS_GROUP *pxFlagsGroup)
 {
-	xTraceObjectUnregisterWithoutHandle(uiTxEventCode, (void*)pxFlagsGroup, 0);
+	(void)xTraceObjectUnregisterWithoutHandle(uiTxEventCode, (void*)pxFlagsGroup, 0);
 }
 
 void xTraceEventFlagsGetHook(UINT uiTxEventCode, TX_EVENT_FLAGS_GROUP *pxFlagsGroup, ULONG ulRequestedFlags, UINT uiGetOption)
 {
-	TraceEventHandle_t xTraceHandle;
-
-	if (xTraceEventBegin(uiTxEventCode, sizeof(void*) + sizeof(ULONG) + sizeof(UINT), &xTraceHandle) == TRC_SUCCESS) {
-		xTraceEventAddPointer(xTraceHandle, (void*)pxFlagsGroup);
-		xTraceEventAddUnsignedBaseType(xTraceHandle, ulRequestedFlags);
-		xTraceEventAdd32(xTraceHandle, uiGetOption);
-		xTraceEventEnd(xTraceHandle);
-	}
+	(void)xTraceEventCreate3(uiTxEventCode, (TraceUnsignedBaseType_t)pxFlagsGroup, (TraceUnsignedBaseType_t)ulRequestedFlags, (TraceUnsignedBaseType_t)uiGetOption);
 }
 
 void xTraceEventFlagsInfoGetHook(UINT uiTxEventCode, TX_EVENT_FLAGS_GROUP *pxFlagsGroup)
 {
-	TraceEventHandle_t xTraceHandle;
-
-	if (xTraceEventBegin(uiTxEventCode, sizeof(void*), &xTraceHandle) == TRC_SUCCESS) {
-		xTraceEventAddPointer(xTraceHandle, (void*)pxFlagsGroup);
-		xTraceEventEnd(xTraceHandle);
-	}
+	(void)xTraceEventCreate1(uiTxEventCode, (TraceUnsignedBaseType_t)pxFlagsGroup);
 }
 
 void xTraceEventFlagsPerformanceInfoGetHook(UINT uiTxEventCode, TX_EVENT_FLAGS_GROUP *pxFlagsGroup)
 {
-	TraceEventHandle_t xTraceHandle;
-
-	if (xTraceEventBegin(uiTxEventCode, sizeof(void*), &xTraceHandle) == TRC_SUCCESS) {
-		xTraceEventAddPointer(xTraceHandle, (void*)pxFlagsGroup);
-		xTraceEventEnd(xTraceHandle);
-	}
+	(void)xTraceEventCreate1(uiTxEventCode, (TraceUnsignedBaseType_t)pxFlagsGroup);
 }
 
 void xTraceEventFlagsPerformanceSystemInfoGetHook(UINT uiTxEventCode)
@@ -323,45 +204,27 @@ void xTraceEventFlagsPerformanceSystemInfoGetHook(UINT uiTxEventCode)
 
 void xTraceEventFlagsSetHook(UINT uiTxEventCode, TX_EVENT_FLAGS_GROUP *pxFlagsGroup, ULONG ulFlagsToSet, UINT uiSetOption)
 {
-	TraceEventHandle_t xTraceHandle;
-
-	if (xTraceEventBegin(uiTxEventCode, sizeof(void*) + sizeof(ULONG) + sizeof(UINT), &xTraceHandle) == TRC_SUCCESS) {
-		xTraceEventAddPointer(xTraceHandle, (void*)pxFlagsGroup);
-		xTraceEventAddUnsignedBaseType(xTraceHandle, ulFlagsToSet);
-		xTraceEventAdd32(xTraceHandle, uiSetOption);
-		xTraceEventEnd(xTraceHandle);
-	}
+	(void)xTraceEventCreate3(uiTxEventCode, (TraceUnsignedBaseType_t)pxFlagsGroup, (TraceUnsignedBaseType_t)ulFlagsToSet, (TraceUnsignedBaseType_t)uiSetOption);
 }
 
 void xTraceEventFlagsSetNotifyHook(UINT uiTxEventCode, TX_EVENT_FLAGS_GROUP *pxFlagsGroup)
 {
-	TraceEventHandle_t xTraceHandle;
-
-	if (xTraceEventBegin(uiTxEventCode, sizeof(void*), &xTraceHandle) == TRC_SUCCESS) {
-		xTraceEventAddPointer(xTraceHandle, (void*)pxFlagsGroup);
-		xTraceEventEnd(xTraceHandle);
-	}
+	(void)xTraceEventCreate1(uiTxEventCode, (TraceUnsignedBaseType_t)pxFlagsGroup);
 }
 
 
 void xTraceMutexCreateHook(UINT uiTxEventCode, TX_MUTEX *pxMutex, UINT uiPrioInherit)
 {
-	TraceEventHandle_t xTraceHandle;
-
 	if (pxMutex->tx_mutex_name != 0) {
-		xTraceObjectSetNameWithoutHandle((void*)pxMutex, pxMutex->tx_mutex_name);
+		(void)xTraceObjectSetNameWithoutHandle((void*)pxMutex, pxMutex->tx_mutex_name);
 	}
 
-	if (xTraceEventBegin(uiTxEventCode, sizeof(void*) + sizeof(UINT), &xTraceHandle) == TRC_SUCCESS) {
-		xTraceEventAddPointer(xTraceHandle, (void*)pxMutex);
-		xTraceEventAdd32(xTraceHandle, uiPrioInherit);
-		xTraceEventEnd(xTraceHandle);
-	}
+	(void)xTraceEventCreate2(uiTxEventCode, (TraceUnsignedBaseType_t)pxMutex, (TraceUnsignedBaseType_t)uiPrioInherit);
 }
 
 void xTraceMutexDeleteHook(UINT uiTxEventCode, TX_MUTEX *pxMutex)
 {
-	xTraceObjectUnregisterWithoutHandle(uiTxEventCode, (void*)pxMutex, 0);
+	(void)xTraceObjectUnregisterWithoutHandle(uiTxEventCode, (void*)pxMutex, 0);
 }
 
 void xTraceMutexGetHook(UINT uiTxEventCode, TX_MUTEX *pxMutex)
@@ -373,22 +236,12 @@ void xTraceMutexGetHook(UINT uiTxEventCode, TX_MUTEX *pxMutex)
 
 void xTraceMutexInfoGetHook(UINT uiTxEventCode, TX_MUTEX *pxMutex)
 {
-	TraceEventHandle_t xTraceHandle;
-
-	if (xTraceEventBegin(uiTxEventCode, sizeof(void*), &xTraceHandle) == TRC_SUCCESS) {
-		xTraceEventAddPointer(xTraceHandle, (void*)pxMutex);
-		xTraceEventEnd(xTraceHandle);
-	}
+	(void)xTraceEventCreate1(uiTxEventCode, (TraceUnsignedBaseType_t)pxMutex);
 }
 
 void xTraceMutexPerformanceInfoGetHook(UINT uiTxEventCode, TX_MUTEX *pxMutex)
 {
-	TraceEventHandle_t xTraceHandle;
-
-	if (xTraceEventBegin(uiTxEventCode, sizeof(void*), &xTraceHandle) == TRC_SUCCESS) {
-		xTraceEventAddPointer(xTraceHandle, (void*)pxMutex);
-		xTraceEventEnd(xTraceHandle);
-	}
+	(void)xTraceEventCreate1(uiTxEventCode, (TraceUnsignedBaseType_t)pxMutex);
 }
 
 void xTraceMutexPerformanceSystemInfoGetHook(UINT uiTxEventCode)
@@ -399,61 +252,38 @@ void xTraceMutexPerformanceSystemInfoGetHook(UINT uiTxEventCode)
 
 void xTraceMutexPrioritizeHook(UINT uiTxEventCode, TX_MUTEX *pxMutex)
 {
-	TraceEventHandle_t xTraceHandle;
-
-	if (xTraceEventBegin(uiTxEventCode, sizeof(void*), &xTraceHandle) == TRC_SUCCESS) {
-		xTraceEventAddPointer(xTraceHandle, (void*)pxMutex);
-		xTraceEventEnd(xTraceHandle);
-	}
+	(void)xTraceEventCreate1(uiTxEventCode, (TraceUnsignedBaseType_t)pxMutex);
 }
 
 void xTraceMutexPutHook(UINT uiTxEventCode, TX_MUTEX *pxMutex, UINT uiStateAfter)
 {
-	TraceEventHandle_t xTraceHandle;
-
-	if (xTraceEventBegin(uiTxEventCode, sizeof(void*) + sizeof(UINT), &xTraceHandle) == TRC_SUCCESS) {
-		xTraceEventAddPointer(xTraceHandle, (void*)pxMutex);
-		xTraceEventAdd32(xTraceHandle, uiStateAfter);
-		xTraceEventEnd(xTraceHandle);
-	}
+	(void)xTraceEventCreate2(uiTxEventCode, (TraceUnsignedBaseType_t)pxMutex, (TraceUnsignedBaseType_t)uiStateAfter);
 }
 
 
 void xTraceQueueCreateHook(UINT uiTxEventCode, TX_QUEUE *pxQueue, UINT uiMessageSize, VOID *pvQueueStart, UINT uiQueueSize)
 {
-	TraceEventHandle_t xTraceHandle;
-
 	if (pxQueue->tx_queue_name != 0) {
-		xTraceObjectSetNameWithoutHandle((void*)pxQueue, pxQueue->tx_queue_name);
+		(void)xTraceObjectSetNameWithoutHandle((void*)pxQueue, pxQueue->tx_queue_name);
 	}
 
-	if (xTraceEventBegin(uiTxEventCode, sizeof(void*) + sizeof(UINT) + sizeof(void*) + sizeof(UINT),
-		&xTraceHandle) == TRC_SUCCESS) {
-		xTraceEventAddPointer(xTraceHandle, (void*)pxQueue);
-		xTraceEventAdd32(xTraceHandle, uiMessageSize);
-		xTraceEventAddPointer(xTraceHandle, (void*)pvQueueStart);
-		xTraceEventAdd32(xTraceHandle, uiQueueSize);
-		xTraceEventEnd(xTraceHandle);
-	}
+	(void)xTraceEventCreate4(uiTxEventCode, (TraceUnsignedBaseType_t)pxQueue, (TraceUnsignedBaseType_t)uiMessageSize, (TraceUnsignedBaseType_t)pvQueueStart, (TraceUnsignedBaseType_t)uiQueueSize);
 }
 
 void xTraceQueueDeleteHook(UINT uiTxEventCode, TX_QUEUE *pxQueue)
 {
-	xTraceObjectUnregisterWithoutHandle(uiTxEventCode, (void*)pxQueue, 0);
+	(void)xTraceObjectUnregisterWithoutHandle(uiTxEventCode, (void*)pxQueue, 0);
 }
 
 void xTraceQueueFlushHook(UINT uiTxEventCode, TX_QUEUE *pxQueue)
 {
-	TraceEventHandle_t xTraceHandle;
-
-	if (xTraceEventBegin(uiTxEventCode, sizeof(void*), &xTraceHandle) == TRC_SUCCESS) {
-		xTraceEventAddPointer(xTraceHandle, (void*)pxQueue);
-		xTraceEventEnd(xTraceHandle);
-	}
+	(void)xTraceEventCreate1(uiTxEventCode, (TraceUnsignedBaseType_t)pxQueue);
 }
 
 void xTraceQueueFrontSendHook(UINT uiTxEventCode, TX_QUEUE *pxQueue)
 {
+	xTraceCheckThreadSwitch();
+
 	/* Intentionally left empty */
 	(void)uiTxEventCode;
 	(void)pxQueue;
@@ -461,22 +291,12 @@ void xTraceQueueFrontSendHook(UINT uiTxEventCode, TX_QUEUE *pxQueue)
 
 void xTraceQueueInfoGetHook(UINT uiTxEventCode, TX_QUEUE *pxQueue)
 {
-	TraceEventHandle_t xTraceHandle;
-
-	if (xTraceEventBegin(uiTxEventCode, sizeof(void*), &xTraceHandle) == TRC_SUCCESS) {
-		xTraceEventAddPointer(xTraceHandle, (void*)pxQueue);
-		xTraceEventEnd(xTraceHandle);
-	}
+	(void)xTraceEventCreate1(uiTxEventCode, (TraceUnsignedBaseType_t)pxQueue);
 }
 
 void xTraceQueuePerformanceInfoGetHook(UINT uiTxEventCode, TX_QUEUE *pxQueue)
 {
-	TraceEventHandle_t xTraceHandle;
-
-	if (xTraceEventBegin(uiTxEventCode, sizeof(void*), &xTraceHandle) == TRC_SUCCESS) {
-		xTraceEventAddPointer(xTraceHandle, (void*)pxQueue);
-		xTraceEventEnd(xTraceHandle);
-	}
+	(void)xTraceEventCreate1(uiTxEventCode, (TraceUnsignedBaseType_t)pxQueue);
 }
 
 void xTraceQueuePerformanceSystemInfoGetHook(UINT uiTxEventCode)
@@ -487,12 +307,7 @@ void xTraceQueuePerformanceSystemInfoGetHook(UINT uiTxEventCode)
 
 void xTraceQueuePrioritizeHook(UINT uiTxEventCode, TX_QUEUE *pxQueue)
 {
-	TraceEventHandle_t xTraceHandle;
-
-	if (xTraceEventBegin(uiTxEventCode, sizeof(void*), &xTraceHandle) == TRC_SUCCESS) {
-		xTraceEventAddPointer(xTraceHandle, (void*)pxQueue);
-		xTraceEventEnd(xTraceHandle);
-	}
+	(void)xTraceEventCreate1(uiTxEventCode, (TraceUnsignedBaseType_t)pxQueue);
 }
 
 void xTraceQueueReceiveHook(UINT uiTxEventCode)
@@ -509,12 +324,7 @@ void xTraceQueueSendHook(UINT uiTxEventCode)
 
 void xTraceQueueSendNotifyHook(UINT uiTxEventCode, TX_QUEUE *pxQueue)
 {
-	TraceEventHandle_t xTraceHandle;
-
-	if (xTraceEventBegin(uiTxEventCode, sizeof(void*), &xTraceHandle) == TRC_SUCCESS) {
-		xTraceEventAddPointer(xTraceHandle, (void*)pxQueue);
-		xTraceEventEnd(xTraceHandle);
-	}
+	(void)xTraceEventCreate1(uiTxEventCode, (TraceUnsignedBaseType_t)pxQueue);
 }
 
 
@@ -526,22 +336,16 @@ void xTraceSemaphoreCeilingPutHook(UINT uiTxEventCode)
 
 void xTraceSemaphoreCreateHook(UINT uiTxEventCode, TX_SEMAPHORE *pxSemaphore, ULONG uiInitialCount)
 {
-	TraceEventHandle_t xTraceHandle;
-
 	if (pxSemaphore->tx_semaphore_name != 0) {
-		xTraceObjectSetNameWithoutHandle((void*)pxSemaphore, pxSemaphore->tx_semaphore_name);
+		(void)xTraceObjectSetNameWithoutHandle((void*)pxSemaphore, pxSemaphore->tx_semaphore_name);
 	}
 
-	if (xTraceEventBegin(uiTxEventCode, sizeof(void*) + sizeof(ULONG), &xTraceHandle) == TRC_SUCCESS) {
-		xTraceEventAddPointer(xTraceHandle, (void*)pxSemaphore);
-		xTraceEventAddUnsignedBaseType(xTraceHandle, uiInitialCount);
-		xTraceEventEnd(xTraceHandle);
-	}
+	(void)xTraceEventCreate2(uiTxEventCode, (TraceUnsignedBaseType_t)pxSemaphore, (TraceUnsignedBaseType_t)uiInitialCount);
 }
 
 void xTraceSemaphoreDeleteHook(UINT uiTxEventCode, TX_SEMAPHORE *pxSemaphore)
 {
-	xTraceObjectUnregisterWithoutHandle(uiTxEventCode, (void*)pxSemaphore, pxSemaphore->tx_semaphore_count);
+	(void)xTraceObjectUnregisterWithoutHandle(uiTxEventCode, (void*)pxSemaphore, pxSemaphore->tx_semaphore_count);
 }
 
 void xTraceSemaphoreGetHook(UINT uiTxEventCode)
@@ -552,22 +356,12 @@ void xTraceSemaphoreGetHook(UINT uiTxEventCode)
 
 void xTraceSemaphoreInfoGetHook(UINT uiTxEventCode, TX_SEMAPHORE *pxSemaphore)
 {
-	TraceEventHandle_t xTraceHandle;
-
-	if (xTraceEventBegin(uiTxEventCode, sizeof(void*), &xTraceHandle) == TRC_SUCCESS) {
-		xTraceEventAddPointer(xTraceHandle, (void*)pxSemaphore);
-		xTraceEventEnd(xTraceHandle);
-	}
+	(void)xTraceEventCreate1(uiTxEventCode, (TraceUnsignedBaseType_t)pxSemaphore);
 }
 
 void xTraceSemaphorePerformanceInfoGetHook(UINT uiTxEventCode, TX_SEMAPHORE *pxSemaphore)
 {
-	TraceEventHandle_t xTraceHandle;
-
-	if (xTraceEventBegin(uiTxEventCode, sizeof(void*), &xTraceHandle) == TRC_SUCCESS) {
-		xTraceEventAddPointer(xTraceHandle, (void*)pxSemaphore);
-		xTraceEventEnd(xTraceHandle);
-	}
+	(void)xTraceEventCreate1(uiTxEventCode, (TraceUnsignedBaseType_t)pxSemaphore);
 }
 
 void xTraceSemaphorePerformanceSystemInfoGetHook(UINT uiTxEventCode)
@@ -578,39 +372,24 @@ void xTraceSemaphorePerformanceSystemInfoGetHook(UINT uiTxEventCode)
 
 void xTraceSemaphorePrioritizeHook(UINT uiTxEventCode, TX_SEMAPHORE *pxSemaphore)
 {
-	TraceEventHandle_t xTraceHandle;
-
-	if (xTraceEventBegin(uiTxEventCode, sizeof(void*), &xTraceHandle) == TRC_SUCCESS) {
-		xTraceEventAddPointer(xTraceHandle, (void*)pxSemaphore);
-		xTraceEventEnd(xTraceHandle);
-	}
+	(void)xTraceEventCreate1(uiTxEventCode, (TraceUnsignedBaseType_t)pxSemaphore);
 }
 
 void xTraceSemaphorePutHook(UINT uiTxEventCode, TX_SEMAPHORE *pxSemaphore)
 {
-	TraceEventHandle_t xTraceHandle;
-
-	if (xTraceEventBegin(uiTxEventCode, sizeof(void*), &xTraceHandle) == TRC_SUCCESS) {
-		xTraceEventAddPointer(xTraceHandle, (void*)pxSemaphore);
-		xTraceEventEnd(xTraceHandle);
-	}
+	(void)xTraceEventCreate1(uiTxEventCode, (TraceUnsignedBaseType_t)pxSemaphore);
 }
 
 void xTraceSemaphorePutNotifyHook(UINT uiTxEventCode, TX_SEMAPHORE *pxSemaphore)
 {
-	TraceEventHandle_t xTraceHandle;
-
-	if (xTraceEventBegin(uiTxEventCode, sizeof(void*), &xTraceHandle) == TRC_SUCCESS) {
-		xTraceEventAddPointer(xTraceHandle, (void*)pxSemaphore);
-		xTraceEventEnd(xTraceHandle);
-	}
+	(void)xTraceEventCreate1(uiTxEventCode, (TraceUnsignedBaseType_t)pxSemaphore);
 }
 
 void xTraceThreadResumeHook(UINT uiTxEventCode, TX_THREAD *pxThread)
 {
 	(void)uiTxEventCode;
 
-	xTraceTaskReady(pxThread);
+	(void)xTraceTaskReady(pxThread);
 }
 
 void xTraceThreadSuspendHook(UINT uiTxEventCode, TX_THREAD *pxThread)
@@ -618,132 +397,75 @@ void xTraceThreadSuspendHook(UINT uiTxEventCode, TX_THREAD *pxThread)
 	(void)pxThread;
 	(void)uiTxEventCode;
 
-	TraceEventHandle_t xTraceHandle;
-
-	if (xTraceEventBegin(PSF_EVENT_TASK_POTENTIAL_SWITCH, 0, &xTraceHandle) == TRC_SUCCESS) {
-		xTraceEventEnd(xTraceHandle);
-	}
+	(void)xTraceEventCreate0(PSF_EVENT_TASK_POTENTIAL_SWITCH);
 }
 
 void xTraceThreadCreateHook(UINT uiTxEventCode, TX_THREAD *pxThread, UINT uiPriority)
 {
 	(void)uiTxEventCode;
 
-	TraceTaskHandle_t xTaskHandle;
-
-	xTraceTaskRegister((void*)pxThread, pxThread->tx_thread_name, uiPriority, &xTaskHandle);
+	(void)xTraceTaskRegisterWithoutHandle((void*)pxThread, pxThread->tx_thread_name, uiPriority);
 }
 
 void xTraceThreadDeleteHook(UINT uiTxEventCode, TX_THREAD *pxThread)
 {
 	(void)uiTxEventCode;
 
-	xTraceTaskUnregisterWithoutHandle((void*)pxThread, pxThread->tx_thread_priority);
+	(void)xTraceTaskUnregisterWithoutHandle((void*)pxThread, pxThread->tx_thread_priority);
 }
 
 void xTraceThreadEntryExitNotifyHook(UINT uiTxEventCode, TX_THREAD *pxThread)
 {
-	TraceEventHandle_t xTraceHandle;
-
-	if (xTraceEventBegin(uiTxEventCode, sizeof(void*), &xTraceHandle) == TRC_SUCCESS) {
-		xTraceEventAddPointer(xTraceHandle, (void*)pxThread);
-		xTraceEventEnd(xTraceHandle);
-	}
+	(void)xTraceEventCreate1(uiTxEventCode, (TraceUnsignedBaseType_t)pxThread);
 }
 
 void xTraceThreadIdentifyHook(UINT uiTxEventCode)
 {
-	TraceEventHandle_t xTraceHandle;
-
-	if (xTraceEventBegin(uiTxEventCode, 0, &xTraceHandle) == TRC_SUCCESS) {
-		xTraceEventEnd(xTraceHandle);
-	}
+	(void)xTraceEventCreate0(uiTxEventCode);
 }
 
 void xTraceThreadInfoGetHook(UINT uiTxEventCode, TX_THREAD *pxThread)
 {
-	TraceEventHandle_t xTraceHandle;
-
-	if (xTraceEventBegin(uiTxEventCode, sizeof(void*), &xTraceHandle) == TRC_SUCCESS) {
-		xTraceEventAddPointer(xTraceHandle, (void*)pxThread);
-		xTraceEventEnd(xTraceHandle);
-	}
+	(void)xTraceEventCreate1(uiTxEventCode, (TraceUnsignedBaseType_t)pxThread);
 }
 
 void xTraceThreadPerformanceInfoGetHook(UINT uiTxEventCode, TX_THREAD *pxThread)
 {
-	TraceEventHandle_t xTraceHandle;
-
-	if (xTraceEventBegin(uiTxEventCode, sizeof(void*), &xTraceHandle) == TRC_SUCCESS) {
-		xTraceEventAddPointer(xTraceHandle, (void*)pxThread);
-		xTraceEventEnd(xTraceHandle);
-	}
+	(void)xTraceEventCreate1(uiTxEventCode, (TraceUnsignedBaseType_t)pxThread);
 }
 
 void xTraceThreadPerformanceSystemInfoGetHook(UINT uiTxEventCode)
 {
-	TraceEventHandle_t xTraceHandle;
-
-	if (xTraceEventBegin(uiTxEventCode, 0, &xTraceHandle) == TRC_SUCCESS) {
-		xTraceEventEnd(xTraceHandle);
-	}
+	(void)xTraceEventCreate0(uiTxEventCode);
 }
 
 void xTraceThreadPreemptionChangeHook(UINT uiTxEventCode, TX_THREAD *pxThread, UINT uiNewThreshold)
 {
-	TraceEventHandle_t xTraceHandle;
-
-	if (xTraceEventBegin(uiTxEventCode, sizeof(void*) + sizeof(UINT), &xTraceHandle) == TRC_SUCCESS) {
-		xTraceEventAddPointer(xTraceHandle, (void*)pxThread);
-		xTraceEventAdd32(xTraceHandle, uiNewThreshold);
-		xTraceEventEnd(xTraceHandle);
-	}
+	(void)xTraceEventCreate2(uiTxEventCode, (TraceUnsignedBaseType_t)pxThread, (TraceUnsignedBaseType_t)uiNewThreshold);
 }
 
 void xTraceThreadPriorityChangeHook(UINT uiTxEventCode, TX_THREAD *pxThread, UINT uiNewPriority)
 {
-	TraceEventHandle_t xTraceHandle;
-
-	if (xTraceEventBegin(uiTxEventCode, sizeof(void*) + sizeof(UINT), &xTraceHandle) == TRC_SUCCESS) {
-		xTraceEventAddPointer(xTraceHandle, (void*)pxThread);
-		xTraceEventAdd32(xTraceHandle, uiNewPriority);
-		xTraceEventEnd(xTraceHandle);
-	}
+	(void)xTraceEventCreate2(uiTxEventCode, (TraceUnsignedBaseType_t)pxThread, (TraceUnsignedBaseType_t)uiNewPriority);
 }
 
 void xTraceThreadRelinquishHook(UINT uiTxEventCode)
 {
-	TraceEventHandle_t xTraceHandle;
-
-	if (xTraceEventBegin(uiTxEventCode, 0, &xTraceHandle) == TRC_SUCCESS) {
-		xTraceEventEnd(xTraceHandle);
-	}
+	(void)xTraceEventCreate0(uiTxEventCode);
 
 	/* Due to the design of ThreadX tracing we have to insert a potential switch
 	 * check here. */
-	if (xTraceEventBegin(PSF_EVENT_TASK_POTENTIAL_SWITCH, 0, &xTraceHandle) == TRC_SUCCESS) {
-		xTraceEventEnd(xTraceHandle);
-	}
+	(void)xTraceEventCreate0(PSF_EVENT_TASK_POTENTIAL_SWITCH);
 }
 
 void xTraceThreadResetHook(UINT uiTxEventCode, TX_THREAD *pxThread)
 {
-	TraceEventHandle_t xTraceHandle;
-
-	if (xTraceEventBegin(uiTxEventCode, sizeof(void*), &xTraceHandle) == TRC_SUCCESS) {
-		xTraceEventAddPointer(xTraceHandle, (void*)pxThread);
-		xTraceEventEnd(xTraceHandle);
-	}
+	(void)xTraceEventCreate1(uiTxEventCode, (TraceUnsignedBaseType_t)pxThread);
 }
 
 void xTraceThreadResumeAPIHook(UINT uiTxEventCode, TX_THREAD *pxThread)
 {
-	TraceEventHandle_t xTraceHandle;
-
-	if (xTraceEventBegin(uiTxEventCode, sizeof(void*), &xTraceHandle) == TRC_SUCCESS) {
-		xTraceEventAddPointer(xTraceHandle, (void*)pxThread);
-		xTraceEventEnd(xTraceHandle);
-	}
+	(void)xTraceEventCreate1(uiTxEventCode, (TraceUnsignedBaseType_t)pxThread);
 }
 
 void xTraceThreadSleepHook(UINT uiTxEventCode, TX_THREAD *pxThread)
@@ -761,43 +483,22 @@ void xTraceThreadStackErrorNotifyHook(UINT uiTxEventCode)
 
 void xTraceThreadSuspendAPIHook(UINT uiTxEventCode, TX_THREAD *pxThread)
 {
-	TraceEventHandle_t xTraceHandle;
-
-	if (xTraceEventBegin(uiTxEventCode, sizeof(void*), &xTraceHandle) == TRC_SUCCESS) {
-		xTraceEventAddPointer(xTraceHandle, (void*)pxThread);
-		xTraceEventEnd(xTraceHandle);
-	}
+	(void)xTraceEventCreate1(uiTxEventCode, (TraceUnsignedBaseType_t)pxThread);
 }
 
 void xTraceThreadTerminateHook(UINT uiTxEventCode, TX_THREAD *pxThread)
 {
-	TraceEventHandle_t xTraceHandle;
-
-	if (xTraceEventBegin(uiTxEventCode, sizeof(void*), &xTraceHandle) == TRC_SUCCESS) {
-		xTraceEventAddPointer(xTraceHandle, (void*)pxThread);
-		xTraceEventEnd(xTraceHandle);
-	}
+	(void)xTraceEventCreate1(uiTxEventCode, (TraceUnsignedBaseType_t)pxThread);
 }
 
 void xTraceThreadTimeSliceChangeHook(UINT uiTxEventCode, TX_THREAD *pxThread, UINT uiNewTimeSlice)
 {
-	TraceEventHandle_t xTraceHandle;
-
-	if (xTraceEventBegin(uiTxEventCode, sizeof(void*) + sizeof(UINT), &xTraceHandle) == TRC_SUCCESS) {
-		xTraceEventAddPointer(xTraceHandle, (void*)pxThread);
-		xTraceEventAdd32(xTraceHandle, uiNewTimeSlice);
-		xTraceEventEnd(xTraceHandle);
-	}
+	(void)xTraceEventCreate2(uiTxEventCode, (TraceUnsignedBaseType_t)pxThread, (TraceUnsignedBaseType_t)uiNewTimeSlice);
 }
 
 void xTraceThreadWaitAbortHook(UINT uiTxEventCode, TX_THREAD *pxThread)
 {
-	TraceEventHandle_t xTraceHandle;
-
-	if (xTraceEventBegin(uiTxEventCode, sizeof(void*), &xTraceHandle) == TRC_SUCCESS) {
-		xTraceEventAddPointer(xTraceHandle, (void*)pxThread);
-		xTraceEventEnd(xTraceHandle);
-	}
+	(void)xTraceEventCreate1(uiTxEventCode, (TraceUnsignedBaseType_t)pxThread);
 }
 
 
@@ -809,87 +510,46 @@ void xTraceTimeGetHook(UINT uiTxEventCode)
 
 void xTraceTimeSetHook(UINT uiTxEventCode, TX_TIMER *pxTimer)
 {
-	TraceEventHandle_t xTraceHandle;
-
-	if (xTraceEventBegin(uiTxEventCode, sizeof(void*), &xTraceHandle) == TRC_SUCCESS) {
-		xTraceEventAddPointer(xTraceHandle, (void*)pxTimer);
-		xTraceEventEnd(xTraceHandle);
-	}
+	(void)xTraceEventCreate1(uiTxEventCode, (TraceUnsignedBaseType_t)pxTimer);
 }
 
 void xTraceTimerActivateHook(UINT uiTxEventCode,  TX_TIMER *pxTimer)
 {
-	TraceEventHandle_t xTraceHandle;
-
-	if (xTraceEventBegin(uiTxEventCode, sizeof(void*), &xTraceHandle) == TRC_SUCCESS) {
-		xTraceEventAddPointer(xTraceHandle, (void*)pxTimer);
-		xTraceEventEnd(xTraceHandle);
-	}
+	(void)xTraceEventCreate1(uiTxEventCode, (TraceUnsignedBaseType_t)pxTimer);
 }
 
 void xTraceTimerChangeHook(UINT uiTxEventCode, TX_TIMER *pxTimer, ULONG uiInitialTicks, ULONG uiRescheduleTicks)
 {
-	TraceEventHandle_t xTraceHandle;
-
-	if (xTraceEventBegin(uiTxEventCode, sizeof(void*) + sizeof(ULONG) + sizeof(ULONG), &xTraceHandle) == TRC_SUCCESS) {
-		xTraceEventAddPointer(xTraceHandle, (void*)pxTimer);
-		xTraceEventAddUnsignedBaseType(xTraceHandle, uiInitialTicks);
-		xTraceEventAddUnsignedBaseType(xTraceHandle, uiRescheduleTicks);
-		xTraceEventEnd(xTraceHandle);
-	}
+	(void)xTraceEventCreate3(uiTxEventCode, (TraceUnsignedBaseType_t)pxTimer, (TraceUnsignedBaseType_t)uiInitialTicks, (TraceUnsignedBaseType_t)uiRescheduleTicks);
 }
 
 void xTraceTimerCreateHook(UINT uiTxEventCode, TX_TIMER *pxTimer, ULONG uiInitialTicks, ULONG uiRescheduleTicks, UINT uiAutoActivate)
 {
-	TraceEventHandle_t xTraceHandle;
-
 	if (pxTimer->tx_timer_name != 0) {
-		xTraceObjectSetNameWithoutHandle((void*)pxTimer, pxTimer->tx_timer_name);
+		(void)xTraceObjectSetNameWithoutHandle((void*)pxTimer, pxTimer->tx_timer_name);
 	}
 
-	if (xTraceEventBegin(uiTxEventCode, sizeof(void*) + sizeof(ULONG) + sizeof(ULONG) + sizeof(UINT),
-		&xTraceHandle) == TRC_SUCCESS) {
-		xTraceEventAddPointer(xTraceHandle, (void*)pxTimer);
-		xTraceEventAddUnsignedBaseType(xTraceHandle, uiInitialTicks);
-		xTraceEventAddUnsignedBaseType(xTraceHandle, uiRescheduleTicks);
-		xTraceEventAdd32(xTraceHandle, uiAutoActivate);
-		xTraceEventEnd(xTraceHandle);
-	}
+	(void)xTraceEventCreate4(uiTxEventCode, (TraceUnsignedBaseType_t)pxTimer, (TraceUnsignedBaseType_t)uiInitialTicks, (TraceUnsignedBaseType_t)uiRescheduleTicks, (TraceUnsignedBaseType_t)uiAutoActivate);
 }
 
 void xTraceTimerDeactivateHook(UINT uiTxEventCode, TX_TIMER *pxTimer)
 {
-	TraceEventHandle_t xTraceHandle;
-
-	if (xTraceEventBegin(uiTxEventCode, sizeof(void*), &xTraceHandle) == TRC_SUCCESS) {
-		xTraceEventAddPointer(xTraceHandle, (void*)pxTimer);
-		xTraceEventEnd(xTraceHandle);
-	}
+	(void)xTraceEventCreate1(uiTxEventCode, (TraceUnsignedBaseType_t)pxTimer);
 }
 
 void xTraceTimerDeleteHook(UINT uiTxEventCode, TX_TIMER *pxTimer)
 {
-	xTraceObjectUnregisterWithoutHandle(uiTxEventCode, (void*)pxTimer, 0);
+	(void)xTraceObjectUnregisterWithoutHandle(uiTxEventCode, (void*)pxTimer, 0);
 }
 
 void xTraceTimerInfoGetHook(UINT uiTxEventCode, TX_TIMER *pxTimer)
 {
-	TraceEventHandle_t xTraceHandle;
-
-	if (xTraceEventBegin(uiTxEventCode, sizeof(void*), &xTraceHandle) == TRC_SUCCESS) {
-		xTraceEventAddPointer(xTraceHandle, (void*)pxTimer);
-		xTraceEventEnd(xTraceHandle);
-	}
+	(void)xTraceEventCreate1(uiTxEventCode, (TraceUnsignedBaseType_t)pxTimer);
 }
 
 void xTraceTimerPerformanceInfoGet(UINT uiTxEventCode, TX_TIMER *pxTimer)
 {
-	TraceEventHandle_t xTraceHandle;
-
-	if (xTraceEventBegin(uiTxEventCode, sizeof(void*), &xTraceHandle) == TRC_SUCCESS) {
-		xTraceEventAddPointer(xTraceHandle, (void*)pxTimer);
-		xTraceEventEnd(xTraceHandle);
-	}
+	(void)xTraceEventCreate1(uiTxEventCode, (TraceUnsignedBaseType_t)pxTimer);
 }
 
 void xTraceTimerPerformanceSystemInfoGet(UINT uiTxEventCode)

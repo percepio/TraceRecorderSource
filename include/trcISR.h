@@ -1,5 +1,5 @@
 /*
-* Percepio Trace Recorder for Tracealyzer v4.8.2
+* Percepio Trace Recorder for Tracealyzer v4.9.0
 * Copyright 2023 Percepio AB
 * www.percepio.com
 *
@@ -15,9 +15,7 @@
 #ifndef TRC_ISR_H
 #define TRC_ISR_H
 
-#if (TRC_USE_TRACEALYZER_RECORDER == 1)
-
-#if (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING)
+#if (TRC_USE_TRACEALYZER_RECORDER == 1) && (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING)
 
 #include <trcTypes.h>
 
@@ -209,7 +207,31 @@ TraceISRHandle_t xTraceSetISRProperties(const char* szName, uint32_t uiPriority)
 }
 #endif
 
-#endif
+#else
+
+#define xTraceISRRegister(_szName, _uiPriority, _pxISRHandle) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_4((void)(_szName), (void)(_uiPriority), (void)(_pxISRHandle), TRC_SUCCESS)
+
+#define xTraceISRBegin(_xISRHandle) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_2((void)(_xISRHandle), TRC_SUCCESS)
+
+#define xTraceISREnd(_xIsTaskSwitchRequired) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_2((void)(_xIsTaskSwitchRequired), TRC_SUCCESS)
+
+#define xTraceISRGetCurrentNesting(_puiValue) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_2((void)(_puiValue), 0)
+
+#define xTraceISRGetCurrentNestingReturned() (1)
+
+#define xTraceISRGetCurrent(_pxISRHandle) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_2((void)(_pxISRHandle), TRC_SUCCESS)
+
+/** @internal Deprecated - Provides backwards-compability with older recorders for now, will be removed in the future */
+#define xTraceSetISRProperties(_szName, _uiPriority) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_3((void)(_szName), (void)(_uiPriority), TRC_SUCCESS)
+
+/** @internal Deprecated - Provides backwards-compability with older recorders for now, will be removed in the future */
+#define xTraceGetCurrentISRNesting(_puiValue) xTraceISRGetCurrentNesting(_puiValue)
+
+/** @internal Deprecated - Provides backwards-compability with older recorders for now, will be removed in the future */
+#define vTraceStoreISRBegin(_xISRHandle) xTraceISRBegin(_xISRHandle)
+
+/** @internal Deprecated - Provides backwards-compability with older recorders for now, will be removed in the future */
+#define vTraceStoreISREnd(_xIsTaskSwitchRequired) xTraceISREnd(_xIsTaskSwitchRequired)
 
 #endif
 

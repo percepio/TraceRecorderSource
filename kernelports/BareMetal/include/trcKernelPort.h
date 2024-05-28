@@ -1,5 +1,5 @@
 /*
- * Trace Recorder for Tracealyzer v4.8.2
+ * Trace Recorder for Tracealyzer v4.9.0
  * Copyright 2023 Percepio AB
  * www.percepio.com
  *
@@ -51,7 +51,10 @@ extern "C" {
 #define TRC_KERNEL_PORT_HEAP_MALLOC(size) malloc(size)
 #endif
 
-#define TRC_PLATFORM_CFG "nokernel"
+/**
+ * @internal Kernel port specific platform configuration. Maximum name length is 8!
+ */
+#define TRC_PLATFORM_CFG "generic"
 #define TRC_PLATFORM_CFG_MAJOR 1
 #define TRC_PLATFORM_CFG_MINOR 0
 #define TRC_PLATFORM_CFG_PATCH 0
@@ -144,6 +147,10 @@ traceResult xTraceKernelPortEnable(void);
 
 #define PSF_EVENT_TASK_CREATE								0x10UL
 #define PSF_EVENT_TASK_DELETE								0x11UL
+#define PSF_EVENT_PROCESS_CREATE							0x12UL
+#define PSF_EVENT_PROCESS_DELETE							0x13UL
+#define PSF_EVENT_THREAD_CREATE								0x14UL
+#define PSF_EVENT_THREAD_DELETE								0x15UL
 
 #define PSF_EVENT_TASK_READY								0x20UL
 #define PSF_EVENT_ISR_BEGIN									0x21UL

@@ -1,5 +1,5 @@
 /*
-* Percepio Trace Recorder for Tracealyzer v4.8.2
+* Percepio Trace Recorder for Tracealyzer v4.9.0
 * Copyright 2023 Percepio AB
 * www.percepio.com
 *
@@ -10,9 +10,7 @@
 
 #include <trcRecorder.h>
 
-#if (TRC_USE_TRACEALYZER_RECORDER == 1)
-
-#if (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING)
+#if (TRC_USE_TRACEALYZER_RECORDER == 1) && (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING)
 
 traceResult xTraceEventBufferInitialize(TraceEventBuffer_t* pxTraceEventBuffer, uint32_t uiOptions,
 	uint8_t* puiBuffer, uint32_t uiSize)
@@ -389,7 +387,6 @@ traceResult xTraceEventBufferPush(TraceEventBuffer_t *pxTraceEventBuffer, void *
 			break;
 		default:
 			return TRC_FAIL;
-			break;
 	}
 
 	return TRC_SUCCESS;
@@ -544,7 +541,5 @@ traceResult xTraceEventBufferClear(TraceEventBuffer_t* pxTraceEventBuffer)
 
 	return TRC_SUCCESS;
 }
-
-#endif
 
 #endif

@@ -1,5 +1,5 @@
 /*
- * Percepio Trace Recorder for Tracealyzer v4.8.2
+ * Percepio Trace Recorder for Tracealyzer v4.9.0
  * Copyright 2023 Percepio AB
  * www.percepio.com
  *

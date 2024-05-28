@@ -16,12 +16,14 @@ var searchData=
   ['trcmulticoreeventbuffer_2eh_13',['trcMultiCoreEventBuffer.h',['../trcMultiCoreEventBuffer_8h.html',1,'']]],
   ['trcobject_2eh_14',['trcObject.h',['../trcObject_8h.html',1,'']]],
   ['trcprint_2eh_15',['trcPrint.h',['../trcPrint_8h.html',1,'']]],
-  ['trcrecorder_2eh_16',['trcRecorder.h',['../trcRecorder_8h.html',1,'']]],
-  ['trcrunnable_2eh_17',['trcRunnable.h',['../trcRunnable_8h.html',1,'']]],
-  ['trcstackmonitor_2eh_18',['trcStackMonitor.h',['../trcStackMonitor_8h.html',1,'']]],
-  ['trcstatemachine_2eh_19',['trcStateMachine.h',['../trcStateMachine_8h.html',1,'']]],
-  ['trcstaticbuffer_2eh_20',['trcStaticBuffer.h',['../trcStaticBuffer_8h.html',1,'']]],
-  ['trcstring_2eh_21',['trcString.h',['../trcString_8h.html',1,'']]],
-  ['trctask_2eh_22',['trcTask.h',['../trcTask_8h.html',1,'']]],
-  ['trctimestamp_2eh_23',['trcTimestamp.h',['../trcTimestamp_8h.html',1,'']]]
+  ['trcprocess_2eh_16',['trcProcess.h',['../trcProcess_8h.html',1,'']]],
+  ['trcrecorder_2eh_17',['trcRecorder.h',['../trcRecorder_8h.html',1,'']]],
+  ['trcrunnable_2eh_18',['trcRunnable.h',['../trcRunnable_8h.html',1,'']]],
+  ['trcstackmonitor_2eh_19',['trcStackMonitor.h',['../trcStackMonitor_8h.html',1,'']]],
+  ['trcstatemachine_2eh_20',['trcStateMachine.h',['../trcStateMachine_8h.html',1,'']]],
+  ['trcstaticbuffer_2eh_21',['trcStaticBuffer.h',['../trcStaticBuffer_8h.html',1,'']]],
+  ['trcstring_2eh_22',['trcString.h',['../trcString_8h.html',1,'']]],
+  ['trctask_2eh_23',['trcTask.h',['../trcTask_8h.html',1,'']]],
+  ['trcthread_2eh_24',['trcThread.h',['../trcThread_8h.html',1,'']]],
+  ['trctimestamp_2eh_25',['trcTimestamp.h',['../trcTimestamp_8h.html',1,'']]]
 ];

@@ -1,5 +1,5 @@
 /*
-* Percepio Trace Recorder for Tracealyzer v4.8.2
+* Percepio Trace Recorder for Tracealyzer v4.9.0
 * Copyright 2023 Percepio AB
 * www.percepio.com
 *
@@ -15,13 +15,11 @@
 #ifndef TRC_INTERVAL_H
 #define TRC_INTERVAL_H
 
-#if (TRC_USE_TRACEALYZER_RECORDER == 1)
+#if (TRC_USE_TRACEALYZER_RECORDER == 1) && (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING)
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-#if (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING)
 
 #include <trcTypes.h>
 
@@ -92,38 +90,21 @@ traceResult xTraceIntervalStop(TraceIntervalChannelHandle_t xIntervalChannelHand
 
 /** @} */
 
-#else
-
-/**
- * @brief Disabled by TRC_CFG_RECORDER_MODE
- */
-#define xTraceIntervalChannelSetCreate(__szName, __pxIntervalChannelSetHandle) ((void)(__szName), *(__pxIntervalChannelSetHandle) = 0, TRC_SUCCESS)
-
-/**
- * @brief Disabled by TRC_CFG_RECORDER_MODE
- */
-#define xTraceIntervalChannelCreate(__szName, __xIntervalChannelSetHandle, __pxIntervalChannelHandle) ((void)(__szName), (void)(__xIntervalChannelSetHandle), *(__pxIntervalChannelHandle) = 0, TRC_SUCCESS)
-
-/**
- * @brief Disabled by TRC_CFG_RECORDER_MODE
- */
-#define xTraceIntervalStart(__xIntervalHandle, __uxValue, __pxIntervalInstanceHandle) ((void)(__xIntervalHandle), (void)(__uxValue), *(__pxIntervalInstanceHandle) = 0, TRC_SUCCESS)
-
- /**
-  * @brief Disabled by TRC_CFG_RECORDER_MODE
-  */
-#define xTraceIntervalStop(__xIntervalHandle, __xIntervalInstanceHandle) ((void)(__xIntervalHandle), (void)(__xIntervalInstanceHandle), TRC_SUCCESS)
-
-/**
- * @brief Disabled by TRC_CFG_RECORDER_MODE
- */
-#define xTraceIntervalGetState(__xIntervalHandle, __puxState) ((void)(__xIntervalHandle), *(__puxState) = 0, TRC_SUCCESS)
-
-#endif
-
 #ifdef __cplusplus
 }
 #endif
+
+#else
+
+#define xTraceIntervalChannelSetCreate(_szName, _pxIntervalChannelSetHandle) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_3((void)(_szName), (void)(_pxIntervalChannelSetHandle), TRC_SUCCESS)
+
+#define xTraceIntervalChannelCreate(_szName, _xIntervalChannelSetHandle, _pxIntervalChannelHandle) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_4((void)(_szName), (void)(_xIntervalChannelSetHandle), (void)(_pxIntervalChannelHandle), TRC_SUCCESS)
+
+#define xTraceIntervalStart(_xIntervalHandle, _uxValue, _pxIntervalInstanceHandle) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_4((void)(_xIntervalHandle), (void)(_uxValue), (void)(_pxIntervalInstanceHandle), TRC_SUCCESS)
+
+#define xTraceIntervalStop(_xIntervalHandle, _xIntervalInstanceHandle) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_3((void)(_xIntervalHandle), (void)(_xIntervalInstanceHandle), TRC_SUCCESS)
+
+#define xTraceIntervalGetState(_xIntervalHandle, _puxState) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_3((void)(_xIntervalHandle), (void)(_puxState), TRC_SUCCESS)
 
 #endif
 
