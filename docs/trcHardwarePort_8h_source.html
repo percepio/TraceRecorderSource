@@ -25,7 +25,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">Percepio Trace Recorder<span id="projectnumber">&#160;v4.9.0</span>
+   <div id="projectname">Percepio Trace Recorder<span id="projectnumber">&#160;v4.9.2</span>
    </div>
   </td>
  </tr>
@@ -93,7 +93,7 @@ $(document).ready(function(){initNavTree('trcHardwarePort_8h_source.html',''); i
 </div><!--header-->
 <div class="contents">
 <div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="comment">/*</span></div>
-<div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span><span class="comment"> * Trace Recorder for Tracealyzer v4.9.0</span></div>
+<div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span><span class="comment"> * Trace Recorder for Tracealyzer v4.9.2</span></div>
 <div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span><span class="comment"> * Copyright 2023 Percepio AB</span></div>
 <div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span><span class="comment"> * www.percepio.com</span></div>
 <div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span><span class="comment"> *</span></div>
@@ -110,7 +110,7 @@ $(document).ready(function(){initNavTree('trcHardwarePort_8h_source.html',''); i
 <div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span><span class="comment">/*</span></div>
 <div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span><span class="comment"> * @brief</span></div>
 <div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span><span class="comment"> * This macro must be used as name for the variable in the critical section allocation.</span></div>
-<div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span><span class="comment"> * Example: #define TRACE_ALLOC_CRITICAL_SECION uint32_t TRACE_ALLOC_CRITICAL_SECTION_NAME;</span></div>
+<div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span><span class="comment"> * Example: #define TRACE_ALLOC_CRITICAL_SECTION uint32_t TRACE_ALLOC_CRITICAL_SECTION_NAME;</span></div>
 <div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span><span class="comment"> */</span></div>
 <div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span><span class="preprocessor">#define TRACE_ALLOC_CRITICAL_SECTION_NAME xTraceCriticalSectionStatus</span></div>
 <div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span> </div>
@@ -463,14 +463,14 @@ $(document).ready(function(){initNavTree('trcHardwarePort_8h_source.html',''); i
 <div class="line"><a id="l00369" name="l00369"></a><span class="lineno">  369</span> </div>
 <div class="line"><a id="l00370" name="l00370"></a><span class="lineno">  370</span><span class="preprocessor">#elif (TRC_CFG_HARDWARE_PORT == TRC_HARDWARE_PORT_XILINX_ZyncUltraScaleR5)</span></div>
 <div class="line"><a id="l00371" name="l00371"></a><span class="lineno">  371</span> </div>
-<div class="line"><a id="l00372" name="l00372"></a><span class="lineno">  372</span>    <span class="keyword">extern</span> TraceUnsignedBaseType_t cortex_a9_r5_enter_critical(<span class="keywordtype">void</span>);</div>
-<div class="line"><a id="l00373" name="l00373"></a><span class="lineno">  373</span>    <span class="keyword">extern</span> <span class="keywordtype">void</span> cortex_a9_r5_exit_critical(TraceUnsignedBaseType_t irq_already_masked_at_enter);</div>
+<div class="line"><a id="l00372" name="l00372"></a><span class="lineno">  372</span>    <span class="keyword">extern</span> uint32_t cortex_a9_r5_enter_critical(<span class="keywordtype">void</span>);</div>
+<div class="line"><a id="l00373" name="l00373"></a><span class="lineno">  373</span>    <span class="keyword">extern</span> <span class="keywordtype">void</span> cortex_a9_r5_exit_critical(uint32_t irq_already_masked_at_enter);</div>
 <div class="line"><a id="l00374" name="l00374"></a><span class="lineno">  374</span> </div>
 <div class="line"><a id="l00375" name="l00375"></a><span class="lineno">  375</span><span class="preprocessor">    #define TRACE_ALLOC_CRITICAL_SECTION() TraceUnsignedBaseType_t TRACE_ALLOC_CRITICAL_SECTION_NAME;</span></div>
 <div class="line"><a id="l00376" name="l00376"></a><span class="lineno">  376</span> </div>
-<div class="line"><a id="l00377" name="l00377"></a><span class="lineno">  377</span><span class="preprocessor">    #define TRACE_ENTER_CRITICAL_SECTION() { TRACE_ALLOC_CRITICAL_SECTION_NAME = cortex_a9_r5_enter_critical(); }</span></div>
+<div class="line"><a id="l00377" name="l00377"></a><span class="lineno">  377</span><span class="preprocessor">    #define TRACE_ENTER_CRITICAL_SECTION() { TRACE_ALLOC_CRITICAL_SECTION_NAME = (TraceUnsignedBaseType_t)cortex_a9_r5_enter_critical(); }</span></div>
 <div class="line"><a id="l00378" name="l00378"></a><span class="lineno">  378</span> </div>
-<div class="line"><a id="l00379" name="l00379"></a><span class="lineno">  379</span><span class="preprocessor">    #define TRACE_EXIT_CRITICAL_SECTION() { cortex_a9_r5_exit_critical(TRACE_ALLOC_CRITICAL_SECTION_NAME); }</span></div>
+<div class="line"><a id="l00379" name="l00379"></a><span class="lineno">  379</span><span class="preprocessor">    #define TRACE_EXIT_CRITICAL_SECTION() { cortex_a9_r5_exit_critical((uint32_t)TRACE_ALLOC_CRITICAL_SECTION_NAME); }</span></div>
 <div class="line"><a id="l00380" name="l00380"></a><span class="lineno">  380</span> </div>
 <div class="line"><a id="l00381" name="l00381"></a><span class="lineno">  381</span><span class="preprocessor">    #include &lt;xttcps_hw.h&gt;</span></div>
 <div class="line"><a id="l00382" name="l00382"></a><span class="lineno">  382</span> </div>
@@ -552,207 +552,207 @@ $(document).ready(function(){initNavTree('trcHardwarePort_8h_source.html',''); i
 <div class="line"><a id="l00458" name="l00458"></a><span class="lineno">  458</span><span class="comment">    </span></div>
 <div class="line"><a id="l00459" name="l00459"></a><span class="lineno">  459</span><span class="comment">    **************************************************************************/</span></div>
 <div class="line"><a id="l00460" name="l00460"></a><span class="lineno">  460</span> </div>
-<div class="line"><a id="l00461" name="l00461"></a><span class="lineno">  461</span>    <span class="keyword">extern</span> TraceUnsignedBaseType_t cortex_a9_r5_enter_critical(<span class="keywordtype">void</span>);</div>
-<div class="line"><a id="l00462" name="l00462"></a><span class="lineno">  462</span>    <span class="keyword">extern</span> <span class="keywordtype">void</span> cortex_a9_r5_exit_critical(TraceUnsignedBaseType_t irq_already_masked_at_enter);</div>
-<div class="line"><a id="l00463" name="l00463"></a><span class="lineno">  463</span> </div>
-<div class="line"><a id="l00464" name="l00464"></a><span class="lineno">  464</span><span class="preprocessor">    #define TRACE_ALLOC_CRITICAL_SECTION() TraceUnsignedBaseType_t TRACE_ALLOC_CRITICAL_SECTION_NAME;</span></div>
-<div class="line"><a id="l00465" name="l00465"></a><span class="lineno">  465</span><span class="preprocessor">    #define TRACE_ENTER_CRITICAL_SECTION() { TRACE_ALLOC_CRITICAL_SECTION_NAME = cortex_a9_r5_enter_critical(); }</span></div>
-<div class="line"><a id="l00466" name="l00466"></a><span class="lineno">  466</span><span class="preprocessor">    #define TRACE_EXIT_CRITICAL_SECTION() { cortex_a9_r5_exit_critical(TRACE_ALLOC_CRITICAL_SECTION_NAME); }</span></div>
-<div class="line"><a id="l00467" name="l00467"></a><span class="lineno">  467</span>    </div>
-<div class="line"><a id="l00468" name="l00468"></a><span class="lineno">  468</span>    <span class="comment">/* INPUT YOUR PERIPHERAL BASE ADDRESS HERE (0xF8F00000 for Xilinx Zynq 7000)*/</span></div>
-<div class="line"><a id="l00469" name="l00469"></a><span class="lineno">  469</span><span class="preprocessor">    #define TRC_CA9_MPCORE_PERIPHERAL_BASE_ADDRESS  0</span></div>
-<div class="line"><a id="l00470" name="l00470"></a><span class="lineno">  470</span>    </div>
-<div class="line"><a id="l00471" name="l00471"></a><span class="lineno">  471</span><span class="preprocessor">    #if (TRC_CA9_MPCORE_PERIPHERAL_BASE_ADDRESS == 0)</span></div>
-<div class="line"><a id="l00472" name="l00472"></a><span class="lineno">  472</span><span class="preprocessor">        #error &quot;Please specify TRC_CA9_MPCORE_PERIPHERAL_BASE_ADDRESS.&quot;</span></div>
-<div class="line"><a id="l00473" name="l00473"></a><span class="lineno">  473</span><span class="preprocessor">    #endif</span></div>
-<div class="line"><a id="l00474" name="l00474"></a><span class="lineno">  474</span> </div>
-<div class="line"><a id="l00475" name="l00475"></a><span class="lineno">  475</span><span class="preprocessor">    #define TRC_CA9_MPCORE_PRIVATE_MEMORY_OFFSET    0x0600</span></div>
-<div class="line"><a id="l00476" name="l00476"></a><span class="lineno">  476</span><span class="preprocessor">    #define TRC_CA9_MPCORE_PRIVCTR_PERIOD_REG   (*(volatile uint32_t*)(TRC_CA9_MPCORE_PERIPHERAL_BASE_ADDRESS + TRC_CA9_MPCORE_PRIVATE_MEMORY_OFFSET + 0x00))</span></div>
-<div class="line"><a id="l00477" name="l00477"></a><span class="lineno">  477</span><span class="preprocessor">    #define TRC_CA9_MPCORE_PRIVCTR_COUNTER_REG  (*(volatile uint32_t*)(TRC_CA9_MPCORE_PERIPHERAL_BASE_ADDRESS + TRC_CA9_MPCORE_PRIVATE_MEMORY_OFFSET + 0x04))</span></div>
-<div class="line"><a id="l00478" name="l00478"></a><span class="lineno">  478</span><span class="preprocessor">    #define TRC_CA9_MPCORE_PRIVCTR_CONTROL_REG  (*(volatile uint32_t*)(TRC_CA9_MPCORE_PERIPHERAL_BASE_ADDRESS + TRC_CA9_MPCORE_PRIVATE_MEMORY_OFFSET + 0x08))</span></div>
-<div class="line"><a id="l00479" name="l00479"></a><span class="lineno">  479</span>    </div>
-<div class="line"><a id="l00480" name="l00480"></a><span class="lineno">  480</span><span class="preprocessor">    #define TRC_CA9_MPCORE_PRIVCTR_CONTROL_PRESCALER_MASK    0x0000FF00</span></div>
-<div class="line"><a id="l00481" name="l00481"></a><span class="lineno">  481</span><span class="preprocessor">    #define TRC_CA9_MPCORE_PRIVCTR_CONTROL_PRESCALER_SHIFT   8</span></div>
-<div class="line"><a id="l00482" name="l00482"></a><span class="lineno">  482</span><span class="preprocessor">    #define TRC_CA9_MPCORE_PRIVCTR_PRESCALER        (((TRC_CA9_MPCORE_PRIVCTR_CONTROL_REG &amp; TRC_CA9_MPCORE_PRIVCTR_CONTROL_PRESCALER_MASK) &gt;&gt; TRC_CA9_MPCORE_PRIVCTR_CONTROL_PRESCALER_SHIFT) + 1)</span></div>
-<div class="line"><a id="l00483" name="l00483"></a><span class="lineno">  483</span> </div>
-<div class="line"><a id="l00484" name="l00484"></a><span class="lineno">  484</span><span class="preprocessor">    #define TRC_HWTC_TYPE                           TRC_OS_TIMER_DECR</span></div>
-<div class="line"><a id="l00485" name="l00485"></a><span class="lineno">  485</span><span class="preprocessor">    #define TRC_HWTC_COUNT                          TRC_CA9_MPCORE_PRIVCTR_COUNTER_REG</span></div>
-<div class="line"><a id="l00486" name="l00486"></a><span class="lineno">  486</span><span class="preprocessor">    #define TRC_HWTC_PERIOD                         (TRC_CA9_MPCORE_PRIVCTR_PERIOD_REG + 1)</span></div>
-<div class="line"><a id="l00487" name="l00487"></a><span class="lineno">  487</span> </div>
-<div class="line"><a id="l00488" name="l00488"></a><span class="lineno">  488</span><span class="comment">    /****************************************************************************************</span></div>
-<div class="line"><a id="l00489" name="l00489"></a><span class="lineno">  489</span><span class="comment">    NOTE: The private timer ticks with a very high frequency (half the core-clock usually), </span></div>
-<div class="line"><a id="l00490" name="l00490"></a><span class="lineno">  490</span><span class="comment">    depending on the prescaler used. If a low prescaler is used, the number of HW ticks between</span></div>
-<div class="line"><a id="l00491" name="l00491"></a><span class="lineno">  491</span><span class="comment">    the trace events gets large, and thereby inefficient to store (sometimes extra events are</span></div>
-<div class="line"><a id="l00492" name="l00492"></a><span class="lineno">  492</span><span class="comment">    needed). To improve efficiency, you may use the TRC_HWTC_DIVISOR as an additional prescaler.</span></div>
-<div class="line"><a id="l00493" name="l00493"></a><span class="lineno">  493</span><span class="comment">    *****************************************************************************************/</span>  </div>
-<div class="line"><a id="l00494" name="l00494"></a><span class="lineno">  494</span><span class="preprocessor">    #define TRC_HWTC_DIVISOR 1</span></div>
-<div class="line"><a id="l00495" name="l00495"></a><span class="lineno">  495</span>    </div>
-<div class="line"><a id="l00496" name="l00496"></a><span class="lineno">  496</span><span class="preprocessor">    #define TRC_HWTC_FREQ_HZ (TRC_TICK_RATE_HZ * TRC_HWTC_PERIOD)</span></div>
-<div class="line"><a id="l00497" name="l00497"></a><span class="lineno">  497</span><span class="preprocessor">    #define TRC_IRQ_PRIORITY_ORDER 0</span></div>
-<div class="line"><a id="l00498" name="l00498"></a><span class="lineno">  498</span> </div>
-<div class="line"><a id="l00499" name="l00499"></a><span class="lineno">  499</span><span class="preprocessor">    #ifdef __GNUC__</span></div>
-<div class="line"><a id="l00500" name="l00500"></a><span class="lineno">  500</span> </div>
-<div class="line"><a id="l00501" name="l00501"></a><span class="lineno">  501</span>    <span class="keyword">static</span> <span class="keyword">inline</span> uint32_t prvGetCPSR(<span class="keywordtype">void</span>)</div>
-<div class="line"><a id="l00502" name="l00502"></a><span class="lineno">  502</span>    {</div>
-<div class="line"><a id="l00503" name="l00503"></a><span class="lineno">  503</span>        <span class="keywordtype">unsigned</span> <span class="keywordtype">long</span> ret;</div>
-<div class="line"><a id="l00504" name="l00504"></a><span class="lineno">  504</span>        <span class="comment">/* GCC-style assembly for getting the CPSR/APSR register, where the system execution mode is found. */</span></div>
-<div class="line"><a id="l00505" name="l00505"></a><span class="lineno">  505</span>        <span class="keyword">asm</span> <span class="keyword">volatile</span> (<span class="stringliteral">&quot; mrs  %0, cpsr&quot;</span> : <span class="stringliteral">&quot;=r&quot;</span> (ret) : <span class="comment">/* no inputs */</span>  );</div>
-<div class="line"><a id="l00506" name="l00506"></a><span class="lineno">  506</span>        <span class="keywordflow">return</span> ret;</div>
-<div class="line"><a id="l00507" name="l00507"></a><span class="lineno">  507</span>    }</div>
-<div class="line"><a id="l00508" name="l00508"></a><span class="lineno">  508</span><span class="preprocessor">    #else</span></div>
-<div class="line"><a id="l00509" name="l00509"></a><span class="lineno">  509</span><span class="preprocessor">        #error &quot;Only GCC Supported!&quot;</span></div>
-<div class="line"><a id="l00510" name="l00510"></a><span class="lineno">  510</span><span class="preprocessor">    #endif</span></div>
-<div class="line"><a id="l00511" name="l00511"></a><span class="lineno">  511</span> </div>
-<div class="line"><a id="l00512" name="l00512"></a><span class="lineno">  512</span><span class="preprocessor">#elif (TRC_CFG_HARDWARE_PORT == TRC_HARDWARE_PORT_CYCLONE_V_HPS)</span></div>
-<div class="line"><a id="l00513" name="l00513"></a><span class="lineno">  513</span><span class="preprocessor">    #include &quot;alt_clock_manager.h&quot;</span></div>
-<div class="line"><a id="l00514" name="l00514"></a><span class="lineno">  514</span> </div>
-<div class="line"><a id="l00515" name="l00515"></a><span class="lineno">  515</span>    <span class="keyword">extern</span> TraceUnsignedBaseType_t cortex_a9_r5_enter_critical(<span class="keywordtype">void</span>);</div>
-<div class="line"><a id="l00516" name="l00516"></a><span class="lineno">  516</span>    <span class="keyword">extern</span> <span class="keywordtype">void</span> cortex_a9_r5_exit_critical(TraceUnsignedBaseType_t irq_already_masked_at_enter);</div>
-<div class="line"><a id="l00517" name="l00517"></a><span class="lineno">  517</span> </div>
-<div class="line"><a id="l00518" name="l00518"></a><span class="lineno">  518</span><span class="preprocessor">    #define TRACE_ALLOC_CRITICAL_SECTION() TraceUnsignedBaseType_t TRACE_ALLOC_CRITICAL_SECTION_NAME;</span></div>
-<div class="line"><a id="l00519" name="l00519"></a><span class="lineno">  519</span><span class="preprocessor">    #define TRACE_ENTER_CRITICAL_SECTION() { TRACE_ALLOC_CRITICAL_SECTION_NAME = cortex_a9_r5_enter_critical(); }</span></div>
-<div class="line"><a id="l00520" name="l00520"></a><span class="lineno">  520</span><span class="preprocessor">    #define TRACE_EXIT_CRITICAL_SECTION() { cortex_a9_r5_exit_critical(TRACE_ALLOC_CRITICAL_SECTION_NAME); }</span></div>
-<div class="line"><a id="l00521" name="l00521"></a><span class="lineno">  521</span> </div>
-<div class="line"><a id="l00522" name="l00522"></a><span class="lineno">  522</span><span class="preprocessor">    #define TRC_HWTC_TYPE                           TRC_FREE_RUNNING_32BIT_INCR</span></div>
-<div class="line"><a id="l00523" name="l00523"></a><span class="lineno">  523</span><span class="preprocessor">    #define TRC_HWTC_COUNT                          *((uint32_t *)0xFFFEC200)</span></div>
-<div class="line"><a id="l00524" name="l00524"></a><span class="lineno">  524</span><span class="preprocessor">    #define TRC_HWTC_PERIOD                         0</span></div>
-<div class="line"><a id="l00525" name="l00525"></a><span class="lineno">  525</span><span class="preprocessor">    #define TRC_HWTC_DIVISOR                        1</span></div>
-<div class="line"><a id="l00526" name="l00526"></a><span class="lineno">  526</span><span class="preprocessor">    #define TRC_HWTC_FREQ_HZ                        (({     \</span></div>
-<div class="line"><a id="l00527" name="l00527"></a><span class="lineno">  527</span><span class="preprocessor">        uint32_t __freq;                                    \</span></div>
-<div class="line"><a id="l00528" name="l00528"></a><span class="lineno">  528</span><span class="preprocessor">        alt_clk_freq_get( ALT_CLK_MPU_PERIPH, &amp;__freq );    \</span></div>
-<div class="line"><a id="l00529" name="l00529"></a><span class="lineno">  529</span><span class="preprocessor">        __freq;                                             \</span></div>
-<div class="line"><a id="l00530" name="l00530"></a><span class="lineno">  530</span><span class="preprocessor">    }))</span></div>
-<div class="line"><a id="l00531" name="l00531"></a><span class="lineno">  531</span><span class="preprocessor">    #define TRC_IRQ_PRIORITY_ORDER                  0</span></div>
-<div class="line"><a id="l00532" name="l00532"></a><span class="lineno">  532</span> </div>
-<div class="line"><a id="l00533" name="l00533"></a><span class="lineno">  533</span><span class="preprocessor">    #ifdef __GNUC__</span></div>
-<div class="line"><a id="l00534" name="l00534"></a><span class="lineno">  534</span>    <span class="comment">/* For Arm Cortex-A and Cortex-R in general. */</span></div>
-<div class="line"><a id="l00535" name="l00535"></a><span class="lineno">  535</span>    <span class="keyword">static</span> <span class="keyword">inline</span> uint32_t prvGetCPSR(<span class="keywordtype">void</span>)</div>
-<div class="line"><a id="l00536" name="l00536"></a><span class="lineno">  536</span>    {</div>
-<div class="line"><a id="l00537" name="l00537"></a><span class="lineno">  537</span>        <span class="keywordtype">unsigned</span> <span class="keywordtype">long</span> ret;</div>
-<div class="line"><a id="l00538" name="l00538"></a><span class="lineno">  538</span>        <span class="comment">/* GCC-style assembly for getting the CPSR/APSR register, where the system execution mode is found. */</span></div>
-<div class="line"><a id="l00539" name="l00539"></a><span class="lineno">  539</span>        __asm__ __volatile__(<span class="stringliteral">&quot; mrs  %0, cpsr&quot;</span> : <span class="stringliteral">&quot;=r&quot;</span> (ret) : <span class="comment">/* no inputs */</span>  );</div>
-<div class="line"><a id="l00540" name="l00540"></a><span class="lineno">  540</span>        <span class="keywordflow">return</span> ret;</div>
-<div class="line"><a id="l00541" name="l00541"></a><span class="lineno">  541</span>    }</div>
-<div class="line"><a id="l00542" name="l00542"></a><span class="lineno">  542</span><span class="preprocessor">    #else</span></div>
-<div class="line"><a id="l00543" name="l00543"></a><span class="lineno">  543</span><span class="preprocessor">        #error &quot;Only GCC Supported!&quot;</span></div>
-<div class="line"><a id="l00544" name="l00544"></a><span class="lineno">  544</span><span class="preprocessor">    #endif</span></div>
-<div class="line"><a id="l00545" name="l00545"></a><span class="lineno">  545</span> </div>
-<div class="line"><a id="l00546" name="l00546"></a><span class="lineno">  546</span><span class="preprocessor">#elif (TRC_CFG_HARDWARE_PORT == TRC_HARDWARE_PORT_ZEPHYR)</span></div>
-<div class="line"><a id="l00547" name="l00547"></a><span class="lineno">  547</span><span class="preprocessor">    #ifdef CONFIG_64BIT</span></div>
-<div class="line"><a id="l00548" name="l00548"></a><span class="lineno">  548</span><span class="preprocessor">        #define TRC_BASE_TYPE int64_t</span></div>
-<div class="line"><a id="l00549" name="l00549"></a><span class="lineno">  549</span><span class="preprocessor">        #define TRC_UNSIGNED_BASE_TYPE uint64_t</span></div>
-<div class="line"><a id="l00550" name="l00550"></a><span class="lineno">  550</span><span class="preprocessor">    #else</span></div>
-<div class="line"><a id="l00551" name="l00551"></a><span class="lineno">  551</span><span class="preprocessor">        #define TRC_BASE_TYPE int32_t</span></div>
-<div class="line"><a id="l00552" name="l00552"></a><span class="lineno">  552</span><span class="preprocessor">        #define TRC_UNSIGNED_BASE_TYPE uint32_t</span></div>
-<div class="line"><a id="l00553" name="l00553"></a><span class="lineno">  553</span><span class="preprocessor">    #endif</span></div>
-<div class="line"><a id="l00554" name="l00554"></a><span class="lineno">  554</span> </div>
-<div class="line"><a id="l00555" name="l00555"></a><span class="lineno">  555</span><span class="preprocessor">    #define TRACE_ALLOC_CRITICAL_SECTION() TraceBaseType_t TRACE_ALLOC_CRITICAL_SECTION_NAME;</span></div>
-<div class="line"><a id="l00556" name="l00556"></a><span class="lineno">  556</span><span class="preprocessor">    #define TRACE_ENTER_CRITICAL_SECTION() { TRACE_ALLOC_CRITICAL_SECTION_NAME = irq_lock(); }</span></div>
-<div class="line"><a id="l00557" name="l00557"></a><span class="lineno">  557</span><span class="preprocessor">    #define TRACE_EXIT_CRITICAL_SECTION() { irq_unlock(TRACE_ALLOC_CRITICAL_SECTION_NAME); }</span></div>
-<div class="line"><a id="l00558" name="l00558"></a><span class="lineno">  558</span>    </div>
-<div class="line"><a id="l00559" name="l00559"></a><span class="lineno">  559</span><span class="preprocessor">    #define TRC_HWTC_TYPE TRC_FREE_RUNNING_32BIT_INCR</span></div>
-<div class="line"><a id="l00560" name="l00560"></a><span class="lineno">  560</span><span class="preprocessor">    #define TRC_HWTC_COUNT k_cycle_get_32()</span></div>
-<div class="line"><a id="l00561" name="l00561"></a><span class="lineno">  561</span><span class="preprocessor">    #define TRC_HWTC_PERIOD (CONFIG_SYS_CLOCK_HW_CYCLES_PER_SEC / CONFIG_SYS_CLOCK_TICKS_PER_SEC)</span></div>
-<div class="line"><a id="l00562" name="l00562"></a><span class="lineno">  562</span><span class="preprocessor">    #define TRC_HWTC_DIVISOR 4</span></div>
-<div class="line"><a id="l00563" name="l00563"></a><span class="lineno">  563</span><span class="preprocessor">    #define TRC_HWTC_FREQ_HZ CONFIG_SYS_CLOCK_HW_CYCLES_PER_SEC</span></div>
-<div class="line"><a id="l00564" name="l00564"></a><span class="lineno">  564</span><span class="preprocessor">    #define TRC_IRQ_PRIORITY_ORDER 0 </span><span class="comment">// Lower IRQ priority values are more significant</span></div>
-<div class="line"><a id="l00565" name="l00565"></a><span class="lineno">  565</span> </div>
-<div class="line"><a id="l00566" name="l00566"></a><span class="lineno">  566</span><span class="preprocessor">    #define TRC_PORT_SPECIFIC_INIT()</span></div>
+<div class="line"><a id="l00461" name="l00461"></a><span class="lineno">  461</span> </div>
+<div class="line"><a id="l00462" name="l00462"></a><span class="lineno">  462</span>    <span class="keyword">extern</span> uint32_t cortex_a9_r5_enter_critical(<span class="keywordtype">void</span>);</div>
+<div class="line"><a id="l00463" name="l00463"></a><span class="lineno">  463</span>    <span class="keyword">extern</span> <span class="keywordtype">void</span> cortex_a9_r5_exit_critical(uint32_t irq_already_masked_at_enter);</div>
+<div class="line"><a id="l00464" name="l00464"></a><span class="lineno">  464</span> </div>
+<div class="line"><a id="l00465" name="l00465"></a><span class="lineno">  465</span><span class="preprocessor">    #define TRACE_ALLOC_CRITICAL_SECTION() TraceUnsignedBaseType_t TRACE_ALLOC_CRITICAL_SECTION_NAME;</span></div>
+<div class="line"><a id="l00466" name="l00466"></a><span class="lineno">  466</span><span class="preprocessor">    #define TRACE_ENTER_CRITICAL_SECTION() { TRACE_ALLOC_CRITICAL_SECTION_NAME = (TraceUnsignedBaseType_t)cortex_a9_r5_enter_critical(); }</span></div>
+<div class="line"><a id="l00467" name="l00467"></a><span class="lineno">  467</span><span class="preprocessor">    #define TRACE_EXIT_CRITICAL_SECTION() { cortex_a9_r5_exit_critical((uint32_t)TRACE_ALLOC_CRITICAL_SECTION_NAME); }</span></div>
+<div class="line"><a id="l00468" name="l00468"></a><span class="lineno">  468</span> </div>
+<div class="line"><a id="l00469" name="l00469"></a><span class="lineno">  469</span>    <span class="comment">/* INPUT YOUR PERIPHERAL BASE ADDRESS HERE (0xF8F00000 for Xilinx Zynq 7000)*/</span></div>
+<div class="line"><a id="l00470" name="l00470"></a><span class="lineno">  470</span><span class="preprocessor">    #define TRC_CA9_MPCORE_PERIPHERAL_BASE_ADDRESS  0</span></div>
+<div class="line"><a id="l00471" name="l00471"></a><span class="lineno">  471</span>    </div>
+<div class="line"><a id="l00472" name="l00472"></a><span class="lineno">  472</span><span class="preprocessor">    #if (TRC_CA9_MPCORE_PERIPHERAL_BASE_ADDRESS == 0)</span></div>
+<div class="line"><a id="l00473" name="l00473"></a><span class="lineno">  473</span><span class="preprocessor">        #error &quot;Please specify TRC_CA9_MPCORE_PERIPHERAL_BASE_ADDRESS.&quot;</span></div>
+<div class="line"><a id="l00474" name="l00474"></a><span class="lineno">  474</span><span class="preprocessor">    #endif</span></div>
+<div class="line"><a id="l00475" name="l00475"></a><span class="lineno">  475</span> </div>
+<div class="line"><a id="l00476" name="l00476"></a><span class="lineno">  476</span><span class="preprocessor">    #define TRC_CA9_MPCORE_PRIVATE_MEMORY_OFFSET    0x0600</span></div>
+<div class="line"><a id="l00477" name="l00477"></a><span class="lineno">  477</span><span class="preprocessor">    #define TRC_CA9_MPCORE_PRIVCTR_PERIOD_REG   (*(volatile uint32_t*)(TRC_CA9_MPCORE_PERIPHERAL_BASE_ADDRESS + TRC_CA9_MPCORE_PRIVATE_MEMORY_OFFSET + 0x00))</span></div>
+<div class="line"><a id="l00478" name="l00478"></a><span class="lineno">  478</span><span class="preprocessor">    #define TRC_CA9_MPCORE_PRIVCTR_COUNTER_REG  (*(volatile uint32_t*)(TRC_CA9_MPCORE_PERIPHERAL_BASE_ADDRESS + TRC_CA9_MPCORE_PRIVATE_MEMORY_OFFSET + 0x04))</span></div>
+<div class="line"><a id="l00479" name="l00479"></a><span class="lineno">  479</span><span class="preprocessor">    #define TRC_CA9_MPCORE_PRIVCTR_CONTROL_REG  (*(volatile uint32_t*)(TRC_CA9_MPCORE_PERIPHERAL_BASE_ADDRESS + TRC_CA9_MPCORE_PRIVATE_MEMORY_OFFSET + 0x08))</span></div>
+<div class="line"><a id="l00480" name="l00480"></a><span class="lineno">  480</span>    </div>
+<div class="line"><a id="l00481" name="l00481"></a><span class="lineno">  481</span><span class="preprocessor">    #define TRC_CA9_MPCORE_PRIVCTR_CONTROL_PRESCALER_MASK    0x0000FF00</span></div>
+<div class="line"><a id="l00482" name="l00482"></a><span class="lineno">  482</span><span class="preprocessor">    #define TRC_CA9_MPCORE_PRIVCTR_CONTROL_PRESCALER_SHIFT   8</span></div>
+<div class="line"><a id="l00483" name="l00483"></a><span class="lineno">  483</span><span class="preprocessor">    #define TRC_CA9_MPCORE_PRIVCTR_PRESCALER        (((TRC_CA9_MPCORE_PRIVCTR_CONTROL_REG &amp; TRC_CA9_MPCORE_PRIVCTR_CONTROL_PRESCALER_MASK) &gt;&gt; TRC_CA9_MPCORE_PRIVCTR_CONTROL_PRESCALER_SHIFT) + 1)</span></div>
+<div class="line"><a id="l00484" name="l00484"></a><span class="lineno">  484</span> </div>
+<div class="line"><a id="l00485" name="l00485"></a><span class="lineno">  485</span><span class="preprocessor">    #define TRC_HWTC_TYPE                           TRC_OS_TIMER_DECR</span></div>
+<div class="line"><a id="l00486" name="l00486"></a><span class="lineno">  486</span><span class="preprocessor">    #define TRC_HWTC_COUNT                          TRC_CA9_MPCORE_PRIVCTR_COUNTER_REG</span></div>
+<div class="line"><a id="l00487" name="l00487"></a><span class="lineno">  487</span><span class="preprocessor">    #define TRC_HWTC_PERIOD                         (TRC_CA9_MPCORE_PRIVCTR_PERIOD_REG + 1)</span></div>
+<div class="line"><a id="l00488" name="l00488"></a><span class="lineno">  488</span> </div>
+<div class="line"><a id="l00489" name="l00489"></a><span class="lineno">  489</span><span class="comment">    /****************************************************************************************</span></div>
+<div class="line"><a id="l00490" name="l00490"></a><span class="lineno">  490</span><span class="comment">    NOTE: The private timer ticks with a very high frequency (half the core-clock usually), </span></div>
+<div class="line"><a id="l00491" name="l00491"></a><span class="lineno">  491</span><span class="comment">    depending on the prescaler used. If a low prescaler is used, the number of HW ticks between</span></div>
+<div class="line"><a id="l00492" name="l00492"></a><span class="lineno">  492</span><span class="comment">    the trace events gets large, and thereby inefficient to store (sometimes extra events are</span></div>
+<div class="line"><a id="l00493" name="l00493"></a><span class="lineno">  493</span><span class="comment">    needed). To improve efficiency, you may use the TRC_HWTC_DIVISOR as an additional prescaler.</span></div>
+<div class="line"><a id="l00494" name="l00494"></a><span class="lineno">  494</span><span class="comment">    *****************************************************************************************/</span>  </div>
+<div class="line"><a id="l00495" name="l00495"></a><span class="lineno">  495</span><span class="preprocessor">    #define TRC_HWTC_DIVISOR 1</span></div>
+<div class="line"><a id="l00496" name="l00496"></a><span class="lineno">  496</span>    </div>
+<div class="line"><a id="l00497" name="l00497"></a><span class="lineno">  497</span><span class="preprocessor">    #define TRC_HWTC_FREQ_HZ (TRC_TICK_RATE_HZ * TRC_HWTC_PERIOD)</span></div>
+<div class="line"><a id="l00498" name="l00498"></a><span class="lineno">  498</span><span class="preprocessor">    #define TRC_IRQ_PRIORITY_ORDER 0</span></div>
+<div class="line"><a id="l00499" name="l00499"></a><span class="lineno">  499</span> </div>
+<div class="line"><a id="l00500" name="l00500"></a><span class="lineno">  500</span><span class="preprocessor">    #ifdef __GNUC__</span></div>
+<div class="line"><a id="l00501" name="l00501"></a><span class="lineno">  501</span> </div>
+<div class="line"><a id="l00502" name="l00502"></a><span class="lineno">  502</span>    <span class="keyword">static</span> <span class="keyword">inline</span> uint32_t prvGetCPSR(<span class="keywordtype">void</span>)</div>
+<div class="line"><a id="l00503" name="l00503"></a><span class="lineno">  503</span>    {</div>
+<div class="line"><a id="l00504" name="l00504"></a><span class="lineno">  504</span>        <span class="keywordtype">unsigned</span> <span class="keywordtype">long</span> ret;</div>
+<div class="line"><a id="l00505" name="l00505"></a><span class="lineno">  505</span>        <span class="comment">/* GCC-style assembly for getting the CPSR/APSR register, where the system execution mode is found. */</span></div>
+<div class="line"><a id="l00506" name="l00506"></a><span class="lineno">  506</span>        <span class="keyword">asm</span> <span class="keyword">volatile</span> (<span class="stringliteral">&quot; mrs  %0, cpsr&quot;</span> : <span class="stringliteral">&quot;=r&quot;</span> (ret) : <span class="comment">/* no inputs */</span>  );</div>
+<div class="line"><a id="l00507" name="l00507"></a><span class="lineno">  507</span>        <span class="keywordflow">return</span> ret;</div>
+<div class="line"><a id="l00508" name="l00508"></a><span class="lineno">  508</span>    }</div>
+<div class="line"><a id="l00509" name="l00509"></a><span class="lineno">  509</span><span class="preprocessor">    #else</span></div>
+<div class="line"><a id="l00510" name="l00510"></a><span class="lineno">  510</span><span class="preprocessor">        #error &quot;Only GCC Supported!&quot;</span></div>
+<div class="line"><a id="l00511" name="l00511"></a><span class="lineno">  511</span><span class="preprocessor">    #endif</span></div>
+<div class="line"><a id="l00512" name="l00512"></a><span class="lineno">  512</span> </div>
+<div class="line"><a id="l00513" name="l00513"></a><span class="lineno">  513</span><span class="preprocessor">#elif (TRC_CFG_HARDWARE_PORT == TRC_HARDWARE_PORT_CYCLONE_V_HPS)</span></div>
+<div class="line"><a id="l00514" name="l00514"></a><span class="lineno">  514</span><span class="preprocessor">    #include &quot;alt_clock_manager.h&quot;</span></div>
+<div class="line"><a id="l00515" name="l00515"></a><span class="lineno">  515</span> </div>
+<div class="line"><a id="l00516" name="l00516"></a><span class="lineno">  516</span> </div>
+<div class="line"><a id="l00517" name="l00517"></a><span class="lineno">  517</span>    <span class="keyword">extern</span> uint32_t cortex_a9_r5_enter_critical(<span class="keywordtype">void</span>);</div>
+<div class="line"><a id="l00518" name="l00518"></a><span class="lineno">  518</span>    <span class="keyword">extern</span> <span class="keywordtype">void</span> cortex_a9_r5_exit_critical(uint32_t irq_already_masked_at_enter);</div>
+<div class="line"><a id="l00519" name="l00519"></a><span class="lineno">  519</span> </div>
+<div class="line"><a id="l00520" name="l00520"></a><span class="lineno">  520</span><span class="preprocessor">    #define TRACE_ALLOC_CRITICAL_SECTION() TraceUnsignedBaseType_t TRACE_ALLOC_CRITICAL_SECTION_NAME;</span></div>
+<div class="line"><a id="l00521" name="l00521"></a><span class="lineno">  521</span><span class="preprocessor">    #define TRACE_ENTER_CRITICAL_SECTION() { TRACE_ALLOC_CRITICAL_SECTION_NAME = (TraceUnsignedBaseType_t)cortex_a9_r5_enter_critical(); }</span></div>
+<div class="line"><a id="l00522" name="l00522"></a><span class="lineno">  522</span><span class="preprocessor">    #define TRACE_EXIT_CRITICAL_SECTION() { cortex_a9_r5_exit_critical((uint32_t)TRACE_ALLOC_CRITICAL_SECTION_NAME); }</span></div>
+<div class="line"><a id="l00523" name="l00523"></a><span class="lineno">  523</span> </div>
+<div class="line"><a id="l00524" name="l00524"></a><span class="lineno">  524</span><span class="preprocessor">    #define TRC_HWTC_TYPE                           TRC_FREE_RUNNING_32BIT_INCR</span></div>
+<div class="line"><a id="l00525" name="l00525"></a><span class="lineno">  525</span><span class="preprocessor">    #define TRC_HWTC_COUNT                          *((uint32_t *)0xFFFEC200)</span></div>
+<div class="line"><a id="l00526" name="l00526"></a><span class="lineno">  526</span><span class="preprocessor">    #define TRC_HWTC_PERIOD                         0</span></div>
+<div class="line"><a id="l00527" name="l00527"></a><span class="lineno">  527</span><span class="preprocessor">    #define TRC_HWTC_DIVISOR                        1</span></div>
+<div class="line"><a id="l00528" name="l00528"></a><span class="lineno">  528</span><span class="preprocessor">    #define TRC_HWTC_FREQ_HZ                        (({     \</span></div>
+<div class="line"><a id="l00529" name="l00529"></a><span class="lineno">  529</span><span class="preprocessor">        uint32_t __freq;                                    \</span></div>
+<div class="line"><a id="l00530" name="l00530"></a><span class="lineno">  530</span><span class="preprocessor">        alt_clk_freq_get( ALT_CLK_MPU_PERIPH, &amp;__freq );    \</span></div>
+<div class="line"><a id="l00531" name="l00531"></a><span class="lineno">  531</span><span class="preprocessor">        __freq;                                             \</span></div>
+<div class="line"><a id="l00532" name="l00532"></a><span class="lineno">  532</span><span class="preprocessor">    }))</span></div>
+<div class="line"><a id="l00533" name="l00533"></a><span class="lineno">  533</span><span class="preprocessor">    #define TRC_IRQ_PRIORITY_ORDER                  0</span></div>
+<div class="line"><a id="l00534" name="l00534"></a><span class="lineno">  534</span> </div>
+<div class="line"><a id="l00535" name="l00535"></a><span class="lineno">  535</span><span class="preprocessor">    #ifdef __GNUC__</span></div>
+<div class="line"><a id="l00536" name="l00536"></a><span class="lineno">  536</span>    <span class="comment">/* For Arm Cortex-A and Cortex-R in general. */</span></div>
+<div class="line"><a id="l00537" name="l00537"></a><span class="lineno">  537</span>    <span class="keyword">static</span> <span class="keyword">inline</span> uint32_t prvGetCPSR(<span class="keywordtype">void</span>)</div>
+<div class="line"><a id="l00538" name="l00538"></a><span class="lineno">  538</span>    {</div>
+<div class="line"><a id="l00539" name="l00539"></a><span class="lineno">  539</span>        <span class="keywordtype">unsigned</span> <span class="keywordtype">long</span> ret;</div>
+<div class="line"><a id="l00540" name="l00540"></a><span class="lineno">  540</span>        <span class="comment">/* GCC-style assembly for getting the CPSR/APSR register, where the system execution mode is found. */</span></div>
+<div class="line"><a id="l00541" name="l00541"></a><span class="lineno">  541</span>        __asm__ __volatile__(<span class="stringliteral">&quot; mrs  %0, cpsr&quot;</span> : <span class="stringliteral">&quot;=r&quot;</span> (ret) : <span class="comment">/* no inputs */</span>  );</div>
+<div class="line"><a id="l00542" name="l00542"></a><span class="lineno">  542</span>        <span class="keywordflow">return</span> ret;</div>
+<div class="line"><a id="l00543" name="l00543"></a><span class="lineno">  543</span>    }</div>
+<div class="line"><a id="l00544" name="l00544"></a><span class="lineno">  544</span><span class="preprocessor">    #else</span></div>
+<div class="line"><a id="l00545" name="l00545"></a><span class="lineno">  545</span><span class="preprocessor">        #error &quot;Only GCC Supported!&quot;</span></div>
+<div class="line"><a id="l00546" name="l00546"></a><span class="lineno">  546</span><span class="preprocessor">    #endif</span></div>
+<div class="line"><a id="l00547" name="l00547"></a><span class="lineno">  547</span> </div>
+<div class="line"><a id="l00548" name="l00548"></a><span class="lineno">  548</span><span class="preprocessor">#elif (TRC_CFG_HARDWARE_PORT == TRC_HARDWARE_PORT_ZEPHYR)</span></div>
+<div class="line"><a id="l00549" name="l00549"></a><span class="lineno">  549</span><span class="preprocessor">    #ifdef CONFIG_64BIT</span></div>
+<div class="line"><a id="l00550" name="l00550"></a><span class="lineno">  550</span><span class="preprocessor">        #define TRC_BASE_TYPE int64_t</span></div>
+<div class="line"><a id="l00551" name="l00551"></a><span class="lineno">  551</span><span class="preprocessor">        #define TRC_UNSIGNED_BASE_TYPE uint64_t</span></div>
+<div class="line"><a id="l00552" name="l00552"></a><span class="lineno">  552</span><span class="preprocessor">    #else</span></div>
+<div class="line"><a id="l00553" name="l00553"></a><span class="lineno">  553</span><span class="preprocessor">        #define TRC_BASE_TYPE int32_t</span></div>
+<div class="line"><a id="l00554" name="l00554"></a><span class="lineno">  554</span><span class="preprocessor">        #define TRC_UNSIGNED_BASE_TYPE uint32_t</span></div>
+<div class="line"><a id="l00555" name="l00555"></a><span class="lineno">  555</span><span class="preprocessor">    #endif</span></div>
+<div class="line"><a id="l00556" name="l00556"></a><span class="lineno">  556</span> </div>
+<div class="line"><a id="l00557" name="l00557"></a><span class="lineno">  557</span><span class="preprocessor">    #define TRACE_ALLOC_CRITICAL_SECTION() TraceBaseType_t TRACE_ALLOC_CRITICAL_SECTION_NAME;</span></div>
+<div class="line"><a id="l00558" name="l00558"></a><span class="lineno">  558</span><span class="preprocessor">    #define TRACE_ENTER_CRITICAL_SECTION() { TRACE_ALLOC_CRITICAL_SECTION_NAME = irq_lock(); }</span></div>
+<div class="line"><a id="l00559" name="l00559"></a><span class="lineno">  559</span><span class="preprocessor">    #define TRACE_EXIT_CRITICAL_SECTION() { irq_unlock(TRACE_ALLOC_CRITICAL_SECTION_NAME); }</span></div>
+<div class="line"><a id="l00560" name="l00560"></a><span class="lineno">  560</span>    </div>
+<div class="line"><a id="l00561" name="l00561"></a><span class="lineno">  561</span><span class="preprocessor">    #define TRC_HWTC_TYPE TRC_FREE_RUNNING_32BIT_INCR</span></div>
+<div class="line"><a id="l00562" name="l00562"></a><span class="lineno">  562</span><span class="preprocessor">    #define TRC_HWTC_COUNT k_cycle_get_32()</span></div>
+<div class="line"><a id="l00563" name="l00563"></a><span class="lineno">  563</span><span class="preprocessor">    #define TRC_HWTC_PERIOD (CONFIG_SYS_CLOCK_HW_CYCLES_PER_SEC / CONFIG_SYS_CLOCK_TICKS_PER_SEC)</span></div>
+<div class="line"><a id="l00564" name="l00564"></a><span class="lineno">  564</span><span class="preprocessor">    #define TRC_HWTC_DIVISOR 4</span></div>
+<div class="line"><a id="l00565" name="l00565"></a><span class="lineno">  565</span><span class="preprocessor">    #define TRC_HWTC_FREQ_HZ CONFIG_SYS_CLOCK_HW_CYCLES_PER_SEC</span></div>
+<div class="line"><a id="l00566" name="l00566"></a><span class="lineno">  566</span><span class="preprocessor">    #define TRC_IRQ_PRIORITY_ORDER 0 </span><span class="comment">// Lower IRQ priority values are more significant</span></div>
 <div class="line"><a id="l00567" name="l00567"></a><span class="lineno">  567</span> </div>
-<div class="line"><a id="l00568" name="l00568"></a><span class="lineno">  568</span><span class="preprocessor">#elif ((TRC_CFG_HARDWARE_PORT == TRC_HARDWARE_PORT_XTensa_LX6) || (TRC_CFG_HARDWARE_PORT == TRC_HARDWARE_PORT_XTensa_LX7))</span></div>
-<div class="line"><a id="l00573" name="l00573"></a><span class="lineno">  573</span><span class="preprocessor">    #if CONFIG_FREERTOS_UNICORE == 1</span></div>
-<div class="line"><a id="l00574" name="l00574"></a><span class="lineno">  574</span>        </div>
-<div class="line"><a id="l00575" name="l00575"></a><span class="lineno">  575</span><span class="preprocessor">        #define TRACE_ALLOC_CRITICAL_SECTION() TraceUnsignedBaseType_t TRACE_ALLOC_CRITICAL_SECTION_NAME;</span></div>
-<div class="line"><a id="l00576" name="l00576"></a><span class="lineno">  576</span><span class="preprocessor">        #define TRACE_ENTER_CRITICAL_SECTION() {TRACE_ALLOC_CRITICAL_SECTION_NAME = __extension__({ unsigned __tmp;     \</span></div>
-<div class="line"><a id="l00577" name="l00577"></a><span class="lineno">  577</span><span class="preprocessor">                __asm__ __volatile__(&quot;rsil  %0, 15\n&quot;</span>                                               \</div>
-<div class="line"><a id="l00578" name="l00578"></a><span class="lineno">  578</span>                        : &quot;=a&quot; (__tmp) : : &quot;memory&quot; );                                              \</div>
-<div class="line"><a id="l00579" name="l00579"></a><span class="lineno">  579</span>                        __tmp;});}</div>
-<div class="line"><a id="l00580" name="l00580"></a><span class="lineno">  580</span><span class="preprocessor">        #define TRACE_EXIT_CRITICAL_SECTION() {portCLEAR_INTERRUPT_MASK_FROM_ISR(TRACE_ALLOC_CRITICAL_SECTION_NAME);}</span></div>
-<div class="line"><a id="l00581" name="l00581"></a><span class="lineno">  581</span>        </div>
-<div class="line"><a id="l00582" name="l00582"></a><span class="lineno">  582</span><span class="preprocessor">        #define TRC_HWTC_TYPE TRC_FREE_RUNNING_32BIT_INCR</span></div>
-<div class="line"><a id="l00583" name="l00583"></a><span class="lineno">  583</span><span class="preprocessor">        #define TRC_HWTC_COUNT ({ unsigned int __ccount;            \</span></div>
-<div class="line"><a id="l00584" name="l00584"></a><span class="lineno">  584</span><span class="preprocessor">            __asm__ __volatile__(&quot;rsr.ccount %0&quot;</span> : &quot;=a&quot;(__ccount)); \</div>
-<div class="line"><a id="l00585" name="l00585"></a><span class="lineno">  585</span>            __ccount; })</div>
-<div class="line"><a id="l00586" name="l00586"></a><span class="lineno">  586</span><span class="preprocessor">#ifdef CONFIG_IDF_TARGET_ESP32</span></div>
-<div class="line"><a id="l00587" name="l00587"></a><span class="lineno">  587</span><span class="preprocessor">        #define TRC_HWTC_FREQ_HZ (CONFIG_ESP32_DEFAULT_CPU_FREQ_MHZ * 1000000)</span></div>
-<div class="line"><a id="l00588" name="l00588"></a><span class="lineno">  588</span><span class="preprocessor">#elif defined(CONFIG_IDF_TARGET_ESP32S2)</span></div>
-<div class="line"><a id="l00589" name="l00589"></a><span class="lineno">  589</span><span class="preprocessor">        #define TRC_HWTC_FREQ_HZ (CONFIG_ESP32S2_DEFAULT_CPU_FREQ_MHZ * 1000000)</span></div>
-<div class="line"><a id="l00590" name="l00590"></a><span class="lineno">  590</span><span class="preprocessor">#else</span></div>
-<div class="line"><a id="l00591" name="l00591"></a><span class="lineno">  591</span><span class="preprocessor">        #error &quot;Invalid IDF target, check your sdkconfig.&quot;</span></div>
-<div class="line"><a id="l00592" name="l00592"></a><span class="lineno">  592</span><span class="preprocessor">#endif</span></div>
-<div class="line"><a id="l00593" name="l00593"></a><span class="lineno">  593</span><span class="preprocessor">        #define TRC_HWTC_PERIOD 0</span></div>
-<div class="line"><a id="l00594" name="l00594"></a><span class="lineno">  594</span><span class="preprocessor">        #define TRC_HWTC_DIVISOR 4</span></div>
-<div class="line"><a id="l00595" name="l00595"></a><span class="lineno">  595</span><span class="preprocessor">        #define TRC_IRQ_PRIORITY_ORDER 0</span></div>
-<div class="line"><a id="l00596" name="l00596"></a><span class="lineno">  596</span><span class="preprocessor">    #else</span></div>
-<div class="line"><a id="l00602" name="l00602"></a><span class="lineno">  602</span>        uint32_t prvGetSMPTimestamp();</div>
-<div class="line"><a id="l00603" name="l00603"></a><span class="lineno">  603</span> </div>
-<div class="line"><a id="l00604" name="l00604"></a><span class="lineno">  604</span><span class="preprocessor">        #define TRC_HWTC_TYPE TRC_FREE_RUNNING_32BIT_INCR</span></div>
-<div class="line"><a id="l00605" name="l00605"></a><span class="lineno">  605</span><span class="preprocessor">        #define TRC_HWTC_COUNT prvGetSMPTimestamp()</span></div>
-<div class="line"><a id="l00606" name="l00606"></a><span class="lineno">  606</span><span class="preprocessor">        #define TRC_HWTC_FREQ_HZ 1000000</span></div>
-<div class="line"><a id="l00607" name="l00607"></a><span class="lineno">  607</span><span class="preprocessor">        #define TRC_HWTC_PERIOD 0</span></div>
-<div class="line"><a id="l00608" name="l00608"></a><span class="lineno">  608</span><span class="preprocessor">        #define TRC_HWTC_DIVISOR 4</span></div>
-<div class="line"><a id="l00609" name="l00609"></a><span class="lineno">  609</span><span class="preprocessor">        #define TRC_IRQ_PRIORITY_ORDER 0</span></div>
-<div class="line"><a id="l00610" name="l00610"></a><span class="lineno">  610</span><span class="preprocessor">    #endif</span></div>
-<div class="line"><a id="l00611" name="l00611"></a><span class="lineno">  611</span> </div>
-<div class="line"><a id="l00612" name="l00612"></a><span class="lineno">  612</span><span class="preprocessor">    #if !defined(TRC_HWTC_FREQ_HZ)</span></div>
-<div class="line"><a id="l00613" name="l00613"></a><span class="lineno">  613</span><span class="preprocessor">        #error &quot;The XTensa LX6/LX7 trace hardware clock frequency is not defined.&quot;</span></div>
-<div class="line"><a id="l00614" name="l00614"></a><span class="lineno">  614</span><span class="preprocessor">    #endif</span></div>
-<div class="line"><a id="l00615" name="l00615"></a><span class="lineno">  615</span> </div>
-<div class="line"><a id="l00616" name="l00616"></a><span class="lineno">  616</span><span class="preprocessor">#elif (TRC_CFG_HARDWARE_PORT == TRC_HARDWARE_PORT_RISCV_RV32I)</span></div>
-<div class="line"><a id="l00617" name="l00617"></a><span class="lineno">  617</span><span class="preprocessor">    #define TRACE_ALLOC_CRITICAL_SECTION() TraceUnsignedBaseType_t TRACE_ALLOC_CRITICAL_SECTION_NAME;</span></div>
-<div class="line"><a id="l00618" name="l00618"></a><span class="lineno">  618</span><span class="preprocessor">    #define TRACE_ENTER_CRITICAL_SECTION() __asm__ __volatile__(&quot;csrr %0, mstatus   \n\t&quot;</span>   \</div>
-<div class="line"><a id="l00619" name="l00619"></a><span class="lineno">  619</span>                                                                &quot;csrci mstatus, 8   \n\t&quot;   \</div>
-<div class="line"><a id="l00620" name="l00620"></a><span class="lineno">  620</span>                                                                &quot;andi %0, %0, 8     \n\t&quot;   \</div>
-<div class="line"><a id="l00621" name="l00621"></a><span class="lineno">  621</span>                                                                : &quot;=r&quot;(TRACE_ALLOC_CRITICAL_SECTION_NAME))</div>
-<div class="line"><a id="l00622" name="l00622"></a><span class="lineno">  622</span><span class="preprocessor">    #define TRACE_EXIT_CRITICAL_SECTION() __asm__ __volatile__(&quot;csrr a1, mstatus    \n\t&quot;</span>   \</div>
-<div class="line"><a id="l00623" name="l00623"></a><span class="lineno">  623</span>                                                                &quot;or %0, %0, a1      \n\t&quot;   \</div>
-<div class="line"><a id="l00624" name="l00624"></a><span class="lineno">  624</span>                                                                &quot;csrs mstatus, %0   \n\t&quot;   \</div>
-<div class="line"><a id="l00625" name="l00625"></a><span class="lineno">  625</span>                                                                :                           \</div>
-<div class="line"><a id="l00626" name="l00626"></a><span class="lineno">  626</span>                                                                : &quot;r&quot; (TRACE_ALLOC_CRITICAL_SECTION_NAME)   \</div>
-<div class="line"><a id="l00627" name="l00627"></a><span class="lineno">  627</span>                                                                : &quot;a1&quot;)</div>
-<div class="line"><a id="l00628" name="l00628"></a><span class="lineno">  628</span><span class="preprocessor">    #define TRC_HWTC_TYPE TRC_FREE_RUNNING_32BIT_INCR</span></div>
-<div class="line"><a id="l00629" name="l00629"></a><span class="lineno">  629</span><span class="preprocessor">    #define TRC_HWTC_COUNT ({ unsigned int __count;         \</span></div>
-<div class="line"><a id="l00630" name="l00630"></a><span class="lineno">  630</span><span class="preprocessor">        __asm__ __volatile__(&quot;rdcycle %0&quot;</span> : &quot;=r&quot;(__count)); \</div>
-<div class="line"><a id="l00631" name="l00631"></a><span class="lineno">  631</span>        __count; })</div>
-<div class="line"><a id="l00632" name="l00632"></a><span class="lineno">  632</span><span class="preprocessor">    #define TRC_HWTC_PERIOD 0</span></div>
-<div class="line"><a id="l00633" name="l00633"></a><span class="lineno">  633</span><span class="preprocessor">    #define TRC_HWTC_DIVISOR 1</span></div>
-<div class="line"><a id="l00634" name="l00634"></a><span class="lineno">  634</span><span class="preprocessor">    #define TRC_HWTC_FREQ_HZ 16000000</span></div>
-<div class="line"><a id="l00635" name="l00635"></a><span class="lineno">  635</span><span class="preprocessor">    #define TRC_IRQ_PRIORITY_ORDER 0</span></div>
-<div class="line"><a id="l00636" name="l00636"></a><span class="lineno">  636</span> </div>
-<div class="line"><a id="l00637" name="l00637"></a><span class="lineno">  637</span><span class="preprocessor">#elif (TRC_CFG_HARDWARE_PORT == TRC_HARDWARE_PORT_XMOS_XCOREAI)</span></div>
-<div class="line"><a id="l00638" name="l00638"></a><span class="lineno">  638</span><span class="preprocessor">    #define TRC_PORT_SPECIFIC_INIT()</span></div>
-<div class="line"><a id="l00639" name="l00639"></a><span class="lineno">  639</span><span class="preprocessor">    #define TRC_HWTC_TYPE TRC_FREE_RUNNING_32BIT_INCR</span></div>
-<div class="line"><a id="l00640" name="l00640"></a><span class="lineno">  640</span><span class="preprocessor">    #define TRC_HWTC_COUNT xscope_gettime()</span></div>
-<div class="line"><a id="l00641" name="l00641"></a><span class="lineno">  641</span><span class="preprocessor">    #define TRC_HWTC_PERIOD (configCPU_CLOCK_HZ / configTICK_RATE_HZ )</span></div>
-<div class="line"><a id="l00642" name="l00642"></a><span class="lineno">  642</span><span class="preprocessor">    #define TRC_HWTC_DIVISOR 4</span></div>
-<div class="line"><a id="l00643" name="l00643"></a><span class="lineno">  643</span><span class="preprocessor">    #define TRC_HWTC_FREQ_HZ 100000000</span></div>
-<div class="line"><a id="l00644" name="l00644"></a><span class="lineno">  644</span><span class="preprocessor">    #define TRC_IRQ_PRIORITY_ORDER 0</span></div>
-<div class="line"><a id="l00645" name="l00645"></a><span class="lineno">  645</span> </div>
-<div class="line"><a id="l00646" name="l00646"></a><span class="lineno">  646</span><span class="preprocessor">#elif (TRC_CFG_HARDWARE_PORT == TRC_HARDWARE_PORT_POWERPC_Z4)</span></div>
+<div class="line"><a id="l00568" name="l00568"></a><span class="lineno">  568</span><span class="preprocessor">    #define TRC_PORT_SPECIFIC_INIT()</span></div>
+<div class="line"><a id="l00569" name="l00569"></a><span class="lineno">  569</span> </div>
+<div class="line"><a id="l00570" name="l00570"></a><span class="lineno">  570</span><span class="preprocessor">#elif ((TRC_CFG_HARDWARE_PORT == TRC_HARDWARE_PORT_XTensa_LX6) || (TRC_CFG_HARDWARE_PORT == TRC_HARDWARE_PORT_XTensa_LX7))</span></div>
+<div class="line"><a id="l00575" name="l00575"></a><span class="lineno">  575</span><span class="preprocessor">    #if CONFIG_FREERTOS_UNICORE == 1</span></div>
+<div class="line"><a id="l00576" name="l00576"></a><span class="lineno">  576</span>        </div>
+<div class="line"><a id="l00577" name="l00577"></a><span class="lineno">  577</span><span class="preprocessor">        #define TRACE_ALLOC_CRITICAL_SECTION() TraceUnsignedBaseType_t TRACE_ALLOC_CRITICAL_SECTION_NAME;</span></div>
+<div class="line"><a id="l00578" name="l00578"></a><span class="lineno">  578</span><span class="preprocessor">        #define TRACE_ENTER_CRITICAL_SECTION() {TRACE_ALLOC_CRITICAL_SECTION_NAME = __extension__({ unsigned __tmp;     \</span></div>
+<div class="line"><a id="l00579" name="l00579"></a><span class="lineno">  579</span><span class="preprocessor">                __asm__ __volatile__(&quot;rsil  %0, 15\n&quot;</span>                                               \</div>
+<div class="line"><a id="l00580" name="l00580"></a><span class="lineno">  580</span>                        : &quot;=a&quot; (__tmp) : : &quot;memory&quot; );                                              \</div>
+<div class="line"><a id="l00581" name="l00581"></a><span class="lineno">  581</span>                        __tmp;});}</div>
+<div class="line"><a id="l00582" name="l00582"></a><span class="lineno">  582</span><span class="preprocessor">        #define TRACE_EXIT_CRITICAL_SECTION() {portCLEAR_INTERRUPT_MASK_FROM_ISR(TRACE_ALLOC_CRITICAL_SECTION_NAME);}</span></div>
+<div class="line"><a id="l00583" name="l00583"></a><span class="lineno">  583</span>        </div>
+<div class="line"><a id="l00584" name="l00584"></a><span class="lineno">  584</span><span class="preprocessor">        #define TRC_HWTC_TYPE TRC_FREE_RUNNING_32BIT_INCR</span></div>
+<div class="line"><a id="l00585" name="l00585"></a><span class="lineno">  585</span><span class="preprocessor">        #define TRC_HWTC_COUNT ({ unsigned int __ccount;            \</span></div>
+<div class="line"><a id="l00586" name="l00586"></a><span class="lineno">  586</span><span class="preprocessor">            __asm__ __volatile__(&quot;rsr.ccount %0&quot;</span> : &quot;=a&quot;(__ccount)); \</div>
+<div class="line"><a id="l00587" name="l00587"></a><span class="lineno">  587</span>            __ccount; })</div>
+<div class="line"><a id="l00588" name="l00588"></a><span class="lineno">  588</span><span class="preprocessor">#ifdef CONFIG_IDF_TARGET_ESP32</span></div>
+<div class="line"><a id="l00589" name="l00589"></a><span class="lineno">  589</span><span class="preprocessor">        #define TRC_HWTC_FREQ_HZ (CONFIG_ESP32_DEFAULT_CPU_FREQ_MHZ * 1000000)</span></div>
+<div class="line"><a id="l00590" name="l00590"></a><span class="lineno">  590</span><span class="preprocessor">#elif defined(CONFIG_IDF_TARGET_ESP32S2)</span></div>
+<div class="line"><a id="l00591" name="l00591"></a><span class="lineno">  591</span><span class="preprocessor">        #define TRC_HWTC_FREQ_HZ (CONFIG_ESP32S2_DEFAULT_CPU_FREQ_MHZ * 1000000)</span></div>
+<div class="line"><a id="l00592" name="l00592"></a><span class="lineno">  592</span><span class="preprocessor">#else</span></div>
+<div class="line"><a id="l00593" name="l00593"></a><span class="lineno">  593</span><span class="preprocessor">        #error &quot;Invalid IDF target, check your sdkconfig.&quot;</span></div>
+<div class="line"><a id="l00594" name="l00594"></a><span class="lineno">  594</span><span class="preprocessor">#endif</span></div>
+<div class="line"><a id="l00595" name="l00595"></a><span class="lineno">  595</span><span class="preprocessor">        #define TRC_HWTC_PERIOD 0</span></div>
+<div class="line"><a id="l00596" name="l00596"></a><span class="lineno">  596</span><span class="preprocessor">        #define TRC_HWTC_DIVISOR 4</span></div>
+<div class="line"><a id="l00597" name="l00597"></a><span class="lineno">  597</span><span class="preprocessor">        #define TRC_IRQ_PRIORITY_ORDER 0</span></div>
+<div class="line"><a id="l00598" name="l00598"></a><span class="lineno">  598</span><span class="preprocessor">    #else</span></div>
+<div class="line"><a id="l00604" name="l00604"></a><span class="lineno">  604</span>        uint32_t prvGetSMPTimestamp();</div>
+<div class="line"><a id="l00605" name="l00605"></a><span class="lineno">  605</span> </div>
+<div class="line"><a id="l00606" name="l00606"></a><span class="lineno">  606</span><span class="preprocessor">        #define TRC_HWTC_TYPE TRC_FREE_RUNNING_32BIT_INCR</span></div>
+<div class="line"><a id="l00607" name="l00607"></a><span class="lineno">  607</span><span class="preprocessor">        #define TRC_HWTC_COUNT prvGetSMPTimestamp()</span></div>
+<div class="line"><a id="l00608" name="l00608"></a><span class="lineno">  608</span><span class="preprocessor">        #define TRC_HWTC_FREQ_HZ 1000000</span></div>
+<div class="line"><a id="l00609" name="l00609"></a><span class="lineno">  609</span><span class="preprocessor">        #define TRC_HWTC_PERIOD 0</span></div>
+<div class="line"><a id="l00610" name="l00610"></a><span class="lineno">  610</span><span class="preprocessor">        #define TRC_HWTC_DIVISOR 4</span></div>
+<div class="line"><a id="l00611" name="l00611"></a><span class="lineno">  611</span><span class="preprocessor">        #define TRC_IRQ_PRIORITY_ORDER 0</span></div>
+<div class="line"><a id="l00612" name="l00612"></a><span class="lineno">  612</span><span class="preprocessor">    #endif</span></div>
+<div class="line"><a id="l00613" name="l00613"></a><span class="lineno">  613</span> </div>
+<div class="line"><a id="l00614" name="l00614"></a><span class="lineno">  614</span><span class="preprocessor">    #if !defined(TRC_HWTC_FREQ_HZ)</span></div>
+<div class="line"><a id="l00615" name="l00615"></a><span class="lineno">  615</span><span class="preprocessor">        #error &quot;The XTensa LX6/LX7 trace hardware clock frequency is not defined.&quot;</span></div>
+<div class="line"><a id="l00616" name="l00616"></a><span class="lineno">  616</span><span class="preprocessor">    #endif</span></div>
+<div class="line"><a id="l00617" name="l00617"></a><span class="lineno">  617</span> </div>
+<div class="line"><a id="l00618" name="l00618"></a><span class="lineno">  618</span><span class="preprocessor">#elif (TRC_CFG_HARDWARE_PORT == TRC_HARDWARE_PORT_RISCV_RV32I)</span></div>
+<div class="line"><a id="l00619" name="l00619"></a><span class="lineno">  619</span><span class="preprocessor">    #define TRACE_ALLOC_CRITICAL_SECTION() TraceUnsignedBaseType_t TRACE_ALLOC_CRITICAL_SECTION_NAME;</span></div>
+<div class="line"><a id="l00620" name="l00620"></a><span class="lineno">  620</span><span class="preprocessor">    #define TRACE_ENTER_CRITICAL_SECTION() __asm__ __volatile__(&quot;csrr %0, mstatus   \n\t&quot;</span>   \</div>
+<div class="line"><a id="l00621" name="l00621"></a><span class="lineno">  621</span>                                                                &quot;csrci mstatus, 8   \n\t&quot;   \</div>
+<div class="line"><a id="l00622" name="l00622"></a><span class="lineno">  622</span>                                                                &quot;andi %0, %0, 8     \n\t&quot;   \</div>
+<div class="line"><a id="l00623" name="l00623"></a><span class="lineno">  623</span>                                                                : &quot;=r&quot;(TRACE_ALLOC_CRITICAL_SECTION_NAME))</div>
+<div class="line"><a id="l00624" name="l00624"></a><span class="lineno">  624</span><span class="preprocessor">    #define TRACE_EXIT_CRITICAL_SECTION() __asm__ __volatile__(&quot;csrr a1, mstatus    \n\t&quot;</span>   \</div>
+<div class="line"><a id="l00625" name="l00625"></a><span class="lineno">  625</span>                                                                &quot;or %0, %0, a1      \n\t&quot;   \</div>
+<div class="line"><a id="l00626" name="l00626"></a><span class="lineno">  626</span>                                                                &quot;csrs mstatus, %0   \n\t&quot;   \</div>
+<div class="line"><a id="l00627" name="l00627"></a><span class="lineno">  627</span>                                                                :                           \</div>
+<div class="line"><a id="l00628" name="l00628"></a><span class="lineno">  628</span>                                                                : &quot;r&quot; (TRACE_ALLOC_CRITICAL_SECTION_NAME)   \</div>
+<div class="line"><a id="l00629" name="l00629"></a><span class="lineno">  629</span>                                                                : &quot;a1&quot;)</div>
+<div class="line"><a id="l00630" name="l00630"></a><span class="lineno">  630</span><span class="preprocessor">    #define TRC_HWTC_TYPE TRC_FREE_RUNNING_32BIT_INCR</span></div>
+<div class="line"><a id="l00631" name="l00631"></a><span class="lineno">  631</span><span class="preprocessor">    #define TRC_HWTC_COUNT ({ unsigned int __count;         \</span></div>
+<div class="line"><a id="l00632" name="l00632"></a><span class="lineno">  632</span><span class="preprocessor">        __asm__ __volatile__(&quot;rdcycle %0&quot;</span> : &quot;=r&quot;(__count)); \</div>
+<div class="line"><a id="l00633" name="l00633"></a><span class="lineno">  633</span>        __count; })</div>
+<div class="line"><a id="l00634" name="l00634"></a><span class="lineno">  634</span><span class="preprocessor">    #define TRC_HWTC_PERIOD 0</span></div>
+<div class="line"><a id="l00635" name="l00635"></a><span class="lineno">  635</span><span class="preprocessor">    #define TRC_HWTC_DIVISOR 1</span></div>
+<div class="line"><a id="l00636" name="l00636"></a><span class="lineno">  636</span><span class="preprocessor">    #define TRC_HWTC_FREQ_HZ 16000000</span></div>
+<div class="line"><a id="l00637" name="l00637"></a><span class="lineno">  637</span><span class="preprocessor">    #define TRC_IRQ_PRIORITY_ORDER 0</span></div>
+<div class="line"><a id="l00638" name="l00638"></a><span class="lineno">  638</span> </div>
+<div class="line"><a id="l00639" name="l00639"></a><span class="lineno">  639</span><span class="preprocessor">#elif (TRC_CFG_HARDWARE_PORT == TRC_HARDWARE_PORT_XMOS_XCOREAI)</span></div>
+<div class="line"><a id="l00640" name="l00640"></a><span class="lineno">  640</span><span class="preprocessor">    #define TRC_PORT_SPECIFIC_INIT()</span></div>
+<div class="line"><a id="l00641" name="l00641"></a><span class="lineno">  641</span><span class="preprocessor">    #define TRC_HWTC_TYPE TRC_FREE_RUNNING_32BIT_INCR</span></div>
+<div class="line"><a id="l00642" name="l00642"></a><span class="lineno">  642</span><span class="preprocessor">    #define TRC_HWTC_COUNT xscope_gettime()</span></div>
+<div class="line"><a id="l00643" name="l00643"></a><span class="lineno">  643</span><span class="preprocessor">    #define TRC_HWTC_PERIOD (configCPU_CLOCK_HZ / configTICK_RATE_HZ )</span></div>
+<div class="line"><a id="l00644" name="l00644"></a><span class="lineno">  644</span><span class="preprocessor">    #define TRC_HWTC_DIVISOR 4</span></div>
+<div class="line"><a id="l00645" name="l00645"></a><span class="lineno">  645</span><span class="preprocessor">    #define TRC_HWTC_FREQ_HZ 100000000</span></div>
+<div class="line"><a id="l00646" name="l00646"></a><span class="lineno">  646</span><span class="preprocessor">    #define TRC_IRQ_PRIORITY_ORDER 0</span></div>
 <div class="line"><a id="l00647" name="l00647"></a><span class="lineno">  647</span> </div>
-<div class="line"><a id="l00648" name="l00648"></a><span class="lineno">  648</span>    <span class="comment">/* UNOFFICIAL PORT - NOT YET VERIFIED BY PERCEPIO */</span></div>
-<div class="line"><a id="l00649" name="l00649"></a><span class="lineno">  649</span>    </div>
-<div class="line"><a id="l00650" name="l00650"></a><span class="lineno">  650</span><span class="preprocessor">    #define TRACE_ALLOC_CRITICAL_SECTION() TraceBaseType_t TRACE_ALLOC_CRITICAL_SECTION_NAME;</span></div>
-<div class="line"><a id="l00651" name="l00651"></a><span class="lineno">  651</span><span class="preprocessor">    #define TRACE_ENTER_CRITICAL_SECTION() { TRACE_ALLOC_CRITICAL_SECTION_NAME = TRC_KERNEL_PORT_SET_INTERRUPT_MASK(); }</span></div>
-<div class="line"><a id="l00652" name="l00652"></a><span class="lineno">  652</span><span class="preprocessor">    #define TRACE_EXIT_CRITICAL_SECTION() { TRC_KERNEL_PORT_CLEAR_INTERRUPT_MASK(TRACE_ALLOC_CRITICAL_SECTION_NAME); }</span></div>
-<div class="line"><a id="l00653" name="l00653"></a><span class="lineno">  653</span> </div>
-<div class="line"><a id="l00654" name="l00654"></a><span class="lineno">  654</span><span class="preprocessor">    #define TRC_HWTC_TYPE TRC_OS_TIMER_DECR</span></div>
-<div class="line"><a id="l00655" name="l00655"></a><span class="lineno">  655</span>    <span class="comment">//#define HWTC_COUNT_DIRECTION DIRECTION_DECREMENTING</span></div>
-<div class="line"><a id="l00656" name="l00656"></a><span class="lineno">  656</span><span class="preprocessor">    #define TRC_HWTC_COUNT PIT.TIMER[configTICK_PIT_CHANNEL].CVAL.R </span><span class="comment">// must be the PIT channel used for the systick</span></div>
-<div class="line"><a id="l00657" name="l00657"></a><span class="lineno">  657</span><span class="preprocessor">    #define TRC_HWTC_PERIOD ((configPIT_CLOCK_HZ / configTICK_RATE_HZ) - 1U) </span><span class="comment">// TODO FIXME or maybe not -1? what&#39;s the right &quot;period&quot; value?</span></div>
-<div class="line"><a id="l00658" name="l00658"></a><span class="lineno">  658</span><span class="preprocessor">    #define TRC_HWTC_FREQ_HZ configPIT_CLOCK_HZ</span></div>
-<div class="line"><a id="l00659" name="l00659"></a><span class="lineno">  659</span><span class="preprocessor">    #define TRC_HWTC_DIVISOR 1</span></div>
-<div class="line"><a id="l00660" name="l00660"></a><span class="lineno">  660</span><span class="preprocessor">    #define TRC_IRQ_PRIORITY_ORDER 1 </span><span class="comment">// higher IRQ priority values are more significant</span></div>
-<div class="line"><a id="l00661" name="l00661"></a><span class="lineno">  661</span> </div>
-<div class="line"><a id="l00662" name="l00662"></a><span class="lineno">  662</span><span class="preprocessor">#elif (TRC_CFG_HARDWARE_PORT == TRC_HARDWARE_PORT_ARMv8AR_A32)</span></div>
-<div class="line"><a id="l00663" name="l00663"></a><span class="lineno">  663</span>    <span class="keyword">extern</span> TraceUnsignedBaseType_t cortex_a9_r5_enter_critical(<span class="keywordtype">void</span>);</div>
-<div class="line"><a id="l00664" name="l00664"></a><span class="lineno">  664</span>    <span class="keyword">extern</span> <span class="keywordtype">void</span> cortex_a9_r5_exit_critical(TraceUnsignedBaseType_t irq_already_masked_at_enter);</div>
-<div class="line"><a id="l00665" name="l00665"></a><span class="lineno">  665</span> </div>
-<div class="line"><a id="l00666" name="l00666"></a><span class="lineno">  666</span><span class="preprocessor">    #define TRACE_ALLOC_CRITICAL_SECTION() TraceUnsignedBaseType_t TRACE_ALLOC_CRITICAL_SECTION_NAME;</span></div>
+<div class="line"><a id="l00648" name="l00648"></a><span class="lineno">  648</span><span class="preprocessor">#elif (TRC_CFG_HARDWARE_PORT == TRC_HARDWARE_PORT_POWERPC_Z4)</span></div>
+<div class="line"><a id="l00649" name="l00649"></a><span class="lineno">  649</span> </div>
+<div class="line"><a id="l00650" name="l00650"></a><span class="lineno">  650</span>    <span class="comment">/* UNOFFICIAL PORT - NOT YET VERIFIED BY PERCEPIO */</span></div>
+<div class="line"><a id="l00651" name="l00651"></a><span class="lineno">  651</span>    </div>
+<div class="line"><a id="l00652" name="l00652"></a><span class="lineno">  652</span><span class="preprocessor">    #define TRACE_ALLOC_CRITICAL_SECTION() TraceBaseType_t TRACE_ALLOC_CRITICAL_SECTION_NAME;</span></div>
+<div class="line"><a id="l00653" name="l00653"></a><span class="lineno">  653</span><span class="preprocessor">    #define TRACE_ENTER_CRITICAL_SECTION() { TRACE_ALLOC_CRITICAL_SECTION_NAME = TRC_KERNEL_PORT_SET_INTERRUPT_MASK(); }</span></div>
+<div class="line"><a id="l00654" name="l00654"></a><span class="lineno">  654</span><span class="preprocessor">    #define TRACE_EXIT_CRITICAL_SECTION() { TRC_KERNEL_PORT_CLEAR_INTERRUPT_MASK(TRACE_ALLOC_CRITICAL_SECTION_NAME); }</span></div>
+<div class="line"><a id="l00655" name="l00655"></a><span class="lineno">  655</span> </div>
+<div class="line"><a id="l00656" name="l00656"></a><span class="lineno">  656</span><span class="preprocessor">    #define TRC_HWTC_TYPE TRC_OS_TIMER_DECR</span></div>
+<div class="line"><a id="l00657" name="l00657"></a><span class="lineno">  657</span>    <span class="comment">//#define HWTC_COUNT_DIRECTION DIRECTION_DECREMENTING</span></div>
+<div class="line"><a id="l00658" name="l00658"></a><span class="lineno">  658</span><span class="preprocessor">    #define TRC_HWTC_COUNT PIT.TIMER[configTICK_PIT_CHANNEL].CVAL.R </span><span class="comment">// must be the PIT channel used for the systick</span></div>
+<div class="line"><a id="l00659" name="l00659"></a><span class="lineno">  659</span><span class="preprocessor">    #define TRC_HWTC_PERIOD ((configPIT_CLOCK_HZ / configTICK_RATE_HZ) - 1U) </span><span class="comment">// TODO FIXME or maybe not -1? what&#39;s the right &quot;period&quot; value?</span></div>
+<div class="line"><a id="l00660" name="l00660"></a><span class="lineno">  660</span><span class="preprocessor">    #define TRC_HWTC_FREQ_HZ configPIT_CLOCK_HZ</span></div>
+<div class="line"><a id="l00661" name="l00661"></a><span class="lineno">  661</span><span class="preprocessor">    #define TRC_HWTC_DIVISOR 1</span></div>
+<div class="line"><a id="l00662" name="l00662"></a><span class="lineno">  662</span><span class="preprocessor">    #define TRC_IRQ_PRIORITY_ORDER 1 </span><span class="comment">// higher IRQ priority values are more significant</span></div>
+<div class="line"><a id="l00663" name="l00663"></a><span class="lineno">  663</span> </div>
+<div class="line"><a id="l00664" name="l00664"></a><span class="lineno">  664</span><span class="preprocessor">#elif (TRC_CFG_HARDWARE_PORT == TRC_HARDWARE_PORT_ARMv8AR_A32)</span></div>
+<div class="line"><a id="l00665" name="l00665"></a><span class="lineno">  665</span>    <span class="keyword">extern</span> uint32_t cortex_a9_r5_enter_critical(<span class="keywordtype">void</span>);</div>
+<div class="line"><a id="l00666" name="l00666"></a><span class="lineno">  666</span>    <span class="keyword">extern</span> <span class="keywordtype">void</span> cortex_a9_r5_exit_critical(uint32_t irq_already_masked_at_enter);</div>
 <div class="line"><a id="l00667" name="l00667"></a><span class="lineno">  667</span> </div>
-<div class="line"><a id="l00668" name="l00668"></a><span class="lineno">  668</span><span class="preprocessor">    #define TRACE_ENTER_CRITICAL_SECTION() { TRACE_ALLOC_CRITICAL_SECTION_NAME = cortex_a9_r5_enter_critical(); }</span></div>
-<div class="line"><a id="l00669" name="l00669"></a><span class="lineno">  669</span> </div>
-<div class="line"><a id="l00670" name="l00670"></a><span class="lineno">  670</span><span class="preprocessor">    #define TRACE_EXIT_CRITICAL_SECTION() { cortex_a9_r5_exit_critical(TRACE_ALLOC_CRITICAL_SECTION_NAME); }</span></div>
+<div class="line"><a id="l00668" name="l00668"></a><span class="lineno">  668</span><span class="preprocessor">    #define TRACE_ALLOC_CRITICAL_SECTION() TraceUnsignedBaseType_t TRACE_ALLOC_CRITICAL_SECTION_NAME;</span></div>
+<div class="line"><a id="l00669" name="l00669"></a><span class="lineno">  669</span><span class="preprocessor">    #define TRACE_ENTER_CRITICAL_SECTION() { TRACE_ALLOC_CRITICAL_SECTION_NAME = (TraceUnsignedBaseType_t)cortex_a9_r5_enter_critical(); }</span></div>
+<div class="line"><a id="l00670" name="l00670"></a><span class="lineno">  670</span><span class="preprocessor">    #define TRACE_EXIT_CRITICAL_SECTION() { cortex_a9_r5_exit_critical((uint32_t)TRACE_ALLOC_CRITICAL_SECTION_NAME); }</span></div>
 <div class="line"><a id="l00671" name="l00671"></a><span class="lineno">  671</span> </div>
 <div class="line"><a id="l00672" name="l00672"></a><span class="lineno">  672</span><span class="preprocessor">    #include &lt;cmsis_compiler.h&gt;</span></div>
 <div class="line"><a id="l00673" name="l00673"></a><span class="lineno">  673</span> </div>

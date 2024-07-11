@@ -1,5 +1,5 @@
 /*
-* Percepio Trace Recorder for Tracealyzer v4.9.0
+* Percepio Trace Recorder for Tracealyzer v4.9.2
 * Copyright 2023 Percepio AB
 * www.percepio.com
 *
@@ -17,8 +17,6 @@
 #ifndef TRC_SEND_NAME_ONLY_ON_DELETE
 #define TRC_SEND_NAME_ONLY_ON_DELETE 0
 #endif
-
-traceResult prvTraceObjectSendNameEvent(void* pvObject, const char* szName, uint32_t uiLength);
 
 /*cstat !MISRAC2004-6.3 !MISRAC2012-Dir-4.6_a Suppress basic char type usage*/
 traceResult xTraceObjectRegisterInternal(uint32_t uiEventCode, void* const pvObject, const char* szName, TraceUnsignedBaseType_t uxStateCount, const TraceUnsignedBaseType_t uxStates[], TraceUnsignedBaseType_t uxOptions, TraceObjectHandle_t* pxObjectHandle)
@@ -87,6 +85,7 @@ traceResult xTraceObjectRegisterInternal(uint32_t uiEventCode, void* const pvObj
 	{
 		case 0:
 			xTraceEventCreate1(uiEventCode, (TraceUnsignedBaseType_t)pvAddress);
+			break;
 		case 1:
 			xTraceEventCreate2(uiEventCode, (TraceUnsignedBaseType_t)pvAddress, uxStates[0]);
 			break;
@@ -141,8 +140,9 @@ traceResult xTraceObjectUnregister(TraceObjectHandle_t xObjectHandle, uint32_t u
 	for (i = 0u; (szName[i] != (char)0) && (i < 128u); i++) {} /*cstat !MISRAC2004-6.3 !MISRAC2012-Dir-4.6_a Suppress basic char type usage*/ /*cstat !MISRAC2004-17.4_b We need to access every character in the string*/
 
 	uiLength = i;
-	/* This should never fail */
-	TRC_ASSERT_ALWAYS_EVALUATE(prvTraceObjectSendNameEvent(pvObject, szName, uiLength) == TRC_SUCCESS);
+
+	/* Send the name event, if possible */
+	(void)xTraceEventCreateData1(PSF_EVENT_OBJ_NAME, (TraceUnsignedBaseType_t)pvObject, (TraceUnsignedBaseType_t*)szName, uiLength + 1); /* +1 for termination */
 #endif /* (TRC_SEND_NAME_ONLY_ON_DELETE == 1) */
 
 	/* Send the delete event, if possible */
@@ -174,9 +174,8 @@ traceResult xTraceObjectSetName(TraceObjectHandle_t xObjectHandle, const char* s
 	uiLength = i;
 
 #if (TRC_SEND_NAME_ONLY_ON_DELETE == 0)
-	/* Send name event now since we don't do it on delete events */
-	/* This should never fail */
-	TRC_ASSERT_ALWAYS_EVALUATE(prvTraceObjectSendNameEvent(pvObject, szName, uiLength) == TRC_SUCCESS);
+	/* Attempt to send name event now since we don't do it on delete events */
+	(void)xTraceEventCreateData1(PSF_EVENT_OBJ_NAME, (TraceUnsignedBaseType_t)pvObject, (TraceUnsignedBaseType_t*)szName, uiLength + 1); /* +1 for termination */
 #endif /* (TRC_SEND_NAME_ONLY_ON_DELETE == 0) */
 
 	return xTraceEntrySetSymbol((TraceEntryHandle_t)xObjectHandle, szName, uiLength);
@@ -298,12 +297,6 @@ traceResult xTraceObjectSetOptionsWithoutHandle(void* pvObject, uint32_t uiMask)
 	TRACE_EXIT_CRITICAL_SECTION();
 
 	return xResult;
-}
-
-/*cstat !MISRAC2004-6.3 !MISRAC2012-Dir-4.6_a Suppress basic char type usage*/
-traceResult prvTraceObjectSendNameEvent(void* const pvObject, const char* szName, uint32_t uiLength)
-{
-	return xTraceEventCreateData1(PSF_EVENT_OBJ_NAME, (TraceUnsignedBaseType_t)pvObject, (TraceUnsignedBaseType_t*)szName, uiLength + 1); /* +1 for termination */
 }
 
 #endif

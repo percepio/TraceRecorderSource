@@ -46,6 +46,7 @@ config PERCEPIO_TRC_START_MODE_START_AWAIT_HOST
 
 config PERCEPIO_TRC_START_MODE_START_FROM_HOST
 	bool "Start From Host"
+	depends on PERCEPIO_TRC_RECORDER_MODE_STREAMING && !PERCEPIO_TRC_CFG_STREAM_PORT_RINGBUFFER
 endchoice
 
 choice PERCEPIO_TRC_CFG_STREAM_PORT
@@ -71,7 +72,6 @@ config PERCEPIO_TRC_CFG_STREAM_PORT_RINGBUFFER
 
 config PERCEPIO_TRC_CFG_STREAM_PORT_FILE
 	bool "File"
-	depends on !PERCEPIO_TRC_CFG_RECORDER_RTOS_ZEPHYR
 
 config PERCEPIO_TRC_CFG_STREAM_PORT_TCPIP
 	bool "TCP/IP"
@@ -96,6 +96,9 @@ rsource "../streamports/ARM_ITM/Kconfig"
 endif
 if PERCEPIO_TRC_CFG_STREAM_PORT_RINGBUFFER
 rsource "../streamports/RingBuffer/Kconfig"
+endif
+if PERCEPIO_TRC_CFG_STREAM_PORT_FILE
+rsource "../streamports/File/Kconfig"
 endif
 if PERCEPIO_TRC_CFG_STREAM_PORT_ZEPHYR_SEMIHOST
 rsource "../kernelports/Zephyr/streamports/Semihost/Kconfig"

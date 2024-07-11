@@ -1,5 +1,5 @@
 /*
- * Trace Recorder for Tracealyzer v4.9.0
+ * Trace Recorder for Tracealyzer v4.9.2
  * Copyright 2023 Percepio AB
  * www.percepio.com
  *
@@ -49,7 +49,7 @@ extern "C" {
  * @def TRC_PLATFORM_CFG_PATCH
  * @brief Patchlevel release version for recorder.
  */
-#define TRC_PLATFORM_CFG_PATCH 0
+#define TRC_PLATFORM_CFG_PATCH 1
 
 /**
  * @def TRC_TICK_RATE_HZ
@@ -630,6 +630,7 @@ void vTraceSetTimerName(void* object, const char* name);
 #define PSF_EVENT_MEMORY_SLAB_FREE                          0xEC
 
 #define PSF_EVENT_KHEAP_ALIGNED_ALLOC_SUCCESS               0x84
+#define PSF_EVENT_KHEAP_ALIGNED_ALLOC_SUCCESS_BLOCKED      0x16B
 #define PSF_EVENT_KHEAP_ALIGNED_ALLOC_BLOCKING              0x86    
 #define PSF_EVENT_KHEAP_ALIGNED_ALLOC_FAILURE               0x85
 #define PSF_EVENT_KHEAP_ALLOC_SUCCESS						0x87						

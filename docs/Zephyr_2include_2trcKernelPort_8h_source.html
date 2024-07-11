@@ -25,7 +25,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">Percepio Trace Recorder<span id="projectnumber">&#160;v4.9.0</span>
+   <div id="projectname">Percepio Trace Recorder<span id="projectnumber">&#160;v4.9.2</span>
    </div>
   </td>
  </tr>
@@ -93,7 +93,7 @@ $(document).ready(function(){initNavTree('Zephyr_2include_2trcKernelPort_8h_sour
 </div><!--header-->
 <div class="contents">
 <div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="comment">/*</span></div>
-<div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span><span class="comment"> * Trace Recorder for Tracealyzer v4.9.0</span></div>
+<div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span><span class="comment"> * Trace Recorder for Tracealyzer v4.9.2</span></div>
 <div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span><span class="comment"> * Copyright 2023 Percepio AB</span></div>
 <div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span><span class="comment"> * www.percepio.com</span></div>
 <div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span><span class="comment"> *</span></div>
@@ -121,7 +121,7 @@ $(document).ready(function(){initNavTree('Zephyr_2include_2trcKernelPort_8h_sour
 <div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span> </div>
 <div class="line"><a id="l00046" name="l00046"></a><span class="lineno">   46</span><span class="preprocessor">#define TRC_PLATFORM_CFG_MINOR 3</span></div>
 <div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span> </div>
-<div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span><span class="preprocessor">#define TRC_PLATFORM_CFG_PATCH 0</span></div>
+<div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span><span class="preprocessor">#define TRC_PLATFORM_CFG_PATCH 1</span></div>
 <div class="line"><a id="l00053" name="l00053"></a><span class="lineno">   53</span> </div>
 <div class="line"><a id="l00058" name="l00058"></a><span class="lineno">   58</span><span class="preprocessor">#define TRC_TICK_RATE_HZ CONFIG_SYS_CLOCK_TICKS_PER_SEC</span></div>
 <div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span> </div>
@@ -548,71 +548,72 @@ $(document).ready(function(){initNavTree('Zephyr_2include_2trcKernelPort_8h_sour
 <div class="line"><a id="l00630" name="l00630"></a><span class="lineno">  630</span><span class="preprocessor">#define PSF_EVENT_MEMORY_SLAB_FREE                          0xEC</span></div>
 <div class="line"><a id="l00631" name="l00631"></a><span class="lineno">  631</span> </div>
 <div class="line"><a id="l00632" name="l00632"></a><span class="lineno">  632</span><span class="preprocessor">#define PSF_EVENT_KHEAP_ALIGNED_ALLOC_SUCCESS               0x84</span></div>
-<div class="line"><a id="l00633" name="l00633"></a><span class="lineno">  633</span><span class="preprocessor">#define PSF_EVENT_KHEAP_ALIGNED_ALLOC_BLOCKING              0x86    </span></div>
-<div class="line"><a id="l00634" name="l00634"></a><span class="lineno">  634</span><span class="preprocessor">#define PSF_EVENT_KHEAP_ALIGNED_ALLOC_FAILURE               0x85</span></div>
-<div class="line"><a id="l00635" name="l00635"></a><span class="lineno">  635</span><span class="preprocessor">#define PSF_EVENT_KHEAP_ALLOC_SUCCESS                       0x87                        </span></div>
-<div class="line"><a id="l00636" name="l00636"></a><span class="lineno">  636</span><span class="preprocessor">#define PSF_EVENT_KHEAP_ALLOC_BLOCKING                      0xFA</span></div>
-<div class="line"><a id="l00637" name="l00637"></a><span class="lineno">  637</span><span class="preprocessor">#define PSF_EVENT_KHEAP_ALLOC_FAILURE                       0xFB</span></div>
-<div class="line"><a id="l00638" name="l00638"></a><span class="lineno">  638</span><span class="preprocessor">#define PSF_EVENT_KHEAP_FREE                                0x88</span></div>
-<div class="line"><a id="l00639" name="l00639"></a><span class="lineno">  639</span><span class="preprocessor">#define PSF_EVENT_KHEAP_SYS_ALIGNED_ALLOC_SUCCESS           0x50</span></div>
-<div class="line"><a id="l00640" name="l00640"></a><span class="lineno">  640</span><span class="preprocessor">#define PSF_EVENT_KHEAP_SYS_ALIGNED_ALLOC_BLOCKING          0x53</span></div>
-<div class="line"><a id="l00641" name="l00641"></a><span class="lineno">  641</span><span class="preprocessor">#define PSF_EVENT_KHEAP_SYS_ALIGNED_ALLOC_FAILURE           0x56</span></div>
-<div class="line"><a id="l00642" name="l00642"></a><span class="lineno">  642</span><span class="preprocessor">#define PSF_EVENT_KHEAP_SYS_MALLOC_SUCCESS                  0x59</span></div>
-<div class="line"><a id="l00643" name="l00643"></a><span class="lineno">  643</span><span class="preprocessor">#define PSF_EVENT_KHEAP_SYS_MALLOC_BLOCKING                 0x5C</span></div>
-<div class="line"><a id="l00644" name="l00644"></a><span class="lineno">  644</span><span class="preprocessor">#define PSF_EVENT_KHEAP_SYS_MALLOC_FAILURE                  0x60</span></div>
-<div class="line"><a id="l00645" name="l00645"></a><span class="lineno">  645</span><span class="preprocessor">#define PSF_EVENT_KHEAP_SYS_FREE_ENTER                      0x63</span></div>
-<div class="line"><a id="l00646" name="l00646"></a><span class="lineno">  646</span><span class="preprocessor">#define PSF_EVENT_KHEAP_SYS_FREE_EXIT                       0x66</span></div>
-<div class="line"><a id="l00647" name="l00647"></a><span class="lineno">  647</span><span class="preprocessor">#define PSF_EVENT_KHEAP_SYS_CALLOC_SUCCESS                  0x69</span></div>
-<div class="line"><a id="l00648" name="l00648"></a><span class="lineno">  648</span><span class="preprocessor">#define PSF_EVENT_KHEAP_SYS_CALLOC_BLOCKING                 0x73</span></div>
-<div class="line"><a id="l00649" name="l00649"></a><span class="lineno">  649</span><span class="preprocessor">#define PSF_EVENT_KHEAP_SYS_CALLOC_FAILURE                  0x70</span></div>
-<div class="line"><a id="l00650" name="l00650"></a><span class="lineno">  650</span> </div>
-<div class="line"><a id="l00651" name="l00651"></a><span class="lineno">  651</span><span class="preprocessor">#define PSF_EVENT_HEAP_MALLOC                               0x8A</span></div>
-<div class="line"><a id="l00652" name="l00652"></a><span class="lineno">  652</span><span class="preprocessor">#define PSF_EVENT_HEAP_FREE                                 0x8B</span></div>
-<div class="line"><a id="l00653" name="l00653"></a><span class="lineno">  653</span><span class="preprocessor">#define PSF_EVENT_HEAP_CALLOC                               0x8C</span></div>
-<div class="line"><a id="l00654" name="l00654"></a><span class="lineno">  654</span> </div>
-<div class="line"><a id="l00655" name="l00655"></a><span class="lineno">  655</span><span class="preprocessor">#define PSF_EVENT_UNUSED_STACK                              0xEA</span></div>
-<div class="line"><a id="l00656" name="l00656"></a><span class="lineno">  656</span> </div>
-<div class="line"><a id="l00657" name="l00657"></a><span class="lineno">  657</span><span class="preprocessor">#define PSF_EVENT_SYSTEM_SYSCALL_ENTER                      0xFE</span></div>
-<div class="line"><a id="l00658" name="l00658"></a><span class="lineno">  658</span><span class="preprocessor">#define PSF_EVENT_SYSTEM_SYSCALL_EXIT                       0xFF</span></div>
-<div class="line"><a id="l00659" name="l00659"></a><span class="lineno">  659</span> </div>
-<div class="line"><a id="l00660" name="l00660"></a><span class="lineno">  660</span><span class="comment">/* Forced compliance due to task API implementation */</span></div>
-<div class="line"><a id="l00661" name="l00661"></a><span class="lineno">  661</span><span class="preprocessor">#define PSF_EVENT_TASK_CREATE                               0x0</span></div>
-<div class="line"><a id="l00662" name="l00662"></a><span class="lineno">  662</span><span class="preprocessor">#define PSF_EVENT_TASK_READY                                PSF_EVENT_THREAD_SCHED_READY</span></div>
-<div class="line"><a id="l00663" name="l00663"></a><span class="lineno">  663</span><span class="preprocessor">#define PSF_EVENT_TASK_PRIORITY                             PSF_EVENT_THREAD_SET_PRIORITY</span></div>
-<div class="line"><a id="l00664" name="l00664"></a><span class="lineno">  664</span><span class="preprocessor">#define PSF_EVENT_TASK_DELETE                               PSF_EVENT_THREAD_ABORT</span></div>
-<div class="line"><a id="l00665" name="l00665"></a><span class="lineno">  665</span> </div>
-<div class="line"><a id="l00666" name="l00666"></a><span class="lineno">  666</span><span class="preprocessor">#define PSF_EVENT_RUNNABLE_REGISTER                         0x167</span></div>
-<div class="line"><a id="l00667" name="l00667"></a><span class="lineno">  667</span><span class="preprocessor">#define PSF_EVENT_RUNNABLE_START                            0x168</span></div>
-<div class="line"><a id="l00668" name="l00668"></a><span class="lineno">  668</span><span class="preprocessor">#define PSF_EVENT_RUNNABLE_STOP                             0x169</span></div>
-<div class="line"><a id="l00669" name="l00669"></a><span class="lineno">  669</span> </div>
-<div class="line"><a id="l00670" name="l00670"></a><span class="lineno">  670</span><span class="preprocessor">#define PSF_EVENT_DEPENDENCY_REGISTER                       0x16A</span></div>
-<div class="line"><a id="l00671" name="l00671"></a><span class="lineno">  671</span> </div>
-<div class="line"><a id="l00672" name="l00672"></a><span class="lineno">  672</span><span class="preprocessor">#define PSF_EVENT_STATEMACHINE_STATE_CREATE                 0x170</span></div>
-<div class="line"><a id="l00673" name="l00673"></a><span class="lineno">  673</span><span class="preprocessor">#define PSF_EVENT_STATEMACHINE_CREATE                       0x171</span></div>
-<div class="line"><a id="l00674" name="l00674"></a><span class="lineno">  674</span><span class="preprocessor">#define PSF_EVENT_STATEMACHINE_STATECHANGE                  0x172</span></div>
-<div class="line"><a id="l00675" name="l00675"></a><span class="lineno">  675</span><span class="preprocessor">#define PSF_EVENT_INTERVAL_CREATE                           0x173</span></div>
-<div class="line"><a id="l00676" name="l00676"></a><span class="lineno">  676</span><span class="preprocessor">#define PSF_EVENT_INTERVAL_CHANNEL_CREATE                   0x174</span></div>
-<div class="line"><a id="l00677" name="l00677"></a><span class="lineno">  677</span><span class="preprocessor">#define PSF_EVENT_INTERVAL_CHANNEL_SET_CREATE               0x175</span></div>
-<div class="line"><a id="l00678" name="l00678"></a><span class="lineno">  678</span><span class="preprocessor">#define PSF_EVENT_INTERVAL_STATECHANGE                      0x176</span></div>
-<div class="line"><a id="l00679" name="l00679"></a><span class="lineno">  679</span><span class="preprocessor">#define PSF_EVENT_INTERVAL_START                            0x177</span></div>
-<div class="line"><a id="l00680" name="l00680"></a><span class="lineno">  680</span><span class="preprocessor">#define PSF_EVENT_INTERVAL_STOP                             0x178</span></div>
-<div class="line"><a id="l00681" name="l00681"></a><span class="lineno">  681</span><span class="preprocessor">#define PSF_EVENT_COUNTER_CREATE                            0x179</span></div>
-<div class="line"><a id="l00682" name="l00682"></a><span class="lineno">  682</span><span class="preprocessor">#define PSF_EVENT_COUNTER_CHANGE                            0x17A</span></div>
-<div class="line"><a id="l00683" name="l00683"></a><span class="lineno">  683</span><span class="preprocessor">#define PSF_EVENT_COUNTER_LIMIT_EXCEEDED                    0x17B</span></div>
-<div class="line"><a id="l00684" name="l00684"></a><span class="lineno">  684</span> </div>
-<div class="line"><a id="l00685" name="l00685"></a><span class="lineno">  685</span><span class="preprocessor">#define PSF_EVENT_MALLOC_FAILED                             0x17C</span></div>
-<div class="line"><a id="l00686" name="l00686"></a><span class="lineno">  686</span><span class="preprocessor">#define PSF_EVENT_FREE_FAILED                               0x17D</span></div>
-<div class="line"><a id="l00687" name="l00687"></a><span class="lineno">  687</span><span class="preprocessor">#define PSF_EVENT_EXTENSION_CREATE                          0x17E</span></div>
-<div class="line"><a id="l00688" name="l00688"></a><span class="lineno">  688</span><span class="preprocessor">#define PSF_EVENT_HEAP_CREATE                               0x17F</span></div>
-<div class="line"><a id="l00689" name="l00689"></a><span class="lineno">  689</span> </div>
-<div class="line"><a id="l00690" name="l00690"></a><span class="lineno">  690</span><span class="preprocessor">#define TRC_EVENT_LAST_ID                                   (PSF_EVENT_HEAP_CREATE)</span></div>
-<div class="line"><a id="l00691" name="l00691"></a><span class="lineno">  691</span> </div>
+<div class="line"><a id="l00633" name="l00633"></a><span class="lineno">  633</span><span class="preprocessor">#define PSF_EVENT_KHEAP_ALIGNED_ALLOC_SUCCESS_BLOCKED      0x16B</span></div>
+<div class="line"><a id="l00634" name="l00634"></a><span class="lineno">  634</span><span class="preprocessor">#define PSF_EVENT_KHEAP_ALIGNED_ALLOC_BLOCKING              0x86    </span></div>
+<div class="line"><a id="l00635" name="l00635"></a><span class="lineno">  635</span><span class="preprocessor">#define PSF_EVENT_KHEAP_ALIGNED_ALLOC_FAILURE               0x85</span></div>
+<div class="line"><a id="l00636" name="l00636"></a><span class="lineno">  636</span><span class="preprocessor">#define PSF_EVENT_KHEAP_ALLOC_SUCCESS                       0x87                        </span></div>
+<div class="line"><a id="l00637" name="l00637"></a><span class="lineno">  637</span><span class="preprocessor">#define PSF_EVENT_KHEAP_ALLOC_BLOCKING                      0xFA</span></div>
+<div class="line"><a id="l00638" name="l00638"></a><span class="lineno">  638</span><span class="preprocessor">#define PSF_EVENT_KHEAP_ALLOC_FAILURE                       0xFB</span></div>
+<div class="line"><a id="l00639" name="l00639"></a><span class="lineno">  639</span><span class="preprocessor">#define PSF_EVENT_KHEAP_FREE                                0x88</span></div>
+<div class="line"><a id="l00640" name="l00640"></a><span class="lineno">  640</span><span class="preprocessor">#define PSF_EVENT_KHEAP_SYS_ALIGNED_ALLOC_SUCCESS           0x50</span></div>
+<div class="line"><a id="l00641" name="l00641"></a><span class="lineno">  641</span><span class="preprocessor">#define PSF_EVENT_KHEAP_SYS_ALIGNED_ALLOC_BLOCKING          0x53</span></div>
+<div class="line"><a id="l00642" name="l00642"></a><span class="lineno">  642</span><span class="preprocessor">#define PSF_EVENT_KHEAP_SYS_ALIGNED_ALLOC_FAILURE           0x56</span></div>
+<div class="line"><a id="l00643" name="l00643"></a><span class="lineno">  643</span><span class="preprocessor">#define PSF_EVENT_KHEAP_SYS_MALLOC_SUCCESS                  0x59</span></div>
+<div class="line"><a id="l00644" name="l00644"></a><span class="lineno">  644</span><span class="preprocessor">#define PSF_EVENT_KHEAP_SYS_MALLOC_BLOCKING                 0x5C</span></div>
+<div class="line"><a id="l00645" name="l00645"></a><span class="lineno">  645</span><span class="preprocessor">#define PSF_EVENT_KHEAP_SYS_MALLOC_FAILURE                  0x60</span></div>
+<div class="line"><a id="l00646" name="l00646"></a><span class="lineno">  646</span><span class="preprocessor">#define PSF_EVENT_KHEAP_SYS_FREE_ENTER                      0x63</span></div>
+<div class="line"><a id="l00647" name="l00647"></a><span class="lineno">  647</span><span class="preprocessor">#define PSF_EVENT_KHEAP_SYS_FREE_EXIT                       0x66</span></div>
+<div class="line"><a id="l00648" name="l00648"></a><span class="lineno">  648</span><span class="preprocessor">#define PSF_EVENT_KHEAP_SYS_CALLOC_SUCCESS                  0x69</span></div>
+<div class="line"><a id="l00649" name="l00649"></a><span class="lineno">  649</span><span class="preprocessor">#define PSF_EVENT_KHEAP_SYS_CALLOC_BLOCKING                 0x73</span></div>
+<div class="line"><a id="l00650" name="l00650"></a><span class="lineno">  650</span><span class="preprocessor">#define PSF_EVENT_KHEAP_SYS_CALLOC_FAILURE                  0x70</span></div>
+<div class="line"><a id="l00651" name="l00651"></a><span class="lineno">  651</span> </div>
+<div class="line"><a id="l00652" name="l00652"></a><span class="lineno">  652</span><span class="preprocessor">#define PSF_EVENT_HEAP_MALLOC                               0x8A</span></div>
+<div class="line"><a id="l00653" name="l00653"></a><span class="lineno">  653</span><span class="preprocessor">#define PSF_EVENT_HEAP_FREE                                 0x8B</span></div>
+<div class="line"><a id="l00654" name="l00654"></a><span class="lineno">  654</span><span class="preprocessor">#define PSF_EVENT_HEAP_CALLOC                               0x8C</span></div>
+<div class="line"><a id="l00655" name="l00655"></a><span class="lineno">  655</span> </div>
+<div class="line"><a id="l00656" name="l00656"></a><span class="lineno">  656</span><span class="preprocessor">#define PSF_EVENT_UNUSED_STACK                              0xEA</span></div>
+<div class="line"><a id="l00657" name="l00657"></a><span class="lineno">  657</span> </div>
+<div class="line"><a id="l00658" name="l00658"></a><span class="lineno">  658</span><span class="preprocessor">#define PSF_EVENT_SYSTEM_SYSCALL_ENTER                      0xFE</span></div>
+<div class="line"><a id="l00659" name="l00659"></a><span class="lineno">  659</span><span class="preprocessor">#define PSF_EVENT_SYSTEM_SYSCALL_EXIT                       0xFF</span></div>
+<div class="line"><a id="l00660" name="l00660"></a><span class="lineno">  660</span> </div>
+<div class="line"><a id="l00661" name="l00661"></a><span class="lineno">  661</span><span class="comment">/* Forced compliance due to task API implementation */</span></div>
+<div class="line"><a id="l00662" name="l00662"></a><span class="lineno">  662</span><span class="preprocessor">#define PSF_EVENT_TASK_CREATE                               0x0</span></div>
+<div class="line"><a id="l00663" name="l00663"></a><span class="lineno">  663</span><span class="preprocessor">#define PSF_EVENT_TASK_READY                                PSF_EVENT_THREAD_SCHED_READY</span></div>
+<div class="line"><a id="l00664" name="l00664"></a><span class="lineno">  664</span><span class="preprocessor">#define PSF_EVENT_TASK_PRIORITY                             PSF_EVENT_THREAD_SET_PRIORITY</span></div>
+<div class="line"><a id="l00665" name="l00665"></a><span class="lineno">  665</span><span class="preprocessor">#define PSF_EVENT_TASK_DELETE                               PSF_EVENT_THREAD_ABORT</span></div>
+<div class="line"><a id="l00666" name="l00666"></a><span class="lineno">  666</span> </div>
+<div class="line"><a id="l00667" name="l00667"></a><span class="lineno">  667</span><span class="preprocessor">#define PSF_EVENT_RUNNABLE_REGISTER                         0x167</span></div>
+<div class="line"><a id="l00668" name="l00668"></a><span class="lineno">  668</span><span class="preprocessor">#define PSF_EVENT_RUNNABLE_START                            0x168</span></div>
+<div class="line"><a id="l00669" name="l00669"></a><span class="lineno">  669</span><span class="preprocessor">#define PSF_EVENT_RUNNABLE_STOP                             0x169</span></div>
+<div class="line"><a id="l00670" name="l00670"></a><span class="lineno">  670</span> </div>
+<div class="line"><a id="l00671" name="l00671"></a><span class="lineno">  671</span><span class="preprocessor">#define PSF_EVENT_DEPENDENCY_REGISTER                       0x16A</span></div>
+<div class="line"><a id="l00672" name="l00672"></a><span class="lineno">  672</span> </div>
+<div class="line"><a id="l00673" name="l00673"></a><span class="lineno">  673</span><span class="preprocessor">#define PSF_EVENT_STATEMACHINE_STATE_CREATE                 0x170</span></div>
+<div class="line"><a id="l00674" name="l00674"></a><span class="lineno">  674</span><span class="preprocessor">#define PSF_EVENT_STATEMACHINE_CREATE                       0x171</span></div>
+<div class="line"><a id="l00675" name="l00675"></a><span class="lineno">  675</span><span class="preprocessor">#define PSF_EVENT_STATEMACHINE_STATECHANGE                  0x172</span></div>
+<div class="line"><a id="l00676" name="l00676"></a><span class="lineno">  676</span><span class="preprocessor">#define PSF_EVENT_INTERVAL_CREATE                           0x173</span></div>
+<div class="line"><a id="l00677" name="l00677"></a><span class="lineno">  677</span><span class="preprocessor">#define PSF_EVENT_INTERVAL_CHANNEL_CREATE                   0x174</span></div>
+<div class="line"><a id="l00678" name="l00678"></a><span class="lineno">  678</span><span class="preprocessor">#define PSF_EVENT_INTERVAL_CHANNEL_SET_CREATE               0x175</span></div>
+<div class="line"><a id="l00679" name="l00679"></a><span class="lineno">  679</span><span class="preprocessor">#define PSF_EVENT_INTERVAL_STATECHANGE                      0x176</span></div>
+<div class="line"><a id="l00680" name="l00680"></a><span class="lineno">  680</span><span class="preprocessor">#define PSF_EVENT_INTERVAL_START                            0x177</span></div>
+<div class="line"><a id="l00681" name="l00681"></a><span class="lineno">  681</span><span class="preprocessor">#define PSF_EVENT_INTERVAL_STOP                             0x178</span></div>
+<div class="line"><a id="l00682" name="l00682"></a><span class="lineno">  682</span><span class="preprocessor">#define PSF_EVENT_COUNTER_CREATE                            0x179</span></div>
+<div class="line"><a id="l00683" name="l00683"></a><span class="lineno">  683</span><span class="preprocessor">#define PSF_EVENT_COUNTER_CHANGE                            0x17A</span></div>
+<div class="line"><a id="l00684" name="l00684"></a><span class="lineno">  684</span><span class="preprocessor">#define PSF_EVENT_COUNTER_LIMIT_EXCEEDED                    0x17B</span></div>
+<div class="line"><a id="l00685" name="l00685"></a><span class="lineno">  685</span> </div>
+<div class="line"><a id="l00686" name="l00686"></a><span class="lineno">  686</span><span class="preprocessor">#define PSF_EVENT_MALLOC_FAILED                             0x17C</span></div>
+<div class="line"><a id="l00687" name="l00687"></a><span class="lineno">  687</span><span class="preprocessor">#define PSF_EVENT_FREE_FAILED                               0x17D</span></div>
+<div class="line"><a id="l00688" name="l00688"></a><span class="lineno">  688</span><span class="preprocessor">#define PSF_EVENT_EXTENSION_CREATE                          0x17E</span></div>
+<div class="line"><a id="l00689" name="l00689"></a><span class="lineno">  689</span><span class="preprocessor">#define PSF_EVENT_HEAP_CREATE                               0x17F</span></div>
+<div class="line"><a id="l00690" name="l00690"></a><span class="lineno">  690</span> </div>
+<div class="line"><a id="l00691" name="l00691"></a><span class="lineno">  691</span><span class="preprocessor">#define TRC_EVENT_LAST_ID                                   (PSF_EVENT_HEAP_CREATE)</span></div>
 <div class="line"><a id="l00692" name="l00692"></a><span class="lineno">  692</span> </div>
-<div class="line"><a id="l00693" name="l00693"></a><span class="lineno">  693</span><span class="preprocessor">#ifdef __cplusplus</span></div>
-<div class="line"><a id="l00694" name="l00694"></a><span class="lineno">  694</span>}</div>
-<div class="line"><a id="l00695" name="l00695"></a><span class="lineno">  695</span><span class="preprocessor">#endif</span></div>
-<div class="line"><a id="l00696" name="l00696"></a><span class="lineno">  696</span> </div>
-<div class="line"><a id="l00697" name="l00697"></a><span class="lineno">  697</span><span class="preprocessor">#endif </span><span class="comment">/* TRC_KERNEL_PORT_H */</span><span class="preprocessor"></span></div>
+<div class="line"><a id="l00693" name="l00693"></a><span class="lineno">  693</span> </div>
+<div class="line"><a id="l00694" name="l00694"></a><span class="lineno">  694</span><span class="preprocessor">#ifdef __cplusplus</span></div>
+<div class="line"><a id="l00695" name="l00695"></a><span class="lineno">  695</span>}</div>
+<div class="line"><a id="l00696" name="l00696"></a><span class="lineno">  696</span><span class="preprocessor">#endif</span></div>
+<div class="line"><a id="l00697" name="l00697"></a><span class="lineno">  697</span> </div>
+<div class="line"><a id="l00698" name="l00698"></a><span class="lineno">  698</span><span class="preprocessor">#endif </span><span class="comment">/* TRC_KERNEL_PORT_H */</span><span class="preprocessor"></span></div>
 <div class="ttc" id="astructTraceKernelPortDataBuffer_html"><div class="ttname"><a href="structTraceKernelPortDataBuffer.html">TraceKernelPortDataBuffer</a></div><div class="ttdoc">A structure representing the kernel port buffer.</div><div class="ttdef"><b>Definition:</b> trcKernelPort.h:76</div></div>
 <div class="ttc" id="atrcRecorder_8h_html"><div class="ttname"><a href="trcRecorder_8h.html">trcRecorder.h</a></div><div class="ttdoc">The public API of the Percepio trace recorder.</div></div>
 </div><!-- fragment --></div><!-- contents -->

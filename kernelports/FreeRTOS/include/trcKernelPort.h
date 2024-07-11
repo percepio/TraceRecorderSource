@@ -1,5 +1,5 @@
 /*
- * Trace Recorder for Tracealyzer v4.9.0
+ * Trace Recorder for Tracealyzer v4.9.2
  * Copyright 2023 Percepio AB
  * www.percepio.com
  *
@@ -64,11 +64,13 @@ extern "C" {
 	#define STRING_CAST(x) ( (signed char*) x )
 	#define TraceKernelPortTickType_t portTickType
 	#define TraceKernelPortTaskHandle_t xTaskHandle
+	#define TraceKernelPortQueueHandle_t xQueueHandle
 #else
 	/* FreeRTOS v8.0 and later */
 	#define STRING_CAST(x) x
 	#define TraceKernelPortTickType_t TickType_t
 	#define TraceKernelPortTaskHandle_t TaskHandle_t
+	#define TraceKernelPortQueueHandle_t QueueHandle_t
 #endif
 
 #if (defined(TRC_USE_TRACEALYZER_RECORDER)) && (TRC_USE_TRACEALYZER_RECORDER == 1)
@@ -2251,7 +2253,7 @@ TraceHeapHandle_t xTraceKernelPortGetSystemHeapHandle(void);
 /* Called on vTaskDelete */
 #undef traceTASK_DELETE				// We don't allow for filtering out "delete" events. They are important and not very frequent. Moreover, we can't exclude create events, so this should be symmetrical.
 #define traceTASK_DELETE( pxTaskToDelete ) \
-	xTraceTaskUnregisterWithoutHandle(pxTaskToDelete, (pxTaskToDelete)->uxPriority)
+	(void)xTraceTaskUnregisterWithoutHandle(pxTaskToDelete, (pxTaskToDelete)->uxPriority)
 
 #if (TRC_CFG_SCHEDULING_ONLY == 0)
 

@@ -25,7 +25,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">Percepio Trace Recorder<span id="projectnumber">&#160;v4.9.0</span>
+   <div id="projectname">Percepio Trace Recorder<span id="projectnumber">&#160;v4.9.2</span>
    </div>
   </td>
  </tr>
@@ -93,7 +93,7 @@ $(document).ready(function(){initNavTree('tracing__tracerecorder_8h_source.html'
 </div><!--header-->
 <div class="contents">
 <div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="comment">/*</span></div>
-<div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span><span class="comment"> * Trace Recorder for Tracealyzer v4.9.0</span></div>
+<div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span><span class="comment"> * Trace Recorder for Tracealyzer v4.9.2</span></div>
 <div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span><span class="comment"> * Copyright 2023 Percepio AB</span></div>
 <div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span><span class="comment"> * www.percepio.com</span></div>
 <div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span><span class="comment"> *</span></div>
@@ -827,7 +827,7 @@ $(document).ready(function(){initNavTree('tracing__tracerecorder_8h_source.html'
 <div class="line"><a id="l00733" name="l00733"></a><span class="lineno">  733</span><span class="preprocessor">    sys_trace_k_heap_aligned_alloc_blocking(h, bytes, timeout)</span></div>
 <div class="line"><a id="l00734" name="l00734"></a><span class="lineno">  734</span><span class="preprocessor">#undef sys_port_trace_k_heap_aligned_alloc_exit</span></div>
 <div class="line"><a id="l00735" name="l00735"></a><span class="lineno">  735</span><span class="preprocessor">#define sys_port_trace_k_heap_aligned_alloc_exit(h, timeout, ret, ...)              \</span></div>
-<div class="line"><a id="l00736" name="l00736"></a><span class="lineno">  736</span><span class="preprocessor">    sys_trace_k_heap_aligned_alloc_exit(h, bytes, timeout, ret)</span></div>
+<div class="line"><a id="l00736" name="l00736"></a><span class="lineno">  736</span><span class="preprocessor">    sys_trace_k_heap_aligned_alloc_exit(h, bytes, timeout, blocked_alloc, ret)</span></div>
 <div class="line"><a id="l00737" name="l00737"></a><span class="lineno">  737</span><span class="preprocessor">#undef sys_port_trace_k_heap_alloc_enter</span></div>
 <div class="line"><a id="l00738" name="l00738"></a><span class="lineno">  738</span><span class="preprocessor">#define sys_port_trace_k_heap_alloc_enter(h, timeout, ...)                          \</span></div>
 <div class="line"><a id="l00739" name="l00739"></a><span class="lineno">  739</span><span class="preprocessor">    sys_trace_k_heap_alloc_enter(h, bytes, timeout)</span></div>
@@ -1296,7 +1296,7 @@ $(document).ready(function(){initNavTree('tracing__tracerecorder_8h_source.html'
 <div class="line"><a id="l01202" name="l01202"></a><span class="lineno"> 1202</span><span class="keywordtype">void</span> sys_trace_k_heap_aligned_alloc_blocking(<span class="keyword">struct</span> k_heap *h, <span class="keywordtype">size_t</span> bytes,</div>
 <div class="line"><a id="l01203" name="l01203"></a><span class="lineno"> 1203</span>    k_timeout_t timeout);</div>
 <div class="line"><a id="l01204" name="l01204"></a><span class="lineno"> 1204</span><span class="keywordtype">void</span> sys_trace_k_heap_aligned_alloc_exit(<span class="keyword">struct</span> k_heap *h, <span class="keywordtype">size_t</span> bytes,</div>
-<div class="line"><a id="l01205" name="l01205"></a><span class="lineno"> 1205</span>    k_timeout_t timeout, <span class="keywordtype">void</span> *ret);</div>
+<div class="line"><a id="l01205" name="l01205"></a><span class="lineno"> 1205</span>    k_timeout_t timeout, <span class="keywordtype">bool</span> blocked_alloc, <span class="keywordtype">void</span> *ret);</div>
 <div class="line"><a id="l01206" name="l01206"></a><span class="lineno"> 1206</span><span class="keywordtype">void</span> sys_trace_k_heap_free(<span class="keyword">struct</span> k_heap *h, <span class="keywordtype">void</span> *mem);</div>
 <div class="line"><a id="l01207" name="l01207"></a><span class="lineno"> 1207</span><span class="keywordtype">void</span> sys_trace_k_heap_sys_k_aligned_alloc_enter(<span class="keyword">struct</span> k_heap *h,</div>
 <div class="line"><a id="l01208" name="l01208"></a><span class="lineno"> 1208</span>    <span class="keywordtype">size_t</span> align, <span class="keywordtype">size_t</span> size);</div>

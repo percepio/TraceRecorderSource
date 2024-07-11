@@ -1,5 +1,5 @@
 /*
- * Trace Recorder for Tracealyzer v4.9.0
+ * Trace Recorder for Tracealyzer v4.9.2
  * Copyright 2023 Percepio AB
  * www.percepio.com
  *
@@ -1249,8 +1249,14 @@ void sys_trace_k_heap_aligned_alloc_blocking(struct k_heap *h, size_t bytes, k_t
 	(void)xTraceEventCreate4(PSF_EVENT_KHEAP_ALIGNED_ALLOC_BLOCKING, (TraceUnsignedBaseType_t)h, (TraceUnsignedBaseType_t)bytes, (TraceUnsignedBaseType_t)timeout.ticks, (TraceUnsignedBaseType_t)0);
 }
 
-void sys_trace_k_heap_aligned_alloc_exit(struct k_heap *h, size_t bytes, k_timeout_t timeout, void *ret) {
-	(void)xTraceEventCreate2((ret != NULL) ? PSF_EVENT_KHEAP_ALIGNED_ALLOC_SUCCESS : PSF_EVENT_KHEAP_ALIGNED_ALLOC_FAILURE, (TraceUnsignedBaseType_t)h, (TraceUnsignedBaseType_t)ret);
+void sys_trace_k_heap_aligned_alloc_exit(struct k_heap *h, size_t bytes, k_timeout_t timeout, bool blocked_alloc, void *ret) {
+	if (ret == NULL) {
+		(void)xTraceEventCreate2(PSF_EVENT_KHEAP_ALIGNED_ALLOC_FAILURE, (TraceUnsignedBaseType_t)h, (TraceUnsignedBaseType_t)ret);
+	} else if (blocked_alloc) {
+		(void)xTraceEventCreate2(PSF_EVENT_KHEAP_ALIGNED_ALLOC_SUCCESS_BLOCKED, (TraceUnsignedBaseType_t)h, (TraceUnsignedBaseType_t)ret);
+	} else {
+		(void)xTraceEventCreate3(PSF_EVENT_KHEAP_ALIGNED_ALLOC_SUCCESS, (TraceUnsignedBaseType_t)h, (TraceUnsignedBaseType_t)bytes, (TraceUnsignedBaseType_t)ret);
+	}
 }
 
 void sys_trace_k_heap_free(struct k_heap *h, void *mem) {
@@ -1380,7 +1386,7 @@ void sys_trace_syscall_enter(uint32_t id, const char *name) {
 	if (xTraceIsRecorderEnabled())
 		xSyscallsExtensionEnter(id);
 #else
-	xTraceEventCreateData1(PSF_EVENT_SYSTEM_SYSCALL_ENTER, (TraceUnsignedBaseType_t)id, name, strlen(name) + 1);
+	xTraceEventCreateData1(PSF_EVENT_SYSTEM_SYSCALL_ENTER, (TraceUnsignedBaseType_t)id, (TraceUnsignedBaseType_t*)name, strlen(name) + 1);
 #endif
 }
 

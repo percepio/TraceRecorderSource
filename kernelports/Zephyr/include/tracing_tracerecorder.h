@@ -1,5 +1,5 @@
 /*
- * Trace Recorder for Tracealyzer v4.9.0
+ * Trace Recorder for Tracealyzer v4.9.2
  * Copyright 2023 Percepio AB
  * www.percepio.com
  *
@@ -733,7 +733,7 @@ extern "C" {
     sys_trace_k_heap_aligned_alloc_blocking(h, bytes, timeout)
 #undef sys_port_trace_k_heap_aligned_alloc_exit
 #define sys_port_trace_k_heap_aligned_alloc_exit(h, timeout, ret, ...)              \
-    sys_trace_k_heap_aligned_alloc_exit(h, bytes, timeout, ret)
+    sys_trace_k_heap_aligned_alloc_exit(h, bytes, timeout, blocked_alloc, ret)
 #undef sys_port_trace_k_heap_alloc_enter
 #define sys_port_trace_k_heap_alloc_enter(h, timeout, ...)                          \
     sys_trace_k_heap_alloc_enter(h, bytes, timeout)
@@ -1202,7 +1202,7 @@ void sys_trace_k_heap_aligned_alloc_enter(struct k_heap *h, size_t bytes,
 void sys_trace_k_heap_aligned_alloc_blocking(struct k_heap *h, size_t bytes,
     k_timeout_t timeout);
 void sys_trace_k_heap_aligned_alloc_exit(struct k_heap *h, size_t bytes,
-    k_timeout_t timeout, void *ret);
+    k_timeout_t timeout, bool blocked_alloc, void *ret);
 void sys_trace_k_heap_free(struct k_heap *h, void *mem);
 void sys_trace_k_heap_sys_k_aligned_alloc_enter(struct k_heap *h,
     size_t align, size_t size);

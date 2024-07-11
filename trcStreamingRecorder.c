@@ -1,5 +1,5 @@
 /*
- * Trace Recorder for Tracealyzer v4.9.0
+ * Trace Recorder for Tracealyzer v4.9.2
  * Copyright 2023 Percepio AB
  * www.percepio.com
  *
@@ -123,6 +123,9 @@ static void prvSetRecorderEnabled(void);
 
 /* Internal function for stopping the recorder */
 static void prvSetRecorderDisabled(void);
+
+/* Internal function for verifying size */
+static traceResult prvVerifySizeAlignment(uint32_t ulSize);
 
 static TraceUnsignedBaseType_t prvIs64bit(void);
 
@@ -266,12 +269,6 @@ traceResult xTraceInitialize(void)
 	(void)xTraceSetComponentInitialized(TRC_RECORDER_COMPONENT_CORE);
 
 	return TRC_SUCCESS;
-}
-
-/* Do this in function to avoid unreachable code warnings */
-traceResult prvVerifySizeAlignment(uint32_t ulSize)
-{
-	return (ulSize % sizeof(TraceUnsignedBaseType_t)) == 0 ? TRC_SUCCESS : TRC_FAIL;
 }
 
 traceResult xTraceHeaderInitialize(TraceHeaderBuffer_t *pxBuffer)
@@ -678,6 +675,12 @@ static void prvProcessCommand(const TraceCommand_t* const cmd)
 		default:
 		  	break;
 	}
+}
+
+/* Do this in function to avoid unreachable code warnings */
+static traceResult prvVerifySizeAlignment(uint32_t ulSize)
+{
+	return (ulSize % sizeof(TraceUnsignedBaseType_t)) == 0 ? TRC_SUCCESS : TRC_FAIL;
 }
 
 #endif

@@ -1,5 +1,5 @@
 /*
- * Trace Recorder for Tracealyzer v4.9.0
+ * Trace Recorder for Tracealyzer v4.9.2
  * Copyright 2023 Percepio AB
  * www.percepio.com
  *
@@ -16,7 +16,7 @@
 /*
  * @brief
  * This macro must be used as name for the variable in the critical section allocation.
- * Example: #define TRACE_ALLOC_CRITICAL_SECION uint32_t TRACE_ALLOC_CRITICAL_SECTION_NAME;
+ * Example: #define TRACE_ALLOC_CRITICAL_SECTION uint32_t TRACE_ALLOC_CRITICAL_SECTION_NAME;
  */
 #define TRACE_ALLOC_CRITICAL_SECTION_NAME xTraceCriticalSectionStatus
 
@@ -369,14 +369,14 @@ uint32_t uiTraceTimerGetValue(void);
 
 #elif (TRC_CFG_HARDWARE_PORT == TRC_HARDWARE_PORT_XILINX_ZyncUltraScaleR5)
 
-	extern TraceUnsignedBaseType_t cortex_a9_r5_enter_critical(void);
-	extern void cortex_a9_r5_exit_critical(TraceUnsignedBaseType_t irq_already_masked_at_enter);
+	extern uint32_t cortex_a9_r5_enter_critical(void);
+	extern void cortex_a9_r5_exit_critical(uint32_t irq_already_masked_at_enter);
 
 	#define TRACE_ALLOC_CRITICAL_SECTION() TraceUnsignedBaseType_t TRACE_ALLOC_CRITICAL_SECTION_NAME;
 
-	#define TRACE_ENTER_CRITICAL_SECTION() { TRACE_ALLOC_CRITICAL_SECTION_NAME = cortex_a9_r5_enter_critical(); }
+	#define TRACE_ENTER_CRITICAL_SECTION() { TRACE_ALLOC_CRITICAL_SECTION_NAME = (TraceUnsignedBaseType_t)cortex_a9_r5_enter_critical(); }
 
-	#define TRACE_EXIT_CRITICAL_SECTION() { cortex_a9_r5_exit_critical(TRACE_ALLOC_CRITICAL_SECTION_NAME); }
+	#define TRACE_EXIT_CRITICAL_SECTION() { cortex_a9_r5_exit_critical((uint32_t)TRACE_ALLOC_CRITICAL_SECTION_NAME); }
 
 	#include <xttcps_hw.h>
 
@@ -458,13 +458,14 @@ uint32_t uiTraceTimerGetValue(void);
 	
 	**************************************************************************/
 
-	extern TraceUnsignedBaseType_t cortex_a9_r5_enter_critical(void);
-	extern void cortex_a9_r5_exit_critical(TraceUnsignedBaseType_t irq_already_masked_at_enter);
+
+	extern uint32_t cortex_a9_r5_enter_critical(void);
+	extern void cortex_a9_r5_exit_critical(uint32_t irq_already_masked_at_enter);
 
 	#define TRACE_ALLOC_CRITICAL_SECTION() TraceUnsignedBaseType_t TRACE_ALLOC_CRITICAL_SECTION_NAME;
-	#define TRACE_ENTER_CRITICAL_SECTION() { TRACE_ALLOC_CRITICAL_SECTION_NAME = cortex_a9_r5_enter_critical(); }
-	#define TRACE_EXIT_CRITICAL_SECTION() { cortex_a9_r5_exit_critical(TRACE_ALLOC_CRITICAL_SECTION_NAME); }
-	
+	#define TRACE_ENTER_CRITICAL_SECTION() { TRACE_ALLOC_CRITICAL_SECTION_NAME = (TraceUnsignedBaseType_t)cortex_a9_r5_enter_critical(); }
+	#define TRACE_EXIT_CRITICAL_SECTION() { cortex_a9_r5_exit_critical((uint32_t)TRACE_ALLOC_CRITICAL_SECTION_NAME); }
+
 	/* INPUT YOUR PERIPHERAL BASE ADDRESS HERE (0xF8F00000 for Xilinx Zynq 7000)*/
 	#define TRC_CA9_MPCORE_PERIPHERAL_BASE_ADDRESS	0
 	
@@ -512,12 +513,13 @@ uint32_t uiTraceTimerGetValue(void);
 #elif (TRC_CFG_HARDWARE_PORT == TRC_HARDWARE_PORT_CYCLONE_V_HPS)
 	#include "alt_clock_manager.h"
 
-	extern TraceUnsignedBaseType_t cortex_a9_r5_enter_critical(void);
-	extern void cortex_a9_r5_exit_critical(TraceUnsignedBaseType_t irq_already_masked_at_enter);
+
+	extern uint32_t cortex_a9_r5_enter_critical(void);
+	extern void cortex_a9_r5_exit_critical(uint32_t irq_already_masked_at_enter);
 
 	#define TRACE_ALLOC_CRITICAL_SECTION() TraceUnsignedBaseType_t TRACE_ALLOC_CRITICAL_SECTION_NAME;
-	#define TRACE_ENTER_CRITICAL_SECTION() { TRACE_ALLOC_CRITICAL_SECTION_NAME = cortex_a9_r5_enter_critical(); }
-	#define TRACE_EXIT_CRITICAL_SECTION() { cortex_a9_r5_exit_critical(TRACE_ALLOC_CRITICAL_SECTION_NAME); }
+	#define TRACE_ENTER_CRITICAL_SECTION() { TRACE_ALLOC_CRITICAL_SECTION_NAME = (TraceUnsignedBaseType_t)cortex_a9_r5_enter_critical(); }
+	#define TRACE_EXIT_CRITICAL_SECTION() { cortex_a9_r5_exit_critical((uint32_t)TRACE_ALLOC_CRITICAL_SECTION_NAME); }
 
 	#define TRC_HWTC_TYPE							TRC_FREE_RUNNING_32BIT_INCR
 	#define TRC_HWTC_COUNT							*((uint32_t *)0xFFFEC200)
@@ -660,14 +662,12 @@ uint32_t uiTraceTimerGetValue(void);
     #define TRC_IRQ_PRIORITY_ORDER 1 // higher IRQ priority values are more significant
 
 #elif (TRC_CFG_HARDWARE_PORT == TRC_HARDWARE_PORT_ARMv8AR_A32)
-    extern TraceUnsignedBaseType_t cortex_a9_r5_enter_critical(void);
-    extern void cortex_a9_r5_exit_critical(TraceUnsignedBaseType_t irq_already_masked_at_enter);
+	extern uint32_t cortex_a9_r5_enter_critical(void);
+	extern void cortex_a9_r5_exit_critical(uint32_t irq_already_masked_at_enter);
 
-    #define TRACE_ALLOC_CRITICAL_SECTION() TraceUnsignedBaseType_t TRACE_ALLOC_CRITICAL_SECTION_NAME;
-
-    #define TRACE_ENTER_CRITICAL_SECTION() { TRACE_ALLOC_CRITICAL_SECTION_NAME = cortex_a9_r5_enter_critical(); }
-
-    #define TRACE_EXIT_CRITICAL_SECTION() { cortex_a9_r5_exit_critical(TRACE_ALLOC_CRITICAL_SECTION_NAME); }
+	#define TRACE_ALLOC_CRITICAL_SECTION() TraceUnsignedBaseType_t TRACE_ALLOC_CRITICAL_SECTION_NAME;
+	#define TRACE_ENTER_CRITICAL_SECTION() { TRACE_ALLOC_CRITICAL_SECTION_NAME = (TraceUnsignedBaseType_t)cortex_a9_r5_enter_critical(); }
+	#define TRACE_EXIT_CRITICAL_SECTION() { cortex_a9_r5_exit_critical((uint32_t)TRACE_ALLOC_CRITICAL_SECTION_NAME); }
 
     #include <cmsis_compiler.h>
 

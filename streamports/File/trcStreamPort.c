@@ -1,5 +1,5 @@
 /*
- * Trace Recorder for Tracealyzer v4.9.0
+ * Trace Recorder for Tracealyzer v4.9.2
  * Copyright 2023 Percepio AB
  * www.percepio.com
  *
@@ -12,6 +12,7 @@
  */
 
 #include <trcRecorder.h>
+#include <stdio.h>
 
 #if (TRC_USE_TRACEALYZER_RECORDER == 1)
 
@@ -44,6 +45,7 @@ traceResult xTraceStreamPortOnTraceBegin(void)
 	
 	if (pxStreamPortFile->pxFile == 0)
 	{
+#if defined(__STDC_WANT_LIB_EXT1__) && __STDC_WANT_LIB_EXT1__ == 1
 		errno_t err = fopen_s(&pxStreamPortFile->pxFile, TRC_CFG_STREAM_PORT_TRACE_FILE, "wb");
 		if (err != 0)
 		{
@@ -55,6 +57,20 @@ traceResult xTraceStreamPortOnTraceBegin(void)
 		{
 			printf("Trace file created.\n");
 		}
+#else
+		FILE * file = fopen(TRC_CFG_STREAM_PORT_TRACE_FILE, "wb");
+		if (file == NULL)
+		{
+			printf("Could not open trace file, error code %d.\n", errno);
+
+			return TRC_FAIL;
+		}
+		else
+		{
+			pxStreamPortFile->pxFile = file;
+			printf("Trace file created.\n");
+		}
+#endif
 	}
 	
 	return TRC_SUCCESS;

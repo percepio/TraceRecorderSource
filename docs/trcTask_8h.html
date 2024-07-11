@@ -25,7 +25,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">Percepio Trace Recorder<span id="projectnumber">&#160;v4.9.0</span>
+   <div id="projectname">Percepio Trace Recorder<span id="projectnumber">&#160;v4.9.2</span>
    </div>
   </td>
  </tr>
@@ -116,7 +116,7 @@ Macros</h2></td></tr>
 <tr class="memitem:ga8ea2a55eb73dbc50150f337fa1e88666"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__trace__task__apis.html#ga8ea2a55eb73dbc50150f337fa1e88666">xTraceTaskRegisterWithoutHandle</a>(pvTask,  szName,  uxPriority)&#160;&#160;&#160;((((pvTask) != 0) &amp;&amp; (<a class="el" href="group__trace__object__apis.html#gacd88161ed7cc325b7a343d9ec8fad34e">xTraceObjectRegisterWithoutHandle</a>(PSF_EVENT_TASK_CREATE, pvTask, szName, uxPriority) == TRC_SUCCESS)) ? (<a class="el" href="group__trace__stack__monitor__apis.html#ga5fbc5e2abbbac9d83018138db5505135">xTraceStackMonitorAdd</a>(pvTask), TRC_SUCCESS) : TRC_FAIL)</td></tr>
 <tr class="memdesc:ga8ea2a55eb73dbc50150f337fa1e88666"><td class="mdescLeft">&#160;</td><td class="mdescRight">Registers trace task without trace task handle.  <br /></td></tr>
 <tr class="separator:ga8ea2a55eb73dbc50150f337fa1e88666"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga41fcd9011bf48e5892a0b19928899bc0"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__trace__task__apis.html#ga41fcd9011bf48e5892a0b19928899bc0">xTraceTaskUnregisterWithoutHandle</a>(pvTask,  uxPriority)&#160;&#160;&#160;TRC_COMMA_EXPR_TO_STATEMENT_EXPR_2(<a class="el" href="group__trace__stack__monitor__apis.html#ga72bd0dc250d99062f6fae2e3e4f1868e">xTraceStackMonitorRemove</a>(pvTask), <a class="el" href="group__trace__object__apis.html#ga304a75a1c8a64e02b0f8fe2355305555">xTraceObjectUnregisterWithoutHandle</a>(PSF_EVENT_TASK_DELETE, pvTask, uxPriority))</td></tr>
+<tr class="memitem:ga41fcd9011bf48e5892a0b19928899bc0"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__trace__task__apis.html#ga41fcd9011bf48e5892a0b19928899bc0">xTraceTaskUnregisterWithoutHandle</a>(pvTask,  uxPriority)&#160;&#160;&#160;TRC_COMMA_EXPR_TO_STATEMENT_EXPR_2((void)<a class="el" href="group__trace__stack__monitor__apis.html#ga72bd0dc250d99062f6fae2e3e4f1868e">xTraceStackMonitorRemove</a>(pvTask), <a class="el" href="group__trace__object__apis.html#ga304a75a1c8a64e02b0f8fe2355305555">xTraceObjectUnregisterWithoutHandle</a>(PSF_EVENT_TASK_DELETE, pvTask, uxPriority))</td></tr>
 <tr class="memdesc:ga41fcd9011bf48e5892a0b19928899bc0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Unregisters trace task without trace task handle.  <br /></td></tr>
 <tr class="separator:ga41fcd9011bf48e5892a0b19928899bc0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga5a7babc5816a7584864f6f12cf225190"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__trace__task__apis.html#ga5a7babc5816a7584864f6f12cf225190">xTraceTaskSetNameWithoutHandle</a>&#160;&#160;&#160;<a class="el" href="group__trace__object__apis.html#ga085aa8d483021ba357d47cd9b213ba42">xTraceObjectSetNameWithoutHandle</a></td></tr>

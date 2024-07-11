@@ -1,5 +1,5 @@
 /*
- * Trace Recorder for Tracealyzer v4.9.0
+ * Trace Recorder for Tracealyzer v4.9.2
  * Copyright 2023 Percepio AB
  * www.percepio.com
  *
@@ -299,20 +299,20 @@ uint32_t prvTraceGetQueueNumber(void* handle);
 
 #if (TRC_CFG_FREERTOS_VERSION < TRC_FREERTOS_VERSION_8_X_X)
 
-extern unsigned char ucQueueGetQueueNumber(xQueueHandle pxQueue);
-extern void vQueueSetQueueNumber(xQueueHandle pxQueue, unsigned char ucQueueNumber);
-extern unsigned char ucQueueGetQueueType(xQueueHandle pxQueue);
+extern unsigned char ucQueueGetQueueNumber(TraceKernelPortQueueHandle_t pxQueue);
+extern void vQueueSetQueueNumber(TraceKernelPortQueueHandle_t pxQueue, unsigned char ucQueueNumber);
+extern unsigned char ucQueueGetQueueType(TraceKernelPortQueueHandle_t pxQueue);
 
 uint32_t prvTraceGetQueueNumber(void* handle)
 {
-	return (uint32_t)ucQueueGetQueueNumber(handle);
+	return (uint32_t)ucQueueGetQueueNumber((TraceKernelPortQueueHandle_t)handle);
 }
 
 #else
 
 uint32_t prvTraceGetQueueNumber(void* handle)
 {
-	return (uint32_t)uxQueueGetQueueNumber(handle);
+	return (uint32_t)uxQueueGetQueueNumber((TraceKernelPortQueueHandle_t)handle);
 }
 
 #endif
@@ -320,28 +320,28 @@ uint32_t prvTraceGetQueueNumber(void* handle)
 uint8_t prvTraceGetQueueType(void* pvQueue)
 {
 	// This is either declared in header file in FreeRTOS 8 and later, or as extern above
-	return ucQueueGetQueueType(pvQueue);
+	return ucQueueGetQueueType((TraceKernelPortQueueHandle_t)pvQueue);
 }
 
 /* Tasks */
 uint16_t prvTraceGetTaskNumberLow16(void* pvTask)
 {
-	return TRACE_GET_LOW16(uxTaskGetTaskNumber(pvTask));
+	return TRACE_GET_LOW16(uxTaskGetTaskNumber((TraceKernelPortTaskHandle_t)pvTask));
 }
 
 uint16_t prvTraceGetTaskNumberHigh16(void* pvTask)
 {
-	return TRACE_GET_HIGH16(uxTaskGetTaskNumber(pvTask));
+	return TRACE_GET_HIGH16(uxTaskGetTaskNumber((TraceKernelPortTaskHandle_t)pvTask));
 }
 
 void prvTraceSetTaskNumberLow16(void* pvTask, uint16_t uiValue)
 {
-	vTaskSetTaskNumber(pvTask, TRACE_SET_LOW16(uxTaskGetTaskNumber(pvTask), uiValue));
+	vTaskSetTaskNumber((TraceKernelPortTaskHandle_t)pvTask, TRACE_SET_LOW16(uxTaskGetTaskNumber((TraceKernelPortTaskHandle_t)pvTask), uiValue));
 }
 
 void prvTraceSetTaskNumberHigh16(void* pvTask, uint16_t uiValue)
 {
-	vTaskSetTaskNumber(pvTask, TRACE_SET_HIGH16(uxTaskGetTaskNumber(pvTask), uiValue));
+	vTaskSetTaskNumber((TraceKernelPortTaskHandle_t)pvTask, TRACE_SET_HIGH16(uxTaskGetTaskNumber((TraceKernelPortTaskHandle_t)pvTask), uiValue));
 }
 
 uint16_t prvTraceGetQueueNumberLow16(void* pvQueue)
@@ -356,34 +356,34 @@ uint16_t prvTraceGetQueueNumberHigh16(void* pvQueue)
 
 void prvTraceSetQueueNumberLow16(void* pvQueue, uint16_t uiValue)
 {
-	vQueueSetQueueNumber(pvQueue, TRACE_SET_LOW16(prvTraceGetQueueNumber(pvQueue), uiValue));
+	vQueueSetQueueNumber((TraceKernelPortQueueHandle_t)pvQueue, TRACE_SET_LOW16(prvTraceGetQueueNumber(pvQueue), uiValue));
 }
 
 void prvTraceSetQueueNumberHigh16(void* pvQueue, uint16_t uiValue)
 {
-	vQueueSetQueueNumber(pvQueue, TRACE_SET_HIGH16(prvTraceGetQueueNumber(pvQueue), uiValue));
+	vQueueSetQueueNumber((TraceKernelPortQueueHandle_t)pvQueue, TRACE_SET_HIGH16(prvTraceGetQueueNumber(pvQueue), uiValue));
 }
 
 #if (TRC_CFG_INCLUDE_TIMER_EVENTS == 1 && TRC_CFG_FREERTOS_VERSION >= TRC_FREERTOS_VERSION_10_0_0)
 
 uint16_t prvTraceGetTimerNumberLow16(void* pvTimer)
 {
-	return TRACE_GET_LOW16(uxTimerGetTimerNumber(pvTimer));
+	return TRACE_GET_LOW16(uxTimerGetTimerNumber((TimerHandle_t)pvTimer));
 }
 
 uint16_t prvTraceGetTimerNumberHigh16(void* pvTimer)
 {
-	return TRACE_GET_HIGH16(uxTimerGetTimerNumber(pvTimer));
+	return TRACE_GET_HIGH16(uxTimerGetTimerNumber((TimerHandle_t)pvTimer));
 }
 
 void prvTraceSetTimerNumberLow16(void* pvTimer, uint16_t uiValue)
 {
-	vTimerSetTimerNumber(pvTimer, TRACE_SET_LOW16(uxTimerGetTimerNumber(pvTimer), uiValue));
+	vTimerSetTimerNumber((TimerHandle_t)pvTimer, TRACE_SET_LOW16(uxTimerGetTimerNumber((TimerHandle_t)pvTimer), uiValue));
 }
 
 void prvTraceSetTimerNumberHigh16(void* pvTimer, uint16_t uiValue)
 {
-	vTimerSetTimerNumber(pvTimer, TRACE_SET_HIGH16(uxTimerGetTimerNumber(pvTimer), uiValue));
+	vTimerSetTimerNumber((TimerHandle_t)pvTimer, TRACE_SET_HIGH16(uxTimerGetTimerNumber((TimerHandle_t)pvTimer), uiValue));
 }
 
 #endif
@@ -392,22 +392,22 @@ void prvTraceSetTimerNumberHigh16(void* pvTimer, uint16_t uiValue)
 
 uint16_t prvTraceGetEventGroupNumberLow16(void* pvEventGroup)
 {
-	return TRACE_GET_LOW16(uxEventGroupGetNumber(pvEventGroup));
+	return TRACE_GET_LOW16(uxEventGroupGetNumber((EventGroupHandle_t)pvEventGroup));
 }
 
 uint16_t prvTraceGetEventGroupNumberHigh16(void* pvEventGroup)
 {
-	return TRACE_GET_HIGH16(uxEventGroupGetNumber(pvEventGroup));
+	return TRACE_GET_HIGH16(uxEventGroupGetNumber((EventGroupHandle_t)pvEventGroup));
 }
 
 void prvTraceSetEventGroupNumberLow16(void* pvEventGroup, uint16_t uiValue)
 {
-	vEventGroupSetNumber(pvEventGroup, TRACE_SET_LOW16(uxEventGroupGetNumber(pvEventGroup), uiValue));
+	vEventGroupSetNumber((EventGroupHandle_t)pvEventGroup, TRACE_SET_LOW16(uxEventGroupGetNumber((EventGroupHandle_t)pvEventGroup), uiValue));
 }
 
 void prvTraceSetEventGroupNumberHigh16(void* pvEventGroup, uint16_t uiValue)
 {
-	vEventGroupSetNumber(pvEventGroup, TRACE_SET_HIGH16(uxEventGroupGetNumber(pvEventGroup), uiValue));
+	vEventGroupSetNumber((EventGroupHandle_t)pvEventGroup, TRACE_SET_HIGH16(uxEventGroupGetNumber((EventGroupHandle_t)pvEventGroup), uiValue));
 }
 
 #endif
@@ -416,22 +416,22 @@ void prvTraceSetEventGroupNumberHigh16(void* pvEventGroup, uint16_t uiValue)
 
 uint16_t prvTraceGetStreamBufferNumberLow16(void* pvStreamBuffer)
 {
-	return TRACE_GET_LOW16(uxStreamBufferGetStreamBufferNumber(pvStreamBuffer));
+	return TRACE_GET_LOW16(uxStreamBufferGetStreamBufferNumber((StreamBufferHandle_t)pvStreamBuffer));
 }
 
 uint16_t prvTraceGetStreamBufferNumberHigh16(void* pvStreamBuffer)
 {
-	return TRACE_GET_HIGH16(uxStreamBufferGetStreamBufferNumber(pvStreamBuffer));
+	return TRACE_GET_HIGH16(uxStreamBufferGetStreamBufferNumber((StreamBufferHandle_t)pvStreamBuffer));
 }
 
 void prvTraceSetStreamBufferNumberLow16(void* pvStreamBuffer, uint16_t uiValue)
 {
-	vStreamBufferSetStreamBufferNumber(pvStreamBuffer, TRACE_SET_LOW16(uxStreamBufferGetStreamBufferNumber(pvStreamBuffer), uiValue));
+	vStreamBufferSetStreamBufferNumber((StreamBufferHandle_t)pvStreamBuffer, TRACE_SET_LOW16(uxStreamBufferGetStreamBufferNumber((StreamBufferHandle_t)pvStreamBuffer), uiValue));
 }
 
 void prvTraceSetStreamBufferNumberHigh16(void* pvStreamBuffer, uint16_t uiValue)
 {
-	vStreamBufferSetStreamBufferNumber(pvStreamBuffer, TRACE_SET_HIGH16(uxStreamBufferGetStreamBufferNumber(pvStreamBuffer), uiValue));
+	vStreamBufferSetStreamBufferNumber((StreamBufferHandle_t)pvStreamBuffer, TRACE_SET_HIGH16(uxStreamBufferGetStreamBufferNumber((StreamBufferHandle_t)pvStreamBuffer), uiValue));
 }
 
 #endif

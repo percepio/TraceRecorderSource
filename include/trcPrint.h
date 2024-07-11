@@ -1,5 +1,5 @@
 /*
-* Percepio Trace Recorder for Tracealyzer v4.9.0
+* Percepio Trace Recorder for Tracealyzer v4.9.2
 * Copyright 2023 Percepio AB
 * www.percepio.com
 *
@@ -409,6 +409,12 @@ traceResult xTracePrintF(TraceStringHandle_t xChannel, const char* szFormat, ...
  * @retval TRC_SUCCESS Success
  */
 traceResult xTraceVPrintF(TraceStringHandle_t xChannel, const char* szFormat, va_list* pxVariableList);
+
+/** @} */
+
+#ifdef __cplusplus
+}
+#endif
 
 #else
 

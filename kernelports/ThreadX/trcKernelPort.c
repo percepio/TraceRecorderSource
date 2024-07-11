@@ -1,5 +1,5 @@
 /*
- * Trace Recorder for Tracealyzer v4.9.0
+ * Trace Recorder for Tracealyzer v4.9.2
  * Copyright 2023 Percepio AB
  * www.percepio.com
  *
@@ -28,6 +28,9 @@ TraceHeapHandle_t xSystemHeapHandle;
 /* Streaming kernel port */
 #if ((TRC_CFG_RECORDER_MODE) == TRC_RECORDER_MODE_STREAMING)
 
+#if ((TRC_CFG_ENABLE_STACK_MONITOR) == 1) && !defined(TX_ENABLE_STACK_CHECKING)
+#error TRC_CFG_ENABLE_STACK_MONITOR is enabled but TX_ENABLE_STACK_CHECKING isn't
+#endif
 
 #endif /*TRC_RECORDER_MODE_STREAMING == 1*/
 

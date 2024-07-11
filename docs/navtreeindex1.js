@@ -1,5 +1,7 @@
 var NAVTREEINDEX1 =
 {
+"group__trace__runnable__apis.html":[3,0,15],
+"group__trace__runnable__apis.html#ga21ef51f2da2860964e5754065d6c7756":[3,0,15,5],
 "group__trace__runnable__apis.html#ga966ad065b5646cf85599f845e4a25f0d":[3,0,15,3],
 "group__trace__runnable__apis.html#gab0c0cd7ac030b7d6b1681569f6e668d4":[3,0,15,0],
 "group__trace__runnable__apis.html#gac70437d35d979dc2d86a5e84f2468026":[3,0,15,1],
@@ -64,10 +66,11 @@ var NAVTREEINDEX1 =
 "kernelports_2Zephyr_2config_2core_2trcSnapshotConfig_8h_source.html":[6,0,3,4,0,0,1],
 "kernelports_2Zephyr_2config_2core_2trcStreamingConfig_8h_source.html":[6,0,3,4,0,0,2],
 "kernelports_2Zephyr_2streamports_2ARM__ITM_2config_2trcStreamPortConfig_8h_source.html":[6,0,3,4,2,0,0,0],
-"kernelports_2Zephyr_2streamports_2Jlink__RTT_2config_2trcStreamPortConfig_8h_source.html":[6,0,3,4,2,1,0,0],
-"kernelports_2Zephyr_2streamports_2RingBuffer_2config_2trcStreamPortConfig_8h_source.html":[6,0,3,4,2,2,0,0],
-"kernelports_2Zephyr_2streamports_2Semihost_2config_2trcStreamPortConfig_8h_source.html":[6,0,3,4,2,3,0,0],
-"kernelports_2Zephyr_2streamports_2Semihost_2include_2trcStreamPort_8h_source.html":[6,0,3,4,2,3,1,0],
+"kernelports_2Zephyr_2streamports_2File_2config_2trcStreamPortConfig_8h_source.html":[6,0,3,4,2,1,0,0],
+"kernelports_2Zephyr_2streamports_2Jlink__RTT_2config_2trcStreamPortConfig_8h_source.html":[6,0,3,4,2,2,0,0],
+"kernelports_2Zephyr_2streamports_2RingBuffer_2config_2trcStreamPortConfig_8h_source.html":[6,0,3,4,2,3,0,0],
+"kernelports_2Zephyr_2streamports_2Semihost_2config_2trcStreamPortConfig_8h_source.html":[6,0,3,4,2,4,0,0],
+"kernelports_2Zephyr_2streamports_2Semihost_2include_2trcStreamPort_8h_source.html":[6,0,3,4,2,4,1,0],
 "md_LICENSE.html":[0],
 "md_README.html":[1],
 "modules.html":[3],
@@ -246,8 +249,5 @@ var NAVTREEINDEX1 =
 "trcRecorder_8h.html#afc81d827c015a145b13333933a31f7d6":[6,0,2,19,55],
 "trcRecorder_8h.html#afd44a44fe62cd56a66a998e87dae821b":[6,0,2,19,76],
 "trcRecorder_8h.html#aff475da7b20b3621add3623b5e293575":[6,0,2,19,63],
-"trcRecorder_8h_source.html":[6,0,2,19],
-"trcRunnable_8h.html":[6,0,2,20],
-"trcRunnable_8h_source.html":[6,0,2,20],
-"trcStackMonitor_8h.html":[6,0,2,21]
+"trcRecorder_8h_source.html":[6,0,2,19]
 };
