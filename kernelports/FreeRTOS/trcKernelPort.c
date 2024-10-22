@@ -444,12 +444,13 @@ int uiInEventGroupSetBitsFromISR = 0;
 /**
  * @internal Class reference table
  */
-traceObjectClass TraceQueueClassTable[5] = {
+traceObjectClass TraceQueueClassTable[6] = {
 	TRACE_CLASS_QUEUE,
 	TRACE_CLASS_MUTEX,
 	TRACE_CLASS_SEMAPHORE,
 	TRACE_CLASS_SEMAPHORE,
-	TRACE_CLASS_MUTEX
+	TRACE_CLASS_MUTEX,
+	TRACE_CLASS_QUEUE
 };
 
 #if (TRC_CFG_SCHEDULING_ONLY == 0)

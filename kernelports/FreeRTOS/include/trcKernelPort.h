@@ -881,7 +881,7 @@ const char* pszTraceGetErrorNotEnoughHandles(traceObjectClass objectclass);
  */
 void* prvTraceGetCurrentTaskHandle(void);
 
-extern traceObjectClass TraceQueueClassTable[5];
+extern traceObjectClass TraceQueueClassTable[6];
 
 
 /*** Event codes for snapshot mode - must match Tracealyzer config files ******/
