@@ -1,5 +1,5 @@
 /*
- * Trace Recorder for Tracealyzer v4.9.2
+ * Trace Recorder for Tracealyzer v4.10.2
  * Copyright 2023 Percepio AB
  * www.percepio.com
  *
@@ -58,7 +58,13 @@ extern "C" {
  * TRC_FREERTOS_VERSION_10_4_2				If using FreeRTOS v10.4.2
  * TRC_FREERTOS_VERSION_10_4_3				If using FreeRTOS v10.4.3
  * TRC_FREERTOS_VERSION_10_5_0				If using FreeRTOS v10.5.0
- * TRC_FREERTOS_VERSION_10_5_1				If using FreeRTOS v10.5.1 or later
+ * TRC_FREERTOS_VERSION_10_5_1				If using FreeRTOS v10.5.1
+ * TRC_FREERTOS_VERSION_10_6_0				If using FreeRTOS v10.6.0
+ * TRC_FREERTOS_VERSION_10_6_1				If using FreeRTOS v10.6.1
+ * TRC_FREERTOS_VERSION_10_6_2				If using FreeRTOS v10.6.2
+ * TRC_FREERTOS_VERSION_11_0_0				If using FreeRTOS v11.0.0
+ * TRC_FREERTOS_VERSION_11_0_1				If using FreeRTOS v11.0.1
+ * TRC_FREERTOS_VERSION_11_1_0				If using FreeRTOS v11.1.0 or later
  */
 #define TRC_CFG_FREERTOS_VERSION FREERTOS_VERSION_NOT_SET
 

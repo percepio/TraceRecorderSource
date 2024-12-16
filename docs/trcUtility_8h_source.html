@@ -25,7 +25,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">Percepio Trace Recorder<span id="projectnumber">&#160;v4.9.2</span>
+   <div id="projectname">Percepio Trace Recorder<span id="projectnumber">&#160;v4.10.2</span>
    </div>
   </td>
  </tr>
@@ -93,7 +93,7 @@ $(document).ready(function(){initNavTree('trcUtility_8h_source.html',''); initRe
 </div><!--header-->
 <div class="contents">
 <div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="comment">/*</span></div>
-<div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span><span class="comment">* Percepio Trace Recorder for Tracealyzer v4.9.2</span></div>
+<div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span><span class="comment">* Percepio Trace Recorder for Tracealyzer v4.10.2</span></div>
 <div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span><span class="comment">* Copyright 2023 Percepio AB</span></div>
 <div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span><span class="comment">* www.percepio.com</span></div>
 <div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span><span class="comment">*</span></div>
@@ -131,8 +131,8 @@ $(document).ready(function(){initNavTree('trcUtility_8h_source.html',''); initRe
 <div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span><span class="preprocessor">            uxTRC_STRCAT_INDEX++; \</span></div>
 <div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span><span class="preprocessor">        } \</span></div>
 <div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span><span class="preprocessor">    }</span></div>
-<div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span> </div>
-<div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span><span class="preprocessor">#if (defined(TRC_CFG_USE_GCC_STATEMENT_EXPR) &amp;&amp; TRC_CFG_USE_GCC_STATEMENT_EXPR == 1) || __GNUC__ || __IAR_SYSTEMS_ICC__ || __TI_ARM__</span></div>
+<div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span><span class="preprocessor">#if (defined(TRC_CFG_USE_GCC_STATEMENT_EXPR) &amp;&amp; TRC_CFG_USE_GCC_STATEMENT_EXPR == 1) || \</span></div>
+<div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span><span class="preprocessor">    (!defined(TRC_CFG_USE_GCC_STATEMENT_EXPR) &amp;&amp; (__GNUC__ || __IAR_SYSTEMS_ICC__ || __TI_ARM__))</span></div>
 <div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span><span class="preprocessor">    #define TRC_COMMA_EXPR_TO_STATEMENT_EXPR_1(e1)                              __extension__({e1;})</span></div>
 <div class="line"><a id="l00043" name="l00043"></a><span class="lineno">   43</span><span class="preprocessor">    #define TRC_COMMA_EXPR_TO_STATEMENT_EXPR_2(e1, e2)                          __extension__({e1; e2;})</span></div>
 <div class="line"><a id="l00044" name="l00044"></a><span class="lineno">   44</span><span class="preprocessor">    #define TRC_COMMA_EXPR_TO_STATEMENT_EXPR_3(e1, e2, e3)                      __extension__({e1; e2; e3;})</span></div>

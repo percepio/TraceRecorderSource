@@ -1,5 +1,5 @@
 /*
-* Percepio Trace Recorder for Tracealyzer v4.9.2
+* Percepio Trace Recorder for Tracealyzer v4.10.2
 * Copyright 2023 Percepio AB
 * www.percepio.com
 *
@@ -37,8 +37,8 @@
 			uxTRC_STRCAT_INDEX++; \
 		} \
 	}
-
-#if (defined(TRC_CFG_USE_GCC_STATEMENT_EXPR) && TRC_CFG_USE_GCC_STATEMENT_EXPR == 1) || __GNUC__ || __IAR_SYSTEMS_ICC__ || __TI_ARM__
+#if (defined(TRC_CFG_USE_GCC_STATEMENT_EXPR) && TRC_CFG_USE_GCC_STATEMENT_EXPR == 1) || \
+	(!defined(TRC_CFG_USE_GCC_STATEMENT_EXPR) && (__GNUC__ || __IAR_SYSTEMS_ICC__ || __TI_ARM__))
 	#define TRC_COMMA_EXPR_TO_STATEMENT_EXPR_1(e1)								__extension__({e1;})
 	#define TRC_COMMA_EXPR_TO_STATEMENT_EXPR_2(e1, e2)							__extension__({e1; e2;})
 	#define TRC_COMMA_EXPR_TO_STATEMENT_EXPR_3(e1, e2, e3)						__extension__({e1; e2; e3;})

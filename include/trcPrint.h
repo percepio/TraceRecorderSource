@@ -1,5 +1,5 @@
 /*
-* Percepio Trace Recorder for Tracealyzer v4.9.2
+* Percepio Trace Recorder for Tracealyzer v4.10.2
 * Copyright 2023 Percepio AB
 * www.percepio.com
 *
@@ -374,20 +374,21 @@ traceResult xTraceConsoleChannelPrintF(const char* szFormat, ...);
  *	 ...
  *	 xTracePrintF(adc_uechannel,
  *				 "ADC channel %d: %d volts",
- *				 ch, adc_reading);
+ *				 ch, (TraceBaseType_t)adc_reading);
  *
- * NOTE! All data arguments are assumed to be TraceUnsignedBaseType_t/TraceBaseType_t. The following formats are
- * supported:
+ * NOTE! All data arguments must be TraceUnsignedBaseType_t or TraceBaseType_t.
+ *
+ * The following formats are supported:
  * %d - signed integer. The following width and padding format is supported: "%05d" -> "-0042" and "%5d" -> "  -42"
  * %u - unsigned integer. The following width and padding format is supported: "%05u" -> "00042" and "%5u" -> "   42"
  * %X - hexadecimal (uppercase). The following width and padding format is supported: "%04X" -> "002A" and "%4X" -> "  2A"
  * %x - hexadecimal (lowercase). The following width and padding format is supported: "%04x" -> "002a" and "%4x" -> "  2a"
- * %s - string (currently, this must be an earlier stored symbol name)
+ * %s - string. A TraceStringHandle_t from a string that was stored using xTraceStringRegister(...).
  *
- * Up to 15 data arguments are allowed, with a total size of maximum 60 byte
- * including 8 byte for the base event fields and the format string. So with
- * one data argument, the maximum string length is 48 chars. If this is exceeded
- * the string is truncated (4 bytes at a time).
+ * A maximum of 5 parameters will be stored in the event along with the format string.
+ * On a 32-bit system; a maximum size of 52 bytes is allowed for the parameters and format string combined. Each parameter takes 4 bytes.
+ * On a 64-bit system; a maximum size of 112 bytes is allowed for the parameters and format string combined. Each parameter takes 8 bytes.
+ * The format string will be truncated if maximum size is exceeded.
  * 
  * @param[in] xChannel Channel.
  * @param[in] szFormat Format.

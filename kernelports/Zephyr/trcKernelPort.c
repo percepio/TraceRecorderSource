@@ -1,5 +1,5 @@
 /*
- * Trace Recorder for Tracealyzer v4.9.2
+ * Trace Recorder for Tracealyzer v4.10.2
  * Copyright 2023 Percepio AB
  * www.percepio.com
  *
@@ -10,6 +10,7 @@
 
 #include <zephyr/init.h>
 #include <zephyr/kernel.h>
+#include <zephyr/version.h>
 #include <string.h>
 #include <trcRecorder.h>
 
@@ -33,16 +34,8 @@
 
 #endif
 
-/* Generic Zephyr ISR handle used for all Zephyr ISRs that the user haven't
- * manually added tracing for. */
-static TraceISRHandle_t xHandleISR;
-
 /* Trace recorder controll thread stack */
 static K_THREAD_STACK_DEFINE(TzCtrl_thread_stack, (TRC_CFG_CTRL_TASK_STACK_SIZE));
-
-/* Forward declarations */
-traceResult prvTraceObjectSendNameEvent(void* pvObject, const char* szName, uint32_t uiLength);
-
 
 /**
  * @brief TzCtrl_thread_entry
@@ -216,9 +209,6 @@ static int tracelyzer_pre_kernel_init(void)
 #else
 	(void)xTraceEnable(TRC_START_FROM_HOST);
 #endif
-
-	/* Create ISR handle */
-	(void)xTraceISRRegister("Zephyr ISR", -32, &xHandleISR);
 
 	return 0;
 }
@@ -397,7 +387,21 @@ void sys_trace_k_thread_switched_out(void) {
 }
 
 void sys_trace_k_thread_switched_in(void) {
-	xTraceTaskSwitch(k_current_get(), k_thread_priority_get(k_current_get()));
+	int prio = 0;
+	k_tid_t cur = 0;
+
+	cur = k_current_get();  /* Get cached value if available */
+	if (!cur) {
+		cur = k_sched_current_thread_query();
+	}
+
+	if (!cur) {
+		return; /* Nothing we can do */
+	}
+
+	prio = k_thread_priority_get(cur);
+
+	(void)xTraceTaskSwitch(cur, prio);
 }
 
 void sys_trace_k_thread_info(struct k_thread *thread) {
@@ -439,7 +443,8 @@ void sys_trace_k_thread_sched_abort(struct k_thread *thread) {
 		/* Send name event because this is a delete */
 		for (uiNameLength = 0; (thread->name[uiNameLength] != 0) && (uiNameLength < 128); uiNameLength++) {}
 
-		prvTraceObjectSendNameEvent(thread, thread->name, uiNameLength);
+		/* Send the name event, if possible */
+		(void)xTraceEventCreateData1(PSF_EVENT_OBJ_NAME, (TraceUnsignedBaseType_t)thread, (TraceUnsignedBaseType_t*)thread->name, uiNameLength + 1); /* +1 for termination */
 	}
 #endif /* (TRC_SEND_NAME_ONLY_ON_DELETE == 1) */
 	
@@ -1404,11 +1409,9 @@ void sys_trace_syscall_exit(uint32_t id, const char *name) {
  * the Zephyr team.
  */
 void sys_trace_isr_enter(void) {
-	xTraceISRBegin(xHandleISR);
 }
 
 void sys_trace_isr_exit(void) {
-	xTraceISREnd(0);
 }
 
 void sys_trace_isr_exit_to_scheduler(void) {
@@ -1418,4 +1421,5 @@ void sys_trace_idle(void) {
 }
 
 void sys_trace_void(unsigned int id) {
+	(void)id;
 }

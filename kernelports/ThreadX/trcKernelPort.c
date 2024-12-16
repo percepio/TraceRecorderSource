@@ -1,5 +1,5 @@
 /*
- * Trace Recorder for Tracealyzer v4.9.2
+ * Trace Recorder for Tracealyzer v4.10.2
  * Copyright 2023 Percepio AB
  * www.percepio.com
  *
@@ -16,7 +16,7 @@ TX_THREAD pxIdleTxThreadDummy;
 #if ((TRC_CFG_RECORDER_MODE) == TRC_RECORDER_MODE_STREAMING || ((TRC_CFG_ENABLE_STACK_MONITOR) == 1) && (TRC_CFG_SCHEDULING_ONLY == 0))
 
 /* Trace recorder control thread stack */
-static UCHAR uiTzCtrlTaskMemoryArea[TRC_CFG_CTRL_TASK_STACK_SIZE];
+static TraceUnsignedBaseType_t uiTzCtrlTaskMemoryArea[TRC_CFG_CTRL_TASK_STACK_SIZE];
 static TX_BYTE_POOL xTzCtrlThreadBytePool;
 
 /*  */
@@ -119,10 +119,10 @@ traceResult xTraceKernelPortEnable(void)
 
 	CHAR *puiMemoryPointer = TX_NULL;
 
-	tx_byte_pool_create(&xTzCtrlThreadBytePool, "TZ_byte_pool", (VOID*)uiTzCtrlTaskMemoryArea, TRC_CFG_CTRL_TASK_STACK_SIZE);
-	tx_byte_allocate(&xTzCtrlThreadBytePool, (VOID **)&puiMemoryPointer, TRC_CFG_CTRL_TASK_STACK_SIZE - 32, TX_NO_WAIT);
+	tx_byte_pool_create(&xTzCtrlThreadBytePool, "TZ_byte_pool", (VOID*)uiTzCtrlTaskMemoryArea, (TRC_CFG_CTRL_TASK_STACK_SIZE) * sizeof(TraceUnsignedBaseType_t));
+	tx_byte_allocate(&xTzCtrlThreadBytePool, (VOID **)&puiMemoryPointer, ((TRC_CFG_CTRL_TASK_STACK_SIZE) * sizeof(TraceUnsignedBaseType_t)) - 32, TX_NO_WAIT);
 	tx_thread_create(&pxKernelPortData->xTzCtrlHandle, "TzCtrl", TzCtrlThreadEntry, 0, puiMemoryPointer,
-							TRC_CFG_CTRL_TASK_STACK_SIZE - 32, TRC_CFG_CTRL_TASK_PRIORITY,
+							((TRC_CFG_CTRL_TASK_STACK_SIZE) * sizeof(TraceUnsignedBaseType_t)) - 32, TRC_CFG_CTRL_TASK_PRIORITY,
 							TRC_CFG_CTRL_TASK_PRIORITY, TX_NO_TIME_SLICE, TX_AUTO_START);
 
 	TraceTaskHandle_t xTaskHandle;

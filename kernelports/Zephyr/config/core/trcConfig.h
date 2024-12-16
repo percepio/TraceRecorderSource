@@ -1,5 +1,5 @@
 /*
- * Trace Recorder for Tracealyzer v4.9.2
+ * Trace Recorder for Tracealyzer v4.10.2
  * Copyright 2023 Percepio AB
  * www.percepio.com
  *
@@ -137,9 +137,12 @@ extern "C" {
  *
  * If one (1), events are recorded when tasks enter scheduling state "ready".
  * This allows Tracealyzer to show the initial pending time before tasks enter
- * the execution state, and present accurate response times.
+ * the execution state and present accurate response times in the statistics
+ * report.
  * If zero (0), "ready events" are not created, which allows for recording
- * longer traces in the same amount of RAM.
+ * longer traces in the same amount of RAM. This will however cause 
+ * Tracealyzer to report a single instance for each actor and prevent accurate
+ * response times in the statistics report.
  *
  * Default value is 1.
  */
@@ -256,7 +259,7 @@ extern "C" {
 #ifdef CONFIG_PERCEPIO_TRC_CFG_CTRL_TASK_STACK_SIZE
 #define TRC_CFG_CTRL_TASK_STACK_SIZE CONFIG_PERCEPIO_TRC_CFG_CTRL_TASK_STACK_SIZE
 #else
-#define TRC_CFG_CTRL_TASK_STACK_SIZE (512)
+#define TRC_CFG_CTRL_TASK_STACK_SIZE (256)
 #endif
 
 /**

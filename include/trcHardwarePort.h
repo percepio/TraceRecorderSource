@@ -1,5 +1,5 @@
 /*
- * Trace Recorder for Tracealyzer v4.9.2
+ * Trace Recorder for Tracealyzer v4.10.2
  * Copyright 2023 Percepio AB
  * www.percepio.com
  *
@@ -144,6 +144,9 @@ uint32_t uiTraceTimerGetValue(void);
 	/* Set the meaning of IRQ priorities in ISR tracing - see above */
 	#define TRC_IRQ_PRIORITY_ORDER NOT_SET
 
+/* This hardware port is deprecated and should not be used due to the low timer accuracy. */
+#error TRC_HARDWARE_PORT_HWIndependent is deprecated
+
 #elif ((TRC_CFG_HARDWARE_PORT == TRC_HARDWARE_PORT_ARM_Cortex_M) || (TRC_CFG_HARDWARE_PORT == TRC_HARDWARE_PORT_ARM_Cortex_M_NRF_SD))
 	
 	#ifndef __CORTEX_M
@@ -209,7 +212,7 @@ uint32_t uiTraceTimerGetValue(void);
 	
 	#else
 		/* Uses the lower bits of the 64-bit free running timer in the RP2040. SysTick can not be used since it is different for both cores. */
-		#ifdef _CMSIS_RP2040_H_
+		#if defined(_CMSIS_RP2040_H_) || defined(RP2040_H)
 			#define TRC_HWTC_TYPE TRC_FREE_RUNNING_32BIT_INCR
 			#define TRC_HWTC_COUNT (*((volatile uint32_t*)0x4005400c))
 			#define TRC_HWTC_PERIOD 0
@@ -690,6 +693,23 @@ uint32_t uiTraceTimerGetValue(void);
     #else
         #error "Only GCC Supported!"
     #endif
+
+#elif (TRC_CFG_HARDWARE_PORT == TRC_HARDWARE_PORT_ADSP_SC5XX_SHARC)
+
+    #define TRACE_ALLOC_CRITICAL_SECTION() TraceUnsignedBaseType_t TRACE_ALLOC_CRITICAL_SECTION_NAME;
+    #define TRACE_ENTER_CRITICAL_SECTION() {TRACE_ALLOC_CRITICAL_SECTION_NAME = (TraceUnsignedBaseType_t)portSET_INTERRUPT_MASK_FROM_ISR();}
+    #define TRACE_EXIT_CRITICAL_SECTION() {portCLEAR_INTERRUPT_MASK_FROM_ISR((UBaseType_t)TRACE_ALLOC_CRITICAL_SECTION_NAME);}
+
+    #define TRC_HWTC_TYPE TRC_FREE_RUNNING_32BIT_INCR
+    #define TRC_HWTC_COUNT ( *pREG_CGU0_TSCOUNT0 )
+    #define TRC_HWTC_PERIOD 1
+    #define TRC_HWTC_DIVISOR 1
+    #define TRC_HWTC_FREQ_HZ ( configCPU_CLOCK_HZ >> 1u )
+
+    #define TRC_PORT_SPECIFIC_INIT() {*pREG_CGU0_TSCTL |= BITM_CGU_TSCTL_EN;}
+
+	/* Set the meaning of IRQ priorities in ISR tracing - see above */
+	#define TRC_IRQ_PRIORITY_ORDER 1
 
 #elif (TRC_CFG_HARDWARE_PORT == TRC_HARDWARE_PORT_APPLICATION_DEFINED)
 

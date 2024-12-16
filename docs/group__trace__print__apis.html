@@ -25,7 +25,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">Percepio Trace Recorder<span id="projectnumber">&#160;v4.9.2</span>
+   <div id="projectname">Percepio Trace Recorder<span id="projectnumber">&#160;v4.10.2</span>
    </div>
   </td>
  </tr>
@@ -945,9 +945,10 @@ Signal Plot" view, visualizing any data you log as User Events, discrete states 
 <p>"[MyChannel] Hello World!"</p>
 <p>The User Event Channels are shown in the View Filter, which makes it easy to select what User Events you wish to display. User Event Channels are created using <a class="el" href="trcRecorder_8h.html#aaa9ee50f419cb5dda37c17dfa0144c3a" title="Registers a string and returns a handle that can be used when tracing.">xTraceStringRegister()</a>.</p>
 <p>Example:</p>
-<p>TraceStringHandle_t adc_uechannel; xTraceStringRegister("ADC User Events", &amp;adc_uechannel); ... xTracePrintF(adc_uechannel, "ADC channel %d: %d volts", ch, adc_reading);</p>
-<p>NOTE! All data arguments are assumed to be TraceUnsignedBaseType_t/TraceBaseType_t. The following formats are supported: d - signed integer. The following width and padding format is supported: "%05d" -&gt; "-0042" and "%5d" -&gt; "  -42" u - unsigned integer. The following width and padding format is supported: "%05u" -&gt; "00042" and "%5u" -&gt; "   42" X - hexadecimal (uppercase). The following width and padding format is supported: "%04X" -&gt; "002A" and "%4X" -&gt; "  2A" x - hexadecimal (lowercase). The following width and padding format is supported: "%04x" -&gt; "002a" and "%4x" -&gt; "  2a" s - string (currently, this must be an earlier stored symbol name)</p>
-<p>Up to 15 data arguments are allowed, with a total size of maximum 60 byte including 8 byte for the base event fields and the format string. So with one data argument, the maximum string length is 48 chars. If this is exceeded the string is truncated (4 bytes at a time).</p>
+<p>TraceStringHandle_t adc_uechannel; xTraceStringRegister("ADC User Events", &amp;adc_uechannel); ... xTracePrintF(adc_uechannel, "ADC channel %d: %d volts", ch, (TraceBaseType_t)adc_reading);</p>
+<p>NOTE! All data arguments must be TraceUnsignedBaseType_t or TraceBaseType_t.</p>
+<p>The following formats are supported: d - signed integer. The following width and padding format is supported: "%05d" -&gt; "-0042" and "%5d" -&gt; "  -42" u - unsigned integer. The following width and padding format is supported: "%05u" -&gt; "00042" and "%5u" -&gt; "   42" X - hexadecimal (uppercase). The following width and padding format is supported: "%04X" -&gt; "002A" and "%4X" -&gt; "  2A" x - hexadecimal (lowercase). The following width and padding format is supported: "%04x" -&gt; "002a" and "%4x" -&gt; "  2a" s - string. A TraceStringHandle_t from a string that was stored using xTraceStringRegister(...).</p>
+<p>A maximum of 5 parameters will be stored in the event along with the format string. On a 32-bit system; a maximum size of 52 bytes is allowed for the parameters and format string combined. Each parameter takes 4 bytes. On a 64-bit system; a maximum size of 112 bytes is allowed for the parameters and format string combined. Each parameter takes 8 bytes. The format string will be truncated if maximum size is exceeded.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">xChannel</td><td>Channel. </td></tr>

@@ -292,7 +292,7 @@ endif
 		int "TzCtrl Task Stack Size"
 		depends on PERCEPIO_TRACERECORDER_ENABLED && (PERCEPIO_RECORDER_TRC_RECORDER_MODE_STREAMING || PERCEPIO_RECORDER_CFG_ENABLE_STACK_MONITOR) && !PERCEPIO_RECORDER_CFG_SCHEDULING_ONLY
 		range 1 1048576
-		default 2048
+		default 256
 		help
 			The stack size of the Tracealyzer Control (TzCtrl) task.
 			See TRC_CFG_CTRL_TASK_PRIORITY for further information about TzCtrl.
@@ -339,23 +339,23 @@ endif
 	
 	menu "Streaming Configuration"
 	depends on PERCEPIO_RECORDER_TRC_RECORDER_MODE_STREAMING
-		config PERCEPIO_RECORDER_TRC_CFG_SYMBOL_TABLE_SLOTS
-			int "Symbol Table Slots"
+		config PERCEPIO_RECORDER_TRC_CFG_ENTRY_TABLE_SLOTS
+			int "Entry Table Slots"
 			depends on PERCEPIO_RECORDER_TRC_RECORDER_MODE_STREAMING
 			range 1 4194304
 			default 40
 			help
-				The maximum number of symbols names that can be stored. This includes:
+				The maximum number of entries that can be stored. This includes:
 				- Task names
-				- Named ISRs (vTraceSetISRProperties)
-				- Named kernel objects (vTraceStoreKernelObjectName)
+				- ISRs (vTraceSetISRProperties)
+				- Kernel objects (vTraceStoreKernelObjectName)
 				- User event channels (xTraceRegisterString)
 				
-				If this value is too small, not all symbol names will be stored and the
-				trace display will be affected. In that case, there will be warnings
-				(as User Events) from TzCtrl task, that monitors this.
+				If this value is too small, not all objects and symbol names will be
+				stored and the trace display will be affected. In that case, there 
+				will be warnings (as User Events) from TzCtrl task, that monitors this.
 				
-		config PERCEPIO_RECORDER_TRC_CFG_SYMBOL_MAX_LENGTH
+		config PERCEPIO_RECORDER_TRC_CFG_ENTRY_SYMBOL_MAX_LENGTH
 			int "Symbol Max Length"
 			depends on PERCEPIO_RECORDER_TRC_RECORDER_MODE_STREAMING
 			range 1 4194304
@@ -370,16 +370,6 @@ endif
 				If longer symbol names are used, they will be truncated by the recorder,
 				which will affect the trace display. In that case, there will be warnings
 				(as User Events) from TzCtrl task, that monitors this.
-				
-		config PERCEPIO_RECORDER_TRC_CFG_OBJECT_DATA_SLOTS
-			int "Object Data Slots"
-			depends on PERCEPIO_RECORDER_TRC_RECORDER_MODE_STREAMING
-			range 1 4194304
-			default 40
-			help
-				The maximum number of object data entries (used for task priorities) that can
-				be stored at the same time. Must be sufficient for all tasks, otherwise there
-				will be warnings (as User Events) from TzCtrl task, that monitors this.
 		
 		config PERCEPIO_RECORDER_TRC_STREAM_PORT_USE_INTERNAL_BUFFER
 			bool "Use Internal Paged Event Buffer"

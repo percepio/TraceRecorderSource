@@ -1,5 +1,5 @@
 /*
- * Trace Recorder for Tracealyzer v4.9.2
+ * Trace Recorder for Tracealyzer v4.10.2
  * Copyright 2023 Percepio AB
  * www.percepio.com
  *
@@ -172,7 +172,7 @@
 /****** Port Name ************************************* Code ** Official ** OS Platform *********/
 #define TRC_HARDWARE_PORT_APPLICATION_DEFINED			98	/*	-			-					*/
 #define TRC_HARDWARE_PORT_NOT_SET				99	/*	-			-					*/
-#define TRC_HARDWARE_PORT_HWIndependent				0	/*	Yes			Any					*/
+#define TRC_HARDWARE_PORT_HWIndependent				0	/*	DEPRECATED							*/
 #define TRC_HARDWARE_PORT_Win32					1	/*	Yes			FreeRTOS on Win32                       */
 #define TRC_HARDWARE_PORT_Atmel_AT91SAM7		        2	/*	No			Any					*/
 #define TRC_HARDWARE_PORT_Atmel_UC3A0				3	/*	No			Any					*/
@@ -198,5 +198,6 @@
 #define TRC_HARDWARE_PORT_CYCLONE_V_HPS			        25      /*	Yes			FreeRTOS			        */
 #define TRC_HARDWARE_PORT_ARM_Cortex_M_NRF_SD                   26      /*      Yes                     FreeRTOS                                */
 #define TRC_HARDWARE_PORT_ARMv8AR_A32				27	/*	Yes			Any					*/
+#define TRC_HARDWARE_PORT_ADSP_SC5XX_SHARC			28	/*	No			FreeRTOS                                */
 
 #endif /* TRC_PORTDEFINES_H */

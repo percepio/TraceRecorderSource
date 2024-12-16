@@ -1,5 +1,5 @@
 /*
- * Trace Recorder for Tracealyzer v4.9.2
+ * Trace Recorder for Tracealyzer v4.10.2
  * Copyright 2023 Percepio AB
  * www.percepio.com
  *
@@ -44,6 +44,12 @@ extern "C" {
 #define TRC_FREERTOS_VERSION_10_4_3				TRC_FREERTOS_VERSION_10_4_0
 #define TRC_FREERTOS_VERSION_10_5_0				TRC_FREERTOS_VERSION_10_4_0
 #define TRC_FREERTOS_VERSION_10_5_1				TRC_FREERTOS_VERSION_10_4_0
+#define TRC_FREERTOS_VERSION_10_6_0				TRC_FREERTOS_VERSION_10_4_0
+#define TRC_FREERTOS_VERSION_10_6_1				TRC_FREERTOS_VERSION_10_4_0
+#define TRC_FREERTOS_VERSION_10_6_2				TRC_FREERTOS_VERSION_10_4_0
+#define TRC_FREERTOS_VERSION_11_0_0				TRC_FREERTOS_VERSION_10_4_0
+#define TRC_FREERTOS_VERSION_11_0_1				TRC_FREERTOS_VERSION_10_4_0
+#define TRC_FREERTOS_VERSION_11_1_0				TRC_FREERTOS_VERSION_10_4_0
 
 /* Legacy FreeRTOS version codes for backwards compatibility with old trace configurations */
 #define TRC_FREERTOS_VERSION_7_3				TRC_FREERTOS_VERSION_7_3_X
@@ -176,7 +182,7 @@ unsigned char xTraceKernelPortIsSchedulerSuspended(void);
 /**
 * @brief Kernel specific way to set interrupt mask
 */
-#define TRC_KERNEL_PORT_SET_INTERRUPT_MASK() ((TraceBaseType_t)portSET_INTERRUPT_MASK_FROM_ISR())
+#define TRC_KERNEL_PORT_SET_INTERRUPT_MASK() (TraceBaseType_t)portSET_INTERRUPT_MASK_FROM_ISR()
 
 #if (TRC_CFG_FREERTOS_VERSION >= TRC_FREERTOS_VERSION_8_X_X)
 
@@ -369,7 +375,11 @@ traceResult xTraceKernelPortGetUnusedStack(void* pvTask, TraceUnsignedBaseType_t
 #if (TRC_CFG_HARDWARE_PORT == TRC_HARDWARE_PORT_XMOS_XCOREAI)
 
 #undef TRC_CFG_CORE_COUNT
+#ifdef configNUMBER_OF_CORES
+#define TRC_CFG_CORE_COUNT configNUMBER_OF_CORES
+#else
 #define TRC_CFG_CORE_COUNT configNUM_CORES
+#endif
 
 #undef TRC_CFG_GET_CURRENT_CORE
 #define TRC_CFG_GET_CURRENT_CORE() rtos_core_id_get()
@@ -378,7 +388,11 @@ traceResult xTraceKernelPortGetUnusedStack(void* pvTask, TraceUnsignedBaseType_t
 
 #ifdef _CMSIS_RP2040_H_
 #undef TRC_CFG_CORE_COUNT
-#define TRC_CFG_CORE_COUNT configNUM_CORES 
+#ifdef configNUMBER_OF_CORES
+#define TRC_CFG_CORE_COUNT configNUMBER_OF_CORES
+#else
+#define TRC_CFG_CORE_COUNT configNUM_CORES
+#endif
 
 #undef TRC_CFG_GET_CURRENT_CORE
 #define TRC_CFG_GET_CURRENT_CORE() get_core_num()
@@ -881,7 +895,7 @@ const char* pszTraceGetErrorNotEnoughHandles(traceObjectClass objectclass);
  */
 void* prvTraceGetCurrentTaskHandle(void);
 
-extern traceObjectClass TraceQueueClassTable[5];
+extern traceObjectClass TraceQueueClassTable[6];
 
 
 /*** Event codes for snapshot mode - must match Tracealyzer config files ******/
