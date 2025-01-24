@@ -1,5 +1,5 @@
 /*
-* Percepio Trace Recorder for Tracealyzer v4.10.2
+* Percepio Trace Recorder for Tracealyzer v4.10.3
 * Copyright 2023 Percepio AB
 * www.percepio.com
 *
@@ -38,7 +38,7 @@ traceResult xTraceTaskInitialize(TraceTaskData_t *pxBuffer)
 		pxTraceTaskData->coreTasks[i] = TRACE_HANDLE_NO_TASK;  /*cstat !MISRAC2004-11.3 !MISRAC2012-Rule-11.4 !MISRAC2012-Rule-11.6 Suppress conversion from pointer to integer check*/
 	}
 
-	xTraceSetComponentInitialized(TRC_RECORDER_COMPONENT_TASK);
+	(void)xTraceSetComponentInitialized(TRC_RECORDER_COMPONENT_TASK);
 
 	return TRC_SUCCESS;
 }
@@ -96,26 +96,26 @@ traceResult xTraceTaskSwitch(void *pvTask, TraceUnsignedBaseType_t uxPriority)
 	if (!xTraceIsRecorderEnabled())
 	{
 		/* Make sure we store the current task, even while recorder isn't enabled */
-		xTraceTaskSetCurrent(pvTask);
+		(void)xTraceTaskSetCurrent(pvTask);
 
 		return xResult;
 	}
 
-	xTraceStateSet(TRC_STATE_IN_TASKSWITCH);
+	(void)xTraceStateSet(TRC_STATE_IN_TASKSWITCH);
 
 	TRACE_ENTER_CRITICAL_SECTION();
 
 #if (TRC_KERNEL_PORT_KERNEL_CAN_SWITCH_TO_SAME_TASK == 1)
-	xTraceTaskGetCurrent(&pvCurrent);
+	(void)xTraceTaskGetCurrent(&pvCurrent);
 	if (pvCurrent != pvTask)
 #endif
 	{
-		xTraceTaskSetCurrent(pvTask);
+		(void)xTraceTaskSetCurrent(pvTask);
 
 		xResult = xTraceEventCreate2(PSF_EVENT_TASK_ACTIVATE, (TraceUnsignedBaseType_t)pvTask, uxPriority);  /*cstat !MISRAC2004-11.3 !MISRAC2012-Rule-11.4 !MISRAC2012-Rule-11.6 Suppress conversion from pointer to integer check*/
 	}
 
-	xTraceStateSet(TRC_STATE_IN_APPLICATION);
+	(void)xTraceStateSet(TRC_STATE_IN_APPLICATION);
 
 	TRACE_EXIT_CRITICAL_SECTION();
 

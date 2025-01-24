@@ -24,7 +24,7 @@ endmenu # "RTOS Hidden settings"
 menu "RTOS Specific"
 config PERCEPIO_TRC_CFG_USE_SYSCALL_EXTENSION
     bool "Use Syscall Extension"
-    default n
+    default y
     help
       If this option is enabled, syscalls will be submitted by id instead of name to Tracealyzer. By doing this,
       less data will need to be transferred for each syscall that is made, however, this will also require

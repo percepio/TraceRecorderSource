@@ -1,5 +1,5 @@
 /*
-* Trace Recorder for Tracealyzer v4.10.2
+* Trace Recorder for Tracealyzer v4.10.3
 * Copyright 2023 Percepio AB
 * www.percepio.com
 *
@@ -70,7 +70,7 @@ traceResult xTraceEntryTableInitialize(TraceEntryTable_t* const pxBuffer)
 		pxEntryTable->axEntries[i].szSymbol[0] = (char)0; /*cstat !MISRAC2004-6.3 !MISRAC2012-Dir-4.6_a Suppress basic char type usage*/
 	}
 
-	xTraceSetComponentInitialized(TRC_RECORDER_COMPONENT_ENTRY);
+	(void)xTraceSetComponentInitialized(TRC_RECORDER_COMPONENT_ENTRY);
 
 	return TRC_SUCCESS;
 }

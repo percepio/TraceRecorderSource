@@ -1,5 +1,5 @@
 /*
- * Trace Recorder for Tracealyzer v4.10.2
+ * Trace Recorder for Tracealyzer v4.10.3
  * Copyright 2023 Percepio AB
  * www.percepio.com
  *
@@ -681,7 +681,7 @@ extern "C" {
 
 /* Pipe trace mappings */
 #undef sys_port_trace_k_pipe_init
-#define sys_port_trace_k_pipe_init(pipe, ...)                                       \
+#define sys_port_trace_k_pipe_init(pipe, buffer, size)                              \
     sys_trace_k_pipe_init(pipe, buffer, size)
 #undef sys_port_trace_k_pipe_cleanup_enter
 #define sys_port_trace_k_pipe_cleanup_enter(pipe, ...)                              \
@@ -719,6 +719,36 @@ extern "C" {
 #undef sys_port_trace_k_pipe_block_put_exit
 #define sys_port_trace_k_pipe_block_put_exit(pipe, sem, ...)                        \
     sys_trace_k_pipe_block_put_exit(pipe, block, bytes_to_write, sem)
+/*#undef sys_port_trace_k_pipe_reset_enter
+#define sys_port_trace_k_pipe_reset_enter(pipe)                                     \
+    sys_trace_k_pipe_reset_enter(pipe)*/
+#undef sys_port_trace_k_pipe_reset_exit
+#define sys_port_trace_k_pipe_reset_exit(pipe)                                      \
+    sys_trace_k_pipe_reset_exit(pipe)
+/*#undef sys_port_trace_k_pipe_close_enter
+#define sys_port_trace_k_pipe_close_enter(pipe)                                     \
+    sys_trace_k_pipe_close_enter(pipe)*/
+#undef sys_port_trace_k_pipe_close_exit
+#define sys_port_trace_k_pipe_close_exit(pipe)                                      \
+    sys_trace_k_pipe_close_exit(pipe)
+/*#undef sys_port_trace_k_pipe_write_enter
+#define sys_port_trace_k_pipe_write_enter(pipe, data, len, timeout)                 \
+    sys_trace_k_pipe_write_enter(pipe, data, len, timeout)*/
+#undef sys_port_trace_k_pipe_write_blocking
+#define sys_port_trace_k_pipe_write_blocking(pipe, timeout)                         \
+    sys_trace_k_pipe_write_blocking(pipe, timeout)
+#undef sys_port_trace_k_pipe_write_exit
+#define sys_port_trace_k_pipe_write_exit(pipe, ret)                                 \
+    sys_trace_k_pipe_write_exit(pipe, timeout, ret)
+/*#undef sys_port_trace_k_pipe_read_enter
+#define sys_port_trace_k_pipe_read_enter(pipe, data, len, timeout)                  \
+    sys_trace_k_pipe_read_enter(pipe, data, len, timeout)*/
+#undef sys_port_trace_k_pipe_read_blocking
+#define sys_port_trace_k_pipe_read_blocking(pipe, timeout)                          \
+    sys_trace_k_pipe_read_blocking(pipe, timeout)
+#undef sys_port_trace_k_pipe_read_exit
+#define sys_port_trace_k_pipe_read_exit(pipe, ret)                                  \
+    sys_trace_k_pipe_read_exit(pipe, timeout, ret)
 
 
 /* Heap trace mappings */
@@ -1166,6 +1196,18 @@ void sys_trace_k_pipe_get_blocking(struct k_pipe *pipe, void *data,
 void sys_trace_k_pipe_get_exit(struct k_pipe *pipe, void *data,
     size_t bytes_to_read, size_t *bytes_read, size_t min_xfer,
     k_timeout_t timeout, int ret);
+void sys_trace_k_pipe_reset_enter(struct k_pipe *pipe);
+void sys_trace_k_pipe_reset_exit(struct k_pipe *pipe);
+void sys_trace_k_pipe_close_enter(struct k_pipe *pipe);
+void sys_trace_k_pipe_close_exit(struct k_pipe *pipe);
+void sys_trace_k_pipe_write_enter(struct k_pipe *pipe, void *data,
+    size_t bytes_to_write, k_timeout_t timeout);
+void sys_trace_k_pipe_write_blocking(struct k_pipe *pipe, k_timeout_t timeout);
+void sys_trace_k_pipe_write_exit(struct k_pipe *pipe, k_timeout_t timeout, int ret);
+void sys_trace_k_pipe_read_enter(struct k_pipe *pipe, void *data,
+	size_t bytes_to_read, k_timeout_t timeout);
+void sys_trace_k_pipe_read_blocking(struct k_pipe *pipe, k_timeout_t timeout);
+void sys_trace_k_pipe_read_exit(struct k_pipe *pipe, k_timeout_t timeout, int ret);
 
 /* Message queue trace function declarations */
 void sys_trace_k_msgq_init(struct k_msgq *msgq);

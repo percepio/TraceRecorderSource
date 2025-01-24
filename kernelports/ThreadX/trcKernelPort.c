@@ -1,5 +1,5 @@
 /*
- * Trace Recorder for Tracealyzer v4.10.2
+ * Trace Recorder for Tracealyzer v4.10.3
  * Copyright 2023 Percepio AB
  * www.percepio.com
  *
@@ -29,7 +29,7 @@ TraceHeapHandle_t xSystemHeapHandle;
 #if ((TRC_CFG_RECORDER_MODE) == TRC_RECORDER_MODE_STREAMING)
 
 #if ((TRC_CFG_ENABLE_STACK_MONITOR) == 1) && !defined(TX_ENABLE_STACK_CHECKING)
-#error TRC_CFG_ENABLE_STACK_MONITOR is enabled but TX_ENABLE_STACK_CHECKING isn't
+#error TRC_CFG_ENABLE_STACK_MONITOR is enabled but TX_ENABLE_STACK_CHECKING is not
 #endif
 
 #endif /*TRC_RECORDER_MODE_STREAMING == 1*/

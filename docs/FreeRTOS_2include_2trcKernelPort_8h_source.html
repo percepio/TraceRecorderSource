@@ -25,7 +25,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">Percepio Trace Recorder<span id="projectnumber">&#160;v4.10.2</span>
+   <div id="projectname">Percepio Trace Recorder<span id="projectnumber">&#160;v4.10.3</span>
    </div>
   </td>
  </tr>
@@ -93,7 +93,7 @@ $(document).ready(function(){initNavTree('FreeRTOS_2include_2trcKernelPort_8h_so
 </div><!--header-->
 <div class="contents">
 <div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="comment">/*</span></div>
-<div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span><span class="comment"> * Trace Recorder for Tracealyzer v4.10.2</span></div>
+<div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span><span class="comment"> * Trace Recorder for Tracealyzer v4.10.3</span></div>
 <div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span><span class="comment"> * Copyright 2023 Percepio AB</span></div>
 <div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span><span class="comment"> * www.percepio.com</span></div>
 <div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span><span class="comment"> *</span></div>
@@ -228,15 +228,15 @@ $(document).ready(function(){initNavTree('FreeRTOS_2include_2trcKernelPort_8h_so
 <div class="line"><a id="l00176" name="l00176"></a><span class="lineno">  176</span> </div>
 <div class="line"><a id="l00180" name="l00180"></a><span class="lineno">  180</span><span class="preprocessor">#define TRC_KERNEL_PORT_EXIT_CRITICAL_SECTION() (void)TRACE_ALLOC_CRITICAL_SECTION_NAME; portEXIT_CRITICAL()</span></div>
 <div class="line"><a id="l00181" name="l00181"></a><span class="lineno">  181</span> </div>
-<div class="line"><a id="l00185" name="l00185"></a><span class="lineno">  185</span><span class="preprocessor">#define TRC_KERNEL_PORT_SET_INTERRUPT_MASK() (TraceBaseType_t)portSET_INTERRUPT_MASK_FROM_ISR()</span></div>
+<div class="line"><a id="l00185" name="l00185"></a><span class="lineno">  185</span><span class="preprocessor">#define TRC_KERNEL_PORT_SET_INTERRUPT_MASK() (TraceUnsignedBaseType_t)portSET_INTERRUPT_MASK_FROM_ISR()</span></div>
 <div class="line"><a id="l00186" name="l00186"></a><span class="lineno">  186</span> </div>
 <div class="line"><a id="l00187" name="l00187"></a><span class="lineno">  187</span><span class="preprocessor">#if (TRC_CFG_FREERTOS_VERSION &gt;= TRC_FREERTOS_VERSION_8_X_X)</span></div>
 <div class="line"><a id="l00188" name="l00188"></a><span class="lineno">  188</span> </div>
-<div class="line"><a id="l00192" name="l00192"></a><span class="lineno">  192</span><span class="preprocessor">#define TRC_KERNEL_PORT_CLEAR_INTERRUPT_MASK(xMask) portCLEAR_INTERRUPT_MASK_FROM_ISR((UBaseType_t)(xMask))</span></div>
+<div class="line"><a id="l00192" name="l00192"></a><span class="lineno">  192</span><span class="preprocessor">#define TRC_KERNEL_PORT_CLEAR_INTERRUPT_MASK(xMask) portCLEAR_INTERRUPT_MASK_FROM_ISR((TraceUnsignedBaseType_t)(xMask))</span></div>
 <div class="line"><a id="l00193" name="l00193"></a><span class="lineno">  193</span> </div>
 <div class="line"><a id="l00194" name="l00194"></a><span class="lineno">  194</span><span class="preprocessor">#else</span></div>
 <div class="line"><a id="l00195" name="l00195"></a><span class="lineno">  195</span> </div>
-<div class="line"><a id="l00199" name="l00199"></a><span class="lineno">  199</span><span class="preprocessor">#define TRC_KERNEL_PORT_CLEAR_INTERRUPT_MASK(xMask) portCLEAR_INTERRUPT_MASK_FROM_ISR((unsigned portBASE_TYPE)xMask)</span></div>
+<div class="line"><a id="l00199" name="l00199"></a><span class="lineno">  199</span><span class="preprocessor">#define TRC_KERNEL_PORT_CLEAR_INTERRUPT_MASK(xMask) portCLEAR_INTERRUPT_MASK_FROM_ISR((TraceUnsignedBaseType_t)xMask)</span></div>
 <div class="line"><a id="l00200" name="l00200"></a><span class="lineno">  200</span><span class="preprocessor">#endif</span></div>
 <div class="line"><a id="l00201" name="l00201"></a><span class="lineno">  201</span> </div>
 <div class="line"><a id="l00202" name="l00202"></a><span class="lineno">  202</span><span class="preprocessor">#if (TRC_CFG_SCHEDULING_ONLY == 0)</span></div>
@@ -976,20 +976,20 @@ $(document).ready(function(){initNavTree('FreeRTOS_2include_2trcKernelPort_8h_so
 <div class="line"><a id="l01296" name="l01296"></a><span class="lineno"> 1296</span><span class="preprocessor">#if (TRC_CFG_FREERTOS_VERSION &gt;= TRC_FREERTOS_VERSION_10_3_0)</span></div>
 <div class="line"><a id="l01297" name="l01297"></a><span class="lineno"> 1297</span> </div>
 <div class="line"><a id="l01298" name="l01298"></a><span class="lineno"> 1298</span><span class="preprocessor">#define traceTASK_INCREMENT_TICK( xTickCount ) \</span></div>
-<div class="line"><a id="l01299" name="l01299"></a><span class="lineno"> 1299</span><span class="preprocessor">    if (uxSchedulerSuspended == ( unsigned portBASE_TYPE ) pdTRUE || xPendedTicks == 0) { trcKERNEL_HOOKS_INCREMENT_TICK(); } \</span></div>
-<div class="line"><a id="l01300" name="l01300"></a><span class="lineno"> 1300</span><span class="preprocessor">    if (uxSchedulerSuspended == ( unsigned portBASE_TYPE ) pdFALSE) { trcKERNEL_HOOKS_NEW_TIME(DIV_NEW_TIME, xTickCount + 1); }</span></div>
+<div class="line"><a id="l01299" name="l01299"></a><span class="lineno"> 1299</span><span class="preprocessor">    if (uxSchedulerSuspended == ( TraceUnsignedBaseType_t ) pdTRUE || xPendedTicks == 0) { trcKERNEL_HOOKS_INCREMENT_TICK(); } \</span></div>
+<div class="line"><a id="l01300" name="l01300"></a><span class="lineno"> 1300</span><span class="preprocessor">    if (uxSchedulerSuspended == ( TraceUnsignedBaseType_t ) pdFALSE) { trcKERNEL_HOOKS_NEW_TIME(DIV_NEW_TIME, xTickCount + 1); }</span></div>
 <div class="line"><a id="l01301" name="l01301"></a><span class="lineno"> 1301</span>    </div>
 <div class="line"><a id="l01302" name="l01302"></a><span class="lineno"> 1302</span><span class="preprocessor">#elif (TRC_CFG_FREERTOS_VERSION &gt;= TRC_FREERTOS_VERSION_7_5_X)</span></div>
 <div class="line"><a id="l01303" name="l01303"></a><span class="lineno"> 1303</span> </div>
 <div class="line"><a id="l01304" name="l01304"></a><span class="lineno"> 1304</span><span class="preprocessor">#define traceTASK_INCREMENT_TICK( xTickCount ) \</span></div>
-<div class="line"><a id="l01305" name="l01305"></a><span class="lineno"> 1305</span><span class="preprocessor">    if (uxSchedulerSuspended == ( unsigned portBASE_TYPE ) pdTRUE || uxPendedTicks == 0) { trcKERNEL_HOOKS_INCREMENT_TICK(); } \</span></div>
-<div class="line"><a id="l01306" name="l01306"></a><span class="lineno"> 1306</span><span class="preprocessor">    if (uxSchedulerSuspended == ( unsigned portBASE_TYPE ) pdFALSE) { trcKERNEL_HOOKS_NEW_TIME(DIV_NEW_TIME, xTickCount + 1); }</span></div>
+<div class="line"><a id="l01305" name="l01305"></a><span class="lineno"> 1305</span><span class="preprocessor">    if (uxSchedulerSuspended == ( TraceUnsignedBaseType_t ) pdTRUE || uxPendedTicks == 0) { trcKERNEL_HOOKS_INCREMENT_TICK(); } \</span></div>
+<div class="line"><a id="l01306" name="l01306"></a><span class="lineno"> 1306</span><span class="preprocessor">    if (uxSchedulerSuspended == ( TraceUnsignedBaseType_t ) pdFALSE) { trcKERNEL_HOOKS_NEW_TIME(DIV_NEW_TIME, xTickCount + 1); }</span></div>
 <div class="line"><a id="l01307" name="l01307"></a><span class="lineno"> 1307</span> </div>
 <div class="line"><a id="l01308" name="l01308"></a><span class="lineno"> 1308</span><span class="preprocessor">#else</span></div>
 <div class="line"><a id="l01309" name="l01309"></a><span class="lineno"> 1309</span> </div>
 <div class="line"><a id="l01310" name="l01310"></a><span class="lineno"> 1310</span><span class="preprocessor">#define traceTASK_INCREMENT_TICK( xTickCount ) \</span></div>
-<div class="line"><a id="l01311" name="l01311"></a><span class="lineno"> 1311</span><span class="preprocessor">    if (uxSchedulerSuspended == ( unsigned portBASE_TYPE ) pdTRUE || uxMissedTicks == 0) { trcKERNEL_HOOKS_INCREMENT_TICK(); } \</span></div>
-<div class="line"><a id="l01312" name="l01312"></a><span class="lineno"> 1312</span><span class="preprocessor">    if (uxSchedulerSuspended == ( unsigned portBASE_TYPE ) pdFALSE) { trcKERNEL_HOOKS_NEW_TIME(DIV_NEW_TIME, xTickCount + 1); }</span></div>
+<div class="line"><a id="l01311" name="l01311"></a><span class="lineno"> 1311</span><span class="preprocessor">    if (uxSchedulerSuspended == ( TraceUnsignedBaseType_t ) pdTRUE || uxMissedTicks == 0) { trcKERNEL_HOOKS_INCREMENT_TICK(); } \</span></div>
+<div class="line"><a id="l01312" name="l01312"></a><span class="lineno"> 1312</span><span class="preprocessor">    if (uxSchedulerSuspended == ( TraceUnsignedBaseType_t ) pdFALSE) { trcKERNEL_HOOKS_NEW_TIME(DIV_NEW_TIME, xTickCount + 1); }</span></div>
 <div class="line"><a id="l01313" name="l01313"></a><span class="lineno"> 1313</span> </div>
 <div class="line"><a id="l01314" name="l01314"></a><span class="lineno"> 1314</span><span class="preprocessor">#endif</span></div>
 <div class="line"><a id="l01315" name="l01315"></a><span class="lineno"> 1315</span> </div>
@@ -1876,11 +1876,11 @@ $(document).ready(function(){initNavTree('FreeRTOS_2include_2trcKernelPort_8h_so
 <div class="line"><a id="l02196" name="l02196"></a><span class="lineno"> 2196</span><span class="comment">/* A macro that will update the tick count when returning from tickless idle */</span></div>
 <div class="line"><a id="l02197" name="l02197"></a><span class="lineno"> 2197</span><span class="preprocessor">#undef traceINCREASE_TICK_COUNT</span></div>
 <div class="line"><a id="l02198" name="l02198"></a><span class="lineno"> 2198</span><span class="comment">/* Note: This can handle time adjustments of max 2^32 ticks, i.e., 35 seconds at 120 MHz. Thus, tick-less idle periods longer than 2^32 ticks will appear &quot;compressed&quot; on the time line.*/</span></div>
-<div class="line"><a id="l02199" name="l02199"></a><span class="lineno"> 2199</span><span class="preprocessor">#define traceINCREASE_TICK_COUNT( xCount ) { uint32_t uiTraceTickCount; xTraceTimestampGetOsTickCount(&amp;uiTraceTickCount); xTraceTimestampSetOsTickCount(uiTraceTickCount + (xCount)); }</span></div>
+<div class="line"><a id="l02199" name="l02199"></a><span class="lineno"> 2199</span><span class="preprocessor">#define traceINCREASE_TICK_COUNT( xCount ) { uint32_t uiTraceTickCount; (void)xTraceTimestampGetOsTickCount(&amp;uiTraceTickCount); (void)xTraceTimestampSetOsTickCount(uiTraceTickCount + (xCount)); }</span></div>
 <div class="line"><a id="l02200" name="l02200"></a><span class="lineno"> 2200</span> </div>
 <div class="line"><a id="l02201" name="l02201"></a><span class="lineno"> 2201</span><span class="preprocessor">#if (TRC_CFG_INCLUDE_OSTICK_EVENTS == 1)</span></div>
 <div class="line"><a id="l02202" name="l02202"></a><span class="lineno"> 2202</span> </div>
-<div class="line"><a id="l02203" name="l02203"></a><span class="lineno"> 2203</span><span class="preprocessor">#define OS_TICK_EVENT(uxSchedulerSuspended, xTickCount) if ((uxSchedulerSuspended) == (unsigned portBASE_TYPE) pdFALSE) { prvTraceStoreEvent_Param(PSF_EVENT_NEW_TIME, xTickCount); }</span></div>
+<div class="line"><a id="l02203" name="l02203"></a><span class="lineno"> 2203</span><span class="preprocessor">#define OS_TICK_EVENT(uxSchedulerSuspended, xTickCount) if ((uxSchedulerSuspended) == (TraceUnsignedBaseType_t) pdFALSE) { prvTraceStoreEvent_Param(PSF_EVENT_NEW_TIME, xTickCount); }</span></div>
 <div class="line"><a id="l02204" name="l02204"></a><span class="lineno"> 2204</span> </div>
 <div class="line"><a id="l02205" name="l02205"></a><span class="lineno"> 2205</span><span class="preprocessor">#else</span></div>
 <div class="line"><a id="l02206" name="l02206"></a><span class="lineno"> 2206</span> </div>
@@ -1893,19 +1893,19 @@ $(document).ready(function(){initNavTree('FreeRTOS_2include_2trcKernelPort_8h_so
 <div class="line"><a id="l02213" name="l02213"></a><span class="lineno"> 2213</span><span class="preprocessor">#if TRC_CFG_FREERTOS_VERSION &gt;= TRC_FREERTOS_VERSION_10_3_0</span></div>
 <div class="line"><a id="l02214" name="l02214"></a><span class="lineno"> 2214</span> </div>
 <div class="line"><a id="l02215" name="l02215"></a><span class="lineno"> 2215</span><span class="preprocessor">#define traceTASK_INCREMENT_TICK( xTickCount ) \</span></div>
-<div class="line"><a id="l02216" name="l02216"></a><span class="lineno"> 2216</span><span class="preprocessor">    if (uxSchedulerSuspended == ( unsigned portBASE_TYPE ) pdTRUE || xPendedTicks == 0) { xTraceTimestampSetOsTickCount((xTickCount) + 1); } \</span></div>
+<div class="line"><a id="l02216" name="l02216"></a><span class="lineno"> 2216</span><span class="preprocessor">    if (uxSchedulerSuspended == ( TraceUnsignedBaseType_t ) pdTRUE || xPendedTicks == 0) { (void)xTraceTimestampSetOsTickCount((xTickCount) + 1); } \</span></div>
 <div class="line"><a id="l02217" name="l02217"></a><span class="lineno"> 2217</span><span class="preprocessor">    OS_TICK_EVENT(uxSchedulerSuspended, (xTickCount) + 1)</span></div>
 <div class="line"><a id="l02218" name="l02218"></a><span class="lineno"> 2218</span> </div>
 <div class="line"><a id="l02219" name="l02219"></a><span class="lineno"> 2219</span><span class="preprocessor">#elif TRC_CFG_FREERTOS_VERSION &gt;= TRC_FREERTOS_VERSION_7_5_X</span></div>
 <div class="line"><a id="l02220" name="l02220"></a><span class="lineno"> 2220</span> </div>
 <div class="line"><a id="l02221" name="l02221"></a><span class="lineno"> 2221</span><span class="preprocessor">#define traceTASK_INCREMENT_TICK( xTickCount ) \</span></div>
-<div class="line"><a id="l02222" name="l02222"></a><span class="lineno"> 2222</span><span class="preprocessor">    if (uxSchedulerSuspended == ( unsigned portBASE_TYPE ) pdTRUE || uxPendedTicks == 0) { xTraceTimestampSetOsTickCount((xTickCount) + 1); } \</span></div>
+<div class="line"><a id="l02222" name="l02222"></a><span class="lineno"> 2222</span><span class="preprocessor">    if (uxSchedulerSuspended == ( TraceUnsignedBaseType_t ) pdTRUE || uxPendedTicks == 0) { (void)xTraceTimestampSetOsTickCount((xTickCount) + 1); } \</span></div>
 <div class="line"><a id="l02223" name="l02223"></a><span class="lineno"> 2223</span><span class="preprocessor">    OS_TICK_EVENT(uxSchedulerSuspended, (xTickCount) + 1)</span></div>
 <div class="line"><a id="l02224" name="l02224"></a><span class="lineno"> 2224</span> </div>
 <div class="line"><a id="l02225" name="l02225"></a><span class="lineno"> 2225</span><span class="preprocessor">#else</span></div>
 <div class="line"><a id="l02226" name="l02226"></a><span class="lineno"> 2226</span> </div>
 <div class="line"><a id="l02227" name="l02227"></a><span class="lineno"> 2227</span><span class="preprocessor">#define traceTASK_INCREMENT_TICK( xTickCount ) \</span></div>
-<div class="line"><a id="l02228" name="l02228"></a><span class="lineno"> 2228</span><span class="preprocessor">    if (uxSchedulerSuspended == ( unsigned portBASE_TYPE ) pdTRUE || uxMissedTicks == 0) { xTraceTimestampSetOsTickCount((xTickCount) + 1); } \</span></div>
+<div class="line"><a id="l02228" name="l02228"></a><span class="lineno"> 2228</span><span class="preprocessor">    if (uxSchedulerSuspended == ( TraceUnsignedBaseType_t ) pdTRUE || uxMissedTicks == 0) { (void)xTraceTimestampSetOsTickCount((xTickCount) + 1); } \</span></div>
 <div class="line"><a id="l02229" name="l02229"></a><span class="lineno"> 2229</span><span class="preprocessor">    OS_TICK_EVENT(uxSchedulerSuspended, (xTickCount) + 1)</span></div>
 <div class="line"><a id="l02230" name="l02230"></a><span class="lineno"> 2230</span> </div>
 <div class="line"><a id="l02231" name="l02231"></a><span class="lineno"> 2231</span><span class="preprocessor">#endif</span></div>
@@ -1913,12 +1913,12 @@ $(document).ready(function(){initNavTree('FreeRTOS_2include_2trcKernelPort_8h_so
 <div class="line"><a id="l02233" name="l02233"></a><span class="lineno"> 2233</span><span class="comment">/* Called on each task-switch */</span></div>
 <div class="line"><a id="l02234" name="l02234"></a><span class="lineno"> 2234</span><span class="preprocessor">#undef traceTASK_SWITCHED_IN</span></div>
 <div class="line"><a id="l02235" name="l02235"></a><span class="lineno"> 2235</span><span class="preprocessor">#define traceTASK_SWITCHED_IN() \</span></div>
-<div class="line"><a id="l02236" name="l02236"></a><span class="lineno"> 2236</span><span class="preprocessor">    xTraceTaskSwitch(pxCurrentTCB, pxCurrentTCB-&gt;uxPriority)</span></div>
+<div class="line"><a id="l02236" name="l02236"></a><span class="lineno"> 2236</span><span class="preprocessor">    (void)xTraceTaskSwitch(pxCurrentTCB, pxCurrentTCB-&gt;uxPriority)</span></div>
 <div class="line"><a id="l02237" name="l02237"></a><span class="lineno"> 2237</span> </div>
 <div class="line"><a id="l02238" name="l02238"></a><span class="lineno"> 2238</span><span class="comment">/* Called for each task that becomes ready */</span></div>
 <div class="line"><a id="l02239" name="l02239"></a><span class="lineno"> 2239</span><span class="preprocessor">#undef traceMOVED_TASK_TO_READY_STATE</span></div>
 <div class="line"><a id="l02240" name="l02240"></a><span class="lineno"> 2240</span><span class="preprocessor">#define traceMOVED_TASK_TO_READY_STATE( pxTCB ) \</span></div>
-<div class="line"><a id="l02241" name="l02241"></a><span class="lineno"> 2241</span><span class="preprocessor">    xTraceTaskReady(pxTCB);</span></div>
+<div class="line"><a id="l02241" name="l02241"></a><span class="lineno"> 2241</span><span class="preprocessor">    (void)xTraceTaskReady(pxTCB);</span></div>
 <div class="line"><a id="l02242" name="l02242"></a><span class="lineno"> 2242</span> </div>
 <div class="line"><a id="l02243" name="l02243"></a><span class="lineno"> 2243</span><span class="preprocessor">#undef traceTASK_CREATE</span></div>
 <div class="line"><a id="l02244" name="l02244"></a><span class="lineno"> 2244</span><span class="preprocessor">#if TRC_CFG_FREERTOS_VERSION &gt;= TRC_FREERTOS_VERSION_9_0_0</span></div>
@@ -1926,7 +1926,7 @@ $(document).ready(function(){initNavTree('FreeRTOS_2include_2trcKernelPort_8h_so
 <div class="line"><a id="l02246" name="l02246"></a><span class="lineno"> 2246</span><span class="preprocessor">#define traceTASK_CREATE(pxNewTCB) \</span></div>
 <div class="line"><a id="l02247" name="l02247"></a><span class="lineno"> 2247</span><span class="preprocessor">    if ((pxNewTCB) != 0) \</span></div>
 <div class="line"><a id="l02248" name="l02248"></a><span class="lineno"> 2248</span><span class="preprocessor">    { \</span></div>
-<div class="line"><a id="l02249" name="l02249"></a><span class="lineno"> 2249</span><span class="preprocessor">        xTraceTaskRegisterWithoutHandle((void*)(pxNewTCB), (pxNewTCB)-&gt;pcTaskName, (pxNewTCB)-&gt;uxPriority); \</span></div>
+<div class="line"><a id="l02249" name="l02249"></a><span class="lineno"> 2249</span><span class="preprocessor">        (void)xTraceTaskRegisterWithoutHandle((void*)(pxNewTCB), (pxNewTCB)-&gt;pcTaskName, (pxNewTCB)-&gt;uxPriority); \</span></div>
 <div class="line"><a id="l02250" name="l02250"></a><span class="lineno"> 2250</span><span class="preprocessor">    }</span></div>
 <div class="line"><a id="l02251" name="l02251"></a><span class="lineno"> 2251</span> </div>
 <div class="line"><a id="l02252" name="l02252"></a><span class="lineno"> 2252</span><span class="preprocessor">#else</span></div>
@@ -1934,7 +1934,7 @@ $(document).ready(function(){initNavTree('FreeRTOS_2include_2trcKernelPort_8h_so
 <div class="line"><a id="l02254" name="l02254"></a><span class="lineno"> 2254</span><span class="preprocessor">#define traceTASK_CREATE(pxNewTCB) \</span></div>
 <div class="line"><a id="l02255" name="l02255"></a><span class="lineno"> 2255</span><span class="preprocessor">    if (pxNewTCB != 0) \</span></div>
 <div class="line"><a id="l02256" name="l02256"></a><span class="lineno"> 2256</span><span class="preprocessor">    { \</span></div>
-<div class="line"><a id="l02257" name="l02257"></a><span class="lineno"> 2257</span><span class="preprocessor">        xTraceTaskRegisterWithoutHandle((void*)pxNewTCB, (const char*)pcName, (uint32_t)uxPriority); \</span></div>
+<div class="line"><a id="l02257" name="l02257"></a><span class="lineno"> 2257</span><span class="preprocessor">        (void)xTraceTaskRegisterWithoutHandle((void*)pxNewTCB, (const char*)pcName, (uint32_t)uxPriority); \</span></div>
 <div class="line"><a id="l02258" name="l02258"></a><span class="lineno"> 2258</span><span class="preprocessor">    }</span></div>
 <div class="line"><a id="l02259" name="l02259"></a><span class="lineno"> 2259</span> </div>
 <div class="line"><a id="l02260" name="l02260"></a><span class="lineno"> 2260</span><span class="preprocessor">#endif</span></div>
@@ -1991,10 +1991,10 @@ $(document).ready(function(){initNavTree('FreeRTOS_2include_2trcKernelPort_8h_so
 <div class="line"><a id="l02311" name="l02311"></a><span class="lineno"> 2311</span> </div>
 <div class="line"><a id="l02312" name="l02312"></a><span class="lineno"> 2312</span><span class="preprocessor">#define traceQUEUE_CREATE_HELPER() \</span></div>
 <div class="line"><a id="l02313" name="l02313"></a><span class="lineno"> 2313</span><span class="preprocessor">        case queueQUEUE_TYPE_MUTEX: \</span></div>
-<div class="line"><a id="l02314" name="l02314"></a><span class="lineno"> 2314</span><span class="preprocessor">            xTraceObjectRegisterWithoutHandle(PSF_EVENT_MUTEX_CREATE, (void*)pxNewQueue, &quot;&quot;</span>, 0); \</div>
+<div class="line"><a id="l02314" name="l02314"></a><span class="lineno"> 2314</span><span class="preprocessor">            (void)xTraceObjectRegisterWithoutHandle(PSF_EVENT_MUTEX_CREATE, (void*)pxNewQueue, &quot;&quot;</span>, 0); \</div>
 <div class="line"><a id="l02315" name="l02315"></a><span class="lineno"> 2315</span>            break; \</div>
 <div class="line"><a id="l02316" name="l02316"></a><span class="lineno"> 2316</span>        case queueQUEUE_TYPE_RECURSIVE_MUTEX: \</div>
-<div class="line"><a id="l02317" name="l02317"></a><span class="lineno"> 2317</span>            xTraceObjectRegisterWithoutHandle(PSF_EVENT_MUTEX_RECURSIVE_CREATE, (void*)pxNewQueue, &quot;&quot;, 0); \</div>
+<div class="line"><a id="l02317" name="l02317"></a><span class="lineno"> 2317</span>            (void)xTraceObjectRegisterWithoutHandle(PSF_EVENT_MUTEX_RECURSIVE_CREATE, (void*)pxNewQueue, &quot;&quot;, 0); \</div>
 <div class="line"><a id="l02318" name="l02318"></a><span class="lineno"> 2318</span>            break;</div>
 <div class="line"><a id="l02319" name="l02319"></a><span class="lineno"> 2319</span> </div>
 <div class="line"><a id="l02320" name="l02320"></a><span class="lineno"> 2320</span><span class="preprocessor">#else</span></div>
@@ -2009,10 +2009,10 @@ $(document).ready(function(){initNavTree('FreeRTOS_2include_2trcKernelPort_8h_so
 <div class="line"><a id="l02329" name="l02329"></a><span class="lineno"> 2329</span><span class="preprocessor">    switch ((pxNewQueue)-&gt;ucQueueType) \</span></div>
 <div class="line"><a id="l02330" name="l02330"></a><span class="lineno"> 2330</span><span class="preprocessor">    { \</span></div>
 <div class="line"><a id="l02331" name="l02331"></a><span class="lineno"> 2331</span><span class="preprocessor">        case queueQUEUE_TYPE_BASE: \</span></div>
-<div class="line"><a id="l02332" name="l02332"></a><span class="lineno"> 2332</span><span class="preprocessor">            xTraceObjectRegisterWithoutHandle(PSF_EVENT_QUEUE_CREATE, (void*)(pxNewQueue), &quot;&quot;</span>, (uint32_t)uxQueueLength); \</div>
+<div class="line"><a id="l02332" name="l02332"></a><span class="lineno"> 2332</span><span class="preprocessor">            (void)xTraceObjectRegisterWithoutHandle(PSF_EVENT_QUEUE_CREATE, (void*)(pxNewQueue), &quot;&quot;</span>, (uint32_t)uxQueueLength); \</div>
 <div class="line"><a id="l02333" name="l02333"></a><span class="lineno"> 2333</span>            break; \</div>
 <div class="line"><a id="l02334" name="l02334"></a><span class="lineno"> 2334</span>        case queueQUEUE_TYPE_BINARY_SEMAPHORE: \</div>
-<div class="line"><a id="l02335" name="l02335"></a><span class="lineno"> 2335</span>            xTraceObjectRegisterWithoutHandle(PSF_EVENT_SEMAPHORE_BINARY_CREATE, (void*)(pxNewQueue), &quot;&quot;, 0); \</div>
+<div class="line"><a id="l02335" name="l02335"></a><span class="lineno"> 2335</span>            (void)xTraceObjectRegisterWithoutHandle(PSF_EVENT_SEMAPHORE_BINARY_CREATE, (void*)(pxNewQueue), &quot;&quot;, 0); \</div>
 <div class="line"><a id="l02336" name="l02336"></a><span class="lineno"> 2336</span>            break; \</div>
 <div class="line"><a id="l02337" name="l02337"></a><span class="lineno"> 2337</span>        traceQUEUE_CREATE_HELPER() \</div>
 <div class="line"><a id="l02338" name="l02338"></a><span class="lineno"> 2338</span>    }</div>
@@ -2052,15 +2052,15 @@ $(document).ready(function(){initNavTree('FreeRTOS_2include_2trcKernelPort_8h_so
 <div class="line"><a id="l02372" name="l02372"></a><span class="lineno"> 2372</span><span class="preprocessor">    switch ((pxQueue)-&gt;ucQueueType) \</span></div>
 <div class="line"><a id="l02373" name="l02373"></a><span class="lineno"> 2373</span><span class="preprocessor">    { \</span></div>
 <div class="line"><a id="l02374" name="l02374"></a><span class="lineno"> 2374</span><span class="preprocessor">        case queueQUEUE_TYPE_BASE: \</span></div>
-<div class="line"><a id="l02375" name="l02375"></a><span class="lineno"> 2375</span><span class="preprocessor">            xTraceObjectUnregisterWithoutHandle(PSF_EVENT_QUEUE_DELETE, (void*)(pxQueue), (pxQueue)-&gt;uxMessagesWaiting); \</span></div>
+<div class="line"><a id="l02375" name="l02375"></a><span class="lineno"> 2375</span><span class="preprocessor">            (void)xTraceObjectUnregisterWithoutHandle(PSF_EVENT_QUEUE_DELETE, (void*)(pxQueue), (pxQueue)-&gt;uxMessagesWaiting); \</span></div>
 <div class="line"><a id="l02376" name="l02376"></a><span class="lineno"> 2376</span><span class="preprocessor">            break; \</span></div>
 <div class="line"><a id="l02377" name="l02377"></a><span class="lineno"> 2377</span><span class="preprocessor">        case queueQUEUE_TYPE_MUTEX: \</span></div>
 <div class="line"><a id="l02378" name="l02378"></a><span class="lineno"> 2378</span><span class="preprocessor">        case queueQUEUE_TYPE_RECURSIVE_MUTEX: \</span></div>
-<div class="line"><a id="l02379" name="l02379"></a><span class="lineno"> 2379</span><span class="preprocessor">            xTraceObjectUnregisterWithoutHandle(PSF_EVENT_MUTEX_DELETE, (void*)(pxQueue), (pxQueue)-&gt;uxMessagesWaiting); \</span></div>
+<div class="line"><a id="l02379" name="l02379"></a><span class="lineno"> 2379</span><span class="preprocessor">            (void)xTraceObjectUnregisterWithoutHandle(PSF_EVENT_MUTEX_DELETE, (void*)(pxQueue), (pxQueue)-&gt;uxMessagesWaiting); \</span></div>
 <div class="line"><a id="l02380" name="l02380"></a><span class="lineno"> 2380</span><span class="preprocessor">            break; \</span></div>
 <div class="line"><a id="l02381" name="l02381"></a><span class="lineno"> 2381</span><span class="preprocessor">        case queueQUEUE_TYPE_COUNTING_SEMAPHORE: \</span></div>
 <div class="line"><a id="l02382" name="l02382"></a><span class="lineno"> 2382</span><span class="preprocessor">        case queueQUEUE_TYPE_BINARY_SEMAPHORE: \</span></div>
-<div class="line"><a id="l02383" name="l02383"></a><span class="lineno"> 2383</span><span class="preprocessor">            xTraceObjectUnregisterWithoutHandle(PSF_EVENT_SEMAPHORE_DELETE, (void*)(pxQueue), (pxQueue)-&gt;uxMessagesWaiting); \</span></div>
+<div class="line"><a id="l02383" name="l02383"></a><span class="lineno"> 2383</span><span class="preprocessor">            (void)xTraceObjectUnregisterWithoutHandle(PSF_EVENT_SEMAPHORE_DELETE, (void*)(pxQueue), (pxQueue)-&gt;uxMessagesWaiting); \</span></div>
 <div class="line"><a id="l02384" name="l02384"></a><span class="lineno"> 2384</span><span class="preprocessor">            break; \</span></div>
 <div class="line"><a id="l02385" name="l02385"></a><span class="lineno"> 2385</span><span class="preprocessor">    }</span></div>
 <div class="line"><a id="l02386" name="l02386"></a><span class="lineno"> 2386</span> </div>
@@ -2069,22 +2069,22 @@ $(document).ready(function(){initNavTree('FreeRTOS_2include_2trcKernelPort_8h_so
 <div class="line"><a id="l02389" name="l02389"></a><span class="lineno"> 2389</span><span class="preprocessor">#if (TRC_CFG_FREERTOS_VERSION &gt;= TRC_FREERTOS_VERSION_8_X_X)</span></div>
 <div class="line"><a id="l02390" name="l02390"></a><span class="lineno"> 2390</span> </div>
 <div class="line"><a id="l02391" name="l02391"></a><span class="lineno"> 2391</span><span class="preprocessor">#define traceCREATE_COUNTING_SEMAPHORE() \</span></div>
-<div class="line"><a id="l02392" name="l02392"></a><span class="lineno"> 2392</span><span class="preprocessor">    xTraceObjectRegisterWithoutHandle(PSF_EVENT_SEMAPHORE_COUNTING_CREATE, (void*)xHandle, &quot;&quot;</span>, (uint32_t)uxMaxCount)</div>
+<div class="line"><a id="l02392" name="l02392"></a><span class="lineno"> 2392</span><span class="preprocessor">    (void)xTraceObjectRegisterWithoutHandle(PSF_EVENT_SEMAPHORE_COUNTING_CREATE, (void*)xHandle, &quot;&quot;</span>, (uint32_t)uxMaxCount)</div>
 <div class="line"><a id="l02393" name="l02393"></a><span class="lineno"> 2393</span> </div>
 <div class="line"><a id="l02394" name="l02394"></a><span class="lineno"> 2394</span><span class="preprocessor">#elif (TRC_CFG_FREERTOS_VERSION &gt;= TRC_FREERTOS_VERSION_7_5_X)</span></div>
 <div class="line"><a id="l02395" name="l02395"></a><span class="lineno"> 2395</span> </div>
 <div class="line"><a id="l02396" name="l02396"></a><span class="lineno"> 2396</span><span class="preprocessor">#define traceCREATE_COUNTING_SEMAPHORE() \</span></div>
-<div class="line"><a id="l02397" name="l02397"></a><span class="lineno"> 2397</span><span class="preprocessor">    xTraceObjectRegisterWithoutHandle(PSF_EVENT_SEMAPHORE_COUNTING_CREATE, (void*)xHandle, &quot;&quot;</span>, uxInitialCount)</div>
+<div class="line"><a id="l02397" name="l02397"></a><span class="lineno"> 2397</span><span class="preprocessor">    (void)xTraceObjectRegisterWithoutHandle(PSF_EVENT_SEMAPHORE_COUNTING_CREATE, (void*)xHandle, &quot;&quot;</span>, uxInitialCount)</div>
 <div class="line"><a id="l02398" name="l02398"></a><span class="lineno"> 2398</span> </div>
 <div class="line"><a id="l02399" name="l02399"></a><span class="lineno"> 2399</span><span class="preprocessor">#elif (TRC_CFG_FREERTOS_VERSION &gt;= TRC_FREERTOS_VERSION_7_4_X)</span></div>
 <div class="line"><a id="l02400" name="l02400"></a><span class="lineno"> 2400</span> </div>
 <div class="line"><a id="l02401" name="l02401"></a><span class="lineno"> 2401</span><span class="preprocessor">#define traceCREATE_COUNTING_SEMAPHORE() \</span></div>
-<div class="line"><a id="l02402" name="l02402"></a><span class="lineno"> 2402</span><span class="preprocessor">    xTraceObjectRegisterWithoutHandle(PSF_EVENT_SEMAPHORE_COUNTING_CREATE, (void*)xHandle, &quot;&quot;</span>, uxCountValue)</div>
+<div class="line"><a id="l02402" name="l02402"></a><span class="lineno"> 2402</span><span class="preprocessor">    (void)xTraceObjectRegisterWithoutHandle(PSF_EVENT_SEMAPHORE_COUNTING_CREATE, (void*)xHandle, &quot;&quot;</span>, uxCountValue)</div>
 <div class="line"><a id="l02403" name="l02403"></a><span class="lineno"> 2403</span> </div>
 <div class="line"><a id="l02404" name="l02404"></a><span class="lineno"> 2404</span><span class="preprocessor">#else</span></div>
 <div class="line"><a id="l02405" name="l02405"></a><span class="lineno"> 2405</span> </div>
 <div class="line"><a id="l02406" name="l02406"></a><span class="lineno"> 2406</span><span class="preprocessor">#define traceCREATE_COUNTING_SEMAPHORE() \</span></div>
-<div class="line"><a id="l02407" name="l02407"></a><span class="lineno"> 2407</span><span class="preprocessor">    xTraceObjectRegisterWithoutHandle(PSF_EVENT_SEMAPHORE_COUNTING_CREATE, (void*)pxHandle, &quot;&quot;</span>, uxCountValue)</div>
+<div class="line"><a id="l02407" name="l02407"></a><span class="lineno"> 2407</span><span class="preprocessor">    (void)xTraceObjectRegisterWithoutHandle(PSF_EVENT_SEMAPHORE_COUNTING_CREATE, (void*)pxHandle, &quot;&quot;</span>, uxCountValue)</div>
 <div class="line"><a id="l02408" name="l02408"></a><span class="lineno"> 2408</span> </div>
 <div class="line"><a id="l02409" name="l02409"></a><span class="lineno"> 2409</span><span class="preprocessor">#endif</span></div>
 <div class="line"><a id="l02410" name="l02410"></a><span class="lineno"> 2410</span> </div>
@@ -2121,10 +2121,10 @@ $(document).ready(function(){initNavTree('FreeRTOS_2include_2trcKernelPort_8h_so
 <div class="line"><a id="l02441" name="l02441"></a><span class="lineno"> 2441</span><span class="preprocessor">    switch (pxNewQueue-&gt;ucQueueType) \</span></div>
 <div class="line"><a id="l02442" name="l02442"></a><span class="lineno"> 2442</span><span class="preprocessor">    { \</span></div>
 <div class="line"><a id="l02443" name="l02443"></a><span class="lineno"> 2443</span><span class="preprocessor">        case queueQUEUE_TYPE_MUTEX: \</span></div>
-<div class="line"><a id="l02444" name="l02444"></a><span class="lineno"> 2444</span><span class="preprocessor">            xTraceObjectRegisterWithoutHandle(PSF_EVENT_MUTEX_CREATE, (void*)(pxNewQueue), &quot;&quot;</span>, 0); \</div>
+<div class="line"><a id="l02444" name="l02444"></a><span class="lineno"> 2444</span><span class="preprocessor">            (void)xTraceObjectRegisterWithoutHandle(PSF_EVENT_MUTEX_CREATE, (void*)(pxNewQueue), &quot;&quot;</span>, 0); \</div>
 <div class="line"><a id="l02445" name="l02445"></a><span class="lineno"> 2445</span>            break; \</div>
 <div class="line"><a id="l02446" name="l02446"></a><span class="lineno"> 2446</span>        case queueQUEUE_TYPE_RECURSIVE_MUTEX: \</div>
-<div class="line"><a id="l02447" name="l02447"></a><span class="lineno"> 2447</span>            xTraceObjectRegisterWithoutHandle(PSF_EVENT_MUTEX_RECURSIVE_CREATE, (void*)(pxNewQueue), &quot;&quot;, 0); \</div>
+<div class="line"><a id="l02447" name="l02447"></a><span class="lineno"> 2447</span>            (void)xTraceObjectRegisterWithoutHandle(PSF_EVENT_MUTEX_RECURSIVE_CREATE, (void*)(pxNewQueue), &quot;&quot;, 0); \</div>
 <div class="line"><a id="l02448" name="l02448"></a><span class="lineno"> 2448</span>            break; \</div>
 <div class="line"><a id="l02449" name="l02449"></a><span class="lineno"> 2449</span>    }</div>
 <div class="line"><a id="l02450" name="l02450"></a><span class="lineno"> 2450</span> </div>
@@ -2390,7 +2390,7 @@ $(document).ready(function(){initNavTree('FreeRTOS_2include_2trcKernelPort_8h_so
 <div class="line"><a id="l02710" name="l02710"></a><span class="lineno"> 2710</span><span class="comment">/* Called in vTaskPrioritySet */</span></div>
 <div class="line"><a id="l02711" name="l02711"></a><span class="lineno"> 2711</span><span class="preprocessor">#undef traceTASK_PRIORITY_SET</span></div>
 <div class="line"><a id="l02712" name="l02712"></a><span class="lineno"> 2712</span><span class="preprocessor">#define traceTASK_PRIORITY_SET( pxTask, uxNewPriority ) \</span></div>
-<div class="line"><a id="l02713" name="l02713"></a><span class="lineno"> 2713</span><span class="preprocessor">    xTraceTaskSetPriorityWithoutHandle(pxTask, uxNewPriority)</span></div>
+<div class="line"><a id="l02713" name="l02713"></a><span class="lineno"> 2713</span><span class="preprocessor">    (void)xTraceTaskSetPriorityWithoutHandle(pxTask, uxNewPriority)</span></div>
 <div class="line"><a id="l02714" name="l02714"></a><span class="lineno"> 2714</span>    </div>
 <div class="line"><a id="l02715" name="l02715"></a><span class="lineno"> 2715</span><span class="comment">/* Called in vTaskPriorityInherit, which is called by Mutex operations */</span></div>
 <div class="line"><a id="l02716" name="l02716"></a><span class="lineno"> 2716</span><span class="preprocessor">#undef traceTASK_PRIORITY_INHERIT</span></div>
@@ -2418,14 +2418,14 @@ $(document).ready(function(){initNavTree('FreeRTOS_2include_2trcKernelPort_8h_so
 <div class="line"><a id="l02738" name="l02738"></a><span class="lineno"> 2738</span><span class="preprocessor">#define traceMALLOC( pvAddress, uiSize ) \</span></div>
 <div class="line"><a id="l02739" name="l02739"></a><span class="lineno"> 2739</span><span class="preprocessor">    if (xTraceIsRecorderEnabled()) \</span></div>
 <div class="line"><a id="l02740" name="l02740"></a><span class="lineno"> 2740</span><span class="preprocessor">    { \</span></div>
-<div class="line"><a id="l02741" name="l02741"></a><span class="lineno"> 2741</span><span class="preprocessor">        xTraceHeapAlloc(xTraceKernelPortGetSystemHeapHandle(), pvAddress, uiSize); \</span></div>
+<div class="line"><a id="l02741" name="l02741"></a><span class="lineno"> 2741</span><span class="preprocessor">        (void)xTraceHeapAlloc(xTraceKernelPortGetSystemHeapHandle(), pvAddress, uiSize); \</span></div>
 <div class="line"><a id="l02742" name="l02742"></a><span class="lineno"> 2742</span><span class="preprocessor">    }</span></div>
 <div class="line"><a id="l02743" name="l02743"></a><span class="lineno"> 2743</span> </div>
 <div class="line"><a id="l02744" name="l02744"></a><span class="lineno"> 2744</span><span class="preprocessor">#undef traceFREE</span></div>
 <div class="line"><a id="l02745" name="l02745"></a><span class="lineno"> 2745</span><span class="preprocessor">#define traceFREE( pvAddress, uiSize ) \</span></div>
 <div class="line"><a id="l02746" name="l02746"></a><span class="lineno"> 2746</span><span class="preprocessor">    if (xTraceIsRecorderEnabled()) \</span></div>
 <div class="line"><a id="l02747" name="l02747"></a><span class="lineno"> 2747</span><span class="preprocessor">    { \</span></div>
-<div class="line"><a id="l02748" name="l02748"></a><span class="lineno"> 2748</span><span class="preprocessor">        xTraceHeapFree(xTraceKernelPortGetSystemHeapHandle(), pvAddress, uiSize); \</span></div>
+<div class="line"><a id="l02748" name="l02748"></a><span class="lineno"> 2748</span><span class="preprocessor">        (void)xTraceHeapFree(xTraceKernelPortGetSystemHeapHandle(), pvAddress, uiSize); \</span></div>
 <div class="line"><a id="l02749" name="l02749"></a><span class="lineno"> 2749</span><span class="preprocessor">    }</span></div>
 <div class="line"><a id="l02750" name="l02750"></a><span class="lineno"> 2750</span> </div>
 <div class="line"><a id="l02751" name="l02751"></a><span class="lineno"> 2751</span><span class="preprocessor">#endif</span></div>
@@ -2435,7 +2435,7 @@ $(document).ready(function(){initNavTree('FreeRTOS_2include_2trcKernelPort_8h_so
 <div class="line"><a id="l02755" name="l02755"></a><span class="lineno"> 2755</span><span class="comment">/* Called in timer.c - xTimerCreate */</span></div>
 <div class="line"><a id="l02756" name="l02756"></a><span class="lineno"> 2756</span><span class="preprocessor">#undef traceTIMER_CREATE</span></div>
 <div class="line"><a id="l02757" name="l02757"></a><span class="lineno"> 2757</span><span class="preprocessor">#define traceTIMER_CREATE(tmr) \</span></div>
-<div class="line"><a id="l02758" name="l02758"></a><span class="lineno"> 2758</span><span class="preprocessor">    xTraceObjectRegisterWithoutHandle(PSF_EVENT_TIMER_CREATE, (void*)(tmr), (const char*)(tmr)-&gt;pcTimerName, (uint32_t)(tmr)-&gt;xTimerPeriodInTicks)</span></div>
+<div class="line"><a id="l02758" name="l02758"></a><span class="lineno"> 2758</span><span class="preprocessor">    (void)xTraceObjectRegisterWithoutHandle(PSF_EVENT_TIMER_CREATE, (void*)(tmr), (const char*)(tmr)-&gt;pcTimerName, (uint32_t)(tmr)-&gt;xTimerPeriodInTicks)</span></div>
 <div class="line"><a id="l02759" name="l02759"></a><span class="lineno"> 2759</span> </div>
 <div class="line"><a id="l02760" name="l02760"></a><span class="lineno"> 2760</span><span class="preprocessor">#undef traceTIMER_CREATE_FAILED</span></div>
 <div class="line"><a id="l02761" name="l02761"></a><span class="lineno"> 2761</span><span class="preprocessor">#define traceTIMER_CREATE_FAILED() \</span></div>
@@ -2480,7 +2480,7 @@ $(document).ready(function(){initNavTree('FreeRTOS_2include_2trcKernelPort_8h_so
 <div class="line"><a id="l02800" name="l02800"></a><span class="lineno"> 2800</span><span class="preprocessor">            prvTraceStoreEvent_HandleParam(((xReturn) == pdPASS) ? PSF_EVENT_TIMER_CHANGEPERIOD : PSF_EVENT_TIMER_CHANGEPERIOD_FAILED, (void*)(tmr), xOptionalValue); \</span></div>
 <div class="line"><a id="l02801" name="l02801"></a><span class="lineno"> 2801</span><span class="preprocessor">            break; \</span></div>
 <div class="line"><a id="l02802" name="l02802"></a><span class="lineno"> 2802</span><span class="preprocessor">        case tmrCOMMAND_DELETE: \</span></div>
-<div class="line"><a id="l02803" name="l02803"></a><span class="lineno"> 2803</span><span class="preprocessor">            xTraceObjectUnregisterWithoutHandle(((xReturn) == pdPASS) ? PSF_EVENT_TIMER_DELETE : PSF_EVENT_TIMER_DELETE_FAILED, (void*)(tmr), 0); \</span></div>
+<div class="line"><a id="l02803" name="l02803"></a><span class="lineno"> 2803</span><span class="preprocessor">            (void)xTraceObjectUnregisterWithoutHandle(((xReturn) == pdPASS) ? PSF_EVENT_TIMER_DELETE : PSF_EVENT_TIMER_DELETE_FAILED, (void*)(tmr), 0); \</span></div>
 <div class="line"><a id="l02804" name="l02804"></a><span class="lineno"> 2804</span><span class="preprocessor">            break; \</span></div>
 <div class="line"><a id="l02805" name="l02805"></a><span class="lineno"> 2805</span><span class="preprocessor">        traceTIMER_COMMAND_SEND_8_0_CASES(tmr) \</span></div>
 <div class="line"><a id="l02806" name="l02806"></a><span class="lineno"> 2806</span><span class="preprocessor">    }</span></div>
@@ -2509,19 +2509,19 @@ $(document).ready(function(){initNavTree('FreeRTOS_2include_2trcKernelPort_8h_so
 <div class="line"><a id="l02829" name="l02829"></a><span class="lineno"> 2829</span><span class="preprocessor">#if (TRC_CFG_FREERTOS_VERSION &gt;= TRC_FREERTOS_VERSION_10_1_0)</span></div>
 <div class="line"><a id="l02830" name="l02830"></a><span class="lineno"> 2830</span><span class="preprocessor">#undef traceEVENT_GROUP_CREATE</span></div>
 <div class="line"><a id="l02831" name="l02831"></a><span class="lineno"> 2831</span><span class="preprocessor">#define traceEVENT_GROUP_CREATE(eg)  \</span></div>
-<div class="line"><a id="l02832" name="l02832"></a><span class="lineno"> 2832</span><span class="preprocessor">    xTraceObjectRegisterWithoutHandle(PSF_EVENT_EVENTGROUP_CREATE, (void*)(eg), 0, (uint32_t)(eg)-&gt;uxEventBits)</span></div>
+<div class="line"><a id="l02832" name="l02832"></a><span class="lineno"> 2832</span><span class="preprocessor">    (void)xTraceObjectRegisterWithoutHandle(PSF_EVENT_EVENTGROUP_CREATE, (void*)(eg), 0, (uint32_t)(eg)-&gt;uxEventBits)</span></div>
 <div class="line"><a id="l02833" name="l02833"></a><span class="lineno"> 2833</span> </div>
 <div class="line"><a id="l02834" name="l02834"></a><span class="lineno"> 2834</span><span class="preprocessor">#undef traceEVENT_GROUP_DELETE</span></div>
 <div class="line"><a id="l02835" name="l02835"></a><span class="lineno"> 2835</span><span class="preprocessor">#define traceEVENT_GROUP_DELETE(eg) \</span></div>
-<div class="line"><a id="l02836" name="l02836"></a><span class="lineno"> 2836</span><span class="preprocessor">    xTraceObjectUnregisterWithoutHandle(PSF_EVENT_EVENTGROUP_DELETE, (void*)(eg), (uint32_t)(eg)-&gt;uxEventBits)</span></div>
+<div class="line"><a id="l02836" name="l02836"></a><span class="lineno"> 2836</span><span class="preprocessor">    (void)xTraceObjectUnregisterWithoutHandle(PSF_EVENT_EVENTGROUP_DELETE, (void*)(eg), (uint32_t)(eg)-&gt;uxEventBits)</span></div>
 <div class="line"><a id="l02837" name="l02837"></a><span class="lineno"> 2837</span><span class="preprocessor">#else</span></div>
 <div class="line"><a id="l02838" name="l02838"></a><span class="lineno"> 2838</span><span class="preprocessor">#undef traceEVENT_GROUP_CREATE</span></div>
 <div class="line"><a id="l02839" name="l02839"></a><span class="lineno"> 2839</span><span class="preprocessor">#define traceEVENT_GROUP_CREATE(eg)  \</span></div>
-<div class="line"><a id="l02840" name="l02840"></a><span class="lineno"> 2840</span><span class="preprocessor">    xTraceObjectRegisterWithoutHandle(PSF_EVENT_EVENTGROUP_CREATE, (void*)(eg), 0, ((EventGroup_t *)(eg))-&gt;uxEventBits)</span></div>
+<div class="line"><a id="l02840" name="l02840"></a><span class="lineno"> 2840</span><span class="preprocessor">    (void)xTraceObjectRegisterWithoutHandle(PSF_EVENT_EVENTGROUP_CREATE, (void*)(eg), 0, ((EventGroup_t *)(eg))-&gt;uxEventBits)</span></div>
 <div class="line"><a id="l02841" name="l02841"></a><span class="lineno"> 2841</span> </div>
 <div class="line"><a id="l02842" name="l02842"></a><span class="lineno"> 2842</span><span class="preprocessor">#undef traceEVENT_GROUP_DELETE</span></div>
 <div class="line"><a id="l02843" name="l02843"></a><span class="lineno"> 2843</span><span class="preprocessor">#define traceEVENT_GROUP_DELETE(eg) \</span></div>
-<div class="line"><a id="l02844" name="l02844"></a><span class="lineno"> 2844</span><span class="preprocessor">    xTraceObjectUnregisterWithoutHandle(PSF_EVENT_EVENTGROUP_DELETE, (void*)(eg), ((EventGroup_t *)(eg))-&gt;uxEventBits)</span></div>
+<div class="line"><a id="l02844" name="l02844"></a><span class="lineno"> 2844</span><span class="preprocessor">    (void)xTraceObjectUnregisterWithoutHandle(PSF_EVENT_EVENTGROUP_DELETE, (void*)(eg), ((EventGroup_t *)(eg))-&gt;uxEventBits)</span></div>
 <div class="line"><a id="l02845" name="l02845"></a><span class="lineno"> 2845</span><span class="preprocessor">#endif</span></div>
 <div class="line"><a id="l02846" name="l02846"></a><span class="lineno"> 2846</span> </div>
 <div class="line"><a id="l02847" name="l02847"></a><span class="lineno"> 2847</span><span class="preprocessor">#undef traceEVENT_GROUP_CREATE_FAILED</span></div>
@@ -2633,13 +2633,13 @@ $(document).ready(function(){initNavTree('FreeRTOS_2include_2trcKernelPort_8h_so
 <div class="line"><a id="l02953" name="l02953"></a><span class="lineno"> 2953</span> </div>
 <div class="line"><a id="l02954" name="l02954"></a><span class="lineno"> 2954</span><span class="preprocessor">#undef traceQUEUE_REGISTRY_ADD</span></div>
 <div class="line"><a id="l02955" name="l02955"></a><span class="lineno"> 2955</span><span class="preprocessor">#define traceQUEUE_REGISTRY_ADD(object, name) \</span></div>
-<div class="line"><a id="l02956" name="l02956"></a><span class="lineno"> 2956</span><span class="preprocessor">    xTraceObjectSetNameWithoutHandle(object, (const char*)(name));</span></div>
+<div class="line"><a id="l02956" name="l02956"></a><span class="lineno"> 2956</span><span class="preprocessor">    (void)xTraceObjectSetNameWithoutHandle(object, (const char*)(name));</span></div>
 <div class="line"><a id="l02957" name="l02957"></a><span class="lineno"> 2957</span> </div>
 <div class="line"><a id="l02958" name="l02958"></a><span class="lineno"> 2958</span><span class="preprocessor">#if (TRC_CFG_INCLUDE_STREAM_BUFFER_EVENTS == 1)</span></div>
 <div class="line"><a id="l02959" name="l02959"></a><span class="lineno"> 2959</span> </div>
 <div class="line"><a id="l02960" name="l02960"></a><span class="lineno"> 2960</span><span class="preprocessor">#undef traceSTREAM_BUFFER_CREATE</span></div>
 <div class="line"><a id="l02961" name="l02961"></a><span class="lineno"> 2961</span><span class="preprocessor">#define traceSTREAM_BUFFER_CREATE( pxStreamBuffer, xIsMessageBuffer ) \</span></div>
-<div class="line"><a id="l02962" name="l02962"></a><span class="lineno"> 2962</span><span class="preprocessor">    xTraceObjectRegisterWithoutHandle((xIsMessageBuffer) == 1 ? PSF_EVENT_MESSAGEBUFFER_CREATE : PSF_EVENT_STREAMBUFFER_CREATE, (void*)(pxStreamBuffer), &quot;&quot;</span>, (uint32_t)xBufferSizeBytes)</div>
+<div class="line"><a id="l02962" name="l02962"></a><span class="lineno"> 2962</span><span class="preprocessor">    (void)xTraceObjectRegisterWithoutHandle((xIsMessageBuffer) == 1 ? PSF_EVENT_MESSAGEBUFFER_CREATE : PSF_EVENT_STREAMBUFFER_CREATE, (void*)(pxStreamBuffer), &quot;&quot;</span>, (uint32_t)xBufferSizeBytes)</div>
 <div class="line"><a id="l02963" name="l02963"></a><span class="lineno"> 2963</span> </div>
 <div class="line"><a id="l02964" name="l02964"></a><span class="lineno"> 2964</span><span class="preprocessor">#undef traceSTREAM_BUFFER_CREATE_FAILED</span></div>
 <div class="line"><a id="l02965" name="l02965"></a><span class="lineno"> 2965</span><span class="preprocessor">#define traceSTREAM_BUFFER_CREATE_FAILED( xIsMessageBuffer ) \</span></div>
@@ -2651,7 +2651,7 @@ $(document).ready(function(){initNavTree('FreeRTOS_2include_2trcKernelPort_8h_so
 <div class="line"><a id="l02971" name="l02971"></a><span class="lineno"> 2971</span> </div>
 <div class="line"><a id="l02972" name="l02972"></a><span class="lineno"> 2972</span><span class="preprocessor">#undef traceSTREAM_BUFFER_DELETE</span></div>
 <div class="line"><a id="l02973" name="l02973"></a><span class="lineno"> 2973</span><span class="preprocessor">#define traceSTREAM_BUFFER_DELETE( xStreamBuffer ) \</span></div>
-<div class="line"><a id="l02974" name="l02974"></a><span class="lineno"> 2974</span><span class="preprocessor">    xTraceObjectUnregisterWithoutHandle(prvGetStreamBufferType(xStreamBuffer) &gt; 0 ? PSF_EVENT_MESSAGEBUFFER_DELETE : PSF_EVENT_STREAMBUFFER_DELETE, (void*)(xStreamBuffer), prvBytesInBuffer(xStreamBuffer));</span></div>
+<div class="line"><a id="l02974" name="l02974"></a><span class="lineno"> 2974</span><span class="preprocessor">    (void)xTraceObjectUnregisterWithoutHandle(prvGetStreamBufferType(xStreamBuffer) &gt; 0 ? PSF_EVENT_MESSAGEBUFFER_DELETE : PSF_EVENT_STREAMBUFFER_DELETE, (void*)(xStreamBuffer), prvBytesInBuffer(xStreamBuffer));</span></div>
 <div class="line"><a id="l02975" name="l02975"></a><span class="lineno"> 2975</span> </div>
 <div class="line"><a id="l02976" name="l02976"></a><span class="lineno"> 2976</span><span class="preprocessor">#undef traceSTREAM_BUFFER_RESET</span></div>
 <div class="line"><a id="l02977" name="l02977"></a><span class="lineno"> 2977</span><span class="preprocessor">#define traceSTREAM_BUFFER_RESET( xStreamBuffer ) \</span></div>

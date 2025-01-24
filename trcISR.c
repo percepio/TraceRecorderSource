@@ -1,5 +1,5 @@
 /*
-* Percepio Trace Recorder for Tracealyzer v4.10.2
+* Percepio Trace Recorder for Tracealyzer v4.10.3
 * Copyright 2023 Percepio AB
 * www.percepio.com
 *
@@ -38,7 +38,7 @@ traceResult xTraceISRInitialize(TraceISRData_t *pxBuffer)
 		pxCoreData->isPendingContextSwitch = 0u;
 	}
 	
-	xTraceSetComponentInitialized(TRC_RECORDER_COMPONENT_ISR);
+	(void)xTraceSetComponentInitialized(TRC_RECORDER_COMPONENT_ISR);
 
 	return TRC_SUCCESS;
 }

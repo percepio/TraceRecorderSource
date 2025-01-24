@@ -25,7 +25,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">Percepio Trace Recorder<span id="projectnumber">&#160;v4.10.2</span>
+   <div id="projectname">Percepio Trace Recorder<span id="projectnumber">&#160;v4.10.3</span>
    </div>
   </td>
  </tr>
@@ -93,7 +93,7 @@ $(document).ready(function(){initNavTree('trcTask_8h_source.html',''); initResiz
 </div><!--header-->
 <div class="contents">
 <a href="trcTask_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="comment">/*</span></div>
-<div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span><span class="comment">* Percepio Trace Recorder for Tracealyzer v4.10.2</span></div>
+<div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span><span class="comment">* Percepio Trace Recorder for Tracealyzer v4.10.3</span></div>
 <div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span><span class="comment">* Copyright 2023 Percepio AB</span></div>
 <div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span><span class="comment">* www.percepio.com</span></div>
 <div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span><span class="comment">*</span></div>
@@ -124,7 +124,7 @@ $(document).ready(function(){initNavTree('trcTask_8h_source.html',''); initResiz
 <div class="line"><a id="l00045" name="l00045"></a><span class="lineno">   45</span> </div>
 <div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span>traceResult xTraceTaskInitialize(TraceTaskData_t* pxBuffer);</div>
 <div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span> </div>
-<div class="line"><a id="l00068" name="l00068"></a><span class="lineno"><a class="line" href="group__trace__task__apis.html#ga29f9e9e93c05081cdef7a555beaf2205">   68</a></span><span class="preprocessor">#define xTraceTaskRegister(pvTask, szName, uxPriority, pxTaskHandle) ((((pvTask) != 0) &amp;&amp; (xTraceObjectRegister(PSF_EVENT_TASK_CREATE, pvTask, szName, uxPriority, (TraceObjectHandle_t*)(pxTaskHandle)) == TRC_SUCCESS)) ? (xTraceStackMonitorAdd(pvTask), TRC_SUCCESS) : TRC_FAIL)</span></div>
+<div class="line"><a id="l00068" name="l00068"></a><span class="lineno"><a class="line" href="group__trace__task__apis.html#ga29f9e9e93c05081cdef7a555beaf2205">   68</a></span><span class="preprocessor">#define xTraceTaskRegister(pvTask, szName, uxPriority, pxTaskHandle) ((((pvTask) != 0) &amp;&amp; (xTraceObjectRegister(PSF_EVENT_TASK_CREATE, pvTask, szName, uxPriority, (TraceObjectHandle_t*)(pxTaskHandle)) == TRC_SUCCESS)) ? ((void)xTraceStackMonitorAdd(pvTask), TRC_SUCCESS) : TRC_FAIL)</span></div>
 <div class="line"><a id="l00069" name="l00069"></a><span class="lineno">   69</span> </div>
 <div class="line"><a id="l00079" name="l00079"></a><span class="lineno"><a class="line" href="group__trace__task__apis.html#ga182deca6445d8703089a28dfe6206950">   79</a></span><span class="preprocessor">#define xTraceTaskUnregister(xTaskHandle, uxPriority) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_2((void)xTraceStackMonitorRemove(xTraceEntryGetAddressReturn((TraceEntryHandle_t)(xTaskHandle))), xTraceObjectUnregister((TraceObjectHandle_t)(xTaskHandle), PSF_EVENT_TASK_DELETE, uxPriority))</span></div>
 <div class="line"><a id="l00080" name="l00080"></a><span class="lineno">   80</span> </div>
@@ -132,7 +132,7 @@ $(document).ready(function(){initNavTree('trcTask_8h_source.html',''); initResiz
 <div class="line"><a id="l00091" name="l00091"></a><span class="lineno">   91</span> </div>
 <div class="line"><a id="l00101" name="l00101"></a><span class="lineno">  101</span>traceResult <a class="code hl_function" href="group__trace__task__apis.html#ga3ba2b866e34a2d0ba076feb11f5488bf">xTraceTaskSetPriority</a>(TraceTaskHandle_t xTaskHandle, TraceUnsignedBaseType_t uxPriority);</div>
 <div class="line"><a id="l00102" name="l00102"></a><span class="lineno">  102</span> </div>
-<div class="line"><a id="l00113" name="l00113"></a><span class="lineno"><a class="line" href="group__trace__task__apis.html#ga8ea2a55eb73dbc50150f337fa1e88666">  113</a></span><span class="preprocessor">#define xTraceTaskRegisterWithoutHandle(pvTask, szName, uxPriority) ((((pvTask) != 0) &amp;&amp; (xTraceObjectRegisterWithoutHandle(PSF_EVENT_TASK_CREATE, pvTask, szName, uxPriority) == TRC_SUCCESS)) ? (xTraceStackMonitorAdd(pvTask), TRC_SUCCESS) : TRC_FAIL)</span></div>
+<div class="line"><a id="l00113" name="l00113"></a><span class="lineno"><a class="line" href="group__trace__task__apis.html#ga8ea2a55eb73dbc50150f337fa1e88666">  113</a></span><span class="preprocessor">#define xTraceTaskRegisterWithoutHandle(pvTask, szName, uxPriority) ((((pvTask) != 0) &amp;&amp; (xTraceObjectRegisterWithoutHandle(PSF_EVENT_TASK_CREATE, pvTask, szName, uxPriority) == TRC_SUCCESS)) ? ((void)xTraceStackMonitorAdd(pvTask), TRC_SUCCESS) : TRC_FAIL)</span></div>
 <div class="line"><a id="l00114" name="l00114"></a><span class="lineno">  114</span> </div>
 <div class="line"><a id="l00124" name="l00124"></a><span class="lineno"><a class="line" href="group__trace__task__apis.html#ga41fcd9011bf48e5892a0b19928899bc0">  124</a></span><span class="preprocessor">#define xTraceTaskUnregisterWithoutHandle(pvTask, uxPriority) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_2((void)xTraceStackMonitorRemove(pvTask), xTraceObjectUnregisterWithoutHandle(PSF_EVENT_TASK_DELETE, pvTask, uxPriority))</span></div>
 <div class="line"><a id="l00125" name="l00125"></a><span class="lineno">  125</span> </div>

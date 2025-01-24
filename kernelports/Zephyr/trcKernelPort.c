@@ -1,5 +1,5 @@
 /*
- * Trace Recorder for Tracealyzer v4.10.2
+ * Trace Recorder for Tracealyzer v4.10.3
  * Copyright 2023 Percepio AB
  * www.percepio.com
  *
@@ -1231,6 +1231,52 @@ void sys_trace_k_pipe_get_blocking(struct k_pipe *pipe, void *data, size_t bytes
 
 void sys_trace_k_pipe_get_exit(struct k_pipe *pipe, void *data, size_t bytes_to_read, size_t *bytes_read, size_t min_xfer, k_timeout_t timeout, int ret) {
 	(void)xTraceEventCreate2(ret == 0 ? PSF_EVENT_PIPE_GET_SUCCESS : PSF_EVENT_PIPE_GET_TIMEOUT, (TraceUnsignedBaseType_t)pipe, (TraceUnsignedBaseType_t)ret);
+}
+
+void sys_trace_k_pipe_reset_enter(struct k_pipe *pipe)
+{
+}
+
+void sys_trace_k_pipe_reset_exit(struct k_pipe *pipe)
+{
+	(void)xTraceEventCreate1(PSF_EVENT_PIPE_RESET, (TraceUnsignedBaseType_t)pipe);
+}
+
+void sys_trace_k_pipe_close_enter(struct k_pipe *pipe)
+{
+}
+
+void sys_trace_k_pipe_close_exit(struct k_pipe *pipe)
+{
+	(void)xTraceEventCreate1(PSF_EVENT_PIPE_CLOSE, (TraceUnsignedBaseType_t)pipe);
+}
+
+void sys_trace_k_pipe_write_enter(struct k_pipe *pipe, void *data, size_t bytes_to_write, k_timeout_t timeout)
+{
+}
+
+void sys_trace_k_pipe_write_blocking(struct k_pipe *pipe, k_timeout_t timeout)
+{
+	(void)xTraceEventCreate2(PSF_EVENT_PIPE_WRITE_BLOCKING, (TraceUnsignedBaseType_t)pipe, (TraceUnsignedBaseType_t)timeout.ticks);
+}
+
+void sys_trace_k_pipe_write_exit(struct k_pipe *pipe, k_timeout_t timeout, int ret)
+{
+	(void)xTraceEventCreate2(ret >= 0 ? PSF_EVENT_PIPE_WRITE_SUCCESS : PSF_EVENT_PIPE_WRITE_TIMEOUT, (TraceUnsignedBaseType_t)pipe, (TraceUnsignedBaseType_t)timeout.ticks);
+}
+
+void sys_trace_k_pipe_read_enter(struct k_pipe *pipe, void *data, size_t bytes_to_read, k_timeout_t timeout)
+{
+}
+
+void sys_trace_k_pipe_read_blocking(struct k_pipe *pipe, k_timeout_t timeout)
+{
+	(void)xTraceEventCreate2(PSF_EVENT_PIPE_READ_BLOCKING, (TraceUnsignedBaseType_t)pipe, (TraceUnsignedBaseType_t)timeout.ticks);
+}
+
+void sys_trace_k_pipe_read_exit(struct k_pipe *pipe, k_timeout_t timeout, int ret)
+{
+	(void)xTraceEventCreate2(ret >= 0 ? PSF_EVENT_PIPE_READ_SUCCESS : PSF_EVENT_PIPE_READ_TIMEOUT, (TraceUnsignedBaseType_t)pipe, (TraceUnsignedBaseType_t)timeout.ticks);
 }
 
 /* Memory heap trace function definitions */

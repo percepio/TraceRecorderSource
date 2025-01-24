@@ -1,5 +1,5 @@
 /*
- * Trace Recorder for Tracealyzer v4.10.2
+ * Trace Recorder for Tracealyzer v4.10.3
  * Copyright 2023 Percepio AB
  * www.percepio.com
  *
@@ -35,7 +35,7 @@ traceResult xTraceInternalEventBufferInitialize(uint8_t* puiBuffer, uint32_t uiS
 		return TRC_FAIL;
 	}
 
-	xTraceSetComponentInitialized(TRC_RECORDER_COMPONENT_INTERNAL_EVENT_BUFFER);
+	(void)xTraceSetComponentInitialized(TRC_RECORDER_COMPONENT_INTERNAL_EVENT_BUFFER);
 
 	return TRC_SUCCESS;
 }

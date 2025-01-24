@@ -1,5 +1,5 @@
 /*
-* Percepio Trace Recorder for Tracealyzer v4.10.2
+* Percepio Trace Recorder for Tracealyzer v4.10.3
 * Copyright 2023 Percepio AB
 * www.percepio.com
 *
@@ -28,7 +28,7 @@ traceResult xTracePrintInitialize(TracePrintData_t *pxBuffer)
 	pxPrintData->defaultChannel = 0;
 	pxPrintData->consoleChannel = 0;
 
-	xTraceSetComponentInitialized(TRC_RECORDER_COMPONENT_PRINT);
+	(void)xTraceSetComponentInitialized(TRC_RECORDER_COMPONENT_PRINT);
 	
 	return TRC_SUCCESS;
 }

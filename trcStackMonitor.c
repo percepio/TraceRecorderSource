@@ -1,5 +1,5 @@
 /*
-* Percepio Trace Recorder for Tracealyzer v4.10.2
+* Percepio Trace Recorder for Tracealyzer v4.10.3
 * Copyright 2023 Percepio AB
 * www.percepio.com
 *
@@ -34,7 +34,7 @@ traceResult xTraceStackMonitorInitialize(TraceStackMonitorData_t *pxBuffer)
 		pxStackMonitor->xEntries[i].pvTask = 0;
 	}
 	
-	xTraceSetComponentInitialized(TRC_RECORDER_COMPONENT_STACK_MONITOR);
+	(void)xTraceSetComponentInitialized(TRC_RECORDER_COMPONENT_STACK_MONITOR);
 
 	return TRC_SUCCESS;
 }

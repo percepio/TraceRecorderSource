@@ -1,5 +1,5 @@
 /*
-* Percepio Trace Recorder for Tracealyzer v4.10.2
+* Percepio Trace Recorder for Tracealyzer v4.10.3
 * Copyright 2023 Percepio AB
 * www.percepio.com
 *
@@ -42,7 +42,7 @@
 	( \
 		(pxEvent)->EventID = TRC_EVENT_SET_PARAM_COUNT(eventId, paramCount), \
 		(pxEvent)->EventCount = TRC_EVENT_SET_EVENT_COUNT(eventCount), \
-		xTraceTimestampGet(&(pxEvent)->TS) \
+		(void)xTraceTimestampGet(&(pxEvent)->TS) \
 	)
 
 #define TRACE_EVENT_BEGIN_OFFLINE(size) 														\
@@ -65,10 +65,10 @@
 
 
 #define TRACE_EVENT_END(size) 															\
-	(void)xTraceStreamPortCommit(pxEventData, (uint32_t)(size), &iBytesCommitted); 					\
+	(void)xTraceStreamPortCommit(pxEventData, (uint32_t)(size), &iBytesCommitted); 		\
 	TRACE_EXIT_CRITICAL_SECTION(); 														\
-	/* We need to use iBytesCommitted for the above call but do not use the value, 		\
-	 * remove potential warnings */ 													\
+	/* We need to use iBytesCommitted for the above call but do not use the value */	\
+	/* Remove potential warnings */ 													\
 	(void)iBytesCommitted;
 
 #define TRACE_EVENT_ADD_1(__p1)									\
@@ -137,7 +137,7 @@ traceResult xTraceEventInitialize(TraceEventDataTable_t* pxBuffer)
 		pxTraceEventDataTable->coreEventData[i].eventCounter = 0u;
 	}
 
-	xTraceSetComponentInitialized(TRC_RECORDER_COMPONENT_EVENT);
+	(void)xTraceSetComponentInitialized(TRC_RECORDER_COMPONENT_EVENT);
 
 	return TRC_SUCCESS;
 }

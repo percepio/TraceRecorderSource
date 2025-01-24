@@ -1,5 +1,5 @@
 /*
-* Percepio Trace Recorder for Tracealyzer v4.10.2
+* Percepio Trace Recorder for Tracealyzer v4.10.3
 * Copyright 2023 Percepio AB
 * www.percepio.com
 *
@@ -21,7 +21,7 @@ traceResult xTraceStaticBufferInitialize(TraceStaticBufferTable_t *pxBuffer)
 
 	pxTraceStaticBufferTable = pxBuffer;
 
-	xTraceSetComponentInitialized(TRC_RECORDER_COMPONENT_STATIC_BUFFER);
+	(void)xTraceSetComponentInitialized(TRC_RECORDER_COMPONENT_STATIC_BUFFER);
 	
 	return TRC_SUCCESS;
 }

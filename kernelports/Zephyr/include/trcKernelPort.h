@@ -1,5 +1,5 @@
 /*
- * Trace Recorder for Tracealyzer v4.10.2
+ * Trace Recorder for Tracealyzer v4.10.3
  * Copyright 2023 Percepio AB
  * www.percepio.com
  *
@@ -37,19 +37,19 @@ extern "C" {
  * @def TRC_PLATFORM_CFG_MAJOR
  * @brief Major release version for recorder.
  */
-#define TRC_PLATFORM_CFG_MAJOR 3
+#define TRC_PLATFORM_CFG_MAJOR 4
 
 /**
  * @def TRC_PLATFORM_CFG_MINOR
  * @brief Minor release version for recorder.
  */
-#define TRC_PLATFORM_CFG_MINOR 3
+#define TRC_PLATFORM_CFG_MINOR 1
 
 /**
  * @def TRC_PLATFORM_CFG_PATCH
  * @brief Patchlevel release version for recorder.
  */
-#define TRC_PLATFORM_CFG_PATCH 1
+#define TRC_PLATFORM_CFG_PATCH 0
 
 /**
  * @def TRC_TICK_RATE_HZ
@@ -603,8 +603,8 @@ void vTraceSetTimerName(void* object, const char* name);
 #define PSF_EVENT_PIPE_GET_SUCCESS							0xAD
 #define PSF_EVENT_PIPE_GET_BLOCKING							0xAE
 #define PSF_EVENT_PIPE_GET_TIMEOUT							0xAF
-#define PSF_EVENT_PIPE_BLOCK_PUT_ENTER_DEPRECATED				0xDA
-#define PSF_EVENT_PIPE_BLOCK_PUT_EXIT_DEPRECATED				0xED
+#define PSF_EVENT_PIPE_BLOCK_PUT_ENTER_DEPRECATED			0xDA
+#define PSF_EVENT_PIPE_BLOCK_PUT_EXIT_DEPRECATED			0xED
 
 #define PSF_EVENT_MESSAGEQUEUE_INIT                 		0x1A
 #define PSF_EVENT_MESSAGEQUEUE_ALLOC_INIT_SUCCESS			0x1E
@@ -631,9 +631,9 @@ void vTraceSetTimerName(void* object, const char* name);
 
 #define PSF_EVENT_KHEAP_ALIGNED_ALLOC_SUCCESS               0x84
 #define PSF_EVENT_KHEAP_ALIGNED_ALLOC_SUCCESS_BLOCKED      0x16B
-#define PSF_EVENT_KHEAP_ALIGNED_ALLOC_BLOCKING              0x86    
+#define PSF_EVENT_KHEAP_ALIGNED_ALLOC_BLOCKING              0x86
 #define PSF_EVENT_KHEAP_ALIGNED_ALLOC_FAILURE               0x85
-#define PSF_EVENT_KHEAP_ALLOC_SUCCESS						0x87						
+#define PSF_EVENT_KHEAP_ALLOC_SUCCESS						0x87
 #define PSF_EVENT_KHEAP_ALLOC_BLOCKING						0xFA
 #define PSF_EVENT_KHEAP_ALLOC_FAILURE						0xFB
 #define PSF_EVENT_KHEAP_FREE                                0x88
@@ -688,7 +688,16 @@ void vTraceSetTimerName(void* object, const char* name);
 #define PSF_EVENT_EXTENSION_CREATE							0x17E
 #define PSF_EVENT_HEAP_CREATE								0x17F
 
-#define TRC_EVENT_LAST_ID									(PSF_EVENT_HEAP_CREATE)
+#define PSF_EVENT_PIPE_RESET								0x180
+#define PSF_EVENT_PIPE_CLOSE								0x181
+#define PSF_EVENT_PIPE_WRITE_SUCCESS						0x182
+#define PSF_EVENT_PIPE_WRITE_BLOCKING						0x183
+#define PSF_EVENT_PIPE_WRITE_TIMEOUT						0x184
+#define PSF_EVENT_PIPE_READ_SUCCESS							0x185
+#define PSF_EVENT_PIPE_READ_BLOCKING						0x186
+#define PSF_EVENT_PIPE_READ_TIMEOUT							0x187
+
+#define TRC_EVENT_LAST_ID									(PSF_EVENT_PIPE_READ_TIMEOUT)
 
 
 #ifdef __cplusplus

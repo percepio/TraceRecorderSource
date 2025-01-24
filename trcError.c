@@ -1,5 +1,5 @@
 /*
-* Percepio Trace Recorder for Tracealyzer v4.10.2
+* Percepio Trace Recorder for Tracealyzer v4.10.3
 * Copyright 2023 Percepio AB
 * www.percepio.com
 *
@@ -32,7 +32,7 @@ traceResult xTraceErrorInitialize(TraceErrorData_t* pxBuffer)
 	pxErrorInfo->uiErrorCode = 0u;
 	pxErrorInfo->xWarningChannel = 0;
 
-	xTraceSetComponentInitialized(TRC_RECORDER_COMPONENT_ERROR);
+	(void)xTraceSetComponentInitialized(TRC_RECORDER_COMPONENT_ERROR);
 
 	return TRC_SUCCESS;
 }

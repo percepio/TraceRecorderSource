@@ -1,5 +1,5 @@
 /*
- * Trace Recorder for Tracealyzer v4.10.2
+ * Trace Recorder for Tracealyzer v4.10.3
  * Copyright 2023 Percepio AB
  * www.percepio.com
  *
@@ -182,21 +182,21 @@ unsigned char xTraceKernelPortIsSchedulerSuspended(void);
 /**
 * @brief Kernel specific way to set interrupt mask
 */
-#define TRC_KERNEL_PORT_SET_INTERRUPT_MASK() (TraceBaseType_t)portSET_INTERRUPT_MASK_FROM_ISR()
+#define TRC_KERNEL_PORT_SET_INTERRUPT_MASK() (TraceUnsignedBaseType_t)portSET_INTERRUPT_MASK_FROM_ISR()
 
 #if (TRC_CFG_FREERTOS_VERSION >= TRC_FREERTOS_VERSION_8_X_X)
 
 /**
  * @brief Kernel specific way to clear interrupt mask
  */
-#define TRC_KERNEL_PORT_CLEAR_INTERRUPT_MASK(xMask) portCLEAR_INTERRUPT_MASK_FROM_ISR((UBaseType_t)(xMask))
+#define TRC_KERNEL_PORT_CLEAR_INTERRUPT_MASK(xMask) portCLEAR_INTERRUPT_MASK_FROM_ISR((TraceUnsignedBaseType_t)(xMask))
 
 #else
 
 /**
  * @brief Kernel specific way to clear interrupt mask
  */
-#define TRC_KERNEL_PORT_CLEAR_INTERRUPT_MASK(xMask) portCLEAR_INTERRUPT_MASK_FROM_ISR((unsigned portBASE_TYPE)xMask)
+#define TRC_KERNEL_PORT_CLEAR_INTERRUPT_MASK(xMask) portCLEAR_INTERRUPT_MASK_FROM_ISR((TraceUnsignedBaseType_t)xMask)
 #endif
 
 #if (TRC_CFG_SCHEDULING_ONLY == 0)
@@ -1296,20 +1296,20 @@ extern traceObjectClass TraceQueueClassTable[6];
 #if (TRC_CFG_FREERTOS_VERSION >= TRC_FREERTOS_VERSION_10_3_0)
 
 #define traceTASK_INCREMENT_TICK( xTickCount ) \
-	if (uxSchedulerSuspended == ( unsigned portBASE_TYPE ) pdTRUE || xPendedTicks == 0) { trcKERNEL_HOOKS_INCREMENT_TICK(); } \
-	if (uxSchedulerSuspended == ( unsigned portBASE_TYPE ) pdFALSE) { trcKERNEL_HOOKS_NEW_TIME(DIV_NEW_TIME, xTickCount + 1); }
+	if (uxSchedulerSuspended == ( TraceUnsignedBaseType_t ) pdTRUE || xPendedTicks == 0) { trcKERNEL_HOOKS_INCREMENT_TICK(); } \
+	if (uxSchedulerSuspended == ( TraceUnsignedBaseType_t ) pdFALSE) { trcKERNEL_HOOKS_NEW_TIME(DIV_NEW_TIME, xTickCount + 1); }
 	
 #elif (TRC_CFG_FREERTOS_VERSION >= TRC_FREERTOS_VERSION_7_5_X)
 
 #define traceTASK_INCREMENT_TICK( xTickCount ) \
-	if (uxSchedulerSuspended == ( unsigned portBASE_TYPE ) pdTRUE || uxPendedTicks == 0) { trcKERNEL_HOOKS_INCREMENT_TICK(); } \
-	if (uxSchedulerSuspended == ( unsigned portBASE_TYPE ) pdFALSE) { trcKERNEL_HOOKS_NEW_TIME(DIV_NEW_TIME, xTickCount + 1); }
+	if (uxSchedulerSuspended == ( TraceUnsignedBaseType_t ) pdTRUE || uxPendedTicks == 0) { trcKERNEL_HOOKS_INCREMENT_TICK(); } \
+	if (uxSchedulerSuspended == ( TraceUnsignedBaseType_t ) pdFALSE) { trcKERNEL_HOOKS_NEW_TIME(DIV_NEW_TIME, xTickCount + 1); }
 
 #else
 
 #define traceTASK_INCREMENT_TICK( xTickCount ) \
-	if (uxSchedulerSuspended == ( unsigned portBASE_TYPE ) pdTRUE || uxMissedTicks == 0) { trcKERNEL_HOOKS_INCREMENT_TICK(); } \
-	if (uxSchedulerSuspended == ( unsigned portBASE_TYPE ) pdFALSE) { trcKERNEL_HOOKS_NEW_TIME(DIV_NEW_TIME, xTickCount + 1); }
+	if (uxSchedulerSuspended == ( TraceUnsignedBaseType_t ) pdTRUE || uxMissedTicks == 0) { trcKERNEL_HOOKS_INCREMENT_TICK(); } \
+	if (uxSchedulerSuspended == ( TraceUnsignedBaseType_t ) pdFALSE) { trcKERNEL_HOOKS_NEW_TIME(DIV_NEW_TIME, xTickCount + 1); }
 
 #endif
 
@@ -2196,11 +2196,11 @@ TraceHeapHandle_t xTraceKernelPortGetSystemHeapHandle(void);
 /* A macro that will update the tick count when returning from tickless idle */
 #undef traceINCREASE_TICK_COUNT
 /* Note: This can handle time adjustments of max 2^32 ticks, i.e., 35 seconds at 120 MHz. Thus, tick-less idle periods longer than 2^32 ticks will appear "compressed" on the time line.*/
-#define traceINCREASE_TICK_COUNT( xCount ) { uint32_t uiTraceTickCount; xTraceTimestampGetOsTickCount(&uiTraceTickCount); xTraceTimestampSetOsTickCount(uiTraceTickCount + (xCount)); }
+#define traceINCREASE_TICK_COUNT( xCount ) { uint32_t uiTraceTickCount; (void)xTraceTimestampGetOsTickCount(&uiTraceTickCount); (void)xTraceTimestampSetOsTickCount(uiTraceTickCount + (xCount)); }
 
 #if (TRC_CFG_INCLUDE_OSTICK_EVENTS == 1)
 
-#define OS_TICK_EVENT(uxSchedulerSuspended, xTickCount) if ((uxSchedulerSuspended) == (unsigned portBASE_TYPE) pdFALSE) { prvTraceStoreEvent_Param(PSF_EVENT_NEW_TIME, xTickCount); }
+#define OS_TICK_EVENT(uxSchedulerSuspended, xTickCount) if ((uxSchedulerSuspended) == (TraceUnsignedBaseType_t) pdFALSE) { prvTraceStoreEvent_Param(PSF_EVENT_NEW_TIME, xTickCount); }
 
 #else
 
@@ -2213,19 +2213,19 @@ TraceHeapHandle_t xTraceKernelPortGetSystemHeapHandle(void);
 #if TRC_CFG_FREERTOS_VERSION >= TRC_FREERTOS_VERSION_10_3_0
 
 #define traceTASK_INCREMENT_TICK( xTickCount ) \
-	if (uxSchedulerSuspended == ( unsigned portBASE_TYPE ) pdTRUE || xPendedTicks == 0) { xTraceTimestampSetOsTickCount((xTickCount) + 1); } \
+	if (uxSchedulerSuspended == ( TraceUnsignedBaseType_t ) pdTRUE || xPendedTicks == 0) { (void)xTraceTimestampSetOsTickCount((xTickCount) + 1); } \
 	OS_TICK_EVENT(uxSchedulerSuspended, (xTickCount) + 1)
 
 #elif TRC_CFG_FREERTOS_VERSION >= TRC_FREERTOS_VERSION_7_5_X
 
 #define traceTASK_INCREMENT_TICK( xTickCount ) \
-	if (uxSchedulerSuspended == ( unsigned portBASE_TYPE ) pdTRUE || uxPendedTicks == 0) { xTraceTimestampSetOsTickCount((xTickCount) + 1); } \
+	if (uxSchedulerSuspended == ( TraceUnsignedBaseType_t ) pdTRUE || uxPendedTicks == 0) { (void)xTraceTimestampSetOsTickCount((xTickCount) + 1); } \
 	OS_TICK_EVENT(uxSchedulerSuspended, (xTickCount) + 1)
 
 #else
 
 #define traceTASK_INCREMENT_TICK( xTickCount ) \
-	if (uxSchedulerSuspended == ( unsigned portBASE_TYPE ) pdTRUE || uxMissedTicks == 0) { xTraceTimestampSetOsTickCount((xTickCount) + 1); } \
+	if (uxSchedulerSuspended == ( TraceUnsignedBaseType_t ) pdTRUE || uxMissedTicks == 0) { (void)xTraceTimestampSetOsTickCount((xTickCount) + 1); } \
 	OS_TICK_EVENT(uxSchedulerSuspended, (xTickCount) + 1)
 
 #endif
@@ -2233,12 +2233,12 @@ TraceHeapHandle_t xTraceKernelPortGetSystemHeapHandle(void);
 /* Called on each task-switch */
 #undef traceTASK_SWITCHED_IN
 #define traceTASK_SWITCHED_IN() \
-	xTraceTaskSwitch(pxCurrentTCB, pxCurrentTCB->uxPriority)
+	(void)xTraceTaskSwitch(pxCurrentTCB, pxCurrentTCB->uxPriority)
 
 /* Called for each task that becomes ready */
 #undef traceMOVED_TASK_TO_READY_STATE
 #define traceMOVED_TASK_TO_READY_STATE( pxTCB ) \
-	xTraceTaskReady(pxTCB);
+	(void)xTraceTaskReady(pxTCB);
 
 #undef traceTASK_CREATE
 #if TRC_CFG_FREERTOS_VERSION >= TRC_FREERTOS_VERSION_9_0_0
@@ -2246,7 +2246,7 @@ TraceHeapHandle_t xTraceKernelPortGetSystemHeapHandle(void);
 #define traceTASK_CREATE(pxNewTCB) \
 	if ((pxNewTCB) != 0) \
 	{ \
-		xTraceTaskRegisterWithoutHandle((void*)(pxNewTCB), (pxNewTCB)->pcTaskName, (pxNewTCB)->uxPriority); \
+		(void)xTraceTaskRegisterWithoutHandle((void*)(pxNewTCB), (pxNewTCB)->pcTaskName, (pxNewTCB)->uxPriority); \
 	}
 
 #else
@@ -2254,7 +2254,7 @@ TraceHeapHandle_t xTraceKernelPortGetSystemHeapHandle(void);
 #define traceTASK_CREATE(pxNewTCB) \
 	if (pxNewTCB != 0) \
 	{ \
-		xTraceTaskRegisterWithoutHandle((void*)pxNewTCB, (const char*)pcName, (uint32_t)uxPriority); \
+		(void)xTraceTaskRegisterWithoutHandle((void*)pxNewTCB, (const char*)pcName, (uint32_t)uxPriority); \
 	}
 
 #endif
@@ -2311,10 +2311,10 @@ TraceHeapHandle_t xTraceKernelPortGetSystemHeapHandle(void);
 
 #define traceQUEUE_CREATE_HELPER() \
 		case queueQUEUE_TYPE_MUTEX: \
-			xTraceObjectRegisterWithoutHandle(PSF_EVENT_MUTEX_CREATE, (void*)pxNewQueue, "", 0); \
+			(void)xTraceObjectRegisterWithoutHandle(PSF_EVENT_MUTEX_CREATE, (void*)pxNewQueue, "", 0); \
 			break; \
 		case queueQUEUE_TYPE_RECURSIVE_MUTEX: \
-			xTraceObjectRegisterWithoutHandle(PSF_EVENT_MUTEX_RECURSIVE_CREATE, (void*)pxNewQueue, "", 0); \
+			(void)xTraceObjectRegisterWithoutHandle(PSF_EVENT_MUTEX_RECURSIVE_CREATE, (void*)pxNewQueue, "", 0); \
 			break;
 
 #else
@@ -2329,10 +2329,10 @@ TraceHeapHandle_t xTraceKernelPortGetSystemHeapHandle(void);
 	switch ((pxNewQueue)->ucQueueType) \
 	{ \
 		case queueQUEUE_TYPE_BASE: \
-			xTraceObjectRegisterWithoutHandle(PSF_EVENT_QUEUE_CREATE, (void*)(pxNewQueue), "", (uint32_t)uxQueueLength); \
+			(void)xTraceObjectRegisterWithoutHandle(PSF_EVENT_QUEUE_CREATE, (void*)(pxNewQueue), "", (uint32_t)uxQueueLength); \
 			break; \
 		case queueQUEUE_TYPE_BINARY_SEMAPHORE: \
-			xTraceObjectRegisterWithoutHandle(PSF_EVENT_SEMAPHORE_BINARY_CREATE, (void*)(pxNewQueue), "", 0); \
+			(void)xTraceObjectRegisterWithoutHandle(PSF_EVENT_SEMAPHORE_BINARY_CREATE, (void*)(pxNewQueue), "", 0); \
 			break; \
 		traceQUEUE_CREATE_HELPER() \
 	}
@@ -2372,15 +2372,15 @@ TraceHeapHandle_t xTraceKernelPortGetSystemHeapHandle(void);
 	switch ((pxQueue)->ucQueueType) \
 	{ \
 		case queueQUEUE_TYPE_BASE: \
-			xTraceObjectUnregisterWithoutHandle(PSF_EVENT_QUEUE_DELETE, (void*)(pxQueue), (pxQueue)->uxMessagesWaiting); \
+			(void)xTraceObjectUnregisterWithoutHandle(PSF_EVENT_QUEUE_DELETE, (void*)(pxQueue), (pxQueue)->uxMessagesWaiting); \
 			break; \
 		case queueQUEUE_TYPE_MUTEX: \
 		case queueQUEUE_TYPE_RECURSIVE_MUTEX: \
-			xTraceObjectUnregisterWithoutHandle(PSF_EVENT_MUTEX_DELETE, (void*)(pxQueue), (pxQueue)->uxMessagesWaiting); \
+			(void)xTraceObjectUnregisterWithoutHandle(PSF_EVENT_MUTEX_DELETE, (void*)(pxQueue), (pxQueue)->uxMessagesWaiting); \
 			break; \
 		case queueQUEUE_TYPE_COUNTING_SEMAPHORE: \
 		case queueQUEUE_TYPE_BINARY_SEMAPHORE: \
-			xTraceObjectUnregisterWithoutHandle(PSF_EVENT_SEMAPHORE_DELETE, (void*)(pxQueue), (pxQueue)->uxMessagesWaiting); \
+			(void)xTraceObjectUnregisterWithoutHandle(PSF_EVENT_SEMAPHORE_DELETE, (void*)(pxQueue), (pxQueue)->uxMessagesWaiting); \
 			break; \
 	}
 
@@ -2389,22 +2389,22 @@ TraceHeapHandle_t xTraceKernelPortGetSystemHeapHandle(void);
 #if (TRC_CFG_FREERTOS_VERSION >= TRC_FREERTOS_VERSION_8_X_X)
 
 #define traceCREATE_COUNTING_SEMAPHORE() \
-	xTraceObjectRegisterWithoutHandle(PSF_EVENT_SEMAPHORE_COUNTING_CREATE, (void*)xHandle, "", (uint32_t)uxMaxCount)
+	(void)xTraceObjectRegisterWithoutHandle(PSF_EVENT_SEMAPHORE_COUNTING_CREATE, (void*)xHandle, "", (uint32_t)uxMaxCount)
 
 #elif (TRC_CFG_FREERTOS_VERSION >= TRC_FREERTOS_VERSION_7_5_X)
 
 #define traceCREATE_COUNTING_SEMAPHORE() \
-	xTraceObjectRegisterWithoutHandle(PSF_EVENT_SEMAPHORE_COUNTING_CREATE, (void*)xHandle, "", uxInitialCount)
+	(void)xTraceObjectRegisterWithoutHandle(PSF_EVENT_SEMAPHORE_COUNTING_CREATE, (void*)xHandle, "", uxInitialCount)
 
 #elif (TRC_CFG_FREERTOS_VERSION >= TRC_FREERTOS_VERSION_7_4_X)
 
 #define traceCREATE_COUNTING_SEMAPHORE() \
-	xTraceObjectRegisterWithoutHandle(PSF_EVENT_SEMAPHORE_COUNTING_CREATE, (void*)xHandle, "", uxCountValue)
+	(void)xTraceObjectRegisterWithoutHandle(PSF_EVENT_SEMAPHORE_COUNTING_CREATE, (void*)xHandle, "", uxCountValue)
 
 #else
 
 #define traceCREATE_COUNTING_SEMAPHORE() \
-	xTraceObjectRegisterWithoutHandle(PSF_EVENT_SEMAPHORE_COUNTING_CREATE, (void*)pxHandle, "", uxCountValue)
+	(void)xTraceObjectRegisterWithoutHandle(PSF_EVENT_SEMAPHORE_COUNTING_CREATE, (void*)pxHandle, "", uxCountValue)
 
 #endif
 
@@ -2441,10 +2441,10 @@ TraceHeapHandle_t xTraceKernelPortGetSystemHeapHandle(void);
 	switch (pxNewQueue->ucQueueType) \
 	{ \
 		case queueQUEUE_TYPE_MUTEX: \
-			xTraceObjectRegisterWithoutHandle(PSF_EVENT_MUTEX_CREATE, (void*)(pxNewQueue), "", 0); \
+			(void)xTraceObjectRegisterWithoutHandle(PSF_EVENT_MUTEX_CREATE, (void*)(pxNewQueue), "", 0); \
 			break; \
 		case queueQUEUE_TYPE_RECURSIVE_MUTEX: \
-			xTraceObjectRegisterWithoutHandle(PSF_EVENT_MUTEX_RECURSIVE_CREATE, (void*)(pxNewQueue), "", 0); \
+			(void)xTraceObjectRegisterWithoutHandle(PSF_EVENT_MUTEX_RECURSIVE_CREATE, (void*)(pxNewQueue), "", 0); \
 			break; \
 	}
 
@@ -2710,7 +2710,7 @@ TraceHeapHandle_t xTraceKernelPortGetSystemHeapHandle(void);
 /* Called in vTaskPrioritySet */
 #undef traceTASK_PRIORITY_SET
 #define traceTASK_PRIORITY_SET( pxTask, uxNewPriority ) \
-	xTraceTaskSetPriorityWithoutHandle(pxTask, uxNewPriority)
+	(void)xTraceTaskSetPriorityWithoutHandle(pxTask, uxNewPriority)
 	
 /* Called in vTaskPriorityInherit, which is called by Mutex operations */
 #undef traceTASK_PRIORITY_INHERIT
@@ -2738,14 +2738,14 @@ TraceHeapHandle_t xTraceKernelPortGetSystemHeapHandle(void);
 #define traceMALLOC( pvAddress, uiSize ) \
 	if (xTraceIsRecorderEnabled()) \
 	{ \
-		xTraceHeapAlloc(xTraceKernelPortGetSystemHeapHandle(), pvAddress, uiSize); \
+		(void)xTraceHeapAlloc(xTraceKernelPortGetSystemHeapHandle(), pvAddress, uiSize); \
 	}
 
 #undef traceFREE
 #define traceFREE( pvAddress, uiSize ) \
 	if (xTraceIsRecorderEnabled()) \
 	{ \
-		xTraceHeapFree(xTraceKernelPortGetSystemHeapHandle(), pvAddress, uiSize); \
+		(void)xTraceHeapFree(xTraceKernelPortGetSystemHeapHandle(), pvAddress, uiSize); \
 	}
 
 #endif
@@ -2755,7 +2755,7 @@ TraceHeapHandle_t xTraceKernelPortGetSystemHeapHandle(void);
 /* Called in timer.c - xTimerCreate */
 #undef traceTIMER_CREATE
 #define traceTIMER_CREATE(tmr) \
-	xTraceObjectRegisterWithoutHandle(PSF_EVENT_TIMER_CREATE, (void*)(tmr), (const char*)(tmr)->pcTimerName, (uint32_t)(tmr)->xTimerPeriodInTicks)
+	(void)xTraceObjectRegisterWithoutHandle(PSF_EVENT_TIMER_CREATE, (void*)(tmr), (const char*)(tmr)->pcTimerName, (uint32_t)(tmr)->xTimerPeriodInTicks)
 
 #undef traceTIMER_CREATE_FAILED
 #define traceTIMER_CREATE_FAILED() \
@@ -2800,7 +2800,7 @@ TraceHeapHandle_t xTraceKernelPortGetSystemHeapHandle(void);
 			prvTraceStoreEvent_HandleParam(((xReturn) == pdPASS) ? PSF_EVENT_TIMER_CHANGEPERIOD : PSF_EVENT_TIMER_CHANGEPERIOD_FAILED, (void*)(tmr), xOptionalValue); \
 			break; \
 		case tmrCOMMAND_DELETE: \
-			xTraceObjectUnregisterWithoutHandle(((xReturn) == pdPASS) ? PSF_EVENT_TIMER_DELETE : PSF_EVENT_TIMER_DELETE_FAILED, (void*)(tmr), 0); \
+			(void)xTraceObjectUnregisterWithoutHandle(((xReturn) == pdPASS) ? PSF_EVENT_TIMER_DELETE : PSF_EVENT_TIMER_DELETE_FAILED, (void*)(tmr), 0); \
 			break; \
 		traceTIMER_COMMAND_SEND_8_0_CASES(tmr) \
 	}
@@ -2829,19 +2829,19 @@ TraceHeapHandle_t xTraceKernelPortGetSystemHeapHandle(void);
 #if (TRC_CFG_FREERTOS_VERSION >= TRC_FREERTOS_VERSION_10_1_0)
 #undef traceEVENT_GROUP_CREATE
 #define traceEVENT_GROUP_CREATE(eg)  \
-	xTraceObjectRegisterWithoutHandle(PSF_EVENT_EVENTGROUP_CREATE, (void*)(eg), 0, (uint32_t)(eg)->uxEventBits)
+	(void)xTraceObjectRegisterWithoutHandle(PSF_EVENT_EVENTGROUP_CREATE, (void*)(eg), 0, (uint32_t)(eg)->uxEventBits)
 
 #undef traceEVENT_GROUP_DELETE
 #define traceEVENT_GROUP_DELETE(eg) \
-	xTraceObjectUnregisterWithoutHandle(PSF_EVENT_EVENTGROUP_DELETE, (void*)(eg), (uint32_t)(eg)->uxEventBits)
+	(void)xTraceObjectUnregisterWithoutHandle(PSF_EVENT_EVENTGROUP_DELETE, (void*)(eg), (uint32_t)(eg)->uxEventBits)
 #else
 #undef traceEVENT_GROUP_CREATE
 #define traceEVENT_GROUP_CREATE(eg)  \
-	xTraceObjectRegisterWithoutHandle(PSF_EVENT_EVENTGROUP_CREATE, (void*)(eg), 0, ((EventGroup_t *)(eg))->uxEventBits)
+	(void)xTraceObjectRegisterWithoutHandle(PSF_EVENT_EVENTGROUP_CREATE, (void*)(eg), 0, ((EventGroup_t *)(eg))->uxEventBits)
 
 #undef traceEVENT_GROUP_DELETE
 #define traceEVENT_GROUP_DELETE(eg) \
-	xTraceObjectUnregisterWithoutHandle(PSF_EVENT_EVENTGROUP_DELETE, (void*)(eg), ((EventGroup_t *)(eg))->uxEventBits)
+	(void)xTraceObjectUnregisterWithoutHandle(PSF_EVENT_EVENTGROUP_DELETE, (void*)(eg), ((EventGroup_t *)(eg))->uxEventBits)
 #endif
 
 #undef traceEVENT_GROUP_CREATE_FAILED
@@ -2953,13 +2953,13 @@ TraceHeapHandle_t xTraceKernelPortGetSystemHeapHandle(void);
 
 #undef traceQUEUE_REGISTRY_ADD
 #define traceQUEUE_REGISTRY_ADD(object, name) \
-	xTraceObjectSetNameWithoutHandle(object, (const char*)(name));
+	(void)xTraceObjectSetNameWithoutHandle(object, (const char*)(name));
 
 #if (TRC_CFG_INCLUDE_STREAM_BUFFER_EVENTS == 1)
 
 #undef traceSTREAM_BUFFER_CREATE
 #define traceSTREAM_BUFFER_CREATE( pxStreamBuffer, xIsMessageBuffer ) \
-	xTraceObjectRegisterWithoutHandle((xIsMessageBuffer) == 1 ? PSF_EVENT_MESSAGEBUFFER_CREATE : PSF_EVENT_STREAMBUFFER_CREATE, (void*)(pxStreamBuffer), "", (uint32_t)xBufferSizeBytes)
+	(void)xTraceObjectRegisterWithoutHandle((xIsMessageBuffer) == 1 ? PSF_EVENT_MESSAGEBUFFER_CREATE : PSF_EVENT_STREAMBUFFER_CREATE, (void*)(pxStreamBuffer), "", (uint32_t)xBufferSizeBytes)
 
 #undef traceSTREAM_BUFFER_CREATE_FAILED
 #define traceSTREAM_BUFFER_CREATE_FAILED( xIsMessageBuffer ) \
@@ -2971,7 +2971,7 @@ TraceHeapHandle_t xTraceKernelPortGetSystemHeapHandle(void);
 
 #undef traceSTREAM_BUFFER_DELETE
 #define traceSTREAM_BUFFER_DELETE( xStreamBuffer ) \
-	xTraceObjectUnregisterWithoutHandle(prvGetStreamBufferType(xStreamBuffer) > 0 ? PSF_EVENT_MESSAGEBUFFER_DELETE : PSF_EVENT_STREAMBUFFER_DELETE, (void*)(xStreamBuffer), prvBytesInBuffer(xStreamBuffer));
+	(void)xTraceObjectUnregisterWithoutHandle(prvGetStreamBufferType(xStreamBuffer) > 0 ? PSF_EVENT_MESSAGEBUFFER_DELETE : PSF_EVENT_STREAMBUFFER_DELETE, (void*)(xStreamBuffer), prvBytesInBuffer(xStreamBuffer));
 
 #undef traceSTREAM_BUFFER_RESET
 #define traceSTREAM_BUFFER_RESET( xStreamBuffer ) \

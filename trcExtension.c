@@ -1,5 +1,5 @@
 /*
-* Trace Recorder for Tracealyzer v4.10.2
+* Trace Recorder for Tracealyzer v4.10.3
 * Copyright 2023 Percepio AB
 * www.percepio.com
 *
@@ -31,7 +31,7 @@ traceResult xTraceExtensionInitialize(TraceExtensionData_t* const pxBuffer)
 	
 	pxExtensionData->uxNextFreeExtensionEventId = TRC_EXTENSION_BASE_EVENT_ID;
 	
-	xTraceSetComponentInitialized(TRC_RECORDER_COMPONENT_EXTENSION);
+	(void)xTraceSetComponentInitialized(TRC_RECORDER_COMPONENT_EXTENSION);
 	
 	return TRC_SUCCESS;
 }

@@ -25,7 +25,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">Percepio Trace Recorder<span id="projectnumber">&#160;v4.10.2</span>
+   <div id="projectname">Percepio Trace Recorder<span id="projectnumber">&#160;v4.10.3</span>
    </div>
   </td>
  </tr>
@@ -98,7 +98,7 @@ $(document).ready(function(){initNavTree('group__trace__task__apis.html',''); in
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="define-members" name="define-members"></a>
 Macros</h2></td></tr>
-<tr class="memitem:ga29f9e9e93c05081cdef7a555beaf2205"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__trace__task__apis.html#ga29f9e9e93c05081cdef7a555beaf2205">xTraceTaskRegister</a>(pvTask,  szName,  uxPriority,  pxTaskHandle)&#160;&#160;&#160;((((pvTask) != 0) &amp;&amp; (<a class="el" href="group__trace__object__apis.html#ga25d702dc46bb776c99c3ebd48f46c529">xTraceObjectRegister</a>(PSF_EVENT_TASK_CREATE, pvTask, szName, uxPriority, (TraceObjectHandle_t*)(pxTaskHandle)) == TRC_SUCCESS)) ? (<a class="el" href="group__trace__stack__monitor__apis.html#ga5fbc5e2abbbac9d83018138db5505135">xTraceStackMonitorAdd</a>(pvTask), TRC_SUCCESS) : TRC_FAIL)</td></tr>
+<tr class="memitem:ga29f9e9e93c05081cdef7a555beaf2205"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__trace__task__apis.html#ga29f9e9e93c05081cdef7a555beaf2205">xTraceTaskRegister</a>(pvTask,  szName,  uxPriority,  pxTaskHandle)&#160;&#160;&#160;((((pvTask) != 0) &amp;&amp; (<a class="el" href="group__trace__object__apis.html#ga25d702dc46bb776c99c3ebd48f46c529">xTraceObjectRegister</a>(PSF_EVENT_TASK_CREATE, pvTask, szName, uxPriority, (TraceObjectHandle_t*)(pxTaskHandle)) == TRC_SUCCESS)) ? ((void)<a class="el" href="group__trace__stack__monitor__apis.html#ga5fbc5e2abbbac9d83018138db5505135">xTraceStackMonitorAdd</a>(pvTask), TRC_SUCCESS) : TRC_FAIL)</td></tr>
 <tr class="memdesc:ga29f9e9e93c05081cdef7a555beaf2205"><td class="mdescLeft">&#160;</td><td class="mdescRight">Register trace task in the trace.  <br /></td></tr>
 <tr class="separator:ga29f9e9e93c05081cdef7a555beaf2205"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga182deca6445d8703089a28dfe6206950"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__trace__task__apis.html#ga182deca6445d8703089a28dfe6206950">xTraceTaskUnregister</a>(xTaskHandle,  uxPriority)&#160;&#160;&#160;TRC_COMMA_EXPR_TO_STATEMENT_EXPR_2((void)<a class="el" href="group__trace__stack__monitor__apis.html#ga72bd0dc250d99062f6fae2e3e4f1868e">xTraceStackMonitorRemove</a>(xTraceEntryGetAddressReturn((TraceEntryHandle_t)(xTaskHandle))), <a class="el" href="group__trace__object__apis.html#ga20b1def504b1c9b237c711b3aaa49e29">xTraceObjectUnregister</a>((TraceObjectHandle_t)(xTaskHandle), PSF_EVENT_TASK_DELETE, uxPriority))</td></tr>
@@ -107,7 +107,7 @@ Macros</h2></td></tr>
 <tr class="memitem:ga84c72328cb3f2ae3e940123365a8a665"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__trace__task__apis.html#ga84c72328cb3f2ae3e940123365a8a665">xTraceTaskSetName</a>&#160;&#160;&#160;<a class="el" href="group__trace__object__apis.html#ga21b7803f059e9b3cf2d5528249ecb20d">xTraceObjectSetName</a></td></tr>
 <tr class="memdesc:ga84c72328cb3f2ae3e940123365a8a665"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets trace task name.  <br /></td></tr>
 <tr class="separator:ga84c72328cb3f2ae3e940123365a8a665"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga8ea2a55eb73dbc50150f337fa1e88666"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__trace__task__apis.html#ga8ea2a55eb73dbc50150f337fa1e88666">xTraceTaskRegisterWithoutHandle</a>(pvTask,  szName,  uxPriority)&#160;&#160;&#160;((((pvTask) != 0) &amp;&amp; (<a class="el" href="group__trace__object__apis.html#gacd88161ed7cc325b7a343d9ec8fad34e">xTraceObjectRegisterWithoutHandle</a>(PSF_EVENT_TASK_CREATE, pvTask, szName, uxPriority) == TRC_SUCCESS)) ? (<a class="el" href="group__trace__stack__monitor__apis.html#ga5fbc5e2abbbac9d83018138db5505135">xTraceStackMonitorAdd</a>(pvTask), TRC_SUCCESS) : TRC_FAIL)</td></tr>
+<tr class="memitem:ga8ea2a55eb73dbc50150f337fa1e88666"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__trace__task__apis.html#ga8ea2a55eb73dbc50150f337fa1e88666">xTraceTaskRegisterWithoutHandle</a>(pvTask,  szName,  uxPriority)&#160;&#160;&#160;((((pvTask) != 0) &amp;&amp; (<a class="el" href="group__trace__object__apis.html#gacd88161ed7cc325b7a343d9ec8fad34e">xTraceObjectRegisterWithoutHandle</a>(PSF_EVENT_TASK_CREATE, pvTask, szName, uxPriority) == TRC_SUCCESS)) ? ((void)<a class="el" href="group__trace__stack__monitor__apis.html#ga5fbc5e2abbbac9d83018138db5505135">xTraceStackMonitorAdd</a>(pvTask), TRC_SUCCESS) : TRC_FAIL)</td></tr>
 <tr class="memdesc:ga8ea2a55eb73dbc50150f337fa1e88666"><td class="mdescLeft">&#160;</td><td class="mdescRight">Registers trace task without trace task handle.  <br /></td></tr>
 <tr class="separator:ga8ea2a55eb73dbc50150f337fa1e88666"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga41fcd9011bf48e5892a0b19928899bc0"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__trace__task__apis.html#ga41fcd9011bf48e5892a0b19928899bc0">xTraceTaskUnregisterWithoutHandle</a>(pvTask,  uxPriority)&#160;&#160;&#160;TRC_COMMA_EXPR_TO_STATEMENT_EXPR_2((void)<a class="el" href="group__trace__stack__monitor__apis.html#ga72bd0dc250d99062f6fae2e3e4f1868e">xTraceStackMonitorRemove</a>(pvTask), <a class="el" href="group__trace__object__apis.html#ga304a75a1c8a64e02b0f8fe2355305555">xTraceObjectUnregisterWithoutHandle</a>(PSF_EVENT_TASK_DELETE, pvTask, uxPriority))</td></tr>
@@ -338,7 +338,7 @@ Functions</h2></td></tr>
         <tr>
           <td></td>
           <td>)</td>
-          <td></td><td>&#160;&#160;&#160;((((pvTask) != 0) &amp;&amp; (<a class="el" href="group__trace__object__apis.html#ga25d702dc46bb776c99c3ebd48f46c529">xTraceObjectRegister</a>(PSF_EVENT_TASK_CREATE, pvTask, szName, uxPriority, (TraceObjectHandle_t*)(pxTaskHandle)) == TRC_SUCCESS)) ? (<a class="el" href="group__trace__stack__monitor__apis.html#ga5fbc5e2abbbac9d83018138db5505135">xTraceStackMonitorAdd</a>(pvTask), TRC_SUCCESS) : TRC_FAIL)</td>
+          <td></td><td>&#160;&#160;&#160;((((pvTask) != 0) &amp;&amp; (<a class="el" href="group__trace__object__apis.html#ga25d702dc46bb776c99c3ebd48f46c529">xTraceObjectRegister</a>(PSF_EVENT_TASK_CREATE, pvTask, szName, uxPriority, (TraceObjectHandle_t*)(pxTaskHandle)) == TRC_SUCCESS)) ? ((void)<a class="el" href="group__trace__stack__monitor__apis.html#ga5fbc5e2abbbac9d83018138db5505135">xTraceStackMonitorAdd</a>(pvTask), TRC_SUCCESS) : TRC_FAIL)</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -390,7 +390,7 @@ Functions</h2></td></tr>
         <tr>
           <td></td>
           <td>)</td>
-          <td></td><td>&#160;&#160;&#160;((((pvTask) != 0) &amp;&amp; (<a class="el" href="group__trace__object__apis.html#gacd88161ed7cc325b7a343d9ec8fad34e">xTraceObjectRegisterWithoutHandle</a>(PSF_EVENT_TASK_CREATE, pvTask, szName, uxPriority) == TRC_SUCCESS)) ? (<a class="el" href="group__trace__stack__monitor__apis.html#ga5fbc5e2abbbac9d83018138db5505135">xTraceStackMonitorAdd</a>(pvTask), TRC_SUCCESS) : TRC_FAIL)</td>
+          <td></td><td>&#160;&#160;&#160;((((pvTask) != 0) &amp;&amp; (<a class="el" href="group__trace__object__apis.html#gacd88161ed7cc325b7a343d9ec8fad34e">xTraceObjectRegisterWithoutHandle</a>(PSF_EVENT_TASK_CREATE, pvTask, szName, uxPriority) == TRC_SUCCESS)) ? ((void)<a class="el" href="group__trace__stack__monitor__apis.html#ga5fbc5e2abbbac9d83018138db5505135">xTraceStackMonitorAdd</a>(pvTask), TRC_SUCCESS) : TRC_FAIL)</td>
         </tr>
       </table>
 </div><div class="memdoc">

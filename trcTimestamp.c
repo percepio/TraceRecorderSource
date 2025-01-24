@@ -1,5 +1,5 @@
 /*
-* Trace Recorder for Tracealyzer v4.10.2
+* Trace Recorder for Tracealyzer v4.10.3
 * Copyright 2023 Percepio AB
 * www.percepio.com
 *
@@ -36,7 +36,7 @@ traceResult xTraceTimestampInitialize(TraceTimestampData_t *pxBuffer)
 	pxTraceTimestamp->latestTimestamp = pxTraceTimestamp->period - 1u;
 #endif
 
-	xTraceSetComponentInitialized(TRC_RECORDER_COMPONENT_TIMESTAMP);
+	(void)xTraceSetComponentInitialized(TRC_RECORDER_COMPONENT_TIMESTAMP);
 
 	return TRC_SUCCESS;
 }

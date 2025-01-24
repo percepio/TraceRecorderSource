@@ -1,5 +1,5 @@
 /*
-* Trace Recorder for Tracealyzer v4.10.2
+* Trace Recorder for Tracealyzer v4.10.3
 * Copyright 2023 Percepio AB
 * www.percepio.com
 *
@@ -28,7 +28,7 @@ traceResult xTraceDiagnosticsInitialize(TraceDiagnosticsData_t *pxBuffer)
 		pxDiagnostics->metrics[i] = 0;
 	}
 
-	xTraceSetComponentInitialized(TRC_RECORDER_COMPONENT_DIAGNOSTICS);
+	(void)xTraceSetComponentInitialized(TRC_RECORDER_COMPONENT_DIAGNOSTICS);
 
 	return TRC_SUCCESS;
 }
