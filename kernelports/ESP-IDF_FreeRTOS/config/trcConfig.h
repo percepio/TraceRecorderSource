@@ -323,6 +323,11 @@ extern "C" {
 #define TRC_CFG_CORE_COUNT 2
 #endif
 
+/**
+ * Force usage of GCC statement expressions. Avoid `-Werror=unused-value`. 
+ */
+#define TRC_CFG_USE_GCC_STATEMENT_EXPR 1
+
 #ifdef __cplusplus
 }
 #endif

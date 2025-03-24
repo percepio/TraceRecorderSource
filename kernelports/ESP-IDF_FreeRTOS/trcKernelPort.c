@@ -333,12 +333,12 @@ esp_err_t xTraceEspKernelPortEnable()
 
 #include <esp_private/startup_internal.h>
 
-ESP_SYSTEM_INIT_FN(xTraceEspKernelPortInitialize, ESP_SYSTEM_INIT_ALL_CORES, 102)
+TRC_KERNEL_PORT_SYSTEM_INIT_FN(xTraceEspKernelPortInitialize, ESP_SYSTEM_INIT_ALL_CORES, 102)
 {
 	return xTraceEspKernelPortInitialize();
 }
 
-ESP_SYSTEM_INIT_FN(xTraceEspKernelPortEnable, ESP_SYSTEM_INIT_ALL_CORES, 240)
+TRC_KERNEL_PORT_SYSTEM_INIT_FN(xTraceEspKernelPortEnable, ESP_SYSTEM_INIT_ALL_CORES, 240)
 {
 	return xTraceEspKernelPortEnable();
 }
