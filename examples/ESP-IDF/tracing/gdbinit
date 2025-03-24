@@ -1,0 +1,13 @@
+set pagination off
+target remote :3333
+
+mon reset halt
+maintenance flush register-cache
+
+b app_main
+commands
+mon esp apptrace start "file:///tmp/tracealyzer_example.psf" 0 -1 -1 0 0
+c
+end
+
+c
