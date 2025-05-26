@@ -1,0 +1,20 @@
+version: "4.10.3"
+description: "This is a Percepio TraceRecorder component"
+url: "https://github.com/percepio/TraceRecorderSource"
+license: "Apache"
+
+files:
+   exclude:
+      # Exclude code for other RTOSes
+      - "kernelports/BareMetal/**/*"
+      - "kernelports/FreeRTOS/**/*"
+      - "kernelports/ThreadX/**/*"
+      - "kernelports/Zephyr/**/*"
+      # Exclude code for unsuported streamports
+      - "streamports/ARM_ITM/**/*"
+      - "streamports/File/**/*"
+      - "streamports/STM32_USB_CDC/**/*"
+      - "streamports/TCPIP/**/*"
+      - "streamports/TCPIP_Win32/**/*"
+      - "streamports/UDP/**/*"
+      - "streamports/XMOS_xScope/**/*"

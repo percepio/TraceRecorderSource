@@ -1,4 +1,4 @@
-[mapping:TraceRecorder]
-archive: libESP-IDF_FreeRTOS.a
+[mapping:percepio__tracerecorder]
+archive: libpercepio__tracerecorder.a
 entries:
 	* (noflash)
