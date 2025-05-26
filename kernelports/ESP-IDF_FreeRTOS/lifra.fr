@@ -1,4 +1,4 @@
-[mapping:percepio_tracerecorder]
-archive: libpercepio_tracerecorder.a
+[mapping:percepio__tracerecorder]
+archive: libpercepio__tracerecorder.a
 entries:
 	* (noflash)

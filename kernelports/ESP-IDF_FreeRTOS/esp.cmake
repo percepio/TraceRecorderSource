@@ -4,16 +4,39 @@
 # parameters that are missing when the Tracerecorder is disabled.
 if(CONFIG_PERCEPIO_TRACERECORDER_ENABLED)
 	if(CONFIG_PERCEPIO_TRC_CFG_STREAM_PORT_RINGBUFFER)
-		set(src_dirs ${CMAKE_CURRENT_LIST_DIR} "${CMAKE_CURRENT_LIST_DIR}/../../streamports/RingBuffer" ${CMAKE_CURRENT_LIST_DIR}/../../)
-		set(inc_dirs "${CMAKE_CURRENT_LIST_DIR}/config" "${CMAKE_CURRENT_LIST_DIR}/include" "${CMAKE_CURRENT_LIST_DIR}/../../streamports/RingBuffer/include" "${CMAKE_CURRENT_LIST_DIR}/streamports/RingBuffer/config" ${CMAKE_CURRENT_LIST_DIR}/../../include)
+		set(src_dirs
+			${CMAKE_CURRENT_LIST_DIR}
+			${CMAKE_CURRENT_LIST_DIR}/../../streamports/RingBuffer
+			${CMAKE_CURRENT_LIST_DIR}/../../)
+		set(inc_dirs
+			${CMAKE_CURRENT_LIST_DIR}/config
+			${CMAKE_CURRENT_LIST_DIR}/include
+			${CMAKE_CURRENT_LIST_DIR}/../../streamports/RingBuffer/include
+			${CMAKE_CURRENT_LIST_DIR}/streamports/RingBuffer/config
+			${CMAKE_CURRENT_LIST_DIR}/../../include)
 	endif()
 	if(CONFIG_PERCEPIO_TRC_CFG_STREAM_PORT_RTT)
-		set(src_dirs ${CMAKE_CURRENT_LIST_DIR} "${CMAKE_CURRENT_LIST_DIR}/../../streamports/Jlink_RTT" ${CMAKE_CURRENT_LIST_DIR}/../../)
-		set(inc_dirs "${CMAKE_CURRENT_LIST_DIR}/config" "${CMAKE_CURRENT_LIST_DIR}/include" "${CMAKE_CURRENT_LIST_DIR}/../../streamports/Jlink_RTT/include" "${CMAKE_CURRENT_LIST_DIR}/streamports/Jlink_RTT/config" ${CMAKE_CURRENT_LIST_DIR}/../../include)
+		set(src_dirs
+			${CMAKE_CURRENT_LIST_DIR}
+			${CMAKE_CURRENT_LIST_DIR}/../../streamports/Jlink_RTT
+			${CMAKE_CURRENT_LIST_DIR}/../../)
+		set(inc_dirs
+			${CMAKE_CURRENT_LIST_DIR}/config
+			${CMAKE_CURRENT_LIST_DIR}/include
+			${CMAKE_CURRENT_LIST_DIR}/../../streamports/Jlink_RTT/include
+			${CMAKE_CURRENT_LIST_DIR}/streamports/Jlink_RTT/config
+			${CMAKE_CURRENT_LIST_DIR}/../../include)
 	endif()
 	if(CONFIG_PERCEPIO_TRC_CFG_STREAM_PORT_ESP_IDF_APPTRACE)
-		set(src_dirs ${CMAKE_CURRENT_LIST_DIR} "${CMAKE_CURRENT_LIST_DIR}/streamports/ESP_IDF_APPTRACE" ${CMAKE_CURRENT_LIST_DIR}/../../)
-		set(inc_dirs "${CMAKE_CURRENT_LIST_DIR}/config" "${CMAKE_CURRENT_LIST_DIR}/include" "${CMAKE_CURRENT_LIST_DIR}/streamports/ESP_IDF_APPTRACE/include" ${CMAKE_CURRENT_LIST_DIR}/../../include)
+		set(src_dirs
+			${CMAKE_CURRENT_LIST_DIR}
+			${CMAKE_CURRENT_LIST_DIR}/streamports/ESP_IDF_APPTRACE
+			${CMAKE_CURRENT_LIST_DIR}/../../)
+		set(inc_dirs
+			${CMAKE_CURRENT_LIST_DIR}/config
+			${CMAKE_CURRENT_LIST_DIR}/include
+			${CMAKE_CURRENT_LIST_DIR}/streamports/ESP_IDF_APPTRACE/include
+			${CMAKE_CURRENT_LIST_DIR}/../../include)
 	endif()
 else()
 	set(src_dirs "")

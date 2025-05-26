@@ -1,20 +1,2 @@
 
 include(${CMAKE_CURRENT_LIST_DIR}/esp.cmake)
-
-# Since we inject Trace Recorder in the ESP-IDF we must expose the includes to ESP-IDF.
-if(CONFIG_PERCEPIO_TRACERECORDER_ENABLED)
-	idf_build_set_property(INCLUDE_DIRECTORIES ${CMAKE_CURRENT_LIST_DIR}/config APPEND)
-	idf_build_set_property(INCLUDE_DIRECTORIES ${CMAKE_CURRENT_LIST_DIR}/include APPEND)
-	idf_build_set_property(INCLUDE_DIRECTORIES ${CMAKE_CURRENT_LIST_DIR}/../../include APPEND)
-	if(CONFIG_PERCEPIO_TRC_CFG_STREAM_PORT_RINGBUFFER)
-		idf_build_set_property(INCLUDE_DIRECTORIES ${CMAKE_CURRENT_LIST_DIR}/streamports/RingBuffer/config APPEND)
-		idf_build_set_property(INCLUDE_DIRECTORIES ${CMAKE_CURRENT_LIST_DIR}/../../streamports/RingBuffer/include APPEND)
-	endif()
-	if(CONFIG_PERCEPIO_TRC_CFG_STREAM_PORT_RTT)
-		idf_build_set_property(INCLUDE_DIRECTORIES ${CMAKE_CURRENT_LIST_DIR}/streamports/Jlink_RTT/config APPEND)
-		idf_build_set_property(INCLUDE_DIRECTORIES ${CMAKE_CURRENT_LIST_DIR}/../../streamports/Jlink_RTT/include APPEND)
-	endif()
-	if(CONFIG_PERCEPIO_TRC_CFG_STREAM_PORT_ESP_IDF_APPTRACE)
-		idf_build_set_property(INCLUDE_DIRECTORIES ${CMAKE_CURRENT_LIST_DIR}/streamports/ESP_IDF_APPTRACE/include APPEND)
-	endif()
-endif()
