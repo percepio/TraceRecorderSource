@@ -1,0 +1,28 @@
+# Copyright (c) 2025 Percepio AB
+# SPDX-License-Identifier: Apache-2.0
+
+menuconfig PERCEPIO_TRC_CFG_ENABLE_TASK_MONITOR
+	bool "Task Monitor"
+  	depends on !PERCEPIO_TRC_CFG_RECORDER_RTOS_ZEPHYR || THREAD_LOCAL_STORAGE
+	default n
+	help 
+	  If enabled (1), the recorder will keep track of clock cycles used by all tasks
+	  that are registered using xTraceTaskMonitorRegister().
+	  Note that xTraceTaskMonitorRegister() must be called from within each task in
+	  order to access ThreadLocalStorage.
+	  Periodically call on xTraceTaskMonitorPoll() from a user function to verify
+	  that no tasks has used an unacceptable percentage of clock cycles since last
+	  time. If that would happen a callback is used to inform the application of it.
+	  The callback is set using xTraceTaskMonitorSetCallback().
+
+if PERCEPIO_TRC_CFG_ENABLE_TASK_MONITOR
+
+config PERCEPIO_TRC_CFG_TASK_MONITOR_MAX_TASKS
+	int "Task Monitor Max Tasks"
+	range 1 64
+	default 10
+	help
+	  This controls how many tasks that can be monitored by the task monitor.
+	  If this is too small, some tasks may not be registered properly.
+
+endif # PERCEPIO_TRC_CFG_ENABLE_TASK_MONITOR

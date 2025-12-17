@@ -7,6 +7,6 @@ var trcEventBuffer_8h =
     [ "xTraceEventBufferAllocCommit", "group__trace__event__buffer__apis.html#ga2b188578828bdeb2bc21f928fa9f99c8", null ],
     [ "xTraceEventBufferClear", "group__trace__event__buffer__apis.html#ga54964c174432a5dfb6e9379593e478b6", null ],
     [ "xTraceEventBufferPush", "group__trace__event__buffer__apis.html#gabbac6eeab72f50d8953dffcfe6d6ddc7", null ],
-    [ "xTraceEventBufferTransferAll", "group__trace__event__buffer__apis.html#ga2030a1dcfe1eae0708ff31d57c111ddd", null ],
-    [ "xTraceEventBufferTransferChunk", "group__trace__event__buffer__apis.html#gaaf993145eff5af6e524c0851072d9ed1", null ]
+    [ "xTraceEventBufferTransferAll", "group__trace__event__buffer__apis.html#ga219cb7f4ce42533b50137e160f960c54", null ],
+    [ "xTraceEventBufferTransferChunk", "group__trace__event__buffer__apis.html#gadbc2a1b6f23862e68186f7d21196e3bf", null ]
 ];

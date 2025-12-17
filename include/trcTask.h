@@ -1,6 +1,6 @@
 /*
-* Percepio Trace Recorder for Tracealyzer v4.10.3
-* Copyright 2023 Percepio AB
+* Percepio Trace Recorder for Tracealyzer v4.11.0
+* Copyright 2025 Percepio AB
 * www.percepio.com
 *
 * SPDX-License-Identifier: Apache-2.0
@@ -15,7 +15,7 @@
 #ifndef TRC_TASK_H
 #define TRC_TASK_H
 
-#if (TRC_USE_TRACEALYZER_RECORDER == 1) && (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING)
+#if (TRC_USE_TRACEALYZER_RECORDER == 1)
 
 #include <trcTypes.h>
 
@@ -76,7 +76,7 @@ traceResult xTraceTaskInitialize(TraceTaskData_t* pxBuffer);
  * @retval TRC_FAIL Failure
  * @retval TRC_SUCCESS Success
  */
-#define xTraceTaskUnregister(xTaskHandle, uxPriority) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_2((void)xTraceStackMonitorRemove(xTraceEntryGetAddressReturn((TraceEntryHandle_t)(xTaskHandle))), xTraceObjectUnregister((TraceObjectHandle_t)(xTaskHandle), PSF_EVENT_TASK_DELETE, uxPriority))
+#define xTraceTaskUnregister(xTaskHandle, uxPriority) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_3((void)xTraceStackMonitorRemove(pvTraceEntryGetAddressReturn((TraceEntryHandle_t)(xTaskHandle))), (void)xTraceTaskMonitorUnregister(pvTraceEntryGetAddressReturn((TraceEntryHandle_t)(xTaskHandle))), xTraceObjectUnregister((TraceObjectHandle_t)(xTaskHandle), PSF_EVENT_TASK_DELETE, uxPriority))
 
 /**
  * @brief Sets trace task name. 
@@ -88,6 +88,17 @@ traceResult xTraceTaskInitialize(TraceTaskData_t* pxBuffer);
  * @retval TRC_SUCCESS Success
  */
 #define xTraceTaskSetName xTraceObjectSetName
+
+/**
+ * @brief Gets trace task name.
+ * 
+ * @param[in] xTaskHandle Pointer to initialized trace object.
+ * @param[out] pszName Pointer to name variable.
+ * 
+ * @retval TRC_FAIL Failure
+ * @retval TRC_SUCCESS Success
+ */
+#define xTraceTaskGetName xTraceObjectGetName
 
 /**
  * @brief Sets trace task priority.
@@ -171,16 +182,6 @@ traceResult xTraceTaskSwitch(void* pvTask, TraceUnsignedBaseType_t uxPriority);
 #endif
 
 /**
- * @brief Sets current trace task on current core.
- * 
- * @param[in] pvTask Task.
- * 
- * @retval TRC_FAIL Failure
- * @retval TRC_SUCCESS Success
- */
-#define xTraceTaskSetCurrent(pvTask) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_2(pxTraceTaskData->coreTasks[TRC_CFG_GET_CURRENT_CORE()] = (pvTask), TRC_SUCCESS)
-
-/**
  * @brief Sets current trace task on specific core.
  *
  * @param[in] coreId Core id.
@@ -192,14 +193,14 @@ traceResult xTraceTaskSwitch(void* pvTask, TraceUnsignedBaseType_t uxPriority);
 #define xTraceTaskSetCurrentOnCore(coreId, pvTask) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_2(pxTraceTaskData->coreTasks[coreId] = (pvTask), TRC_SUCCESS)
 
 /**
- * @brief Gets current trace task on current core.
+ * @brief Sets current trace task on current core.
  * 
- * @param[out] ppvTask Task.
+ * @param[in] pvTask Task.
  * 
  * @retval TRC_FAIL Failure
  * @retval TRC_SUCCESS Success
  */
-#define xTraceTaskGetCurrent(ppvTask) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_2(*(ppvTask) = pxTraceTaskData->coreTasks[TRC_CFG_GET_CURRENT_CORE()], TRC_SUCCESS)
+#define xTraceTaskSetCurrent(pvTask) xTraceTaskSetCurrentOnCore(TRC_CFG_GET_CURRENT_CORE(), pvTask)
 
 /**
  * @brief Gets current trace task on specific core.
@@ -212,12 +213,32 @@ traceResult xTraceTaskSwitch(void* pvTask, TraceUnsignedBaseType_t uxPriority);
  */
 #define xTraceTaskGetCurrentOnCore(coreId, ppvTask) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_2(*(ppvTask) = pxTraceTaskData->coreTasks[coreId], TRC_SUCCESS)
 
+/**
+ * @brief Gets current trace task on current core.
+ * 
+ * @param[out] ppvTask Task.
+ * 
+ * @retval TRC_FAIL Failure
+ * @retval TRC_SUCCESS Success
+ */
+#define xTraceTaskGetCurrent(ppvTask) xTraceTaskGetCurrentOnCore(TRC_CFG_GET_CURRENT_CORE(), ppvTask)
+
+/**
+ * @brief Returns current trace task on specific core.
+ *
+ * @param[in] coreId Core id.
+ *
+ * @retval TRC_FAIL Failure
+ * @retval TRC_SUCCESS Success
+ */
+#define xTraceTaskGetCurrentOnCoreReturn(coreId) (pxTraceTaskData->coreTasks[coreId])
+
  /**
   * @brief Returns current trace task.
   *
   * @returns Current trace task.
   */
-#define xTraceTaskGetCurrentReturn() (pxTraceTaskData->coreTasks[TRC_CFG_GET_CURRENT_CORE()])
+#define xTraceTaskGetCurrentReturn() xTraceTaskGetCurrentOnCoreReturn(TRC_CFG_GET_CURRENT_CORE())
 
 /**
  * @brief Registers trace task instance finished event.
@@ -246,6 +267,38 @@ traceResult xTraceTaskSwitch(void* pvTask, TraceUnsignedBaseType_t uxPriority);
  * @retval TRC_SUCCESS Success
  */
 #define xTraceTaskInstanceFinishedNext() xTraceEventCreate0(PSF_EVENT_IFE_NEXT)
+
+/**
+ * @brief Get the TraceTaskHandle_t of the task.
+ * 
+ * @param[in] pvTask Task.
+ * @param[out] pxTaskHandle Pointer to returned task handle.
+ * 
+ * @retval TRC_FAIL Failure
+ * @retval TRC_SUCCESS Success
+ */
+#define xTraceTaskFind(pvTask, pxTaskHandle) xTraceObjectFind(pvTask, (TraceObjectHandle_t*)pxTaskHandle)
+
+/**
+ * @brief Get the task's address from task handle.
+ * 
+ * @param[in] xTaskHandle Task handle.
+ * @param[out] ppvTask Pointer to returned task address.
+ * 
+ * @retval TRC_FAIL Failure
+ * @retval TRC_SUCCESS Success
+ */
+#define xTraceTaskGetAddress(xTaskHandle, ppvTask) xTraceObjectGetAddress((TraceObjectHandle_t)xTaskHandle, ppvTask)
+
+/**
+ * @brief Returns the task's address from task handle.
+ * 
+ * @param[in] xTaskHandle Task handle.
+ * 
+ * @retval TRC_FAIL Failure
+ * @retval TRC_SUCCESS Success
+ */
+#define pvTraceTaskGetAddressReturn(xTaskHandle) pvTraceObjectGetAddressReturn((TraceObjectHandle_t)xTaskHandle)
 
 /** @} */
 
@@ -283,11 +336,19 @@ traceResult xTraceTaskSwitch(void* pvTask, TraceUnsignedBaseType_t uxPriority);
 
 #define xTraceTaskGetCurrentOnCore(__coreId, __ppvTask) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_3((void)(__coreId), (void)(__ppvTask), TRC_SUCCESS)
 
-#define xTraceTaskGetCurrentReturn() (0)
+#define xTraceTaskGetCurrentReturn() ((void*)0)
+
+#define xTraceTaskGetCurrentOnCoreReturn(__coreId) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_2((void)(__coreId), (void*)0)
 
 #define xTraceTaskInstanceFinishedNow() (TRC_SUCCESS)
 
 #define xTraceTaskInstanceFinishedNext() (TRC_SUCCESS)
+
+#define xTraceTaskFind(__pvTask, __pxTaskHandle) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_3((void)(__pvTask), (void)(__pxTaskHandle), TRC_SUCCESS)
+
+#define xTraceTaskGetAddress(__xTaskHandle, __ppvTask) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_3((void)(__xTaskHandle), (void)(__ppvTask), TRC_SUCCESS)
+
+#define pvTraceTaskGetAddressReturn(__xTaskHandle) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_2((void)(__xTaskHandle), (void*)0)
 
 #endif
 

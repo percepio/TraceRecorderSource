@@ -1,5 +1,12 @@
 var trcEvent_8h =
 [
+    [ "prvTraceEventCreate0", "group__trace__event__apis.html#ga6d826126cfc868420dfe38ac59b3964d", null ],
+    [ "prvTraceEventCreate1", "group__trace__event__apis.html#gaff1304921b23af3fc943a9586df2539f", null ],
+    [ "prvTraceEventCreate2", "group__trace__event__apis.html#ga846b1e73245b9b26c21c333c89ef7f7b", null ],
+    [ "prvTraceEventCreate3", "group__trace__event__apis.html#ga50dd902ddd6d472cb30328405ce629ea", null ],
+    [ "prvTraceEventCreate4", "group__trace__event__apis.html#ga5f5cc896fcee9b14fb381d1f797bedfc", null ],
+    [ "prvTraceEventCreate5", "group__trace__event__apis.html#ga414aa82d04c0115196206b2f8cd47453", null ],
+    [ "prvTraceEventCreate6", "group__trace__event__apis.html#gab2c8d71ba627cd1449c23a9941deeca0", null ],
     [ "xTraceEventCreate0", "group__trace__event__apis.html#ga63f12da033faf0f4de4ef2755d73b308", null ],
     [ "xTraceEventCreate1", "group__trace__event__apis.html#ga676dd9f79556a3343072b14fac51af1d", null ],
     [ "xTraceEventCreate2", "group__trace__event__apis.html#ga5fcbd638f23ebbe7d9a4447d0338beca", null ],

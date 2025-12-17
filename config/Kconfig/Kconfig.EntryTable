@@ -1,0 +1,34 @@
+# Copyright (c) 2025 Percepio AB
+# SPDX-License-Identifier: Apache-2.0
+
+menu "Entry Table"
+	config PERCEPIO_TRC_CFG_ENTRY_TABLE_SLOTS
+		int "Entry Table Slots"
+		range 1 4194304
+		default 40
+		help
+			The maximum number of objects and symbols that can be stored. This includes:
+			- Task names
+			- Named ISRs (xTraceISRRegister)
+			- Named kernel objects (xTraceObjectSetNameWithoutHandle)
+			- User event channels (xTraceRegisterString)
+			
+			If this value is too small, not all objects and symbol names will be
+			stored and the trace display will be affected. In that case, there 
+			will be warnings (as User Events) from TzCtrl task, which monitors this.
+
+	config PERCEPIO_TRC_CFG_ENTRY_SYMBOL_MAX_LENGTH
+		int "Symbol Max Length"
+		range 1 28
+		default 28
+		help
+			The maximum length of symbol names, including:
+			- Task names
+			- Named ISRs (xTraceISRRegister)
+			- Named kernel objects (xTraceObjectSetNameWithoutHandleandle)
+			- User event channel names (xTraceRegisterString)
+			
+			If longer symbol names are used, they will be truncated by the recorder,
+			which will affect the trace display. In that case, there will be warnings
+			(as User Events) from TzCtrl task, which monitors this.
+endmenu

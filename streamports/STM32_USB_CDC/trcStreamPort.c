@@ -1,6 +1,6 @@
 /*
- * Trace Recorder for Tracealyzer v4.10.3
- * Copyright 2023 Percepio AB
+ * Trace Recorder for Tracealyzer v4.11.0
+ * Copyright 2025 Percepio AB
  * www.percepio.com
  *
  * SPDX-License-Identifier: Apache-2.0
@@ -16,7 +16,6 @@
 #include <usbd_CDC_if.h>
 
 #if (TRC_USE_TRACEALYZER_RECORDER == 1)
-#if (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING)
 
 static void prvCDCInit(void);
 
@@ -26,13 +25,7 @@ extern USBD_CDC_ItfTypeDef USBD_Interface_fops_FS;
 
 static int8_t(*CDC_Receive_FS)(uint8_t* Buf, uint32_t* Len);
 
-typedef struct TraceStreamPortUSBCommandBuffer {
-	TraceUnsignedBaseType_t idx;
-	uint8_t bufferUSB[TRC_STREAM_PORT_USB_BUFFER_SIZE];
-	uint8_t bufferInternal[TRC_STREAM_PORT_INTERNAL_BUFFER_SIZE];
-} TraceStreamPortUSBBuffers_t;
-
-TraceStreamPortUSBBuffers_t* pxUSBBuffers TRC_CFG_RECORDER_DATA_ATTRIBUTE;
+TraceStreamPortBuffer_t* pxUSBBuffers TRC_CFG_RECORDER_DATA_ATTRIBUTE;
 
 static int8_t CDC_Receive_FS_modified(uint8_t* pBuffer, uint32_t *puiLength)
 {
@@ -132,20 +125,16 @@ traceResult prvTraceCDCTransmit(void* pvData, uint32_t uiSize, int32_t * piBytes
 
 traceResult xTraceStreamPortInitialize(TraceStreamPortBuffer_t* pxBuffer)
 {
-	TRC_ASSERT_EQUAL_SIZE(TraceStreamPortBuffer_t, TraceStreamPortUSBBuffers_t);
-
 	if (pxBuffer == 0)
 	{
 		return TRC_FAIL;
 	}
 
-	pxUSBBuffers = (TraceStreamPortUSBBuffers_t*)pxBuffer;
+	pxUSBBuffers = pxBuffer;
 
 	prvCDCInit();
 
 	return xTraceInternalEventBufferInitialize(pxUSBBuffers->bufferInternal, sizeof(pxUSBBuffers->bufferInternal));
 }
 
-#endif	/*(TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING)*/
 #endif  /*(TRC_USE_TRACEALYZER_RECORDER == 1)*/
-

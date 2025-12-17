@@ -1,6 +1,6 @@
 /*
-* Percepio Trace Recorder SDK for Tracealyzer v4.10.3
-* Copyright 2023 Percepio AB
+* Percepio Trace Recorder SDK for Tracealyzer v4.11.0
+* Copyright 2025 Percepio AB
 * www.percepio.com
 *
 * SPDX-License-Identifier: Apache-2.0
@@ -15,7 +15,7 @@
 #ifndef TRC_STACK_MONITOR_H
 #define TRC_STACK_MONITOR_H
 
-#if (TRC_USE_TRACEALYZER_RECORDER == 1) && (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING) && ((TRC_CFG_ENABLE_STACK_MONITOR) == 1) && ((TRC_CFG_SCHEDULING_ONLY) == 0)
+#if (TRC_USE_TRACEALYZER_RECORDER == 1) && ((TRC_CFG_ENABLE_STACK_MONITOR) == 1) && ((TRC_CFG_SCHEDULING_ONLY) == 0)
 
 #include <stdint.h>
 #include <trcRecorder.h>

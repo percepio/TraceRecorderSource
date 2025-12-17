@@ -1,12 +1,11 @@
 /*
- * Trace Recorder for Tracealyzer v4.10.3
- * Copyright 2023 Percepio AB
+ * Trace Recorder for Tracealyzer v4.11.0
+ * Copyright 2025 Percepio AB
  * www.percepio.com
  *
  * SPDX-License-Identifier: Apache-2.0
  *
  * Main configuration parameters for the trace recorder library.
- * More settings can be found in trcStreamingConfig.h and trcSnapshotConfig.h.
  */
 
 #ifndef TRC_CONFIG_H
@@ -46,7 +45,7 @@ extern "C" {
  *
  * Default value is 0 (= include additional events).
  */
-#define TRC_CFG_SCHEDULING_ONLY CONFIG_PERCEPIO_RECORDER_CFG_SCHEDULING_ONLY
+#define TRC_CFG_SCHEDULING_ONLY CONFIG_PERCEPIO_TRC_CFG_SCHEDULING_ONLY
 
 /**
  * @def TRC_CFG_INCLUDE_MEMMANG_EVENTS
@@ -57,7 +56,7 @@ extern "C" {
  *
  * Default value is 1.
  */
-#define TRC_CFG_INCLUDE_MEMMANG_EVENTS CONFIG_PERCEPIO_RECORDER_CFG_INCLUDE_MEMMANG_EVENTS
+#define TRC_CFG_INCLUDE_MEMMANG_EVENTS CONFIG_PERCEPIO_TRC_CFG_INCLUDE_MEMMANG_EVENTS
 
 /**
  * @def TRC_CFG_INCLUDE_USER_EVENTS
@@ -68,7 +67,7 @@ extern "C" {
  * ignored.
  *
  * User Events are application-generated events, like "printf" but for the 
- * trace log, generated using vTracePrint and vTracePrintF. 
+ * trace log, generated using xTracePrint and xTracePrintF. 
  * The formatting is done on host-side, by Tracealyzer. User Events are 
  * therefore much faster than a console printf and can often be used
  * in timing critical code without problems.
@@ -81,7 +80,7 @@ extern "C" {
  *
  * Default value is 1.
  */
-#define TRC_CFG_INCLUDE_USER_EVENTS CONFIG_PERCEPIO_RECORDER_CFG_INCLUDE_USER_EVENTS
+#define TRC_CFG_INCLUDE_USER_EVENTS CONFIG_PERCEPIO_TRC_CFG_INCLUDE_USER_EVENTS
 
 /**
  * @def TRC_CFG_INCLUDE_ISR_TRACING
@@ -89,20 +88,18 @@ extern "C" {
  *
  * If this is zero (0), the code for recording Interrupt Service Routines is
  * excluded, in order to reduce code size. This means that any calls to
- * vTraceStoreISRBegin/vTraceStoreISREnd will be ignored.
+ * xTraceStoreISRBegin/xTraceStoreISREnd will be ignored.
  * This does not completely disable ISR tracing, in cases where an ISR is
  * calling a traced kernel service. These events will still be recorded and
  * show up in anonymous ISR instances in Tracealyzer, with names such as
  * "ISR sending to <queue name>".
- * To disable such tracing, please refer to vTraceSetFilterGroup and 
- * vTraceSetFilterMask.
  *
  * Default value is 1.
  *
- * Note: tracing ISRs requires that you insert calls to vTraceStoreISRBegin
- * and vTraceStoreISREnd in your interrupt handlers.
+ * Note: tracing ISRs requires that you insert calls to xTraceStoreISRBegin
+ * and xTraceStoreISREnd in your interrupt handlers.
  */
-#define TRC_CFG_INCLUDE_ISR_TRACING CONFIG_PERCEPIO_RECORDER_CFG_INCLUDE_ISR_TRACING
+#define TRC_CFG_INCLUDE_ISR_TRACING CONFIG_PERCEPIO_TRC_CFG_INCLUDE_ISR_TRACING
 
 /**
  * @def TRC_CFG_INCLUDE_READY_EVENTS
@@ -119,7 +116,7 @@ extern "C" {
  *
  * Default value is 1.
  */
-#define TRC_CFG_INCLUDE_READY_EVENTS CONFIG_PERCEPIO_RECORDER_CFG_INCLUDE_READY_EVENTS
+#define TRC_CFG_INCLUDE_READY_EVENTS CONFIG_PERCEPIO_TRC_CFG_INCLUDE_READY_EVENTS
 
 /**
  * @def TRC_CFG_INCLUDE_OSTICK_EVENTS
@@ -131,7 +128,47 @@ extern "C" {
  *
  * Default value is 1.
  */
-#define TRC_CFG_INCLUDE_OSTICK_EVENTS CONFIG_PERCEPIO_RECORDER_CFG_INCLUDE_OSTICK_EVENTS
+#define TRC_CFG_INCLUDE_OSTICK_EVENTS CONFIG_PERCEPIO_TRC_CFG_INCLUDE_OSTICK_EVENTS
+
+/**
+ * @def TRC_CFG_ENTRY_SLOTS
+ * @brief The maximum number of objects and symbols that can be stored. This includes:
+ * - Task names
+ * - Named ISRs (xTraceISRRegister)
+ * - Named kernel objects (xTraceObjectSetNameWithoutHandle)
+ * - User event channels (xTraceStringRegister)
+ *
+ * If this value is too small, not all symbol names will be stored and the
+ * trace display will be affected. In that case, there will be warnings
+ * (as User Events) from TzCtrl task, which monitors this.
+ */
+#define TRC_CFG_ENTRY_SLOTS CONFIG_PERCEPIO_TRC_CFG_ENTRY_TABLE_SLOTS
+
+/**
+ * @def TRC_CFG_ENTRY_SYMBOL_MAX_LENGTH
+ * @brief The maximum length of symbol names, including:
+ * - Task names
+ * - Named ISRs (xTraceISRRegister)
+ * - Named kernel objects (xTraceObjectSetNameWithoutHandle)
+ * - User event channel names (xTraceStringRegister)
+ *
+ * If longer symbol names are used, they will be truncated by the recorder,
+ * which will affect the trace display. In that case, there will be warnings
+ * (as User Events) from TzCtrl task, which monitors this.
+ */
+#define TRC_CFG_ENTRY_SYMBOL_MAX_LENGTH CONFIG_PERCEPIO_TRC_CFG_ENTRY_SYMBOL_MAX_LENGTH
+
+/**
+ * @def TRC_CFG_ENABLE_TASK_MONITOR
+ * @brief Enable task monitoring, which allows TraceRecorder to monitor task execution times.
+ */
+#define TRC_CFG_ENABLE_TASK_MONITOR CONFIG_PERCEPIO_TRC_CFG_ENABLE_TASK_MONITOR
+
+/**
+ * @def TRC_CFG_TASK_MONITOR_MAX_TASKS
+ * @brief The maximum number of tasks that can be monitored by the task monitor.
+ */
+#define TRC_CFG_TASK_MONITOR_MAX_TASKS CONFIG_PERCEPIO_TRC_CFG_TASK_MONITOR_MAX_TASKS
 
 /**
  * @def TRC_CFG_ENABLE_STACK_MONITOR
@@ -142,7 +179,7 @@ extern "C" {
  * In snapshot mode, the TzCtrl task is only used for stack monitoring and is
  * not created unless this is enabled.
  */
-#define TRC_CFG_ENABLE_STACK_MONITOR CONFIG_PERCEPIO_RECORDER_CFG_ENABLE_STACK_MONITOR
+#define TRC_CFG_ENABLE_STACK_MONITOR CONFIG_PERCEPIO_TRC_CFG_ENABLE_STACK_MONITOR
 
 /**
  * @def TRC_CFG_STACK_MONITOR_MAX_TASKS
@@ -153,7 +190,7 @@ extern "C" {
  *
  * Default value is 10.
  */
-#define TRC_CFG_STACK_MONITOR_MAX_TASKS CONFIG_PERCEPIO_RECORDER_CFG_STACK_MONITOR_MAX_TASKS
+#define TRC_CFG_STACK_MONITOR_MAX_TASKS CONFIG_PERCEPIO_TRC_CFG_STACK_MONITOR_MAX_TASKS
 
 /**
  * @def TRC_CFG_STACK_MONITOR_MAX_REPORTS
@@ -173,7 +210,7 @@ extern "C" {
  *
  * Default value is 1.
  */
-#define TRC_CFG_STACK_MONITOR_MAX_REPORTS CONFIG_PERCEPIO_RECORDER_CFG_STACK_MONITOR_MAX_REPORTS
+#define TRC_CFG_STACK_MONITOR_MAX_REPORTS CONFIG_PERCEPIO_TRC_CFG_STACK_MONITOR_MAX_REPORTS
 
 /**
  * @def TRC_CFG_CTRL_TASK_PRIORITY
@@ -190,7 +227,7 @@ extern "C" {
  * not created if stack monitoring is disabled. TRC_CFG_CTRL_TASK_PRIORITY should
  * be low, to avoid disturbing any time-sensitive tasks.
  */
-#define TRC_CFG_CTRL_TASK_PRIORITY CONFIG_PERCEPIO_RECORDER_CFG_CTRL_TASK_PRIORITY
+#define TRC_CFG_CTRL_TASK_PRIORITY CONFIG_PERCEPIO_TRC_CFG_CTRL_TASK_PRIORITY
 
 /**
  * @def TRC_CFG_CTRL_TASK_DELAY
@@ -202,14 +239,14 @@ extern "C" {
  * increases the CPU load of TzCtrl somewhat, but may improve the performance of
  * of the trace streaming, especially if the trace buffer is small.
  */
-#define TRC_CFG_CTRL_TASK_DELAY CONFIG_PERCEPIO_RECORDER_CFG_CTRL_TASK_DELAY
+#define TRC_CFG_CTRL_TASK_DELAY CONFIG_PERCEPIO_TRC_CFG_CTRL_TASK_DELAY
 
 /**
  * @def TRC_CFG_CTRL_TASK_STACK_SIZE
  * @brief The stack size of the Tracealyzer Control (TzCtrl) task.
  * See TRC_CFG_CTRL_TASK_PRIORITY for further information about TzCtrl.
  */
-#define TRC_CFG_CTRL_TASK_STACK_SIZE CONFIG_PERCEPIO_RECORDER_CFG_CTRL_TASK_STACK_SIZE
+#define TRC_CFG_CTRL_TASK_STACK_SIZE CONFIG_PERCEPIO_TRC_CFG_CTRL_TASK_STACK_SIZE
 
 /**
  * @def TRC_CFG_RECORDER_BUFFER_ALLOCATION
@@ -218,17 +255,17 @@ extern "C" {
  *
  * Values:
  * TRC_RECORDER_BUFFER_ALLOCATION_STATIC  - Static allocation (internal)
- * TRC_RECORDER_BUFFER_ALLOCATION_DYNAMIC - Malloc in vTraceEnable
- * TRC_RECORDER_BUFFER_ALLOCATION_CUSTOM  - Use vTraceSetRecorderDataBuffer
+ * TRC_RECORDER_BUFFER_ALLOCATION_DYNAMIC - Malloc in xTraceEnable
+ * TRC_RECORDER_BUFFER_ALLOCATION_CUSTOM  - Use xTraceSetBuffer
  *
  * Static and dynamic mode does the allocation for you, either in compile time
  * (static) or in runtime (malloc).
  * The custom mode allows you to control how and where the allocation is made,
- * for details see TRC_ALLOC_CUSTOM_BUFFER and vTraceSetRecorderDataBuffer().
+ * for details see TRC_ALLOC_CUSTOM_BUFFER and xTraceSetBuffer().
  */
-#if CONFIG_PERCEPIO_RECORDER_TRC_RECORDER_BUFFER_ALLOCATION_STATIC == 1
+#if CONFIG_PERCEPIO_TRC_RECORDER_BUFFER_ALLOCATION_STATIC == 1
     #define TRC_CFG_RECORDER_BUFFER_ALLOCATION TRC_RECORDER_BUFFER_ALLOCATION_STATIC
-#elif CONFIG_PERCEPIO_RECORDER_TRC_RECORDER_BUFFER_ALLOCATION_DYNAMIC == 1
+#elif CONFIG_PERCEPIO_TRC_RECORDER_BUFFER_ALLOCATION_DYNAMIC == 1
     #define TRC_CFG_RECORDER_BUFFER_ALLOCATION TRC_RECORDER_BUFFER_ALLOCATION_DYNAMIC
 #else
     #define TRC_CFG_RECORDER_BUFFER_ALLOCATION TRC_RECORDER_BUFFER_ALLOCATION_CUSTOM
@@ -246,7 +283,7 @@ extern "C" {
  *
  * Default value: 8
  */
-#define TRC_CFG_MAX_ISR_NESTING CONFIG_PERCEPIO_RECORDER_CFG_MAX_ISR_NESTING
+#define TRC_CFG_MAX_ISR_NESTING CONFIG_PERCEPIO_TRC_CFG_MAX_ISR_NESTING
 
 /**
  * @def TRC_CFG_ISR_TAILCHAINING_THRESHOLD
@@ -255,30 +292,26 @@ extern "C" {
  * If tracing multiple ISRs, this setting allows for accurate display of the
  * context-switching also in cases when the ISRs execute in direct sequence.
  *
- * vTraceStoreISREnd normally assumes that the ISR returns to the previous
+ * xTraceStoreISREnd normally assumes that the ISR returns to the previous
  * context, i.e., a task or a preempted ISR. But if another traced ISR
  * executes in direct sequence, Tracealyzer may incorrectly display a minimal
  * fragment of the previous context in between the ISRs.
  *
  * By using TRC_CFG_ISR_TAILCHAINING_THRESHOLD you can avoid this. This is
  * however a threshold value that must be measured for your specific setup.
- * See http://percepio.com/2014/03/21/isr_tailchaining_threshold/
  *
  * The default setting is 0, meaning "disabled" and that you may get an
  * extra fragments of the previous context in between tail-chained ISRs.
- *
- * Note: This setting has separate definitions in trcSnapshotConfig.h and
- * trcStreamingConfig.h, since it is affected by the recorder mode.
  */
-#define TRC_CFG_ISR_TAILCHAINING_THRESHOLD CONFIG_PERCEPIO_RECORDER_TRC_CFG_ISR_TAILCHAINING_THRESHOLD_STREAMING
+#define TRC_CFG_ISR_TAILCHAINING_THRESHOLD CONFIG_PERCEPIO_TRC_CFG_ISR_TAILCHAINING_THRESHOLD
 
 /**
  * @def TRC_CFG_RECORDER_DATA_INIT
- * @brief Macro which states wether the recorder data should have an initial value.
+ * @brief Macro which states whether the recorder data should have an initial value.
  *
  * In very specific cases where traced objects are created before main(),
  * the recorder will need to be started even before that. In these cases,
- * the recorder data would be initialized by vTraceEnable(TRC_INIT) but could
+ * the recorder data would be initialized by xTraceInitialize() but could
  * then later be overwritten by the initialization value.
  * If this is an issue for you, set TRC_CFG_RECORDER_DATA_INIT to 0.
  * The following code can then be used before any traced objects are created:
@@ -287,7 +320,7 @@ extern "C" {
  *	RecorderInitialized = 0;
  *	xTraceInitialize();
  *
- * After the clocks are properly initialized, use vTraceEnable(...) to start
+ * After the clocks are properly initialized, use xTraceEnable(...) to start
  * the tracing.
  *
  * Default value is 1.

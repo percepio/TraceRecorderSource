@@ -1,6 +1,6 @@
 /*
- * Trace Recorder for Tracealyzer v4.10.3
- * Copyright 2023 Percepio AB
+ * Trace Recorder for Tracealyzer v4.11.0
+ * Copyright 2025 Percepio AB
  * www.percepio.com
  *
  * SPDX-License-Identifier: Apache-2.0
@@ -15,44 +15,37 @@
 
 #if (TRC_USE_TRACEALYZER_RECORDER == 1)
 
-#if (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING)  
-	
+#if (TRC_CFG_STREAM_PORT_USE_INTERNAL_BUFFER == 0)
+#error This StreamPort requires that TRC_CFG_STREAM_PORT_USE_INTERNAL_BUFFER is enabled!
+#endif
+
 /* TCP/IP includes - for lwIP in this case */
 #include <lwip/tcpip.h>
 #include <lwip/sockets.h>
 #include <lwip/errno.h>
 
-int sock = -1, new_sd = -1;
-int flags = 0;
-int remoteSize;
+int listener_socket =  -1 ;
+int data_sockets[TRC_CFG_CORE_COUNT];
 struct sockaddr_in address, remote;
+int remoteSize = sizeof(remote);
 
-typedef struct TraceStreamPortTCPIP
-{
-#if (TRC_USE_INTERNAL_BUFFER)
-	uint8_t buffer[(TRC_ALIGNED_STREAM_PORT_BUFFER_SIZE)];
-#else
-	TraceUnsignedBaseType_t buffer[1];
-#endif
-} TraceStreamPortTCPIP_t;
+static TraceStreamPortBuffer_t* pxStreamPortTCPIP TRC_CFG_RECORDER_DATA_ATTRIBUTE;
 
-static TraceStreamPortTCPIP_t* pxStreamPortTCPIP TRC_CFG_RECORDER_DATA_ATTRIBUTE;
-
-static int32_t prvSocketSend(void* pvData, uint32_t uiSize, int32_t* piBytesWritten);
-static int32_t prvSocketReceive(void* pvData, uint32_t uiSize, int32_t* piBytesRead);
+static int32_t prvSocketSend(void* pvData, uint32_t uiSize, uint32_t uiChannel, int32_t* piBytesWritten);
+static int32_t prvSocketReceive(void* pvData, uint32_t uiSize, uint32_t uiChannel, int32_t* piBytesRead);
 static int32_t prvSocketInitializeListener(void);
 static int32_t prvSocketAccept(void);
 static void prvCloseAllSockets(void);
 
-static int32_t prvSocketSend( void* pvData, uint32_t uiSize, int32_t* piBytesWritten )
+static int32_t prvSocketSend( void* pvData, uint32_t uiSize, uint32_t uiChannel, int32_t* piBytesWritten )
 {
-  if (new_sd < 0)
+  if (data_sockets[uiChannel] < 0)
     return -1;
   
   if (piBytesWritten == (void*)0)
 	return -1;
   
-  *piBytesWritten = send( new_sd, pvData, uiSize, 0 );
+  *piBytesWritten = send( data_sockets[uiChannel], pvData, uiSize, 0 );
   
   if (*piBytesWritten < 0)
   {
@@ -60,36 +53,36 @@ static int32_t prvSocketSend( void* pvData, uint32_t uiSize, int32_t* piBytesWri
 		
     /* EWOULDBLOCK may be expected when buffers are full */
     if (errno != EWOULDBLOCK)
-	{
-		close(new_sd);
-		new_sd = -1;
-		return -1;
-	}
+    {
+      close(data_sockets[uiChannel]);
+      data_sockets[uiChannel] = -1;
+      return -1;
+    }
   }
   
   return 0;
 }
 
-static int32_t prvSocketReceive( void* pvData, uint32_t uiSize, int32_t* piBytesRead )
+static int32_t prvSocketReceive( void* pvData, uint32_t uiSize, uint32_t uiChannel, int32_t* piBytesRead )
 {
-  if (new_sd < 0)
+  if (data_sockets[uiChannel] < 0)
     return -1;
   
   if (piBytesRead == (void*)0)
 	  return -1;
 
-  *piBytesRead = recv( new_sd, pvData, uiSize, 0 );
+  *piBytesRead = recv( data_sockets[uiChannel], pvData, uiSize, 0 );
   
   if (*piBytesRead < 0)
   {
 	  *piBytesRead = 0;
 	  
-		/* EWOULDBLOCK may be expected when there is no pvData to receive */
+		/* EWOULDBLOCK may be expected when there is no data to receive */
 	  if (errno != EWOULDBLOCK)
 	  {
-		close(new_sd);
-		new_sd = -1;
-		return -1;
+		  close(data_sockets[uiChannel]);
+		  data_sockets[uiChannel] = -1;
+		  return -1;
 	  }
   }
 
@@ -98,14 +91,14 @@ static int32_t prvSocketReceive( void* pvData, uint32_t uiSize, int32_t* piBytes
 
 static int32_t prvSocketInitializeListener(void)
 {
-  if (sock >= 0)
+  if (listener_socket >= 0)
   {
 	  return 0;
   }
   
-  sock = socket(AF_INET, SOCK_STREAM, 0);
+  listener_socket = socket(AF_INET, SOCK_STREAM, 0);
   
-  if (sock < 0)
+  if (listener_socket < 0)
   {
     return -1;
   }
@@ -114,17 +107,17 @@ static int32_t prvSocketInitializeListener(void)
   address.sin_port = htons(TRC_CFG_STREAM_PORT_TCPIP_PORT);
   address.sin_addr.s_addr = INADDR_ANY;
 
-  if (bind(sock, (struct sockaddr *)&address, sizeof (address)) < 0)
+  if (bind(listener_socket, (struct sockaddr *)&address, sizeof (address)) < 0)
   {
-    close(sock);
-    sock = -1;
+    close(listener_socket);
+    listener_socket = -1;
     return -1;
   }
 
-  if (listen(sock, 5) < 0)
+  if (listen(listener_socket, (TRC_CFG_CORE_COUNT) + 1) < 0)
   {
-    close(sock);
-    sock = -1;
+    close(listener_socket);
+    listener_socket = -1;
     return -1;
   }
 
@@ -133,78 +126,93 @@ static int32_t prvSocketInitializeListener(void)
 
 static int32_t prvSocketAccept(void)
 {
-  if (sock < 0)
+  int i;
+  int flags;
+
+  if (listener_socket < 0)
       return -1;
-  
-  if (new_sd >= 0)
-      return 0;
-  
-  remoteSize = sizeof( remote );
-  new_sd = accept( sock, (struct sockaddr *)&remote, (socklen_t*)&remoteSize );
 
-  if( new_sd < 0 )
+  for (i = 0; i < TRC_CFG_CORE_COUNT; i++)
   {
-   	close(new_sd);
-    new_sd = -1;
-   	close(sock);
-    sock = -1;
-    return -1;
-  }
+      if (data_sockets[i] >= 0)
+      {
+          continue;
+      }
 
-  flags = fcntl( new_sd, F_GETFL, 0 );
-  fcntl( new_sd, F_SETFL, flags | O_NONBLOCK );
+      data_sockets[i] = accept( listener_socket, (struct sockaddr *)&remote, (socklen_t*)&remoteSize );
+
+      if( data_sockets[i] < 0 )
+      {
+          prvCloseAllSockets();
+          return -1;
+      }
+
+      flags = fcntl( data_sockets[i], F_GETFL, 0 );
+      fcntl( data_sockets[i], F_SETFL, flags | O_NONBLOCK );
+  }
 
   return 0;
 }
 
-static void prvCloseAllSockets(void)
+static void prvCloseAllSockets()
 {
-	if (new_sd > 0)
-	{
-		close(new_sd);
-	}
-	
-	if (sock > 0)
-	{
-		close(sock);
-	}
+  int i;
+  for (i = 0; i < TRC_CFG_CORE_COUNT; i++)
+  {
+    if (data_sockets[i] > 0)
+    {
+      close(data_sockets[i]);
+      data_sockets[i] = -1;
+    }
+  }
+    
+  if (listener_socket > 0)
+  {
+    close(listener_socket);
+    listener_socket = -1;
+  }
 }
 /************** MODIFY THE ABOVE PART TO USE YOUR TPC/IP STACK ****************/
 
-int32_t prvTraceTcpWrite(void* pvData, uint32_t uiSize, int32_t *piBytesWritten)
+int32_t prvTraceTcpWrite(void* pvData, uint32_t uiSize, uint32_t uiChannel, int32_t *piBytesWritten)
 {
-	prvSocketInitializeListener();
+  if (listener_socket < 0)
+  {
+    prvSocketInitializeListener();
+    prvSocketAccept();
+  }
 
-	prvSocketAccept();
-	
-    return prvSocketSend(pvData, uiSize, piBytesWritten);
+  return prvSocketSend(pvData, uiSize, uiChannel, piBytesWritten);
 }
 
 int32_t prvTraceTcpRead(void* pvData, uint32_t uiSize, int32_t *piBytesRead)
 {
+  if (listener_socket < 0)
+  {
     prvSocketInitializeListener();
-        
     prvSocketAccept();
+  }
       
-    return prvSocketReceive(pvData, uiSize, piBytesRead);
+    return prvSocketReceive(pvData, uiSize, 0, piBytesRead);
 }
 
 traceResult xTraceStreamPortInitialize(TraceStreamPortBuffer_t* pxBuffer)
 {
-	TRC_ASSERT_EQUAL_SIZE(TraceStreamPortBuffer_t, TraceStreamPortTCPIP_t);
+  int i;
 
 	if (pxBuffer == 0)
 	{
 		return TRC_FAIL;
 	}
 
-	pxStreamPortTCPIP = (TraceStreamPortTCPIP_t*)pxBuffer;
+	pxStreamPortTCPIP = pxBuffer;
 
-#if (TRC_USE_INTERNAL_BUFFER == 1)
-	return xTraceInternalEventBufferInitialize(pxStreamPortTCPIP->buffer, sizeof(pxStreamPortTCPIP->buffer));
-#else
+  for (i = 0; i < TRC_CFG_CORE_COUNT; i++)
+  {
+    data_sockets[i] = -1;
+  }
+
 	return TRC_SUCCESS;
-#endif
 }
 
 traceResult xTraceStreamPortOnTraceEnd(void)
@@ -213,7 +221,5 @@ traceResult xTraceStreamPortOnTraceEnd(void)
 
 	return TRC_SUCCESS;
 }
-
-#endif /*(TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING)*/
 
 #endif /*(TRC_USE_TRACEALYZER_RECORDER == 1)*/

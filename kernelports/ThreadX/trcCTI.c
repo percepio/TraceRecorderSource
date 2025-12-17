@@ -1,6 +1,6 @@
 /*
- * Trace Recorder for Tracealyzer v4.10.3
- * Copyright 2023 Percepio AB
+ * Trace Recorder for Tracealyzer v4.11.0
+ * Copyright 2025 Percepio AB
  * www.percepio.com
  *
  * SPDX-License-Identifier: Apache-2.0
@@ -22,7 +22,7 @@ extern UINT _txe_block_pool_create_orig(TX_BLOCK_POOL *pool_ptr, CHAR *name_ptr,
 extern UINT _txe_block_pool_delete_orig(TX_BLOCK_POOL *pool_ptr);
 extern UINT _txe_block_pool_info_get_orig(TX_BLOCK_POOL *pool_ptr, CHAR **name, ULONG *available_blocks, ULONG *total_blocks, TX_THREAD **first_suspended, ULONG *suspended_count, TX_BLOCK_POOL **next_pool);
 extern UINT _tx_block_pool_performance_info_get_orig(TX_BLOCK_POOL *pool_ptr, ULONG *allocates, ULONG *releases, ULONG *suspensions, ULONG *timeouts);
-extern UINT _tx_block_pool_performance_system_info_get_oirg(ULONG *allocates, ULONG *releases, ULONG *suspensions, ULONG *timeouts);
+extern UINT _tx_block_pool_performance_system_info_get_orig(ULONG *allocates, ULONG *releases, ULONG *suspensions, ULONG *timeouts);
 extern UINT _txe_block_pool_prioritize_orig(TX_BLOCK_POOL *pool_ptr);
 extern UINT _txe_block_release_orig(VOID *block_ptr);
 
@@ -49,7 +49,7 @@ extern UINT _txe_mutex_delete_orig(TX_MUTEX *mutex_ptr);
 extern UINT _txe_mutex_get_orig(TX_MUTEX *mutex_ptr, ULONG wait_option);
 extern UINT _txe_mutex_info_get_orig(TX_MUTEX *mutex_ptr, CHAR **name, ULONG *count, TX_THREAD **owner, TX_THREAD **first_suspended, ULONG *suspended_count, TX_MUTEX **next_mutex);
 extern UINT _tx_mutex_performance_info_get_orig(TX_MUTEX *mutex_ptr, ULONG *puts, ULONG *gets, ULONG *suspensions, ULONG *timeouts, ULONG *inversions, ULONG *inheritances);
-extern UINT _tx_mutex_performance_system_info_get_oirg(ULONG *puts, ULONG *gets, ULONG *suspensions, ULONG *timeouts, ULONG *inversions, ULONG *inheritances);
+extern UINT _tx_mutex_performance_system_info_get_orig(ULONG *puts, ULONG *gets, ULONG *suspensions, ULONG *timeouts, ULONG *inversions, ULONG *inheritances);
 extern UINT _txe_mutex_prioritize_orig(TX_MUTEX *mutex_ptr);
 extern UINT _txe_mutex_put_orig(TX_MUTEX *mutex_ptr);
 
@@ -71,7 +71,7 @@ extern UINT _txe_semaphore_delete_orig(TX_SEMAPHORE *semaphore_ptr);
 extern UINT _txe_semaphore_get_orig(TX_SEMAPHORE *semaphore_ptr, ULONG wait_option);
 extern UINT _txe_semaphore_info_get_orig(TX_SEMAPHORE *semaphore_ptr, CHAR **name, ULONG *current_value, TX_THREAD **first_suspended, ULONG *suspended_count, TX_SEMAPHORE **next_semaphore);
 extern UINT _tx_semaphore_performance_info_get_orig(TX_SEMAPHORE *semaphore_ptr, ULONG *puts, ULONG *gets, ULONG *suspensions, ULONG *timeouts);
-extern UINT _tx_semaphore_performance_system_info_get_oirg(ULONG *puts, ULONG *gets, ULONG *suspensions, ULONG *timeouts);
+extern UINT _tx_semaphore_performance_system_info_get_orig(ULONG *puts, ULONG *gets, ULONG *suspensions, ULONG *timeouts);
 extern UINT _txe_semaphore_prioritize_orig(TX_SEMAPHORE *semaphore_ptr);
 extern UINT _txe_semaphore_put_notify_orig(TX_SEMAPHORE *semaphore_ptr, VOID (*semaphore_put_notify)(TX_SEMAPHORE *notify_semaphore_ptr));
 extern UINT _txe_semaphore_put_orig(TX_SEMAPHORE *semaphore_ptr);
@@ -81,7 +81,7 @@ extern UINT _txe_thread_delete_orig(TX_THREAD *thread_ptr);
 extern UINT _txe_thread_entry_exit_notify_orig(TX_THREAD *thread_ptr, VOID (*thread_entry_exit_notify)(TX_THREAD *notify_thread_ptr, UINT type));
 extern UINT _txe_thread_info_get_orig(TX_THREAD *thread_ptr, CHAR **name, UINT *state, ULONG *run_count, UINT *priority, UINT *preemption_threshold, ULONG *time_slice, TX_THREAD **next_thread, TX_THREAD **next_suspended_thread);
 extern UINT _tx_thread_performance_info_get_orig(TX_THREAD *thread_ptr, ULONG *resumptions, ULONG *suspensions, ULONG *solicited_preemptions, ULONG *interrupt_preemptions, ULONG *priority_inversions, ULONG *time_slices, ULONG *relinquishes, ULONG *timeouts, ULONG *wait_aborts, TX_THREAD **last_preempted_by);
-extern UINT _tx_thread_performance_system_info_get_oirg(ULONG *resumptions, ULONG *suspensions, ULONG *solicited_preemptions, ULONG *interrupt_preemptions, ULONG *priority_inversions, ULONG *time_slices, ULONG *relinquishes, ULONG *timeouts, ULONG *wait_aborts, ULONG *non_idle_returns, ULONG *idle_returns);
+extern UINT _tx_thread_performance_system_info_get_orig(ULONG *resumptions, ULONG *suspensions, ULONG *solicited_preemptions, ULONG *interrupt_preemptions, ULONG *priority_inversions, ULONG *time_slices, ULONG *relinquishes, ULONG *timeouts, ULONG *wait_aborts, ULONG *non_idle_returns, ULONG *idle_returns);
 extern UINT _txe_thread_preemption_change_orig(TX_THREAD *thread_ptr, UINT new_threshold, UINT *old_threshold);
 extern UINT _txe_thread_priority_change_orig(TX_THREAD *thread_ptr, UINT new_priority, UINT *old_priority);
 extern UINT _txe_thread_reset_orig(TX_THREAD *thread_ptr);
@@ -197,7 +197,7 @@ UINT  _tx_block_pool_performance_info_get(TX_BLOCK_POOL *pool_ptr, ULONG *alloca
 
 UINT  _tx_block_pool_performance_system_info_get(ULONG *allocates, ULONG *releases, ULONG *suspensions, ULONG *timeouts)
 {
-	UINT ret = _tx_block_pool_performance_system_info_get_oirg(allocates, releases, suspensions, timeouts);
+	UINT ret = _tx_block_pool_performance_system_info_get_orig(allocates, releases, suspensions, timeouts);
 
 	(void)xTraceEventCreate0(ret == TX_SUCCESS ? PSF_EVENT_BLOCK_POOL__PERFORMANCE_SYSTEM_INFO_GET_SUCCESS : PSF_EVENT_BLOCK_POOL__PERFORMANCE_SYSTEM_INFO_GET_FAILED);
 
@@ -544,7 +544,7 @@ UINT _tx_mutex_performance_info_get(TX_MUTEX *mutex_ptr, ULONG *puts, ULONG *get
 UINT  _tx_mutex_performance_system_info_get(ULONG *puts, ULONG *gets, ULONG *suspensions,
                                 ULONG *timeouts, ULONG *inversions, ULONG *inheritances)
 {
-	UINT ret = _tx_mutex_performance_system_info_get_oirg(puts, gets, suspensions, timeouts, inversions, inheritances);
+	UINT ret = _tx_mutex_performance_system_info_get_orig(puts, gets, suspensions, timeouts, inversions, inheritances);
 
 	if(ret == TX_SUCCESS)
 	{
@@ -843,7 +843,7 @@ UINT _tx_semaphore_performance_info_get(TX_SEMAPHORE *semaphore_ptr, ULONG *puts
 
 UINT  _tx_semaphore_performance_system_info_get(ULONG *puts, ULONG *gets, ULONG *suspensions, ULONG *timeouts)
 {
-	UINT ret = _tx_semaphore_performance_system_info_get_oirg(puts, gets, suspensions, timeouts);
+	UINT ret = _tx_semaphore_performance_system_info_get_orig(puts, gets, suspensions, timeouts);
 
 	if(ret == TX_SUCCESS)
 	{
@@ -1066,7 +1066,7 @@ UINT  _tx_thread_performance_system_info_get(ULONG *resumptions, ULONG *suspensi
                 ULONG *time_slices, ULONG *relinquishes, ULONG *timeouts, ULONG *wait_aborts,
                 ULONG *non_idle_returns, ULONG *idle_returns)
 {
-	UINT ret = _tx_thread_performance_system_info_get_oirg(resumptions, suspensions, solicited_preemptions, interrupt_preemptions, priority_inversions, time_slices, relinquishes, timeouts, wait_aborts, non_idle_returns, idle_returns);
+	UINT ret = _tx_thread_performance_system_info_get_orig(resumptions, suspensions, solicited_preemptions, interrupt_preemptions, priority_inversions, time_slices, relinquishes, timeouts, wait_aborts, non_idle_returns, idle_returns);
 
 	if(ret == TX_SUCCESS)
 	{

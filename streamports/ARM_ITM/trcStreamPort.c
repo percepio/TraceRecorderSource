@@ -1,6 +1,6 @@
 /*
- * Trace Recorder for Tracealyzer v4.10.3
- * Copyright 2023 Percepio AB
+ * Trace Recorder for Tracealyzer v4.11.0
+ * Copyright 2025 Percepio AB
  * www.percepio.com
  *
  * SPDX-License-Identifier: Apache-2.0
@@ -36,11 +36,11 @@
  * RAM buffer, like below. This reconfigures the recorder to store the events
  * in the internal RAM buffer instead of writing them directly to the ITM port.
  * 
- * Set TRC_STREAM_PORT_USE_INTERNAL_BUFFER to 1 to use the indirect mode.
+ * Set TRC_CFG_STREAM_PORT_USE_INTERNAL_BUFFER to 1 to use the indirect mode.
  *
  * This increases RAM usage but eliminates peaks in the trace data rate.
  * Moreover, the ITM writes are then performed in a separate task (TzCtrl).
- * You find relevant settings (buffer size etc.) in trcStreamingConfig.h.
+ * You find relevant settings (buffer size etc.) in trcConfig.h.
  *
  * See also https://percepio.com/2018/10/11/tuning-your-custom-trace-streaming 
  *
@@ -54,15 +54,13 @@
  * computer, you need two-way communication to send commands to the recorder.
  * This is possible by writing such "start" and "stop" commands to a special
  * buffer, monitored by the recorder library, using the debugger IDE. 
- * See trcStreamingPort.c and also the example macro for Keil uVision 
+ * See trcStreamPort.c and also the example macro for Keil uVision 
  * (Keil-uVision-Tracealyzer-ITM-Exporter.ini).
  */
 
 #include <trcRecorder.h>
 
 #if (TRC_USE_TRACEALYZER_RECORDER == 1)
-
-#if (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING)
 
 static TraceStreamPortBuffer_t* pxStreamPortITM TRC_CFG_RECORDER_DATA_ATTRIBUTE;
 
@@ -77,14 +75,14 @@ volatile char tz_host_command_data[32];
  * A debugger IDE may write to these functions using a macro. 
  * An example for Keil is included (Keil-uVision-Tracealyzer-ITM-Exporter.ini). */
 
-#define itm_write_32(__data) \
+#define itm_write_32(__data, __channel) \
 {\
-		while (ITM->PORT[TRC_CFG_STREAM_PORT_ITM_PORT].u32 == 0) { /* Do nothing */ }	/* Block until room in ITM FIFO - This stream port is always in "blocking mode", since intended for high-speed ITM! */ \
-		ITM->PORT[TRC_CFG_STREAM_PORT_ITM_PORT].u32 = __data;							/* Write the data */ \
+		while (ITM->PORT[__channel].u32 == 0) { /* Do nothing */ }	/* Block until room in ITM FIFO - This stream port is always in "blocking mode", since intended for high-speed ITM! */ \
+		ITM->PORT[__channel].u32 = __data;							/* Write the data */ \
 }
 
 /* This is assumed to execute from within the recorder, with interrupts disabled */
-traceResult prvTraceItmWrite(void* ptrData, uint32_t size, int32_t* ptrBytesWritten)
+traceResult prvTraceItmWrite(void* ptrData, uint32_t size, uint32_t uiChannel, int32_t* ptrBytesWritten)
 {
 	uint32_t* ptr32 = (uint32_t*)ptrData;
 
@@ -95,11 +93,11 @@ traceResult prvTraceItmWrite(void* ptrData, uint32_t size, int32_t* ptrBytesWrit
 	
 	if ((CoreDebug->DEMCR & CoreDebug_DEMCR_TRCENA_Msk) &&					/* Trace enabled? */ \
 		(ITM->TCR & ITM_TCR_ITMENA_Msk) &&									/* ITM enabled? */ \
-		(ITM->TER & (1UL << (TRC_CFG_STREAM_PORT_ITM_PORT))))				/* ITM port enabled? */
+		(ITM->TER & (1UL << ((TRC_CFG_STREAM_PORT_ITM_PORT) + uiChannel))))				/* ITM port enabled? */
 	{
 		while (*ptrBytesWritten < (int32_t)size)
 		{
-			itm_write_32(*ptr32);
+			itm_write_32(*ptr32, (TRC_CFG_STREAM_PORT_ITM_PORT) + uiChannel);
 			ptr32++;
 			*ptrBytesWritten += 4;
 		}
@@ -142,23 +140,15 @@ traceResult prvTraceItmRead(void* ptrData, uint32_t uiSize, int32_t* piBytesRead
 
 traceResult xTraceStreamPortInitialize(TraceStreamPortBuffer_t* pxBuffer)
 {
-	TRC_ASSERT_EQUAL_SIZE(TraceStreamPortBuffer_t, TraceStreamPortITM_t);
-
 	TRC_ASSERT(pxBuffer != 0);
 
 	pxStreamPortITM = (TraceStreamPortBuffer_t*)pxBuffer;
 
-#if (TRC_USE_INTERNAL_BUFFER == 1)
-	return xTraceInternalEventBufferInitialize(pxStreamPortITM->bufferInternal, sizeof(pxStreamPortITM->bufferInternal));
-#else
-        /* Prevents a warning for set but not used when internal buffer
-         * isn't used. */
-        (void)pxStreamPortITM;
+    /* Prevents a warning for set but not used when internal buffer
+     * isn't used. */
+    (void)pxStreamPortITM;
         
 	return TRC_SUCCESS;
-#endif
 }
-
-#endif
 
 #endif

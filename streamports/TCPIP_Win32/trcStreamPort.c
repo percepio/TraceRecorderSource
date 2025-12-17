@@ -1,6 +1,6 @@
 /*
- * Trace Recorder for Tracealyzer v4.10.3
- * Copyright 2023 Percepio AB
+ * Trace Recorder for Tracealyzer v4.11.0
+ * Copyright 2025 Percepio AB
  * www.percepio.com
  *
  * SPDX-License-Identifier: Apache-2.0
@@ -18,33 +18,23 @@
 
 #if (TRC_USE_TRACEALYZER_RECORDER == 1)
 
-#if (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING)
-
 #pragma comment(lib,"ws2_32.lib") //Winsock Library
 
-typedef struct TraceStreamPortTCPIP
-{
-#if (TRC_USE_INTERNAL_BUFFER)
-	uint8_t buffer[(TRC_ALIGNED_STREAM_PORT_BUFFER_SIZE)];
-#else
-	TraceUnsignedBaseType_t buffer[1];
-#endif
-} TraceStreamPortTCPIP_t;
-
-static TraceStreamPortTCPIP_t* pxStreamPortTCPIP TRC_CFG_RECORDER_DATA_ATTRIBUTE;
-static SOCKET server_socket = (UINT_PTR)0, trace_socket = (UINT_PTR)0;
+static TraceStreamPortBuffer_t* pxStreamPortTCPIP TRC_CFG_RECORDER_DATA_ATTRIBUTE;
+static SOCKET server_socket[TRC_CFG_CORE_COUNT] = { (UINT_PTR)0 };
+static SOCKET trace_socket[TRC_CFG_CORE_COUNT] = { (UINT_PTR)0 };
 struct sockaddr_in server, client;
 
-static int prvInitServerSocketIfNeeded(void);
 static int prvInitWinsockIfNeeded(void);
-static int prvInitTraceSocketIfNeeded(void);
+static int prvInitServerSocketIfNeeded(uint32_t uiChannel);
+static int prvInitTraceSocketIfNeeded(uint32_t uiChannel);
 static void prvCloseAllSockets(void);
 
 static int prvInitWinsockIfNeeded(void)
 {
 	WSADATA wsa;
 	
-	if (server_socket)
+	if (server_socket[0])
 		return 0;
 
 	if (WSAStartup(MAKEWORD(2, 2), &wsa) != 0)
@@ -55,63 +45,63 @@ static int prvInitWinsockIfNeeded(void)
 	return 0;
 }
 
-static int prvInitServerSocketIfNeeded(void)
+static int prvInitServerSocketIfNeeded(uint32_t uiChannel)
 {
 	if (prvInitWinsockIfNeeded() < 0)
 	{
 		return -1;
 	}
 
-	if (server_socket)
+	if (server_socket[uiChannel])
 		return 0;
 
-	if ((server_socket = socket(AF_INET, SOCK_STREAM, 0)) == INVALID_SOCKET)
+	if ((server_socket[uiChannel] = socket(AF_INET, SOCK_STREAM, 0)) == INVALID_SOCKET)
 	{
 		return -1;
 	}
 
 	server.sin_family = AF_INET;
 	server.sin_addr.s_addr = INADDR_ANY;
-	server.sin_port = htons(TRC_CFG_STREAM_PORT_TCPIP_PORT);
+	server.sin_port = htons(TRC_CFG_STREAM_PORT_TCPIP_PORT + uiChannel);
 
-	if (bind(server_socket, (struct sockaddr *)&server, sizeof(server)) == SOCKET_ERROR)
+	if (bind(server_socket[uiChannel], (struct sockaddr *)&server, sizeof(server)) == SOCKET_ERROR)
 	{
-		closesocket(server_socket);
+		closesocket(server_socket[uiChannel]);
 		WSACleanup();
-		server_socket = (UINT_PTR)0;
+		server_socket[uiChannel] = (UINT_PTR)0;
 		return -1;
 	}
 
-	if (listen(server_socket, 3) < 0)
+	if (listen(server_socket[uiChannel], 3) < 0)
 	{
-		closesocket(server_socket);
+		closesocket(server_socket[uiChannel]);
 		WSACleanup();
-		server_socket = (UINT_PTR)0;
+		server_socket[uiChannel] = (UINT_PTR)0;
 		return -1;
 	}
 
 	return 0;
 }
 
-static int prvInitTraceSocketIfNeeded(void)
+static int prvInitTraceSocketIfNeeded(uint32_t uiChannel)
 {
 	int c;
 
-	if (!server_socket)
+	if (!server_socket[uiChannel])
 		return -1;
 
-	if (trace_socket)
+	if (trace_socket[uiChannel])
 		return 0;
 
 	c = sizeof(struct sockaddr_in);
-	trace_socket = accept(server_socket, (struct sockaddr *)&client, &c);
-	if (trace_socket == INVALID_SOCKET)
+	trace_socket[uiChannel] = accept(server_socket[uiChannel], (struct sockaddr *)&client, &c);
+	if (trace_socket[uiChannel] == INVALID_SOCKET)
 	{
-		trace_socket = (UINT_PTR)0;
+		trace_socket[uiChannel] = (UINT_PTR)0;
 		
-		closesocket(server_socket);
+		closesocket(server_socket[uiChannel]);
 		WSACleanup();
-		server_socket = (UINT_PTR)0;
+		server_socket[uiChannel] = (UINT_PTR)0;
 		
 		return -1;
 	}
@@ -119,21 +109,21 @@ static int prvInitTraceSocketIfNeeded(void)
 	return 0;
 }
 
-int32_t prvTraceWriteToSocket(void* data, uint32_t size, int32_t *ptrBytesWritten)
+int32_t prvTraceWriteToSocket(void* data, uint32_t size, uint32_t uiChannel, int32_t *ptrBytesWritten)
 {
 	int ret;
 
-	if (prvInitServerSocketIfNeeded() < 0)
+	if (prvInitServerSocketIfNeeded(uiChannel) < 0)
 	{
 		return -1;
 	}
 
-	if (prvInitTraceSocketIfNeeded() < 0)
+	if (prvInitTraceSocketIfNeeded(uiChannel) < 0)
 	{
 		return -1;
 	}
 
-	if (!trace_socket)
+	if (!trace_socket[uiChannel])
 	{
 		if (ptrBytesWritten != 0)
 		{
@@ -141,7 +131,7 @@ int32_t prvTraceWriteToSocket(void* data, uint32_t size, int32_t *ptrBytesWritte
 		}
 		return -1;
 	}
-	ret = send(trace_socket, data, size, 0);
+	ret = send(trace_socket[uiChannel], data, size, 0);
 	if (ret <= 0)
 	{
 		if (ptrBytesWritten != 0)
@@ -149,8 +139,8 @@ int32_t prvTraceWriteToSocket(void* data, uint32_t size, int32_t *ptrBytesWritte
 			*ptrBytesWritten = 0;
 		}
 
-		closesocket(trace_socket);
-		trace_socket = (UINT_PTR)0;
+		closesocket(trace_socket[uiChannel]);
+		trace_socket[uiChannel] = (UINT_PTR)0;
 		return ret;
 	}
 
@@ -172,20 +162,20 @@ int32_t prvTraceReadFromSocket(void* data, uint32_t bufsize, int32_t *ptrBytesRe
 	if (prvInitTraceSocketIfNeeded() < 0)
 		return -1;
 
-	if (ioctlsocket(trace_socket, FIONREAD, &bytesAvailable) != NO_ERROR)
+	if (ioctlsocket(trace_socket[0], FIONREAD, &bytesAvailable) != NO_ERROR)
 	{
-		closesocket(trace_socket);
-		trace_socket = (UINT_PTR)0;
+		closesocket(trace_socket[0]);
+		trace_socket[0] = (UINT_PTR)0;
 		return -1;
 	}
 
 	if (bytesAvailable > 0)
 	{
-		*ptrBytesRead = recv(trace_socket, data, bufsize, 0);
+		*ptrBytesRead = recv(trace_socket[0], data, bufsize, 0);
 		if (*ptrBytesRead == SOCKET_ERROR)
 		{
-			closesocket(trace_socket);
-			trace_socket = (UINT_PTR)0;
+			closesocket(trace_socket[0]);
+			trace_socket[0] = (UINT_PTR)0;
 			return -1;
 		}
 	}
@@ -195,23 +185,26 @@ int32_t prvTraceReadFromSocket(void* data, uint32_t bufsize, int32_t *ptrBytesRe
 
 static void prvCloseAllSockets(void)
 {
-	if (trace_socket != 0)
-	{
-		closesocket(trace_socket);
-		trace_socket = 0;
-	}
+	int i;
 
-	if (server_socket != 0)
+	for (i = 0; i < TRC_CFG_CORE_COUNT; i++)
 	{
-		closesocket(server_socket);
-		server_socket = 0;
+		if (trace_socket[i] != 0)
+		{
+			closesocket(trace_socket[i]);
+			trace_socket[i] = 0;
+		}
+	
+		if (server_socket[i] != 0)
+		{
+			closesocket(server_socket[i]);
+			server_socket[i] = 0;
+		}
 	}
 }
 
 traceResult xTraceStreamPortInitialize(TraceStreamPortBuffer_t* pxBuffer)
 {
-	TRC_ASSERT_EQUAL_SIZE(TraceStreamPortBuffer_t, TraceStreamPortTCPIP_t);
-
 	if (pxBuffer == 0)
 	{
 		return TRC_FAIL;
@@ -219,11 +212,7 @@ traceResult xTraceStreamPortInitialize(TraceStreamPortBuffer_t* pxBuffer)
 
 	pxStreamPortTCPIP = (TraceStreamPortTCPIP_t*)pxBuffer;
 
-#if (TRC_USE_INTERNAL_BUFFER == 1)
-	return xTraceInternalEventBufferInitialize(pxStreamPortTCPIP->buffer, sizeof(pxStreamPortTCPIP->buffer));
-#else
 	return TRC_SUCCESS;
-#endif
 }
 
 traceResult xTraceStreamPortOnTraceEnd(void)
@@ -232,7 +221,5 @@ traceResult xTraceStreamPortOnTraceEnd(void)
 	
 	return TRC_SUCCESS;
 }
-
-#endif /*(TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING)*/
 
 #endif /*(TRC_USE_TRACEALYZER_RECORDER == 1)*/

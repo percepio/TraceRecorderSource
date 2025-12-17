@@ -1,12 +1,10 @@
 var annotated_dup =
 [
-    [ "objectHandleStackType", "structobjectHandleStackType.html", "structobjectHandleStackType" ],
-    [ "ObjectPropertyTableType", "structObjectPropertyTableType.html", null ],
-    [ "symbolTableType", "structsymbolTableType.html", null ],
     [ "TraceEntry", "structTraceEntry.html", null ],
     [ "TraceEventBuffer", "structTraceEventBuffer.html", "structTraceEventBuffer" ],
+    [ "TraceInternalEventBufferData", "structTraceInternalEventBufferData.html", null ],
     [ "TraceKernelPortDataBuffer", "structTraceKernelPortDataBuffer.html", null ],
     [ "TraceMultiCoreEventBuffer", "structTraceMultiCoreEventBuffer.html", null ],
-    [ "TraceStreamPortBuffer", "structTraceStreamPortBuffer.html", null ],
+    [ "TraceStreamPortBuffer", "structTraceStreamPortBuffer.html", "structTraceStreamPortBuffer" ],
     [ "TraceTimestampData", "structTraceTimestampData.html", "structTraceTimestampData" ]
 ];

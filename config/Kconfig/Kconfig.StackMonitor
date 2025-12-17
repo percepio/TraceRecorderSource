@@ -1,0 +1,43 @@
+# Copyright (c) 2025 Percepio AB
+# SPDX-License-Identifier: Apache-2.0
+
+menuconfig PERCEPIO_TRC_CFG_ENABLE_STACK_MONITOR
+	bool "Stack Monitor"
+  	select TRACING_STACK if PERCEPIO_TRC_CFG_RECORDER_RTOS_ZEPHYR
+	select THREAD_STACK_INFO if PERCEPIO_TRC_CFG_RECORDER_RTOS_ZEPHYR
+	default n
+	help 
+	  If enabled (1), the recorder periodically reports the unused stack space of 
+	  all active tasks. The stack monitoring runs in the Tracealyzer Control task, 
+	  TzCtrl. This task is always created by the recorder when in streaming mode. 
+	  In snapshot mode, the TzCtrl task is only used for stack monitoring and is 
+	  not created unless this is enabled.
+
+if PERCEPIO_TRC_CFG_ENABLE_STACK_MONITOR
+
+config PERCEPIO_TRC_CFG_STACK_MONITOR_MAX_TASKS
+	int "Stack Monitor Max Tasks"
+	range 1 64
+	default 15
+	help
+	  This controls how many tasks that can be monitored by the stack monitor.
+	  If this is too small, some tasks will be excluded and a warning is shown.
+
+config PERCEPIO_TRC_CFG_STACK_MONITOR_MAX_REPORTS
+	int "Stack Monitor Max Reports"
+	range 1 64
+	default 1
+	help
+	  This defines how many tasks that will be subject to stack usage analysis for
+	  each execution of the Tracealyzer Control task (TzCtrl). Note that the stack
+	  monitoring cycles between the tasks, so this does not affect WHICH tasks that
+	  are monitored, but HOW OFTEN each task stack is analyzed. 
+	  
+	  This setting can be combined with PERCEPIO_TRC_CFG_CTRL_TASK_DELAY to tune the
+	  frequency of the stack monitoring. This is motivated since the stack analysis
+	  can take some time to execute.
+	  However, note that the stack analysis runs in a separate task (TzCtrl) that
+	  can be executed on low priority. This way, you can avoid that the stack
+	  analysis disturbs any time-sensitive tasks.
+
+endif # PERCEPIO_TRC_CFG_ENABLE_STACK_MONITOR

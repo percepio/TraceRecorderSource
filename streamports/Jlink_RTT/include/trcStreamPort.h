@@ -1,6 +1,6 @@
 /*
- * Trace Recorder for Tracealyzer v4.10.3
- * Copyright 2023 Percepio AB
+ * Trace Recorder for Tracealyzer v4.11.0
+ * Copyright 2025 Percepio AB
  * www.percepio.com
  *
  * SPDX-License-Identifier: Apache-2.0
@@ -19,8 +19,6 @@
 
 #if (TRC_USE_TRACEALYZER_RECORDER == 1)
 
-#if (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING)
-
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -32,20 +30,9 @@ extern "C" {
 #include <SEGGER_RTT_Conf.h>
 #include <SEGGER_RTT.h>
 
-#define TRC_USE_INTERNAL_BUFFER (TRC_CFG_STREAM_PORT_USE_INTERNAL_BUFFER)
-
-#define TRC_INTERNAL_EVENT_BUFFER_WRITE_MODE (TRC_CFG_STREAM_PORT_INTERNAL_BUFFER_WRITE_MODE)
-
-#define TRC_INTERNAL_EVENT_BUFFER_TRANSFER_MODE (TRC_CFG_STREAM_PORT_INTERNAL_BUFFER_TRANSFER_MODE)
-
-#define TRC_INTERNAL_BUFFER_CHUNK_SIZE (TRC_CFG_STREAM_PORT_INTERNAL_BUFFER_CHUNK_SIZE)
-
-#define TRC_INTERNAL_BUFFER_CHUNK_TRANSFER_AGAIN_SIZE_LIMIT (TRC_CFG_STREAM_PORT_INTERNAL_BUFFER_CHUNK_TRANSFER_AGAIN_SIZE_LIMIT)
-
-#define TRC_INTERNAL_BUFFER_CHUNK_TRANSFER_AGAIN_COUNT_LIMIT (TRC_CFG_STREAM_PORT_INTERNAL_BUFFER_CHUNK_TRANSFER_AGAIN_COUNT_LIMIT)
-
-/* Aligned */
-#define TRC_STREAM_PORT_INTERNAL_BUFFER_SIZE ((((TRC_CFG_STREAM_PORT_INTERNAL_BUFFER_SIZE) + sizeof(TraceUnsignedBaseType_t) - 1) / sizeof(TraceUnsignedBaseType_t)) * sizeof(TraceUnsignedBaseType_t))
+/* For now we disable multistream support for this streamport.
+#define TRC_STREAM_PORT_MULTISTREAM_SUPPORT
+*/
 
 /* Aligned */
 #define TRC_STREAM_PORT_RTT_UP_BUFFER_SIZE ((((TRC_CFG_STREAM_PORT_RTT_UP_BUFFER_SIZE) + sizeof(TraceUnsignedBaseType_t) - 1) / sizeof(TraceUnsignedBaseType_t)) * sizeof(TraceUnsignedBaseType_t))
@@ -53,16 +40,25 @@ extern "C" {
 /* Aligned */
 #define TRC_STREAM_PORT_RTT_DOWN_BUFFER_SIZE ((((TRC_CFG_STREAM_PORT_RTT_DOWN_BUFFER_SIZE) + sizeof(TraceUnsignedBaseType_t) - 1) / sizeof(TraceUnsignedBaseType_t)) * sizeof(TraceUnsignedBaseType_t))
 
+#if (defined(TRC_CFG_STREAM_PORT_RTT_NO_LOCK_WRITE) && TRC_CFG_STREAM_PORT_RTT_NO_LOCK_WRITE == 1)
+#define TRC_STREAM_PORT_SEGGER_RTT_WRITE SEGGER_RTT_WriteNoLock
+#else
+#define TRC_STREAM_PORT_SEGGER_RTT_WRITE SEGGER_RTT_Write
+#endif
+
+#ifndef TRC_STREAM_PORT_MULTISTREAM_SUPPORT
+/* Multistream support is disabled */
+#define TRC_STREAM_PORT_MULTISTREAM_GET_CHANNEL(uiChannel) 0
+#else
+#define TRC_STREAM_PORT_MULTISTREAM_GET_CHANNEL(uiChannel) uiChannel
+#endif
 
 /**
  * @brief A structure representing the trace stream port buffer.
  */
 typedef struct TraceStreamPortBuffer	/* Aligned */
 {
-#if (TRC_USE_INTERNAL_BUFFER == 1)
-	uint8_t bufferInternal[TRC_STREAM_PORT_INTERNAL_BUFFER_SIZE];
-#endif
-	uint8_t bufferUp[TRC_STREAM_PORT_RTT_UP_BUFFER_SIZE];
+	uint8_t bufferUp[TRC_CFG_CORE_COUNT][TRC_STREAM_PORT_RTT_UP_BUFFER_SIZE];
 	uint8_t bufferDown[TRC_STREAM_PORT_RTT_DOWN_BUFFER_SIZE];
 } TraceStreamPortBuffer_t;
 
@@ -79,61 +75,17 @@ typedef struct TraceStreamPortBuffer	/* Aligned */
 traceResult xTraceStreamPortInitialize(TraceStreamPortBuffer_t* pxBuffer);
 
 /**
- * @brief Allocates data from the stream port.
- * 
- * @param[in] uiSize Allocation size
- * @param[out] ppvData Allocation data pointer
- * 
- * @retval TRC_FAIL Allocate failed
- * @retval TRC_SUCCESS Success
- */
-#if (TRC_USE_INTERNAL_BUFFER == 1)
-	#if (TRC_INTERNAL_EVENT_BUFFER_WRITE_MODE == TRC_INTERNAL_EVENT_BUFFER_OPTION_WRITE_MODE_COPY)
-		#define xTraceStreamPortAllocate(uiSize, ppvData) ((void)(uiSize), xTraceStaticBufferGet(ppvData))
-	#else
-		#define xTraceStreamPortAllocate(uiSize, ppvData) ((void)(uiSize), xTraceInternalEventBufferAlloc(uiSize, ppvData))
-	#endif
-#else
-	#define xTraceStreamPortAllocate(uiSize, ppvData) ((void)(uiSize), xTraceStaticBufferGet(ppvData))
-#endif
-
-/**
- * @brief Commits data to the stream port, depending on the implementation/configuration of the
- * stream port this data might be directly written to the stream port interface, buffered, or
- * something else.
- * 
- * @param[in] pvData Data to commit
- * @param[in] uiSize Data to commit size
- * @param[out] piBytesCommitted Bytes committed
- * 
- * @retval TRC_FAIL Commit failed
- * @retval TRC_SUCCESS Success
- */
-#if (TRC_USE_INTERNAL_BUFFER == 1)
-	#if (TRC_INTERNAL_EVENT_BUFFER_WRITE_MODE == TRC_INTERNAL_EVENT_BUFFER_OPTION_WRITE_MODE_COPY)
-		#define xTraceStreamPortCommit xTraceInternalEventBufferPush
-	#else
-		#define xTraceStreamPortCommit xTraceInternalEventBufferAllocCommit
-	#endif
-#else
-	#define xTraceStreamPortCommit xTraceStreamPortWriteData
-#endif
-
-/**
  * @brief Writes data through the stream port interface.
  * 
  * @param[in] pvData Data to write
  * @param[in] uiSize Data to write size
+ * @param[in] uiChannel Channel (0 for the first core, 1 for the second core, etc.)
  * @param[out] piBytesWritten Bytes written
  * 
  * @retval TRC_FAIL Write failed
  * @retval TRC_SUCCESS Success
  */
-#if (defined(TRC_CFG_STREAM_PORT_RTT_NO_LOCK_WRITE) && TRC_CFG_STREAM_PORT_RTT_NO_LOCK_WRITE == 1)
-#define xTraceStreamPortWriteData(pvData, uiSize, piBytesWritten) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_2(*(piBytesWritten) = (int32_t)SEGGER_RTT_WriteNoLock((TRC_CFG_STREAM_PORT_RTT_UP_BUFFER_INDEX), (const char*)pvData, uiSize), TRC_SUCCESS)
-#else
-#define xTraceStreamPortWriteData(pvData, uiSize, piBytesWritten) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_2(*(piBytesWritten) = (int32_t)SEGGER_RTT_Write((TRC_CFG_STREAM_PORT_RTT_UP_BUFFER_INDEX), (const char*)pvData, uiSize), TRC_SUCCESS)
-#endif
+#define xTraceStreamPortWriteData(pvData, uiSize, uiChannel, piBytesWritten) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_2(*(piBytesWritten) = (int32_t)TRC_STREAM_PORT_SEGGER_RTT_WRITE((TRC_CFG_STREAM_PORT_RTT_UP_BUFFER_INDEX) + TRC_STREAM_PORT_MULTISTREAM_GET_CHANNEL(uiChannel), (const char*)pvData, uiSize), TRC_SUCCESS)
 
 /**
  * @brief Reads data through the stream port interface.
@@ -158,8 +110,6 @@ traceResult xTraceStreamPortOnEnable(uint32_t uiStartOption);
 #ifdef __cplusplus
 }
 #endif
-
-#endif /*(TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING)*/
 
 #endif /*(TRC_USE_TRACEALYZER_RECORDER == 1)*/
 

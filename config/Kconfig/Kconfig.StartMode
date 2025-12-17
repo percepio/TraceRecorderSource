@@ -1,0 +1,29 @@
+# Copyright (c) 2025 Percepio AB
+# SPDX-License-Identifier: Apache-2.0
+
+choice PERCEPIO_TRC_CFG_START_MODE
+	prompt "Recorder Start Mode"
+	default PERCEPIO_TRC_START_MODE_START_FROM_HOST
+	help
+      TRC_START: Starts the tracing directly. This allows for starting the trace at
+      any point in your code.
+	  
+      TRC_START_AWAIT_HOST: For bidirectional stream ports only. Initializes the 
+      trace recorder if necessary and waits for a Start command from Tracealyzer
+      ("Start Recording" button). This call is intentionally blocking! By calling
+      xTraceEnable with this option from the startup code, you start tracing at this
+      point and capture the early events.
+	  
+	  TRC_START_FROM_HOST: Initializes the trace recorder, but does not start the tracing.
+
+config PERCEPIO_TRC_START_MODE_START
+	bool "Start"
+
+config PERCEPIO_TRC_START_MODE_START_AWAIT_HOST
+	bool "Start Await Host"
+	depends on !PERCEPIO_TRC_CFG_STREAM_PORT_RINGBUFFER && !PERCEPIO_TRC_CFG_STREAM_PORT_FILE && !PERCEPIO_TRC_CFG_STREAM_PORT_ZEPHYR_SEMIHOST
+
+config PERCEPIO_TRC_START_MODE_START_FROM_HOST
+	bool "Start From Host"
+	depends on !PERCEPIO_TRC_CFG_STREAM_PORT_RINGBUFFER && !PERCEPIO_TRC_CFG_STREAM_PORT_FILE && !PERCEPIO_TRC_CFG_STREAM_PORT_ZEPHYR_SEMIHOST
+endchoice

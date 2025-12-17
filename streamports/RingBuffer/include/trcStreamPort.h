@@ -1,6 +1,6 @@
 /*
-* Trace Recorder for Tracealyzer v4.10.3
-* Copyright 2023 Percepio AB
+* Trace Recorder for Tracealyzer v4.11.0
+* Copyright 2025 Percepio AB
 * www.percepio.com
 *
 * SPDX-License-Identifier: Apache-2.0
@@ -13,8 +13,6 @@
 #define TRC_STREAM_PORT_H
 
 #if (TRC_USE_TRACEALYZER_RECORDER == 1)
-
-#if (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING)
 
 #include <trcTypes.h>
 #include <trcStreamPortConfig.h>
@@ -39,12 +37,15 @@ extern "C" {
 #define TRC_SEND_NAME_ONLY_ON_DELETE 1
 
 /**
- * @def TRC_USE_INTERNAL_BUFFER
+ * @def TRC_CFG_STREAM_PORT_USE_INTERNAL_BUFFER
  * 
  * @brief This Stream Port uses the Multi Core Buffer directly.
  */
 
-#define TRC_USE_INTERNAL_BUFFER 0
+#define TRC_CFG_STREAM_PORT_USE_INTERNAL_BUFFER 0
+
+/* The RingBuffer StreamPort is using the Internal Event Buffer in a specific way and therefor we classify this as a custom streamport allocation method */
+#define TRC_USE_CUSTOM_STREAMPORT_ALLOCATION
 
 #define TRC_STREAM_PORT_BUFFER_SIZE (((uint32_t)(TRC_CFG_STREAM_PORT_BUFFER_SIZE) / sizeof(TraceUnsignedBaseType_t)) * sizeof(TraceUnsignedBaseType_t))	/* aligned */
 
@@ -73,29 +74,15 @@ typedef struct TraceRingBuffer
 } TraceRingBuffer_t;
 
 /**
- * @brief
- */
-typedef struct TraceStreamPortData
-{
-	TraceMultiCoreEventBuffer_t xMultiCoreEventBuffer;
-	TraceRingBuffer_t xRingBuffer;
-} TraceStreamPortData_t;
-
-extern TraceStreamPortData_t* pxStreamPortData;
-
-/**
-* @def TRC_STREAM_PORT_BUFFER_SIZE
-* @brief The buffer size, aligned to base type.
-*/
-#define TRC_STREAM_PORT_DATA_BUFFER_SIZE (sizeof(TraceStreamPortData_t))
-
-/**
  * @brief A structure representing the trace stream port buffer.
  */
 typedef struct TraceStreamPortBuffer
 {
-	uint8_t buffer[(TRC_STREAM_PORT_DATA_BUFFER_SIZE)];
+	TraceMultiCoreEventBuffer_t xMultiCoreEventBuffer;
+	TraceRingBuffer_t xRingBuffer;
 } TraceStreamPortBuffer_t;
+
+extern TraceStreamPortBuffer_t* pxStreamPortData;
 
 /**
  * @internal Stream port initialize callback.
@@ -144,7 +131,7 @@ traceResult xTraceStreamPortInitialize(TraceStreamPortBuffer_t* pxBuffer);
  * @retval TRC_FAIL Write failed
  * @retval TRC_SUCCESS Success
  */
-#define xTraceStreamPortWriteData(_pvData, _uiSize, _piBytesWritten) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_4((void)(_pvData), (void)(_uiSize), (void)(_piBytesWritten), TRC_SUCCESS)
+#define xTraceStreamPortWriteData(_pvData, _uiSize, _uiChannel, _piBytesWritten) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_5((void)(_pvData), (void)(_uiSize), (void)(_uiChannel), (void)(_piBytesWritten), TRC_SUCCESS)
 
 /**
  * @brief Reads data through the stream port interface.
@@ -195,8 +182,6 @@ traceResult xTraceStreamPortOnTraceBegin(void);
 #ifdef __cplusplus
 }
 #endif
-
-#endif /*(TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING)*/
 
 #endif /*(TRC_USE_TRACEALYZER_RECORDER == 1)*/
 

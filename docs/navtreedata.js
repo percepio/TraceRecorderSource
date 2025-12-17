@@ -25,10 +25,11 @@
 var NAVTREE =
 [
   [ "Percepio Trace Recorder", "index.html", [
+    [ "TraceRecorder Compile Time Instrumentation (CTI) with ThreadX", "md_kernelports_2ThreadX_2CMakeLists_8txt__README.html", null ],
     [ "LICENSE", "md_LICENSE.html", null ],
     [ "README", "md_README.html", null ],
     [ "Deprecated List", "deprecated.html", null ],
-    [ "Modules", "modules.html", "modules" ],
+    [ "Topics", "topics.html", "topics" ],
     [ "Namespaces", "namespaces.html", [
       [ "Namespace List", "namespaces.html", "namespaces_dup" ]
     ] ],
@@ -56,9 +57,9 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 "BareMetal_2config_2trcKernelPortConfig_8h_source.html",
-"group__trace__runnable__apis.html",
-"trcRunnable_8h.html"
+"group__trace__process__apis.html"
 ];
 
-var SYNCONMSG = 'click to disable panel synchronisation';
-var SYNCOFFMSG = 'click to enable panel synchronisation';
+var SYNCONMSG = 'click to disable panel synchronization';
+var SYNCOFFMSG = 'click to enable panel synchronization';
+var LISTOFALLMEMBERS = 'List of all members';

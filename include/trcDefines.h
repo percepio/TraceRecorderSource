@@ -1,6 +1,6 @@
 /*
- * Trace Recorder for Tracealyzer v4.10.3
- * Copyright 2023 Percepio AB
+ * Trace Recorder for Tracealyzer v4.11.0
+ * Copyright 2025 Percepio AB
  * www.percepio.com
  *
  * SPDX-License-Identifier: Apache-2.0
@@ -37,12 +37,6 @@
 
 /* The final command code, used to validate commands. */
 #define CMD_LAST_COMMAND 1
-
-#define TRC_RECORDER_MODE_SNAPSHOT		0
-#define TRC_RECORDER_MODE_STREAMING		1
-
-#define TRC_SNAPSHOT_MODE_RING_BUFFER		(0x01UL)
-#define TRC_SNAPSHOT_MODE_STOP_WHEN_FULL	(0x02UL)
 
 #define TRC_RECORDER_BUFFER_ALLOCATION_STATIC   (0x00UL)
 #define TRC_RECORDER_BUFFER_ALLOCATION_DYNAMIC  (0x01UL)
@@ -111,30 +105,7 @@
 #define TRC_RECORDER_COMPONENT_TASK						0x00100000UL
 #define TRC_RECORDER_COMPONENT_TIMESTAMP				0x00200000UL
 #define TRC_RECORDER_COMPONENT_COUNTER					0x00400000UL
-
-/* Filter Groups */
-#define FilterGroup0 (uint16_t)0x0001
-#define FilterGroup1 (uint16_t)0x0002
-#define FilterGroup2 (uint16_t)0x0004
-#define FilterGroup3 (uint16_t)0x0008
-#define FilterGroup4 (uint16_t)0x0010
-#define FilterGroup5 (uint16_t)0x0020
-#define FilterGroup6 (uint16_t)0x0040
-#define FilterGroup7 (uint16_t)0x0080
-#define FilterGroup8 (uint16_t)0x0100
-#define FilterGroup9 (uint16_t)0x0200
-#define FilterGroup10 (uint16_t)0x0400
-#define FilterGroup11 (uint16_t)0x0800
-#define FilterGroup12 (uint16_t)0x1000
-#define FilterGroup13 (uint16_t)0x2000
-#define FilterGroup14 (uint16_t)0x4000
-#define FilterGroup15 (uint16_t)0x8000
-
-/**
- *
- */
-#define TRC_INTERNAL_EVENT_BUFFER_OPTION_WRITE_MODE_COPY		(0U)
-#define TRC_INTERNAL_EVENT_BUFFER_OPTION_WRITE_MODE_DIRECT		(1U)
+#define TRC_RECORDER_COMPONENT_TASK_MONITOR				0x00800000UL
 
 /**
  *
@@ -178,7 +149,7 @@
 #define TRC_HARDWARE_PORT_Atmel_UC3A0				3	/*	No			Any					*/
 #define TRC_HARDWARE_PORT_ARM_Cortex_M				4	/*	Yes			Any					*/
 #define TRC_HARDWARE_PORT_Renesas_RX600				6	/*	Yes			Any					*/
-#define TRC_HARDWARE_PORT_MICROCHIP_PIC24_PIC32			7	/*	Yes			Any					*/
+#define TRC_HARDWARE_PORT_MICROCHIP_PIC32			7	/*	Yes			Any					*/
 #define TRC_HARDWARE_PORT_TEXAS_INSTRUMENTS_TMS570_RM48	        8       /*	Yes			Any					*/
 #define TRC_HARDWARE_PORT_TEXAS_INSTRUMENTS_MSP430		9	/*	No			Any					*/
 #define TRC_HARDWARE_PORT_XILINX_PPC405				11	/*	No			FreeRTOS                                */

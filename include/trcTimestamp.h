@@ -1,6 +1,6 @@
 /*
-* Percepio Trace Recorder for Tracealyzer v4.10.3
-* Copyright 2023 Percepio AB
+* Percepio Trace Recorder for Tracealyzer v4.11.0
+* Copyright 2025 Percepio AB
 * www.percepio.com
 *
 * SPDX-License-Identifier: Apache-2.0
@@ -15,7 +15,7 @@
 #ifndef TRC_TIMESTAMP_H
 #define TRC_TIMESTAMP_H
 
-#if (TRC_USE_TRACEALYZER_RECORDER == 1) && (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING)
+#if (TRC_USE_TRACEALYZER_RECORDER == 1)
 
 #include <trcTypes.h>
 
@@ -233,6 +233,17 @@ traceResult xTraceTimestampGetOsTickCount(uint32_t *puiOsTickCount);
 #ifdef __cplusplus
 }
 #endif
+
+#else
+
+#define xTraceTimestampGet(puiTimestamp) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_2((void)(puiTimestamp), TRC_SUCCESS)
+#define xTraceTimestampGetWraparounds(puiTimerWraparounds) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_2((void)(puiTimerWraparounds), TRC_SUCCESS)
+#define xTraceTimestampSetFrequency(uxFrequency) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_2((void)(uxFrequency), TRC_SUCCESS)
+#define xTraceTimestampSetPeriod(uiPeriod) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_2((void)(uiPeriod), TRC_SUCCESS)
+#define xTraceTimestampSetOsTickCount(uiOsTickCount) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_2((void)(uiOsTickCount), TRC_SUCCESS)
+#define xTraceTimestampGetFrequency(puxFrequency) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_2((void)(puxFrequency), TRC_SUCCESS)
+#define xTraceTimestampGetPeriod(puiPeriod) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_2((void)(puiPeriod), TRC_SUCCESS)
+#define xTraceTimestampGetOsTickCount(puiOsTickCount) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_2((void)(puiOsTickCount), TRC_SUCCESS)
 
 #endif
 

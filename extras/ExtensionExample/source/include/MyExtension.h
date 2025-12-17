@@ -33,19 +33,19 @@ extern TraceExtensionHandle_t xMyExtension;
 /* First undefine any previous definitions */
 #undef MY_TRACE_POINT_A
 /* This stores a trace event without any parameters. Retrieve the Extension event ID by calling xTraceExtensionGetEventId() using xMyExtension and the event's local ID */
-#define MY_TRACE_POINT_A() prvTraceStoreEvent_None(xTraceExtensionGetEventId(xMyExtension, MY_EVENT_A))
+#define MY_TRACE_POINT_A() prvTraceEventCreate0(xTraceExtensionGetEventId(xMyExtension, MY_EVENT_A))
 
 #undef MY_TRACE_POINT_B
 /* This stores a trace event with a numeric parameter. Retrieve the Extension event ID by calling xTraceExtensionGetEventId() using xMyExtension and the event's local ID */
-#define MY_TRACE_POINT_B() prvTraceStoreEvent_Param(xTraceExtensionGetEventId(xMyExtension, MY_EVENT_B), 1)
+#define MY_TRACE_POINT_B() prvTraceEventCreate1(xTraceExtensionGetEventId(xMyExtension, MY_EVENT_B), 1)
 
 #undef MY_TRACE_POINT_C
 /* This stores a trace event with a handle (here we use xMyExtension just as an example). Retrieve the Extension event ID by calling xTraceExtensionGetEventId() using xMyExtension and the event's local ID */
-#define MY_TRACE_POINT_C() prvTraceStoreEvent_Handle(xTraceExtensionGetEventId(xMyExtension, MY_EVENT_C), xMyExtension)
+#define MY_TRACE_POINT_C() prvTraceEventCreate1(xTraceExtensionGetEventId(xMyExtension, MY_EVENT_C), xMyExtension)
 
 #undef MY_TRACE_POINT_D
 /* This stores a trace event with a handle and a numeric parameter (here we use xMyExtension just as an example). Retrieve the Extension event ID by calling xTraceExtensionGetEventId() using xMyExtension and the event's local ID */
-#define MY_TRACE_POINT_D() prvTraceStoreEvent_HandleParam(xTraceExtensionGetEventId(xMyExtension, MY_EVENT_D), xMyExtension, 1)
+#define MY_TRACE_POINT_D() prvTraceEventCreate2(xTraceExtensionGetEventId(xMyExtension, MY_EVENT_D), xMyExtension, 1)
 
 #else
 

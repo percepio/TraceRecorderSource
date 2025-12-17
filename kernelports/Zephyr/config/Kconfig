@@ -1,6 +1,0 @@
-# Copyright (c) 2021 Percepio AB
-# SPDX-License-Identifier: Apache-2.0
-
-menu "Recorder Common"
-rsource "../../../config/Kconfig"
-endmenu # "Recorder Common"

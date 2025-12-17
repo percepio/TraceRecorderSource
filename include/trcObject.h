@@ -1,6 +1,6 @@
 /*
-* Percepio Trace Recorder for Tracealyzer v4.10.3
-* Copyright 2023 Percepio AB
+* Percepio Trace Recorder for Tracealyzer v4.11.0
+* Copyright 2025 Percepio AB
 * www.percepio.com
 *
 * SPDX-License-Identifier: Apache-2.0
@@ -15,7 +15,7 @@
 #ifndef TRC_OBJECT_H
 #define TRC_OBJECT_H
 
-#if (TRC_USE_TRACEALYZER_RECORDER == 1) && (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING)
+#if (TRC_USE_TRACEALYZER_RECORDER == 1)
 
 #include <trcTypes.h>
 
@@ -87,6 +87,27 @@ traceResult xTraceObjectRegister2(uint32_t uiEventCode, void* const pvObject, co
 traceResult xTraceObjectUnregister(TraceObjectHandle_t xObjectHandle, uint32_t uiEventCode, TraceUnsignedBaseType_t uxState);
 
 /**
+ * @brief Gets trace object address.
+ * 
+ * @param[in] xObjectHandle Object handle.
+ * @param[out] ppvAddress Pointer to returned task address.
+ * 
+ * @retval TRC_FAIL Failure
+ * @retval TRC_SUCCESS Success
+ */
+#define xTraceObjectGetAddress(xObjectHandle, ppvAddress) xTraceEntryGetAddress((TraceEntryHandle_t)(xObjectHandle), ppvAddress)
+
+/**
+ * @brief Returns trace object address.
+ * 
+ * @param[in] xObjectHandle Object handle.
+ * 
+ * @retval TRC_FAIL Failure
+ * @retval TRC_SUCCESS Success
+ */
+#define pvTraceObjectGetAddressReturn(xObjectHandle) pvTraceEntryGetAddressReturn((TraceEntryHandle_t)(xObjectHandle))
+
+/**
  * @brief Sets trace object name.
  * 
  * @param[in] xObjectHandle Pointer to initialized trace object.
@@ -96,6 +117,17 @@ traceResult xTraceObjectUnregister(TraceObjectHandle_t xObjectHandle, uint32_t u
  * @retval TRC_SUCCESS Success
  */
 traceResult xTraceObjectSetName(TraceObjectHandle_t xObjectHandle, const char *szName);
+
+/**
+ * @brief Gets trace object name.
+ * 
+ * @param[in] xObjectHandle Pointer to initialized trace object.
+ * @param[out] pszName Pointer to name variable.
+ * 
+ * @retval TRC_FAIL Failure
+ * @retval TRC_SUCCESS Success
+ */
+#define xTraceObjectGetName(xObjectHandle, pszName) xTraceEntryGetSymbol((TraceEntryHandle_t)(xObjectHandle), pszName)
 
 /**
  * @brief Sets trace object state.
@@ -109,7 +141,7 @@ traceResult xTraceObjectSetName(TraceObjectHandle_t xObjectHandle, const char *s
 #define xTraceObjectSetState(xObjectHandle, uxState) xTraceObjectSetSpecificState(xObjectHandle, 0, uxState)
 
 /**
- * @brief Sets trace object specific state state.
+ * @brief Sets trace object specific state.
  * 
  * @param[in] xObjectHandle Pointer to initialized trace object.
  * @param[in] uiIndex State Index.
@@ -119,6 +151,18 @@ traceResult xTraceObjectSetName(TraceObjectHandle_t xObjectHandle, const char *s
  * @retval TRC_SUCCESS Success
  */
 #define xTraceObjectSetSpecificState(xObjectHandle, uiIndex, uxState) xTraceEntrySetState((TraceEntryHandle_t)(xObjectHandle), uiIndex, uxState)
+
+/**
+ * @brief Gets trace object specific state.
+ * 
+ * @param[in] xObjectHandle Pointer to initialized trace object.
+ * @param[in] uiIndex State Index.
+ * @param[out] puxState Pointer to state.
+ * 
+ * @retval TRC_FAIL Failure
+ * @retval TRC_SUCCESS Success
+ */
+#define xTraceObjectGetSpecificState(xObjectHandle, uiIndex, puxState) xTraceEntryGetState((TraceEntryHandle_t)(xObjectHandle), uiIndex, puxState)
 
 /**
  * @brief Sets trace object options.
@@ -216,6 +260,17 @@ traceResult xTraceObjectSetSpecificStateWithoutHandle(void* pvObject, uint32_t u
  */
 traceResult xTraceObjectSetOptionsWithoutHandle(void* pvObject, uint32_t uiOptions);
 
+/**
+ * @brief Get the TraceObjectHandle_t of the object.
+ * 
+ * @param[in] pvObject Object.
+ * @param[out] pxObjectHandle Pointer to returned object handle.
+ * 
+ * @retval TRC_FAIL Failure
+ * @retval TRC_SUCCESS Success
+ */
+#define xTraceObjectFind(pvObject, pxObjectHandle) xTraceEntryFind(pvObject, (TraceEntryHandle_t*)pxObjectHandle)
+
 /** @} */
 
 #ifdef __cplusplus
@@ -236,6 +291,8 @@ traceResult xTraceObjectSetOptionsWithoutHandle(void* pvObject, uint32_t uiOptio
 
 #define xTraceObjectSetSpecificState(_xObjectHandle, _uiIndex, _uxState) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_4((void)(_xObjectHandle), (void)(_uiIndex), (void)(_uxState), TRC_SUCCESS)
 
+#define xTraceObjectGetSpecificState(_xObjectHandle, _uiIndex, _puxState) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_4((void)(_xObjectHandle), (void)(_uiIndex), (void)(_puxState), TRC_SUCCESS)
+
 #define xTraceObjectSetOptions(_xObjectHandle, _uiOptions) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_3((void)(_xObjectHandle), (void)(_uiOptions), TRC_SUCCESS)
 
 #define xTraceObjectRegisterWithoutHandle(_uiEventCode, _pvObject, _szName, _uxState) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_5((void)(_uiEventCode), (void)(_pvObject), (void)(_szName), (void)(_uxState), TRC_SUCCESS)
@@ -249,6 +306,12 @@ traceResult xTraceObjectSetOptionsWithoutHandle(void* pvObject, uint32_t uiOptio
 #define xTraceObjectSetSpecificStateWithoutHandle(_pvObject, _uiIndex, _uxState) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_4((void)(_pvObject), (void)(_uiIndex), (void)(_uxState), TRC_SUCCESS)
 
 #define xTraceObjectSetOptionsWithoutHandle(_pvObject, _uiOptions) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_3((void)(_pvObject), (void)(_uiOptions), TRC_SUCCESS)
+
+#define xTraceObjectFind(_pvObject, _pxObjectHandle) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_3((void)(_pvObject), (void)(_pxObjectHandle), TRC_SUCCESS)
+
+#define xTraceObjectGetAddress(_xObjectHandle, _ppvAddress) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_3((void)(_xObjectHandle), (void)(_ppvAddress), TRC_SUCCESS)
+
+#define pvTraceObjectGetAddressReturn(_xObjectHandle) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_2((void)(_xObjectHandle), (void*)0)
 
 #endif
 

@@ -1,6 +1,6 @@
 /*
- * Trace Recorder for Tracealyzer v4.10.3
- * Copyright 2023 Percepio AB
+ * Trace Recorder for Tracealyzer v4.11.0
+ * Copyright 2025 Percepio AB
  * www.percepio.com
  *
  * SPDX-License-Identifier: Apache-2.0
@@ -14,7 +14,6 @@
 
 /* If using DWT timestamping (default on ARM Cortex-M3, M4 and M7), make sure the DWT unit is initialized. */
 #if (((TRC_CFG_HARDWARE_PORT == TRC_HARDWARE_PORT_ARM_Cortex_M) || (TRC_CFG_HARDWARE_PORT == TRC_HARDWARE_PORT_ARM_Cortex_M_NRF_SD)) && (defined (__CORTEX_M) && (__CORTEX_M >= 0x03)))
-#if (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING)
 #ifndef TRC_CFG_ARM_CM_USE_SYSTICK
 
 void xTraceHardwarePortInitCortexM(void)
@@ -71,7 +70,6 @@ void xTraceHardwarePortInitCortexM(void)
 }
 #endif /* TRC_CFG_ARM_CM_USE_SYSTICK */
 
-#endif /* (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING) */
 #endif /* (((TRC_CFG_HARDWARE_PORT == TRC_HARDWARE_PORT_ARM_Cortex_M) || (TRC_CFG_HARDWARE_PORT == TRC_HARDWARE_PORT_ARM_Cortex_M_NRF_SD)) && (defined (__CORTEX_M) && (__CORTEX_M >= 0x03))) */
 
 #if ((TRC_CFG_HARDWARE_PORT == TRC_HARDWARE_PORT_ARM_CORTEX_A9) || (TRC_CFG_HARDWARE_PORT == TRC_HARDWARE_PORT_XILINX_ZyncUltraScaleR5) || (TRC_CFG_HARDWARE_PORT == TRC_HARDWARE_PORT_CYCLONE_V_HPS) || (TRC_CFG_HARDWARE_PORT == TRC_HARDWARE_PORT_ARMv8AR_A32))
@@ -86,11 +84,9 @@ void xTraceHardwarePortInitCortexM(void)
 uint32_t cortex_a9_r5_enter_critical(void)
 {
 	TraceUnsignedBaseType_t cs_type = CS_TYPE_INVALID;
-#if (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING)
 	TraceUnsignedBaseType_t uxTraceSystemState;
 
 	xTraceStateGet(&uxTraceSystemState);
-#endif
 
     if ((prvGetCPSR() & 0x001F) == 0x13) // CSPR (ASPR) mode = SVC
     {
@@ -104,20 +100,12 @@ uint32_t cortex_a9_r5_enter_critical(void)
     		cs_type = CS_TYPE_ISR_MASK_CHANGED;
     	}
     }
-#if (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING)
     else if (uxTraceSystemState == TRC_STATE_IN_TASKSWITCH)
-#else
-	else if (uiTraceSystemState == TRC_STATE_IN_TASKSWITCH)
-#endif
     {
     	// In the context-switch code. All interrupts are already masked here, so don't modify the mask.
     	cs_type = CS_TYPE_NONE;
     }
-#if (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING)
     else if (uxTraceSystemState != TRC_STATE_IN_TASKSWITCH)
-#else
-	else if (uiTraceSystemState != TRC_STATE_IN_TASKSWITCH)
-#endif
     {
     	// Not within ISR or task-switch context, use a regular critical section.
     	vPortEnterCritical();

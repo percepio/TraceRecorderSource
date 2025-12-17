@@ -1,6 +1,6 @@
 /*
- * Trace Recorder for Tracealyzer v4.10.3
- * Copyright 2023 Percepio AB
+ * Trace Recorder for Tracealyzer v4.11.0
+ * Copyright 2025 Percepio AB
  * www.percepio.com
  *
  * SPDX-License-Identifier: Apache-2.0
@@ -38,13 +38,6 @@ extern "C" {
  * @brief Configures the size of the internal buffer if used.
  */
 #define TRC_CFG_STREAM_PORT_INTERNAL_BUFFER_SIZE 10240
-
-/**
- * @def TRC_CFG_STREAM_PORT_INTERNAL_BUFFER_WRITE_MODE
- *
- * @brief This should be set to TRC_INTERNAL_EVENT_BUFFER_OPTION_WRITE_MODE_DIRECT for best performance.
- */
-#define TRC_CFG_STREAM_PORT_INTERNAL_BUFFER_WRITE_MODE TRC_INTERNAL_EVENT_BUFFER_OPTION_WRITE_MODE_DIRECT
 
 /**
  * @def TRC_CFG_STREAM_PORT_INTERNAL_BUFFER_TRANSFER_MODE

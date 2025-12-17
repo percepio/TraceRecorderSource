@@ -1,0 +1,30 @@
+# Copyright (c) 2025 Percepio AB
+# SPDX-License-Identifier: Apache-2.0
+
+choice PERCEPIO_TRC_CFG_TRAX_BLOCKING_MODE
+	prompt "Stream Blocking Mode"
+	depends on PERCEPIO_TRACERECORDER_ENABLED
+	default PERCEPIO_TRC_CFG_TRAX_MODE_NO_BLOCK_SKIP
+	help
+		This stream port for streaming over XTensa Trax relies on apptrace that utilize
+		an internal TRAX RAM buffer read by OpenOCD during execution.
+		
+		Possible values:
+		- APPTRACE_TRAX_MODE_BLOCK_IF_FIFO_FULL
+		- APPTRACE_TRAX_MODE_NO_BLOCK_SKIP (default)
+		
+		Using APPTRACE_TRAX_MODE_BLOCK_IF_FIFO_FULL ensure that you get a
+		complete and valid trace. This may however cause blocking if your streaming
+		interface isn't fast enough, which may disturb the real-time behavior.
+		
+		We therefore recommend APPTRACE_TRAX_MODE_NO_BLOCK_SKIP. In this mode,
+		Tracealyzer will report lost events if the transfer is not
+		fast enough. If there are problems, try increasing the apptrace buffer
+		in sdkconfig.
+
+	config PERCEPIO_TRC_CFG_TRAX_MODE_BLOCK_IF_FIFO_FULL
+		bool "Block if FIFO full"
+
+	config PERCEPIO_TRC_CFG_TRAX_MODE_NO_BLOCK_SKIP
+		bool "Skip if FIFO full"
+endchoice

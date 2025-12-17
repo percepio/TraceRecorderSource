@@ -1,6 +1,6 @@
 /*
- * Percepio Trace Recorder Initialization v4.10.3
- * Copyright 2023 Percepio AB
+ * Percepio Trace Recorder Initialization v4.11.0
+ * Copyright 2025 Percepio AB
  * www.percepio.com
  *
  * SPDX-License-Identifier: Apache-2.0
@@ -16,11 +16,11 @@
  *	created before the Trace Recorder is normally initialized. This will ensure
  *	the Trace Recorder is initialized only once.
  *
- *	Set TRC_CFG_RECORDER_DATA_PTR_INIT to 0 in trcSnapshotConfig.h to ensure
+ *	Set TRC_CFG_RECORDER_DATA_INIT to 0 in trcConfig.h to ensure
  *	RecorderInitialized isn't initialized to 0 after the recorder has been
  *	already initialized.
  *
- *	Finally, call vTraceEnable(TRC_START) after hardware is initialized to
+ *	Finally, call xTraceEnable() after hardware is initialized to
  *	start gathering trace events.
  */
  

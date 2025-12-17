@@ -1,6 +1,6 @@
 /*
-* Trace Recorder for Tracealyzer v4.10.3
-* Copyright 2023 Percepio AB
+* Trace Recorder for Tracealyzer v4.11.0
+* Copyright 2025 Percepio AB
 * www.percepio.com
 *
 * SPDX-License-Identifier: Apache-2.0
@@ -10,7 +10,7 @@
 
 #include <trcRecorder.h>
 
-#if (TRC_USE_TRACEALYZER_RECORDER == 1) && (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING)
+#if (TRC_USE_TRACEALYZER_RECORDER == 1)
 
 static TraceCounterData_t *pxCounterData TRC_CFG_RECORDER_DATA_ATTRIBUTE;
 
@@ -72,6 +72,8 @@ traceResult xTraceCounterSet(TraceCounterHandle_t xCounterHandle, TraceBaseType_
 	TraceBaseType_t xUpperLimit = 0;
 
 	TRC_ASSERT(xTraceIsComponentInitialized(TRC_RECORDER_COMPONENT_COUNTER));
+
+	TRC_ASSERT(xCounterHandle != 0);
 
 	/* This should never fail */
 	TRC_ASSERT_ALWAYS_EVALUATE(xTraceObjectSetSpecificState((TraceEntryHandle_t)xCounterHandle, TRC_COUNTER_VALUE_INDEX, (TraceUnsignedBaseType_t)xValue) == TRC_SUCCESS);

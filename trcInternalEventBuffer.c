@@ -1,6 +1,6 @@
 /*
- * Trace Recorder for Tracealyzer v4.10.3
- * Copyright 2023 Percepio AB
+ * Trace Recorder for Tracealyzer v4.11.0
+ * Copyright 2025 Percepio AB
  * www.percepio.com
  *
  * SPDX-License-Identifier: Apache-2.0
@@ -10,7 +10,7 @@
 
 #include <trcRecorder.h>
 
-#if (TRC_USE_TRACEALYZER_RECORDER == 1) && (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING) && (TRC_USE_INTERNAL_BUFFER == 1)
+#if (TRC_USE_TRACEALYZER_RECORDER == 1) && (TRC_USE_INTERNAL_BUFFER == 1)
 
 #include <stdio.h>
 #include <string.h>
@@ -18,19 +18,19 @@
 
 static TraceMultiCoreEventBuffer_t *pxInternalEventBuffer TRC_CFG_RECORDER_DATA_ATTRIBUTE;
 
-traceResult xTraceInternalEventBufferInitialize(uint8_t* puiBuffer, uint32_t uiSize)
+traceResult xTraceInternalEventBufferInitialize(TraceInternalEventBufferData_t* pxBuffer)
 {
-	/* uiSize must be larger than sizeof(TraceMultiCoreEventBuffer_t) or there will be no room for any data */
+	/* sizeof(TraceInternalEventBufferData_t) must be larger than sizeof(TraceMultiCoreEventBuffer_t) or there will be no room for any data */
 	/* This should never fail */
-	TRC_ASSERT(uiSize > sizeof(TraceMultiCoreEventBuffer_t));
+	TRC_ASSERT(sizeof(TraceInternalEventBufferData_t) > sizeof(TraceMultiCoreEventBuffer_t));
 	
-	/* pxInternalBuffer will be placed at the beginning of the puiBuffer */
-	pxInternalEventBuffer = (TraceMultiCoreEventBuffer_t*)puiBuffer;
+	/* The entire buffer will be used for the TraceMultiCoreEventBuffer_t */
+	pxInternalEventBuffer = (TraceMultiCoreEventBuffer_t*)pxBuffer;
 
 	/* Send in a an address pointing after the TraceMultiCoreEventBuffer_t */
 	/* We need to check this */
 	if (xTraceMultiCoreEventBufferInitialize(pxInternalEventBuffer, TRC_EVENT_BUFFER_OPTION_SKIP,
-		&puiBuffer[sizeof(TraceMultiCoreEventBuffer_t)], uiSize - sizeof(TraceMultiCoreEventBuffer_t)) == TRC_FAIL)
+		&pxBuffer->aubBuffer[sizeof(TraceMultiCoreEventBuffer_t)], sizeof(TraceInternalEventBufferData_t) - sizeof(TraceMultiCoreEventBuffer_t)) == TRC_FAIL)
 	{
 		return TRC_FAIL;
 	}

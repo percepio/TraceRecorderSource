@@ -1,6 +1,6 @@
 /*
- * Trace Recorder for Tracealyzer v4.10.3
- * Copyright 2023 Percepio AB
+ * Trace Recorder for Tracealyzer v4.11.0
+ * Copyright 2025 Percepio AB
  * www.percepio.com
  *
  * SPDX-License-Identifier: Apache-2.0
@@ -105,11 +105,11 @@ UINT _tx_block_pool_performance_info_get_orig(TX_BLOCK_POOL *pool_ptr, ULONG *al
 #include "tx_trace.h"
 
 UINT  _tx_block_pool_performance_system_info_get(ULONG *allocates, ULONG *releases, ULONG *suspensions, ULONG *timeouts) __attribute__((weak));
-UINT  _tx_block_pool_performance_system_info_get_oirg(ULONG *allocates, ULONG *releases, ULONG *suspensions, ULONG *timeouts) __attribute__((alias("_tx_block_pool_performance_system_info_get")));
+UINT  _tx_block_pool_performance_system_info_get_orig(ULONG *allocates, ULONG *releases, ULONG *suspensions, ULONG *timeouts) __attribute__((alias("_tx_block_pool_performance_system_info_get")));
 
 #ifdef __IAR_SYSTEMS_ICC__
 #pragma weak _tx_block_pool_performance_system_info_get
-#pragma weak _tx_block_pool_performance_system_info_get_oirg=_tx_block_pool_performance_system_info_get
+#pragma weak _tx_block_pool_performance_system_info_get_orig=_tx_block_pool_performance_system_info_get
 #endif /* __IAR_SYSTEMS_ICC__ */
 
 #endif /*__inside_tx_block_pool_performance_system_info_get */
@@ -523,12 +523,12 @@ UINT _tx_mutex_performance_info_get_orig(TX_MUTEX *mutex_ptr, ULONG *puts, ULONG
 
 UINT  _tx_mutex_performance_system_info_get(ULONG *puts, ULONG *gets, ULONG *suspensions,
                                 ULONG *timeouts, ULONG *inversions, ULONG *inheritances) __attribute__((weak));
-UINT  _tx_mutex_performance_system_info_get_oirg(ULONG *puts, ULONG *gets, ULONG *suspensions,
+UINT  _tx_mutex_performance_system_info_get_orig(ULONG *puts, ULONG *gets, ULONG *suspensions,
                                 ULONG *timeouts, ULONG *inversions, ULONG *inheritances) __attribute__((alias("_tx_mutex_performance_system_info_get")));
 
 #ifdef __IAR_SYSTEMS_ICC__
 #pragma weak _tx_mutex_performance_system_info_get
-#pragma weak _tx_mutex_performance_system_info_get_oirg=_tx_mutex_performance_system_info_get
+#pragma weak _tx_mutex_performance_system_info_get_orig=_tx_mutex_performance_system_info_get
 #endif /* __IAR_SYSTEMS_ICC__ */
 
 #endif /* __inside_tx_mutex_performance_system_info_get */
@@ -860,11 +860,11 @@ UINT _tx_semaphore_performance_info_get_orig(TX_SEMAPHORE *semaphore_ptr, ULONG 
 #include "tx_trace.h"
 
 UINT  _tx_semaphore_performance_system_info_get(ULONG *puts, ULONG *gets, ULONG *suspensions, ULONG *timeouts) __attribute__((weak));
-UINT  _tx_semaphore_performance_system_info_get_oirg(ULONG *puts, ULONG *gets, ULONG *suspensions, ULONG *timeouts) __attribute__((alias("_tx_semaphore_performance_system_info_get")));
+UINT  _tx_semaphore_performance_system_info_get_orig(ULONG *puts, ULONG *gets, ULONG *suspensions, ULONG *timeouts) __attribute__((alias("_tx_semaphore_performance_system_info_get")));
 
 #ifdef __IAR_SYSTEMS_ICC__
 #pragma weak _tx_semaphore_performance_system_info_get
-#pragma weak _tx_semaphore_performance_system_info_get_oirg=_tx_semaphore_performance_system_info_get
+#pragma weak _tx_semaphore_performance_system_info_get_orig=_tx_semaphore_performance_system_info_get
 #endif /* __IAR_SYSTEMS_ICC__ */
 
 #endif /* __inside_tx_semaphore_preformance_system_info_get */
@@ -1164,14 +1164,14 @@ UINT  _tx_thread_performance_system_info_get(ULONG *resumptions, ULONG *suspensi
                 ULONG *solicited_preemptions, ULONG *interrupt_preemptions, ULONG *priority_inversions,
                 ULONG *time_slices, ULONG *relinquishes, ULONG *timeouts, ULONG *wait_aborts,
                 ULONG *non_idle_returns, ULONG *idle_returns) __attribute__((weak));
-UINT  _tx_thread_performance_system_info_get_oirg(ULONG *resumptions, ULONG *suspensions,
+UINT  _tx_thread_performance_system_info_get_orig(ULONG *resumptions, ULONG *suspensions,
                 ULONG *solicited_preemptions, ULONG *interrupt_preemptions, ULONG *priority_inversions,
                 ULONG *time_slices, ULONG *relinquishes, ULONG *timeouts, ULONG *wait_aborts,
                 ULONG *non_idle_returns, ULONG *idle_returns) __attribute__((alias("_tx_thread_performance_system_info_get")));
 
 #ifdef __IAR_SYSTEMS_ICC__
 #pragma weak _tx_thread_performance_system_info_get
-#pragma weak _tx_thread_performance_system_info_get_oirg=_tx_thread_performance_system_info_get
+#pragma weak _tx_thread_performance_system_info_get_orig=_tx_thread_performance_system_info_get
 #endif /* __IAR_SYSTEMS_ICC__ */
 
 #endif /* __inside_tx_thread_performance_system_info_get */

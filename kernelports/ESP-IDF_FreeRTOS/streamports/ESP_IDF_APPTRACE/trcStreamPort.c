@@ -1,6 +1,6 @@
 /*
- * Trace Recorder for Tracealyzer v4.10.3
- * Copyright 2023 Percepio AB
+ * Trace Recorder for Tracealyzer v4.11.0
+ * Copyright 2025 Percepio AB
  * www.percepio.com
  *
  * SPDX-License-Identifier: Apache-2.0
@@ -13,7 +13,6 @@
 #include <esp_app_trace.h>
 
 #if (TRC_USE_TRACEALYZER_RECORDER == 1)
-#if (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING)
 
 /* The data structure for commands (a bit overkill) */
 typedef struct TraceCommand
@@ -38,8 +37,6 @@ static uint32_t uiConnected = 0UL;
 
 traceResult xTraceStreamPortInitialize(TraceStreamPortBuffer_t* pxBuffer)
 {
-	TRC_ASSERT_EQUAL_SIZE(TraceStreamPortBuffer_t, TraceStreamPortRTT_t);
-
 	if (pxBuffer == 0)
 	{
 		return TRC_FAIL;
@@ -47,16 +44,14 @@ traceResult xTraceStreamPortInitialize(TraceStreamPortBuffer_t* pxBuffer)
 
 	pxStreamPortRTT = (TraceStreamPortBuffer_t*)pxBuffer;
 
-#if (TRC_USE_INTERNAL_BUFFER == 1)
-	return xTraceInternalEventBufferInitialize(pxStreamPortRTT->bufferInternal, sizeof(pxStreamPortRTT->bufferInternal));
-#else
 	return TRC_SUCCESS;
-#endif
 }
 
-traceResult xTraceStreamPortWriteData(void* pvData, uint32_t uiSize, int32_t* piBytesWritten)
+traceResult xTraceStreamPortWriteData(void* pvData, uint32_t uiSize, uint32_t uiChannel, int32_t* piBytesWritten)
 {
 	esp_err_t err = ESP_OK;
+
+	(void)uiChannel; /* uiChannel is not used in this implementation */
 
 	*piBytesWritten = 0;
 	
@@ -144,7 +139,5 @@ traceResult xTraceStreamPortOnEnable(uint32_t uiStartOption)
 
 	return TRC_SUCCESS;
 }
-
-#endif
 
 #endif

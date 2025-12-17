@@ -1,5 +1,11 @@
 var searchData=
 [
-  ['period_0',['period',['../structTraceTimestampData.html#af5cb77711278fbc4883f92ece1eb8a77',1,'TraceTimestampData']]],
-  ['puibuffer_1',['puiBuffer',['../structTraceEventBuffer.html#afbe952f473fc2e4374d616e5cf3549e8',1,'TraceEventBuffer']]]
+  ['uidroppedevents_0',['uiDroppedEvents',['../structTraceEventBuffer.html#a337409a239c1b6b67966c576a7f53771',1,'TraceEventBuffer']]],
+  ['uifree_1',['uiFree',['../structTraceEventBuffer.html#a3b183ccc676bcda670e368872bd63265',1,'TraceEventBuffer']]],
+  ['uihead_2',['uiHead',['../structTraceEventBuffer.html#acf54ea1828686b9fd1e2d3dc643988ae',1,'TraceEventBuffer']]],
+  ['uioptions_3',['uiOptions',['../structTraceEventBuffer.html#a4d5ea9533733063f346a008ddd829aa7',1,'TraceEventBuffer']]],
+  ['uireserved_4',['uiReserved',['../structTraceEventBuffer.html#ac4d74ed058ed32190135103982e8403f',1,'TraceEventBuffer']]],
+  ['uisize_5',['uiSize',['../structTraceEventBuffer.html#a2d34dfe1f9fcf668ef9b10fa238cf81f',1,'TraceEventBuffer']]],
+  ['uitail_6',['uiTail',['../structTraceEventBuffer.html#a0390983d805ead91dd8d163055a8f6d5',1,'TraceEventBuffer']]],
+  ['uitimerwraparounds_7',['uiTimerWraparounds',['../structTraceEventBuffer.html#ab1ad766c73b056a09cdf9afb82399fc4',1,'TraceEventBuffer']]]
 ];

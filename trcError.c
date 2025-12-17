@@ -1,6 +1,6 @@
 /*
-* Percepio Trace Recorder for Tracealyzer v4.10.3
-* Copyright 2023 Percepio AB
+* Percepio Trace Recorder for Tracealyzer v4.11.0
+* Copyright 2025 Percepio AB
 * www.percepio.com
 *
 * SPDX-License-Identifier: Apache-2.0
@@ -10,7 +10,7 @@
 
 #include <trcRecorder.h>
 
-#if (TRC_USE_TRACEALYZER_RECORDER == 1) && (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING)
+#if (TRC_USE_TRACEALYZER_RECORDER == 1)
 
 /* We skip the slot for TRC_ERROR_NONE so error code 1 is the first bit */
 #define GET_ERROR_WARNING_FLAG(errorCode) (pxErrorInfo->uiErrorAndWarningFlags & (1UL << ((errorCode) - 1UL)))
@@ -137,8 +137,8 @@ static traceResult prvTraceErrorPrint(uint32_t uiErrorCode)
 			return TRC_FAIL;
 		}
 	}
-
-	(void)prvTraceErrorGetDescription(uiErrorCode, &szDesc);
+	
+    (void)prvTraceErrorGetDescription(uiErrorCode, &szDesc);
 
 	switch (uiErrorCode)
 	{

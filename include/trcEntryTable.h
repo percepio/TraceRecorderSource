@@ -1,6 +1,6 @@
 /*
-* Percepio Trace Recorder for Tracealyzer v4.10.3
-* Copyright 2023 Percepio AB
+* Percepio Trace Recorder for Tracealyzer v4.11.0
+* Copyright 2025 Percepio AB
 * www.percepio.com
 *
 * SPDX-License-Identifier: Apache-2.0
@@ -15,7 +15,7 @@
 #ifndef TRC_ENTRY_TABLE_H
 #define TRC_ENTRY_TABLE_H
 
-#if (TRC_USE_TRACEALYZER_RECORDER == 1) && (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING)
+#if (TRC_USE_TRACEALYZER_RECORDER == 1)
 
 #include <trcTypes.h>
 
@@ -235,7 +235,7 @@ traceResult xTraceEntryGetAddress(const TraceEntryHandle_t xEntryHandle, void **
  * 
  * @returns Address.
  */
-void* xTraceEntryGetAddressReturn(const TraceEntryHandle_t xEntryHandle);
+void* pvTraceEntryGetAddressReturn(const TraceEntryHandle_t xEntryHandle);
 
 /**
  * @brief Gets symbol for trace entry.
@@ -290,7 +290,7 @@ traceResult xTraceEntryGetOptions(const TraceEntryHandle_t xEntryHandle, uint32_
 #define xTraceEntryClearOptions TRC_ENTRY_CLEAR_OPTIONS
 
 #define xTraceEntryGetAddress TRC_ENTRY_GET_ADDRESS
-#define xTraceEntryGetAddressReturn TRC_ENTRY_GET_ADDRESS_RETURN
+#define pvTraceEntryGetAddressReturn TRC_ENTRY_GET_ADDRESS_RETURN
 #define xTraceEntryGetSymbol TRC_ENTRY_GET_SYMBOL
 #define xTraceEntryGetState TRC_ENTRY_GET_STATE
 #define xTraceEntryGetStateReturn TRC_ENTRY_GET_STATE_RETURN
@@ -328,7 +328,7 @@ traceResult xTraceEntryGetOptions(const TraceEntryHandle_t xEntryHandle, uint32_
 
 #define xTraceEntryGetAddress(_xEntryHandle, _ppvAddress) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_3((void)(_xEntryHandle), (void)(_ppvAddress), TRC_SUCCESS)
 
-#define xTraceEntryGetAddressReturn(_xEntryHandle) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_2((void)(_xEntryHandle), (void*)0)
+#define pvTraceEntryGetAddressReturn(_xEntryHandle) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_2((void)(_xEntryHandle), (void*)0)
 
 #define xTraceEntryGetSymbol(_xEntryHandle, _pszSymbol) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_3((void)(_xEntryHandle), (void)(_pszSymbol), TRC_SUCCESS)
 

@@ -1,0 +1,8 @@
+# Copyright (c) 2025 Percepio AB
+# SPDX-License-Identifier: Apache-2.0
+
+config PERCEPIO_TRC_CFG_STREAM_PORT_TCPIP_PORT
+	int "TCP Port"
+	default 18419
+	help
+		This sets the TCP port used for trace data transfer.

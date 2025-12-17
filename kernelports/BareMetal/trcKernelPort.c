@@ -1,6 +1,6 @@
 /*
- * Trace Recorder for Tracealyzer v4.10.3
- * Copyright 2023 Percepio AB
+ * Trace Recorder for Tracealyzer v4.11.0
+ * Copyright 2025 Percepio AB
  * www.percepio.com
  *
  * SPDX-License-Identifier: Apache-2.0
@@ -16,8 +16,6 @@
 #if(TRC_CFG_CPU_CLOCK_HZ == 0)
 #error "TRC_CFG_CPU_CLOCK_HZ needs to be set to the CPU frequency."
 #endif
-	
-#if (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING)
 
 typedef struct TraceKernelPortData
 {
@@ -47,13 +45,5 @@ traceResult xTraceKernelPortEnable(void)
 	
 	return TRC_SUCCESS;
 }
-
-#endif
-
-#if (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_SNAPSHOT)
-
-#error "BareMetal requires using Streaming recorder mode (TRC_CFG_RECORDER_MODE) with RingBuffer streamport if snapshot functionality is needed."
-
-#endif /* Snapshot mode */
 
 #endif

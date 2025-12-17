@@ -1,5 +1,5 @@
-Percepio Trace Recorder Initialization v4.10.3
-Copyright 2023 Percepio AB
+Percepio Trace Recorder Initialization v4.11.0
+Copyright 2025 Percepio AB
 www.percepio.com
 
 This folder contains files that should only be included in a project

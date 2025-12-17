@@ -1,0 +1,31 @@
+# Copyright (c) 2025 Percepio AB
+# SPDX-License-Identifier: Apache-2.0
+
+menu "Debug"
+config PERCEPIO_TRC_CFG_RECORDER_DATA_INIT
+  int "Data Init"
+  default 1
+  help
+    Macro that states wether the recorder data should have an initial value.
+    
+    In very specific cases where traced objects are created before main(),
+    the recorder will need to be started even before that. In these cases,
+    the recorder data would be initialized by xTraceInitialize() but could
+    then later be overwritten by the initialization value.
+    If this is an issue for you, set PERCEPIO_TRC_CFG_RECORDER_DATA_INIT to 0.
+    The following code can then be used before any traced objects are created:
+
+    extern uint32_t RecorderEnabled;
+    RecorderEnabled = 0;
+    xTraceInitialize();
+
+    After the clocks are properly initialized, use xTraceEnable(...) to start
+    the tracing.
+
+config PERCEPIO_TRC_CFG_USE_TRACE_ASSERT
+  bool "Trace Asserts"
+  default n
+  help
+    Enable or disable debug asserts. Information regarding any assert that is
+    triggered will be in trcAssert.c.
+endmenu

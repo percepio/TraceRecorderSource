@@ -1,6 +1,6 @@
 /*
- * Trace Recorder for Tracealyzer v4.10.3
- * Copyright 2023 Percepio AB
+ * Trace Recorder for Tracealyzer v4.11.0
+ * Copyright 2025 Percepio AB
  * www.percepio.com
  *
  * SPDX-License-Identifier: Apache-2.0
@@ -29,8 +29,8 @@
 #define SYSCALLS_EXTENSION_EVENT_COUNT ((K_SYSCALL_LIMIT + 1) * 2)
 
 #define xSyscallsExtensionEnable() (xTraceExtensionCreate(SYSCALLS_EXTENSION_NAME, SYSCALLS_EXTENSION_VERSION_MAJOR, SYSCALLS_EXTENSION_VERSION_MINOR, SYSCALLS_EXTENSION_VERSION_PATCH, SYSCALLS_EXTENSION_EVENT_COUNT, &pxKernelPortData->xSyscallsExtensionHandle))
-#define xSyscallsExtensionEnter(id) prvTraceStoreEvent_None(xTraceExtensionGetEventId(pxKernelPortData->xSyscallsExtensionHandle, id))
-#define xSyscallsExtensionExit(id) prvTraceStoreEvent_None(xTraceExtensionGetEventId(pxKernelPortData->xSyscallsExtensionHandle, id + (K_SYSCALL_LIMIT + 1)))
+#define xSyscallsExtensionEnter(id) prvTraceEventCreate0(xTraceExtensionGetEventId(pxKernelPortData->xSyscallsExtensionHandle, id))
+#define xSyscallsExtensionExit(id) prvTraceEventCreate0(xTraceExtensionGetEventId(pxKernelPortData->xSyscallsExtensionHandle, id + (K_SYSCALL_LIMIT + 1)))
 
 #endif
 
@@ -41,7 +41,7 @@ static K_THREAD_STACK_DEFINE(TzCtrl_thread_stack, (TRC_CFG_CTRL_TASK_STACK_SIZE)
  * @brief TzCtrl_thread_entry
  *
  * Task for sending the trace data from the internal buffer to the stream 
- * interface (assuming TRC_STREAM_PORT_USE_INTERNAL_BUFFER == 1) and for
+ * interface (assuming TRC_CFG_STREAM_PORT_USE_INTERNAL_BUFFER == 1) and for
  * receiving commands from Tracealyzer. Also does some diagnostics.
  * 
  * @param[in] _args
@@ -66,6 +66,11 @@ typedef struct TraceKernelPortData
 	TraceKernelPortTaskHandle_t xTzCtrlHandle;
 	TraceExtensionHandle_t xSyscallsExtensionHandle;
 } TraceKernelPortData_t;
+
+#if (TRC_CFG_ENABLE_TASK_MONITOR == 1)
+/* Thread Local Storage */
+static Z_THREAD_LOCAL void* pvTaskMonitorTLS = (void*)0;
+#endif
 
 static TraceKernelPortData_t* pxKernelPortData TRC_CFG_RECORDER_DATA_ATTRIBUTE;
 
@@ -106,6 +111,55 @@ traceResult xTraceKernelPortGetUnusedStack(void* thread, TraceUnsignedBaseType_t
 unsigned char xTraceKernelPortIsSchedulerSuspended(void)
 {
 	return 0;
+}
+
+traceResult xTraceKernelPortSetTaskMonitorData(void* pvTask, void* pvData)
+{
+	(void)pvTask;
+
+#if (TRC_CFG_ENABLE_TASK_MONITOR == 1)
+	if (pvData == (void*)0)
+	{
+		return TRC_FAIL;
+	}
+	
+	/* pxTaskMonitorTaskData is defined as Thread Local Storage and will be different depending on executing thread.
+	 * This means that xTraceTaskMonitorRegister() must be called from within the Task that is to be registered. */
+	pvTaskMonitorTLS = pvData;
+
+	return TRC_SUCCESS;
+#else
+	(void)pvData;
+	
+	return TRC_FAIL;
+#endif
+}
+
+traceResult xTraceKernelPortGetTaskMonitorData(void* pvTask, void** ppvData)
+{
+	(void)pvTask;
+
+#if (TRC_CFG_ENABLE_TASK_MONITOR == 1)
+	if (ppvData == (void**)0)
+	{
+		return TRC_FAIL;
+	}
+	
+	/* pxTaskMonitorTaskData is defined as Thread Local Storage and will be different depending on executing thread.
+	 * This means that xTraceTaskMonitorUpdate() must be called while the current task hasn't been switched out yet. */
+	*ppvData = (void*)pvTaskMonitorTLS;
+	
+	if (*ppvData == (void*)0)
+	{
+		return TRC_FAIL;
+	}
+
+	return TRC_SUCCESS;
+#else
+	(void)ppvData;
+
+	return TRC_FAIL;
+#endif
 }
 
 void vTraceSetKernelObjectName(void* object, const char* name)
@@ -384,6 +438,18 @@ void sys_trace_k_thread_name_set(struct k_thread *thread, int ret) {
 }
 
 void sys_trace_k_thread_switched_out(void) {
+	k_tid_t cur = 0;
+
+	cur = k_current_get();  /* Get cached value if available */
+	if (!cur) {
+		cur = k_sched_current_thread_query();
+	}
+
+	if (!cur) {
+		return; /* Nothing we can do */
+	}
+
+	(void)xTraceTaskMonitorSwitchOut((void*)cur);
 }
 
 void sys_trace_k_thread_switched_in(void) {
@@ -401,7 +467,7 @@ void sys_trace_k_thread_switched_in(void) {
 
 	prio = k_thread_priority_get(cur);
 
-	(void)xTraceTaskSwitch(cur, prio);
+	(void)xTraceTaskSwitch((void*)cur, prio);
 }
 
 void sys_trace_k_thread_info(struct k_thread *thread) {
@@ -785,12 +851,12 @@ void sys_trace_k_condvar_broadcast_exit(struct k_condvar *condvar, int ret) {
 	(void)xTraceEventCreate2(PSF_EVENT_CONDVAR_BROADCAST_EXIT, (TraceUnsignedBaseType_t)condvar, (TraceUnsignedBaseType_t)ret);
 }
 
-void sys_trace_k_condvar_wait_enter(struct k_condvar *condvar, struct k_mutex *mutex, k_timeout_t timeout) {
-	(void)xTraceEventCreate3(PSF_EVENT_CONDVAR_WAIT_BLOCKING, (TraceUnsignedBaseType_t)condvar, (TraceUnsignedBaseType_t)mutex, (TraceUnsignedBaseType_t)timeout.ticks);
+void sys_trace_k_condvar_wait_enter(struct k_condvar *condvar, k_timeout_t timeout) {
+	(void)xTraceEventCreate2(PSF_EVENT_CONDVAR_WAIT_BLOCKING, (TraceUnsignedBaseType_t)condvar, (TraceUnsignedBaseType_t)timeout.ticks);
 }
 
-void sys_trace_k_condvar_wait_exit(struct k_condvar *condvar, struct k_mutex *mutex, k_timeout_t timeout, int ret) {
-	(void)xTraceEventCreate3(ret == 0 ? PSF_EVENT_CONDVAR_WAIT_SUCCESS : PSF_EVENT_CONDVAR_WAIT_FAILURE, (TraceUnsignedBaseType_t)condvar, (TraceUnsignedBaseType_t)mutex, (TraceUnsignedBaseType_t)ret);
+void sys_trace_k_condvar_wait_exit(struct k_condvar *condvar, k_timeout_t timeout, int ret) {
+	(void)xTraceEventCreate2(ret == 0 ? PSF_EVENT_CONDVAR_WAIT_SUCCESS : PSF_EVENT_CONDVAR_WAIT_FAILURE, (TraceUnsignedBaseType_t)condvar, (TraceUnsignedBaseType_t)ret);
 }
 
 
@@ -1451,13 +1517,43 @@ void sys_trace_syscall_exit(uint32_t id, const char *name) {
 }
 
 
-/* Legacy trace functions that are pending refactoring/removal by
- * the Zephyr team.
- */
+#if defined(CONFIG_PERCEPIO_TRC_CFG_AUTOISR)
+#if defined(CONFIG_PERCEPIO_TRC_CFG_AUTOISR_FILTER)
+extern int32_t iTraceIRQFilter(int32_t);
+#endif
+
+static int32_t get_irq_number(void) {
+	int32_t irq_number;
+#if defined(CONFIG_CPU_CORTEX_M)
+#if defined(CONFIG_ARM_CUSTOM_INTERRUPT_CONTROLLER)
+	irq_number = z_soc_irq_get_active();
+#else
+	irq_number = __get_IPSR();
+#endif
+	irq_number -= 16;
+#else
+#error not implemented
+#endif
+#if defined(CONFIG_PERCEPIO_TRC_CFG_AUTOISR_FILTER)
+	irq_number = iTraceIRQFilter(irq_number);
+#endif
+	return irq_number;
+}
+#endif
+
 void sys_trace_isr_enter(void) {
+#if defined(CONFIG_PERCEPIO_TRC_CFG_AUTOISR)
+	int32_t irq_number = get_irq_number();
+	if (irq_number >= 0)
+		xTraceISRBegin((TraceISRHandle_t) irq_number);
+#endif
 }
 
 void sys_trace_isr_exit(void) {
+#if defined(CONFIG_PERCEPIO_TRC_CFG_AUTOISR)
+	if (get_irq_number() >= 0)
+		xTraceISREnd(0);
+#endif
 }
 
 void sys_trace_isr_exit_to_scheduler(void) {

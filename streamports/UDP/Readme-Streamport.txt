@@ -37,7 +37,7 @@ Instructions:
 
 Troubleshooting:
 
-- If the tracing suddenly stops, check the "errno" value(trcStreamingPort.c).
+- If the tracing suddenly stops, check the "errno" value (trcStreamPort.c).
 You can see the error code definitions in lwip/errno.h. If errno is ENOMEM, may you need to 
 increase MEM_SIZE in lwipopts.h.
 

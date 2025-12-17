@@ -1,0 +1,104 @@
+# Copyright (c) 2025 Percepio AB
+# SPDX-License-Identifier: Apache-2.0
+
+menu "Trace Coverage"
+	depends on !PERCEPIO_TRC_CFG_RECORDER_RTOS_ZEPHYR
+	
+	config PERCEPIO_TRC_CFG_SCHEDULING_ONLY
+		bool "Only Record Scheduling Events"
+		default n
+		help
+			If this setting is enabled, only scheduling events are recorded. If disabled,
+			all events are recorded (unless filtered in other ways).
+
+	config PERCEPIO_TRC_CFG_INCLUDE_MEMMANG_EVENTS
+		bool "Trace Memory Management Events"
+		depends on !PERCEPIO_TRC_CFG_SCHEDULING_ONLY
+		default y
+		help
+		  This controls if malloc and free calls should be traced. Disable this to exclude
+		  malloc/free calls, or enable it to include such events in the trace.
+
+	config PERCEPIO_TRC_CFG_INCLUDE_USER_EVENTS
+		bool "Trace User Events"
+		depends on !PERCEPIO_TRC_CFG_SCHEDULING_ONLY
+		default y
+		help
+		  If this is disabled, all code related to User Events is excluded in order 
+		  to reduce code size. Any attempts to store User Events are then silently
+		  ignored.
+		  
+		  User Events are application-generated events, like "printf" but for the 
+		  trace log, generated using xTracePrint and xTracePrintF.
+		  The formatting is done on host-side, by Tracealyzer. User Events are 
+		  therefore much faster than a console printf and can often be used
+		  in timing critical code without problems.
+			
+		  Note: In streaming mode, User Events are used to provide error messages
+		  and warnings from the recorder (in case of incorrect configuration) for
+		  display in Tracealyzer. Disabling user events will also disable these
+		  warnings. You can however still catch them by calling xTraceGetLastError 
+		  or by putting breakpoints in prvTraceError and prvTraceWarning.
+
+	config PERCEPIO_TRC_CFG_INCLUDE_ISR_TRACING
+		bool "Trace ISR Events"
+		depends on !PERCEPIO_TRC_CFG_SCHEDULING_ONLY
+		default y
+		help
+		  If this is disabled, the code for recording Interrupt Service Routines is
+		  excluded, in order to reduce code size. This means that any calls to
+		  xTraceISRBegin/xTraceISREnd will be ignored.
+		  This does not completely disable ISR tracing, in cases where an ISR is
+		  calling a traced kernel service. These events will still be recorded and
+		  show up in anonymous ISR instances in Tracealyzer, with names such as
+		  "ISR sending to <queue name>".
+
+	config PERCEPIO_TRC_CFG_INCLUDE_READY_EVENTS
+		bool "Trace Task Ready Events"
+		default y
+		help
+		  If enabled, events are recorded when tasks enter scheduling state "ready".
+		  This allows Tracealyzer to show the initial pending time before tasks enter
+		  the execution state, and present accurate response times.
+		  If disabled, "ready events" are not created, which allows for recording
+		  longer traces in the same amount of RAM.
+
+	config PERCEPIO_TRC_CFG_INCLUDE_OSTICK_EVENTS
+		bool "Trace OS Tick Events"
+		depends on !PERCEPIO_TRC_CFG_SCHEDULING_ONLY
+		default y
+		help
+		  If this is enabled, events will be generated whenever the OS clock is
+		  increased. If disabled, OS tick events are not generated, which allows for
+		  recording longer traces in the same amount of RAM.
+	
+	config PERCEPIO_TRC_CFG_INCLUDE_EVENT_GROUP_EVENTS
+		bool "Trace Event Group Events"
+		depends on PERCEPIO_TRC_CFG_RECORDER_RTOS_FREERTOS || PERCEPIO_TRC_CFG_RECORDER_RTOS_ESPIDF_FREERTOS
+		default n
+		help
+			If this is disabled, the trace will exclude any "event group" events.
+		
+	config PERCEPIO_TRC_CFG_INCLUDE_TIMER_EVENTS
+		bool "Trace Timer Events"
+		depends on PERCEPIO_TRC_CFG_RECORDER_RTOS_FREERTOS || PERCEPIO_TRC_CFG_RECORDER_RTOS_ESPIDF_FREERTOS
+		default n
+		help
+			If this is disabled, the trace will exclude any Timer events.
+
+	config PERCEPIO_TRC_CFG_INCLUDE_PEND_FUNC_CALL_EVENTS
+		bool "Trace Pend Function Events"
+		depends on PERCEPIO_TRC_CFG_RECORDER_RTOS_FREERTOS || PERCEPIO_TRC_CFG_RECORDER_RTOS_ESPIDF_FREERTOS
+		default n
+		help
+			If this is disabled, the trace will exclude any "pending function call"
+			events, such as xTimerPendFunctionCall().
+		
+	config PERCEPIO_TRC_CFG_INCLUDE_STREAM_BUFFER_EVENTS
+		bool "Trace Stream Buffer Events"
+		depends on PERCEPIO_TRC_CFG_RECORDER_RTOS_FREERTOS || PERCEPIO_TRC_CFG_RECORDER_RTOS_ESPIDF_FREERTOS
+		default n
+		help
+			If this is disabled, the trace will exclude any stream buffer or message
+			buffer events.
+endmenu

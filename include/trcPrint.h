@@ -1,6 +1,6 @@
 /*
-* Percepio Trace Recorder for Tracealyzer v4.10.3
-* Copyright 2023 Percepio AB
+* Percepio Trace Recorder for Tracealyzer v4.11.0
+* Copyright 2025 Percepio AB
 * www.percepio.com
 *
 * SPDX-License-Identifier: Apache-2.0
@@ -15,7 +15,7 @@
 #ifndef TRC_PRINT_H
 #define TRC_PRINT_H
 
-#if (TRC_USE_TRACEALYZER_RECORDER == 1) && (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING) && (TRC_CFG_INCLUDE_USER_EVENTS == 1)
+#if (TRC_USE_TRACEALYZER_RECORDER == 1) && (TRC_CFG_INCLUDE_USER_EVENTS == 1)
 
 #include <stdarg.h>
 #include <trcTypes.h>
@@ -177,7 +177,7 @@ traceResult xTracePrintCompactF(const char* szChannel, const char* szFormat, ...
  *	xTraceStringRegister("MyChannel", &xChannel);
  *	xTraceStringRegister("Hello world!", &xHelloWorld);
  *	...
- *	xTracePrintFormat0(xChannel, xHelloWorld);
+ *	xTracePrintF0(xChannel, xHelloWorld);
  *
  * @param[in] xChannel Channel handle.
  * @param[in] xFormatStringHandle Format string handle.
@@ -200,7 +200,7 @@ traceResult xTracePrintCompactF(const char* szChannel, const char* szFormat, ...
  *	xTraceStringRegister("MyChannel", &xChannel);
  *	xTraceStringRegister("Hello world! %d", &xHelloWorld);
  *	...
- *	xTracePrintFormat1(xChannel, xHelloWorld, 1);
+ *	xTracePrintF1(xChannel, xHelloWorld, 1);
  *
  * @param[in] xChannel Channel handle.
  * @param[in] xFormatStringHandle Format string handle.
@@ -224,7 +224,7 @@ traceResult xTracePrintCompactF(const char* szChannel, const char* szFormat, ...
  *	xTraceStringRegister("MyChannel", &xChannel);
  *	xTraceStringRegister("Hello world! %d %d", &xHelloWorld);
  *	...
- *	xTracePrintFormat2(xChannel, xHelloWorld, 1, 2);
+ *	xTracePrintF2(xChannel, xHelloWorld, 1, 2);
  *
  * @param[in] xChannel Channel handle.
  * @param[in] xFormatStringHandle Format string handle.
@@ -249,7 +249,7 @@ traceResult xTracePrintCompactF(const char* szChannel, const char* szFormat, ...
  *	xTraceStringRegister("MyChannel", &xChannel);
  *	xTraceStringRegister("Hello world! %d %d %d", &xHelloWorld);
  *	...
- *	xTracePrintFormat3(xChannel, xHelloWorld, 1, 2, 3);
+ *	xTracePrintF3(xChannel, xHelloWorld, 1, 2, 3);
  *
  * @param[in] xChannel Channel handle.
  * @param[in] xFormatStringHandle Format string handle.
@@ -275,7 +275,7 @@ traceResult xTracePrintCompactF(const char* szChannel, const char* szFormat, ...
  *	xTraceStringRegister("MyChannel", &xChannel);
  *	xTraceStringRegister("Hello world! %d %d %d %d", &xHelloWorld);
  *	...
- *	xTracePrintFormat4(xChannel, xHelloWorld, 1, 2, 3, 4);
+ *	xTracePrintF4(xChannel, xHelloWorld, 1, 2, 3, 4);
  *
  * @param[in] xChannel Channel handle.
  * @param[in] xFormatStringHandle Format string handle.
@@ -323,7 +323,7 @@ traceResult xTracePrint(TraceStringHandle_t xChannel, const char* szString);
 /**
  * @brief Wrapper for xTracePrintF for printing to default channel.
  * 
- * Wrapper for vTracePrintF, using the default channel. Can be used as a drop-in
+ * Wrapper for xTracePrintF, using the default channel. Can be used as a drop-in
  * replacement for printf and similar functions, e.g. in a debug logging macro.
  * NOTE! All parameters must be cast to TraceUnsignedBaseType_t/TraceBaseType_t!
  * 

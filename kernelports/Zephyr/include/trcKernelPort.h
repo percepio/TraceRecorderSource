@@ -1,6 +1,6 @@
 /*
- * Trace Recorder for Tracealyzer v4.10.3
- * Copyright 2023 Percepio AB
+ * Trace Recorder for Tracealyzer v4.11.0
+ * Copyright 2025 Percepio AB
  * www.percepio.com
  *
  * SPDX-License-Identifier: Apache-2.0
@@ -27,27 +27,33 @@ extern "C" {
 
 /**
  * @def TRC_PLATFORM_CFG
- * @brief This defines the basis for version specific lookup of
- * platform configuration files. If left empty the default
- * RTOS XML files are used.
+ * @brief DO NOT CHANGE THIS
+ * This defines the basis for version specific lookup of
+ * platform configuration files.
  */
 #define TRC_PLATFORM_CFG "Zephyr"
 
 /**
  * @def TRC_PLATFORM_CFG_MAJOR
- * @brief Major release version for recorder.
+ * @brief DO NOT CHANGE THIS
+ * Major release version for platform definition file.
+ * Does NOT need to match the RTOS version.
  */
 #define TRC_PLATFORM_CFG_MAJOR 4
 
 /**
  * @def TRC_PLATFORM_CFG_MINOR
- * @brief Minor release version for recorder.
+ * @brief DO NOT CHANGE THIS
+ * Minor release version for platform definition file.
+ * Does NOT need to match the RTOS version.
  */
-#define TRC_PLATFORM_CFG_MINOR 1
+#define TRC_PLATFORM_CFG_MINOR 3
 
 /**
  * @def TRC_PLATFORM_CFG_PATCH
- * @brief Patchlevel release version for recorder.
+ * @brief DO NOT CHANGE THIS
+ * Patchlevel release version for platform definition file.
+ * Does NOT need to match the RTOS version.
  */
 #define TRC_PLATFORM_CFG_PATCH 0
 
@@ -120,6 +126,28 @@ TraceHeapHandle_t xTraceKernelPortGetSystemHeapHandle(void);
  * @retval 1 Scheduler suspended
  */
 unsigned char xTraceKernelPortIsSchedulerSuspended(void);
+
+/**
+ * @internal Set data in TLS.
+ 
+ * @param[in] pvTask Task address
+ * @param[in] pvData Pointer to the data
+ *
+ * @retval TRC_FAIL Failure
+ * @retval TRC_SUCCESS Success
+ */
+traceResult xTraceKernelPortSetTaskMonitorData(void* pvTask, void* pvData);
+
+/**
+ * @internal Get data from TLS.
+ 
+ * @param[in] pvTask Task address
+ * @param[out] ppvData Returns pointer to the TLS data
+ *
+ * @retval TRC_FAIL Failure
+ * @retval TRC_SUCCESS Success
+ */
+traceResult xTraceKernelPortGetTaskMonitorData(void* pvTask, void** ppvData);
 
 /**
  * @brief Sets kernel object name for display in Tracealyzer.
@@ -273,9 +301,12 @@ void vTraceSetTimerName(void* object, const char* name);
 	#define TRC_KERNEL_PORT_HEAP_MALLOC(size) k_malloc(size)
 #endif
 
+#if defined(CONFIG_THREAD_LOCAL_STORAGE)
+#define TRC_KERNEL_PORT_SUPPORTS_TLS 1
+#endif
 
 /**
- * Define streaming event codes - should match the Tracealyzer config file
+ * Define event codes - should match the Tracealyzer config file
  */
 #define PSF_EVENT_NULL_EVENT								0x00
 

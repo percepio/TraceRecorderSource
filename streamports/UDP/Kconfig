@@ -1,0 +1,14 @@
+# Copyright (c) 2025 Percepio AB
+# SPDX-License-Identifier: Apache-2.0
+
+config PERCEPIO_TRC_CFG_STREAM_PORT_UDP_IP
+	string "Host IP address"
+	default "192.168.0.100"
+	help
+		This sets the IP where the trace data will be sent.
+
+config PERCEPIO_TRC_CFG_STREAM_PORT_UDP_PORT
+	int "Host UDP port"
+	default 18419
+	help
+		This sets the UDP port where the trace data will be sent.

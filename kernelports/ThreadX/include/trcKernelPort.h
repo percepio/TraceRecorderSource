@@ -1,6 +1,6 @@
 /*
- * Trace Recorder for Tracealyzer v4.10.3
- * Copyright 2023 Percepio AB
+ * Trace Recorder for Tracealyzer v4.11.0
+ * Copyright 2025 Percepio AB
  * www.percepio.com
  *
  * SPDX-License-Identifier: Apache-2.0
@@ -34,27 +34,33 @@ extern "C" {
 
 /**
  * @def TRC_PLATFORM_CFG
- * @brief This defines the basis for version specific lookup of
- * platform configuration files. If left empty the default
- * RTOS XML files are used.
+ * @brief DO NOT CHANGE THIS
+ * This defines the basis for version specific lookup of
+ * platform configuration files.
  */
 #define TRC_PLATFORM_CFG "ThreadX"
 
 /**
  * @def TRC_PLATFORM_CFG_MAJOR
- * @brief Major release version for recorder.
+ * @brief DO NOT CHANGE THIS
+ * Major release version for platform definition file.
+ * Does NOT need to match the RTOS version.
  */
 #define TRC_PLATFORM_CFG_MAJOR 1
 
 /**
  * @def TRC_PLATFORM_CFG_MINOR
- * @brief Minor release version for recorder.
+ * @brief DO NOT CHANGE THIS
+ * Minor release version for platform definition file.
+ * Does NOT need to match the RTOS version.
  */
 #define TRC_PLATFORM_CFG_MINOR 1
 
 /**
  * @def TRC_PLATFORM_CFG_PATCH
- * @brief Patchlevel release version for recorder.
+ * @brief DO NOT CHANGE THIS
+ * Patchlevel release version for platform definition file.
+ * Does NOT need to match the RTOS version.
  */
 #define TRC_PLATFORM_CFG_PATCH 0
 
@@ -145,54 +151,6 @@ TraceHeapHandle_t xTraceKernelPortGetSystemHeapHandle(void);
  * @retval 1 Scheduler suspended
  */
 unsigned char xTraceKernelPortIsSchedulerSuspended(void);
-
-/**
- * @brief Sets a name for Queue objects for display in Tracealyzer.
- *
- * @param[in] object Pointer to the Queue that shall be named
- * @param[in] name Name to set (const string literal)
- */
-void vTraceSetQueueName(void* object, const char* name);
-
-/**
- * @brief Sets a name for Semaphore objects for display in Tracealyzer.
- *
- * @param[in] object Pointer to the Seamaphore that shall be named
- * @param[in] name Name to set (const string literal)
- */
-void vTraceSetSemaphoreName(void* object, const char* name);
-
-/**
- * @brief Sets a name for Mutex objects for display in Tracealyzer.
- *
- * @param[in] object Pointer to the Mutex that shall be named
- * @param[in] name Name to set (const string literal)
- */
-void vTraceSetMutexName(void* object, const char* name);
-
-/**
- * @brief Sets a name for Event Group objects for display in Tracealyzer.
- *
- * @param[in] object Pointer to the Event Group that shall be named
- * @param[in] name Name to set (const string literal)
- */
-void vTraceSetEventGroupName(void* object, const char* name);
-
-/**
- * @brief Sets a name for Stream Buffer objects for display in Tracealyzer.
- *
- * @param[in] object Pointer to the Stream Buffer that shall be named
- * @param[in] name Name to set (const string literal)
- */
-void vTraceSetStreamBufferName(void* object, const char* name);
-
-/**
- * @brief Sets a name for Message Buffer objects for display in Tracealyzer.
- *
- * @param[in] object Pointer to the Message Buffer that shall be named
- * @param[in] name Name to set (const string literal)
- */
-void vTraceSetMessageBufferName(void* object, const char* name);
 
 
 /* Event codes - should match the offline config file. */

@@ -1,4 +1,4 @@
-# Copyright (c) 2021 Percepio AB
+# Copyright (c) 2025 Percepio AB
 # SPDX-License-Identifier: Apache-2.0
 
 if TRACING && PERCEPIO_TRACERECORDER
@@ -8,16 +8,6 @@ menu "RTOS Hidden Settings"
 config PERCEPIO_TRC_CFG_RECORDER_RTOS_ZEPHYR
     bool "Zephyr"
     default y
-
-# Zephyr does not support the classic snapshot format, only streaming
-# and streaming snapshot (RingBuffer).
-config PERCEPIO_TRC_RECORDER_MODE_STREAMING
-    bool "Streaming recorder mode"
-    default y
-    
-config PERCEPIO_TRC_RECORDER_MODE_SNAPSHOT
-    bool "Snapshot recorder mode"
-    default n
 
 endmenu # "RTOS Hidden settings"
 
@@ -32,6 +22,6 @@ config PERCEPIO_TRC_CFG_USE_SYSCALL_EXTENSION
 endmenu # "RTOS Specific"
 
 # Source recorder common config
-rsource "../../config/Kconfig"
+rsource "../../config/Kconfig/Kconfig"
 
 endif # TRACING && PERCEPIO_TRACERECORDER

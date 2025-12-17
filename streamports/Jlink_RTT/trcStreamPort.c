@@ -1,6 +1,6 @@
 /*
- * Trace Recorder for Tracealyzer v4.10.3
- * Copyright 2023 Percepio AB
+ * Trace Recorder for Tracealyzer v4.11.0
+ * Copyright 2025 Percepio AB
  * www.percepio.com
  *
  * SPDX-License-Identifier: Apache-2.0
@@ -18,14 +18,10 @@
 
 #if (TRC_USE_TRACEALYZER_RECORDER == 1)
 
-#if (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING)
-
 static TraceStreamPortBuffer_t* pxStreamPortRTT TRC_CFG_RECORDER_DATA_ATTRIBUTE;
 
 traceResult xTraceStreamPortInitialize(TraceStreamPortBuffer_t* pxBuffer)
 {
-	TRC_ASSERT_EQUAL_SIZE(TraceStreamPortBuffer_t, TraceStreamPortRTT_t);
-
 	if (pxBuffer == 0)
 	{
 		return TRC_FAIL;
@@ -33,31 +29,35 @@ traceResult xTraceStreamPortInitialize(TraceStreamPortBuffer_t* pxBuffer)
 
 	pxStreamPortRTT = (TraceStreamPortBuffer_t*)pxBuffer;
 
-#if (TRC_USE_INTERNAL_BUFFER == 1)
-	return xTraceInternalEventBufferInitialize(pxStreamPortRTT->bufferInternal, sizeof(pxStreamPortRTT->bufferInternal));
-#else
 	return TRC_SUCCESS;
-#endif
 }
 
 traceResult xTraceStreamPortOnEnable(uint32_t uiStartOption)
 {
 	(void)uiStartOption;
 
-	/* Configure the RTT buffers */
-	if (SEGGER_RTT_ConfigUpBuffer(TRC_CFG_STREAM_PORT_RTT_UP_BUFFER_INDEX, "TzData", pxStreamPortRTT->bufferUp, sizeof(pxStreamPortRTT->bufferUp), TRC_CFG_STREAM_PORT_RTT_MODE) < 0)
+	/* Configure the RTT buffers. On down buffer, and one up buffer per core. */
+	for (int i = 0; i < TRC_CFG_CORE_COUNT; i++)
 	{
-		return TRC_FAIL;
+#ifndef TRC_STREAM_PORT_MULTISTREAM_SUPPORT
+		/* Multistream support hasn't been enabled */
+		if (i > 0)
+		{
+			break;
+		}
+#endif
+		if (SEGGER_RTT_ConfigUpBuffer(TRC_CFG_STREAM_PORT_RTT_UP_BUFFER_INDEX + i, "TzData", pxStreamPortRTT->bufferUp[i], TRC_STREAM_PORT_RTT_UP_BUFFER_SIZE, TRC_CFG_STREAM_PORT_RTT_MODE) < 0)
+		{
+			return TRC_FAIL;
+		}
 	}
 
-	if (SEGGER_RTT_ConfigDownBuffer(TRC_CFG_STREAM_PORT_RTT_DOWN_BUFFER_INDEX, "TzCtrl", pxStreamPortRTT->bufferDown, sizeof(pxStreamPortRTT->bufferDown), TRC_CFG_STREAM_PORT_RTT_MODE) < 0)
+	if (SEGGER_RTT_ConfigDownBuffer(TRC_CFG_STREAM_PORT_RTT_DOWN_BUFFER_INDEX, "TzCtrl", pxStreamPortRTT->bufferDown, TRC_STREAM_PORT_RTT_DOWN_BUFFER_SIZE, TRC_CFG_STREAM_PORT_RTT_MODE) < 0)
 	{
 		return TRC_FAIL;
 	}
 
 	return TRC_SUCCESS;
 }
-
-#endif
 
 #endif

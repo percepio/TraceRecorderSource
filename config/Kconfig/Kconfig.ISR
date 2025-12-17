@@ -1,0 +1,68 @@
+# Copyright (c) 2025 Percepio AB
+# SPDX-License-Identifier: Apache-2.0
+
+menu "ISR"
+	config PERCEPIO_TRC_CFG_MAX_ISR_NESTING
+		int "Max ISR Nesting"
+		range 1 1048576
+		default 8
+		help
+		  Defines how many levels of interrupt nesting the recorder can handle, in
+		  case multiple ISRs are traced and ISR nesting is possible. If this
+		  is exceeded, the particular ISR will not be traced and the recorder then
+		  logs an error message. This setting is used to allocate an internal stack
+		  for keeping track of the previous execution context (4 byte per entry).
+
+	config PERCEPIO_TRC_CFG_ISR_TAILCHAINING_THRESHOLD
+		int "ISR Tailchaining Threshold"
+		range 0 4194304
+		default 0
+		help
+		  If tracing multiple ISRs, this setting allows for accurate display of the
+		  context-switching also in cases when the ISRs execute in direct sequence.
+		  
+		  xTraceISREnd normally assumes that the ISR returns to the previous
+		  context, i.e., a task or a preempted ISR. But if another traced ISR
+		  executes in direct sequence, Tracealyzer may incorrectly display a minimal
+		  fragment of the previous context in between the ISRs.
+		  
+		  By using PERCEPIO_TRC_CFG_ISR_TAILCHAINING_THRESHOLD you can avoid this. This is
+		  however a threshold value that must be measured for your specific setup.
+		  
+		  The default setting is 0, meaning "disabled" and that you may get an
+		  extra fragments of the previous context in between tail-chained ISRs.
+
+	menuconfig PERCEPIO_TRC_CFG_AUTOISR
+		bool "Automatic ISR tracing"
+		depends on !PERCEPIO_TRC_CFG_SCHEDULING_ONLY && CPU_CORTEX_M && PERCEPIO_TRC_CFG_RECORDER_RTOS_ZEPHYR
+		default n
+		help
+		  If this is enabled, all ISRs will be traced automatically (i.e.
+		  without manual registration and without having to add 
+		  xTraceISRBegin()/xTraceISREnd() manually). 
+		  ISRs and their properties are taken from the devicetree.
+		  
+		  Note that tracing high-frequency interrupts may have a significant 
+		  impact on real-time performance. If you want certain ISRs to be
+		  ignored, then you use the "IRQ filter" subproperty.
+		  
+		  A file AutoISR-v1.1.0.xml will be created in the build directory,
+		  which will be needed to load the trace.
+		  
+		  In case of an IRQ numbering conflict, a warning is emitted and the 
+		  first device is used. The conflict can be resolved by defining an 
+		  overlay and using /delete-property/ on the superfluous interrupts 
+		  (and interrupt-names).
+		  
+		  Extra ISRs can be added in the "zephyr,user" node.
+
+if PERCEPIO_TRC_CFG_AUTOISR
+	config PERCEPIO_TRC_CFG_AUTOISR_FILTER
+		bool "IRQ filter"
+		default n
+		help
+		  Enables a user-defined function int32_t iTraceIRQFilter(int32_t) that 
+		  allows to change the IRQ number passed to the trace recorder. If the 
+		  returned number is negative, the ISR will not be traced.
+endif # PERCEPIO_TRC_CFG_AUTOISR
+endmenu # "ISR"

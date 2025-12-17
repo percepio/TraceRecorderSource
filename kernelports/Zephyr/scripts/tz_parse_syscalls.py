@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 
 """
-    Trace Recorder for Tracealyzer v4.10.3
-    Copyright 2023 Percepio AB
+    Trace Recorder for Tracealyzer v4.11.0
+    Copyright 2025 Percepio AB
     www.percepio.com
 
     SPDX-License-Identifier: Apache-2.0
@@ -48,11 +48,11 @@ with open("{}/VERSION".format(args.zephyr_base), "r") as fh:
     minor = None
     patch_level = None
     for line in fh:
-        if matches := re.match('^VERSION_MAJOR\s*=\s*(\d+)$', line):
+        if matches := re.match('^VERSION_MAJOR\\s*=\\s*(\\d+)$', line):
             major = int(matches.group(1))
-        elif matches := re.match('^VERSION_MINOR\s*=\s*(\d+)$', line):
+        elif matches := re.match('^VERSION_MINOR\\s*=\\s*(\\d+)$', line):
             minor = int(matches.group(1))
-        elif matches := re.match('^PATCHLEVEL\s*=\s*(\d+)$', line):
+        elif matches := re.match('^PATCHLEVEL\\s*=\\s*(\\d+)$', line):
             patch_level = int(matches.group(1))
 
     if major is None or minor is None or patch_level is None:
@@ -65,7 +65,7 @@ syscalls = []
 syscall_exit_start_id = None
 with open(syscall_list_h, 'r') as fh:
     for line in fh:
-        matches = re.match('^#define\sK_SYSCALL_((\w|_)+)\s(\d+)$', line)
+        matches = re.match('^#define\\sK_SYSCALL_((\\w|_)+)\\s(\\d+)$', line)
         if matches:
             syscall_name = matches.group(1)
             syscall_id = matches.group(3)

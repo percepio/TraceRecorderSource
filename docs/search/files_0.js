@@ -24,6 +24,7 @@ var searchData=
   ['trcstaticbuffer_2eh_21',['trcStaticBuffer.h',['../trcStaticBuffer_8h.html',1,'']]],
   ['trcstring_2eh_22',['trcString.h',['../trcString_8h.html',1,'']]],
   ['trctask_2eh_23',['trcTask.h',['../trcTask_8h.html',1,'']]],
-  ['trcthread_2eh_24',['trcThread.h',['../trcThread_8h.html',1,'']]],
-  ['trctimestamp_2eh_25',['trcTimestamp.h',['../trcTimestamp_8h.html',1,'']]]
+  ['trctaskmonitor_2eh_24',['trcTaskMonitor.h',['../trcTaskMonitor_8h.html',1,'']]],
+  ['trcthread_2eh_25',['trcThread.h',['../trcThread_8h.html',1,'']]],
+  ['trctimestamp_2eh_26',['trcTimestamp.h',['../trcTimestamp_8h.html',1,'']]]
 ];

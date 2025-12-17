@@ -1,6 +1,6 @@
 /*
- * Trace Recorder for Tracealyzer v4.10.3
- * Copyright 2023 Percepio AB
+ * Trace Recorder for Tracealyzer v4.11.0
+ * Copyright 2025 Percepio AB
  * www.percepio.com
  *
  * SPDX-License-Identifier: Apache-2.0
@@ -13,8 +13,6 @@
 extern TX_THREAD* _tx_thread_created_ptr;
 TX_THREAD pxIdleTxThreadDummy;
 
-#if ((TRC_CFG_RECORDER_MODE) == TRC_RECORDER_MODE_STREAMING || ((TRC_CFG_ENABLE_STACK_MONITOR) == 1) && (TRC_CFG_SCHEDULING_ONLY == 0))
-
 /* Trace recorder control thread stack */
 static TraceUnsignedBaseType_t uiTzCtrlTaskMemoryArea[TRC_CFG_CTRL_TASK_STACK_SIZE];
 static TX_BYTE_POOL xTzCtrlThreadBytePool;
@@ -22,24 +20,15 @@ static TX_BYTE_POOL xTzCtrlThreadBytePool;
 /*  */
 TraceHeapHandle_t xSystemHeapHandle;
 
-#endif /* ((TRC_CFG_RECORDER_MODE) == TRC_RECORDER_MODE_STREAMING || ((TRC_CFG_ENABLE_STACK_MONITOR) == 1) && (TRC_CFG_SCHEDULING_ONLY == 0)) */
-
-
-/* Streaming kernel port */
-#if ((TRC_CFG_RECORDER_MODE) == TRC_RECORDER_MODE_STREAMING)
-
 #if ((TRC_CFG_ENABLE_STACK_MONITOR) == 1) && !defined(TX_ENABLE_STACK_CHECKING)
 #error TRC_CFG_ENABLE_STACK_MONITOR is enabled but TX_ENABLE_STACK_CHECKING is not
 #endif
-
-#endif /*TRC_RECORDER_MODE_STREAMING == 1*/
-
 
 /**
  * @brief TzCtrl_thread_entry
  *
  * Task for sending the trace data from the internal buffer to the stream
- * interface (assuming TRC_STREAM_PORT_USE_INTERNAL_BUFFER == 1) and for
+ * interface (assuming TRC_CFG_STREAM_PORT_USE_INTERNAL_BUFFER == 1) and for
  * receiving commands from Tracealyzer. Also does some diagnostics.
  *
  * @param[in] _arg

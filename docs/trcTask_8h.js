@@ -1,8 +1,13 @@
 var trcTask_8h =
 [
+    [ "pvTraceTaskGetAddressReturn", "group__trace__task__apis.html#ga6c8bc252a5d2549bf6e809b0695d8849", null ],
+    [ "xTraceTaskFind", "group__trace__task__apis.html#ga4888ee8a80baaf32ecc050eb3236454c", null ],
+    [ "xTraceTaskGetAddress", "group__trace__task__apis.html#ga392e19ec24429b9bd0974614b1662e47", null ],
     [ "xTraceTaskGetCurrent", "group__trace__task__apis.html#gac08ea98341bfa43f0c33c81a182fef47", null ],
     [ "xTraceTaskGetCurrentOnCore", "group__trace__task__apis.html#ga7784373b2261728466d28d9adfc33f50", null ],
+    [ "xTraceTaskGetCurrentOnCoreReturn", "group__trace__task__apis.html#ga2b01dffeafd270e784ed09fa103ed95b", null ],
     [ "xTraceTaskGetCurrentReturn", "group__trace__task__apis.html#gaa146ad087b3e41880f382a3035ca3478", null ],
+    [ "xTraceTaskGetName", "group__trace__task__apis.html#ga05b25ceb27b48e0ab96c69ea07967134", null ],
     [ "xTraceTaskInstanceFinishedNext", "group__trace__task__apis.html#ga4e1fbd5cc3c8db1f98748094f970b85e", null ],
     [ "xTraceTaskInstanceFinishedNow", "group__trace__task__apis.html#ga3db6f1905d1011b561e11b1ff642dd59", null ],
     [ "xTraceTaskRegister", "group__trace__task__apis.html#ga29f9e9e93c05081cdef7a555beaf2205", null ],

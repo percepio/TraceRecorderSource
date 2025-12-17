@@ -1,0 +1,14 @@
+# Copyright (c) 2025 Percepio AB
+# SPDX-License-Identifier: Apache-2.0
+
+rsource "Kconfig.StartMode"
+rsource "Kconfig.BufferAllocation"
+rsource "Kconfig.StreamPort"
+rsource "Kconfig.InternalBuffer"
+rsource "Kconfig.EntryTable"
+rsource "Kconfig.TraceCoverage"
+rsource "Kconfig.TraceControl"
+rsource "Kconfig.ISR"
+rsource "Kconfig.StackMonitor"
+#rsource "Kconfig.TaskMonitor"
+rsource "Kconfig.Debug"

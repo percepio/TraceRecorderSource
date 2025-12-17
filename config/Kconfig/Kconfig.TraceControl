@@ -1,0 +1,37 @@
+# Copyright (c) 2025 Percepio AB
+# SPDX-License-Identifier: Apache-2.0
+
+menu "Trace Control Task"
+	config PERCEPIO_TRC_CFG_CTRL_TASK_PRIORITY
+		int "Control Task Priority"
+		range 0 32 if PERCEPIO_TRC_CFG_RECORDER_RTOS_FREERTOS || PERCEPIO_TRC_CFG_RECORDER_RTOS_ESPIDF_FREERTOS || PERCEPIO_TRC_CFG_RECORDER_RTOS_THREADX
+		range -32 32 if PERCEPIO_TRC_CFG_RECORDER_RTOS_ZEPHYR
+		default 4
+		help
+		  TzCtrl is used to receive start/stop commands from Tracealyzer and in some
+		  cases also to transmit the trace data (for stream ports that use the
+		  internal buffer, like TCP/IP). For such stream ports, make sure the TzCtrl
+		  priority is high enough to ensure reliable periodic execution and transfer
+		  of the data, but low enough to avoid disturbing any time-sensitive functions.
+
+	config PERCEPIO_TRC_CFG_CTRL_TASK_DELAY
+		int "Control Task Delay"
+		range 1 1000000000
+		default 10
+		help
+		  The delay between loops of the TzCtrl task (see PERCEPIO_TRC_CFG_CTRL_TASK_PRIORITY), 
+		  which affects the frequency of the stack monitoring.
+		  
+		  This also affects the trace data transfer if you are using a stream port
+		  leveraging the internal buffer (like TCP/IP). A shorter delay increases
+		  the CPU load of TzCtrl somewhat, but may improve the performance of the
+		  trace streaming, especially if the trace buffer is small.
+		
+	config PERCEPIO_TRC_CFG_CTRL_TASK_STACK_SIZE
+		int "Control Task Stack Size"
+		range 1 1048576
+		default 256
+		help
+		  The stack size of the Tracealyzer Control (TzCtrl) task.
+		  See PERCEPIO_TRC_CFG_CTRL_TASK_PRIORITY for further information about TzCtrl.
+endmenu

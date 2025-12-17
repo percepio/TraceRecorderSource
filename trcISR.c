@@ -1,6 +1,6 @@
 /*
-* Percepio Trace Recorder for Tracealyzer v4.10.3
-* Copyright 2023 Percepio AB
+* Percepio Trace Recorder for Tracealyzer v4.11.0
+* Copyright 2025 Percepio AB
 * www.percepio.com
 *
 * SPDX-License-Identifier: Apache-2.0
@@ -10,7 +10,15 @@
 
 #include <trcRecorder.h>
 
-#if (TRC_USE_TRACEALYZER_RECORDER == 1) && (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING)
+#if (TRC_USE_TRACEALYZER_RECORDER == 1)
+
+#if defined(CONFIG_PERCEPIO_TRC_CFG_AUTOISR)
+#define IS_FAKE_HANDLE(h)  (((uint32_t)(uintptr_t)(h) < (CONFIG_NUM_IRQS + 1)))
+#define PSF_EVENT_ISR_BEGIN_EXT(h)   (uiExtBase + 2u * (uint32_t)(uintptr_t)(h))
+#define PSF_EVENT_ISR_RESUME_EXT(h)  (uiExtBase + 2u * (uint32_t)(uintptr_t)(h) + 1u)
+
+static uint32_t uiExtBase;
+#endif
 
 TraceISRData_t* pxTraceISRData TRC_CFG_RECORDER_DATA_ATTRIBUTE;
 
@@ -18,6 +26,9 @@ traceResult xTraceISRInitialize(TraceISRData_t *pxBuffer)
 {
 	uint32_t uiCoreIndex;
 	uint32_t uiStackIndex;
+#if defined(CONFIG_PERCEPIO_TRC_CFG_AUTOISR)
+	TraceExtensionHandle_t xExtensionHandle;
+#endif
 
 	/* This should never fail */
 	TRC_ASSERT(pxBuffer != (void*)0);
@@ -38,6 +49,18 @@ traceResult xTraceISRInitialize(TraceISRData_t *pxBuffer)
 		pxCoreData->isPendingContextSwitch = 0u;
 	}
 	
+#if defined(CONFIG_PERCEPIO_TRC_CFG_AUTOISR)
+	/* TODO we should probably define our own symbol instead of using CONFIG_NUM_IRQS */
+	if (xTraceExtensionCreate("AutoISR", 1u, 1u, 0u, 2u * (CONFIG_NUM_IRQS + 1u), &xExtensionHandle) != TRC_SUCCESS)
+	{
+		return TRC_FAIL;
+	}
+	if (xTraceExtensionGetBaseEventId(xExtensionHandle, &uiExtBase) != TRC_SUCCESS)
+	{
+		return TRC_FAIL;
+	}
+#endif
+
 	(void)xTraceSetComponentInitialized(TRC_RECORDER_COMPONENT_ISR);
 
 	return TRC_SUCCESS;
@@ -117,7 +140,16 @@ traceResult xTraceISRBegin(TraceISRHandle_t xISRHandle)
 		pxCoreData->handleStack[pxCoreData->stackIndex] = xISRHandle;
 
 #if (TRC_CFG_INCLUDE_ISR_TRACING == 1)
-		(void)xTraceEventCreate1(PSF_EVENT_ISR_BEGIN, (TraceUnsignedBaseType_t)xISRHandle); /*cstat !MISRAC2004-11.3 !MISRAC2012-Rule-11.4 Suppress conversion from pointer to integer check*/
+#if defined(CONFIG_PERCEPIO_TRC_CFG_AUTOISR)
+		if (IS_FAKE_HANDLE(xISRHandle))
+		{
+			(void)xTraceEventCreate0(PSF_EVENT_ISR_BEGIN_EXT(xISRHandle));
+		}
+		else
+#endif
+		{
+			(void)xTraceEventCreate1(PSF_EVENT_ISR_BEGIN, (TraceUnsignedBaseType_t)xISRHandle); /*cstat !MISRAC2004-11.3 !MISRAC2012-Rule-11.4 Suppress conversion from pointer to integer check*/
+		}
 #endif
 	}
 	else
@@ -138,6 +170,9 @@ traceResult xTraceISREnd(TraceBaseType_t xIsTaskSwitchRequired)
 {
 	TraceISRCoreData_t* pxCoreData;
 	TRACE_ALLOC_CRITICAL_SECTION();
+#if (TRC_CFG_INCLUDE_ISR_TRACING == 1)
+	TraceISRHandle_t xISRHandle;
+#endif
 
 	(void)xIsTaskSwitchRequired;
 
@@ -157,7 +192,17 @@ traceResult xTraceISREnd(TraceBaseType_t xIsTaskSwitchRequired)
 	if (pxCoreData->stackIndex >= 0)
 	{
 		/* Store return to interrupted ISR (if nested ISRs)*/
-		(void)xTraceEventCreate1(PSF_EVENT_ISR_RESUME, (TraceUnsignedBaseType_t)pxCoreData->handleStack[pxCoreData->stackIndex]); /*cstat !MISRAC2004-11.3 !MISRAC2012-Rule-11.4 Suppress conversion from pointer to integer check*/
+		xISRHandle = pxCoreData->handleStack[pxCoreData->stackIndex];
+#if defined(CONFIG_PERCEPIO_TRC_CFG_AUTOISR)
+		if (IS_FAKE_HANDLE(xISRHandle))
+		{
+			(void)xTraceEventCreate0(PSF_EVENT_ISR_RESUME_EXT(xISRHandle));
+		}
+		else
+#endif
+		{
+			(void)xTraceEventCreate1(PSF_EVENT_ISR_RESUME, (TraceUnsignedBaseType_t) xISRHandle); /*cstat !MISRAC2004-11.3 !MISRAC2012-Rule-11.4 Suppress conversion from pointer to integer check*/
+		}
 	}
 	else
 	{

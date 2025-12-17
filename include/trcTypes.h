@@ -1,6 +1,6 @@
 /*
-* Percepio Trace Recorder for Tracealyzer v4.10.3
-* Copyright 2023 Percepio AB
+* Percepio Trace Recorder for Tracealyzer v4.11.0
+* Copyright 2025 Percepio AB
 * www.percepio.com
 *
 * SPDX-License-Identifier: Apache-2.0
@@ -31,11 +31,7 @@ typedef TRC_UNSIGNED_BASE_TYPE TraceUnsignedBaseType_t;
 
 typedef TRC_BASE_TYPE TraceBaseType_t;
 
-#if (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING)
 typedef void* TraceHandleBaseType_t;
-#else
-typedef TraceUnsignedBaseType_t TraceHandleBaseType_t;
-#endif
 
 typedef TraceUnsignedBaseType_t traceResult;
 
@@ -76,9 +72,6 @@ typedef TraceHandleBaseType_t TraceProcessHandle_t;
 typedef TraceHandleBaseType_t TraceThreadHandle_t;
 
 typedef void (*TraceCounterCallback_t)(TraceCounterHandle_t xCounterHandle);
-
-/* DEPRECATED. Backwards compatibility */
-typedef TraceStringHandle_t traceString;
 
 #ifdef __cplusplus
 }

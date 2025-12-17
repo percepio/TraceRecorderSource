@@ -1,6 +1,6 @@
 /*
-* Percepio Trace Recorder for Tracealyzer v4.10.3
-* Copyright 2023 Percepio AB
+* Percepio Trace Recorder for Tracealyzer v4.11.0
+* Copyright 2025 Percepio AB
 * www.percepio.com
 *
 * SPDX-License-Identifier: Apache-2.0
@@ -16,8 +16,6 @@
 #define TRC_EVENT_H
 
 #if (TRC_USE_TRACEALYZER_RECORDER == 1)
-
-#if (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING)
 
 #include <trcTypes.h>
 
@@ -358,13 +356,83 @@ traceResult xTraceEventCreateData6(uint32_t uiEventCode, TraceUnsignedBaseType_t
  */
 traceResult xTraceEventGetSize(const void* const pvAddress, uint32_t* puiSize);
 
+/* Helper macros */
+
+/**
+ * @brief Helper macro that handles type casting for all parameters. Accepts no parameters.
+ * 
+ * @param[in] _eventID Event id
+ */
+#define prvTraceEventCreate0(_eventID) xTraceEventCreate0(_eventID)
+
+/**
+ * @brief Helper macro that handles type casting for all parameters. Accepts 1 parameters.
+ * 
+ * @param[in] _eventID Event id
+ * @param[in] _param Param
+ */
+#define prvTraceEventCreate1(_eventID, _param) xTraceEventCreate1(_eventID, (TraceUnsignedBaseType_t)(_param))
+
+/**
+ * @brief Helper macro that handles type casting for all parameters. Accepts 2 parameters.
+ * 
+ * @param[in] _eventID Event id
+ * @param[in] _param1 Param 1
+ * @param[in] _param2 Param 2
+ */
+#define prvTraceEventCreate2(_eventID, _param1, _param2)  xTraceEventCreate2(_eventID, (TraceUnsignedBaseType_t)(_param1), (TraceUnsignedBaseType_t)(_param2))
+
+/**
+ * @brief Helper macro that handles type casting for all parameters. Accepts 3 parameters.
+ * 
+ * @param[in] _eventID Event id
+ * @param[in] _param1 Param 1
+ * @param[in] _param2 Param 2
+ * @param[in] _param3 Param 3
+ */
+#define prvTraceEventCreate3(_eventID, _param1, _param2, _param3) xTraceEventCreate3(_eventID, (TraceUnsignedBaseType_t)(_param1), (TraceUnsignedBaseType_t)(_param2), (TraceUnsignedBaseType_t)(_param3))
+
+/**
+ * @brief Helper macro that handles type casting for all parameters. Accepts 4 parameters.
+ * 
+ * @param[in] _eventID Event id
+ * @param[in] _param1 Param 1
+ * @param[in] _param2 Param 2
+ * @param[in] _param3 Param 3
+ * @param[in] _param4 Param 4
+ */
+#define prvTraceEventCreate4(_eventID, _param1, _param2, _param3, _param4) xTraceEventCreate4(_eventID, (TraceUnsignedBaseType_t)(_param1), (TraceUnsignedBaseType_t)(_param2), (TraceUnsignedBaseType_t)(_param3), (TraceUnsignedBaseType_t)(_param4))
+
+/**
+ * @brief Helper macro that handles type casting for all parameters. Accepts 5 parameters.
+ * 
+ * @param[in] _eventID Event id
+ * @param[in] _param1 Param 1
+ * @param[in] _param2 Param 2
+ * @param[in] _param3 Param 3
+ * @param[in] _param4 Param 4
+ * @param[in] _param5 Param 5
+ */
+#define prvTraceEventCreate5(_eventID, _param1, _param2, _param3, _param4, _param5) xTraceEventCreate5(_eventID, (TraceUnsignedBaseType_t)(_param1), (TraceUnsignedBaseType_t)(_param2), (TraceUnsignedBaseType_t)(_param3), (TraceUnsignedBaseType_t)(_param4), (TraceUnsignedBaseType_t)(_param5))
+
+/**
+ * @brief Helper macro that handles type casting for all parameters. Accepts 6 parameters.
+ * 
+ * @param[in] _eventID Event id
+ * @param[in] _param1 Param 1
+ * @param[in] _param2 Param 2
+ * @param[in] _param3 Param 3
+ * @param[in] _param4 Param 4
+ * @param[in] _param5 Param 5
+ * @param[in] _param6 Param 6
+ */
+#define prvTraceEventCreate6(_eventID, _param1, _param2, _param3, _param4, _param5, _param6) xTraceEventCreate6(_eventID, (TraceUnsignedBaseType_t)(_param1), (TraceUnsignedBaseType_t)(_param2), (TraceUnsignedBaseType_t)(_param3), (TraceUnsignedBaseType_t)(_param4), (TraceUnsignedBaseType_t)(_param5), (TraceUnsignedBaseType_t)(_param6))
+
 /** @} */
 
 #ifdef __cplusplus
 }
 #endif
-
-#endif /* (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING) */
 
 #endif /* (TRC_USE_TRACEALYZER_RECORDER == 1) */
 

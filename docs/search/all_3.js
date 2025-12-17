@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['indexofnextavailablehandle_0',['indexOfNextAvailableHandle',['../structobjectHandleStackType.html#a194dc7a274404a898c2858c761cb1b79',1,'objectHandleStackType']]]
+  ['dependency_20apis_0',['Trace Dependency APIs',['../group__trace__dependency__apis.html',1,'']]],
+  ['deprecated_20list_1',['Deprecated List',['../deprecated.html',1,'']]]
 ];

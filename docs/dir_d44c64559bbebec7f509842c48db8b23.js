@@ -26,6 +26,7 @@ var dir_d44c64559bbebec7f509842c48db8b23 =
     [ "trcStaticBuffer.h", "trcStaticBuffer_8h.html", "trcStaticBuffer_8h" ],
     [ "trcString.h", "trcString_8h.html", "trcString_8h" ],
     [ "trcTask.h", "trcTask_8h.html", "trcTask_8h" ],
+    [ "trcTaskMonitor.h", "trcTaskMonitor_8h.html", null ],
     [ "trcThread.h", "trcThread_8h.html", "trcThread_8h" ],
     [ "trcTimestamp.h", "trcTimestamp_8h.html", "trcTimestamp_8h" ],
     [ "trcTypes.h", "trcTypes_8h_source.html", null ],

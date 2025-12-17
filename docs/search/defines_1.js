@@ -1,7 +1,9 @@
 var searchData=
 [
-  ['trace_5fget_5fhigh16_0',['TRACE_GET_HIGH16',['../trcRecorder_8h.html#a65cfc74ff712c7408f868b91ec142a5b',1,'trcRecorder.h']]],
-  ['trace_5fget_5flow16_1',['TRACE_GET_LOW16',['../trcRecorder_8h.html#a0be07ccb07bfdc964b8afb2a3942666e',1,'trcRecorder.h']]],
-  ['trace_5fset_5fhigh16_2',['TRACE_SET_HIGH16',['../trcRecorder_8h.html#aaa24e857131d37a5602ce9c3bb125157',1,'trcRecorder.h']]],
-  ['trace_5fset_5flow16_3',['TRACE_SET_LOW16',['../trcRecorder_8h.html#ae52706e82ec178b04522ed536eaad2a3',1,'trcRecorder.h']]]
+  ['xtraceiscomponentinitialized_0',['xTraceIsComponentInitialized',['../trcRecorder_8h.html#a8223714e679e845f43befeca699ef7f1',1,'trcRecorder.h']]],
+  ['xtraceisrecorderenabled_1',['xTraceIsRecorderEnabled',['../trcRecorder_8h.html#a80475714dcc01d60207a32bcf9eef170',1,'trcRecorder.h']]],
+  ['xtraceisrecorderinitialized_2',['xTraceIsRecorderInitialized',['../trcRecorder_8h.html#a4125a6b2693f86df4c93e43869a11489',1,'trcRecorder.h']]],
+  ['xtracesetcomponentinitialized_3',['xTraceSetComponentInitialized',['../trcRecorder_8h.html#a70dff8a1b718676016da16aa0252cd3e',1,'trcRecorder.h']]],
+  ['xtracestateget_4',['xTraceStateGet',['../trcRecorder_8h.html#ad2178d5e0ed9e33479c2b1466d9df695',1,'trcRecorder.h']]],
+  ['xtracestateset_5',['xTraceStateSet',['../trcRecorder_8h.html#a5f268f164c766c85c14dc1de0bd92188',1,'trcRecorder.h']]]
 ];

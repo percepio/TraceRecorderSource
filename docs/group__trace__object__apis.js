@@ -1,5 +1,10 @@
 var group__trace__object__apis =
 [
+    [ "pvTraceObjectGetAddressReturn", "group__trace__object__apis.html#ga33e3c2b2fc4b81dc9c143cea796af485", null ],
+    [ "xTraceObjectFind", "group__trace__object__apis.html#gae560a67fd6c4b47ecc2234525c459e4d", null ],
+    [ "xTraceObjectGetAddress", "group__trace__object__apis.html#ga870b81a2af091e0b3cad7442a7c12819", null ],
+    [ "xTraceObjectGetName", "group__trace__object__apis.html#ga8b84d7bba47ce2398be91b7d6b7a71e3", null ],
+    [ "xTraceObjectGetSpecificState", "group__trace__object__apis.html#ga608aa88f588bc34b105a916543890244", null ],
     [ "xTraceObjectSetOptions", "group__trace__object__apis.html#ga220a4f45a6eea6d71779535ed38305b6", null ],
     [ "xTraceObjectSetSpecificState", "group__trace__object__apis.html#ga3af120096177146ff9c25668ec8a53dc", null ],
     [ "xTraceObjectSetState", "group__trace__object__apis.html#gaae4e70661707b924515088da8c45e6cf", null ],

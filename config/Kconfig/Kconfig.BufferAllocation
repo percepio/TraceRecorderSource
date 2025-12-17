@@ -1,0 +1,29 @@
+# Copyright (c) 2025 Percepio AB
+# SPDX-License-Identifier: Apache-2.0
+
+choice PERCEPIO_TRC_CFG_RECORDER_BUFFER_ALLOCATION
+	prompt "Recorder Allocation Mode"
+	default PERCEPIO_TRC_RECORDER_BUFFER_ALLOCATION_STATIC
+	help
+		Specifies how the recorder buffer is allocated (also in case of streaming, in
+		port using the recorders internal temporary buffer)
+		
+		Values:
+			PERCEPIO_TRC_RECORDER_BUFFER_ALLOCATION_STATIC  - Static allocation (internal)
+			PERCEPIO_TRC_RECORDER_BUFFER_ALLOCATION_DYNAMIC - Malloc in xTraceEnable
+			PERCEPIO_TRC_RECORDER_BUFFER_ALLOCATION_CUSTOM  - Use xTraceSetBuffer
+		
+		Static and dynamic mode does the allocation for you, either in compile time
+		(static) or in runtime (malloc).
+		The custom mode allows you to control how and where the allocation is made,
+		for details see PERCEPIO_TRC_ALLOC_CUSTOM_BUFFER and xTraceSetBuffer().
+	
+	config PERCEPIO_TRC_RECORDER_BUFFER_ALLOCATION_STATIC
+		bool "Static allocation"
+	
+	config PERCEPIO_TRC_RECORDER_BUFFER_ALLOCATION_DYNAMIC
+		bool "Dynamic allocation"
+	
+	config PERCEPIO_TRC_RECORDER_BUFFER_ALLOCATION_CUSTOM
+		bool "Custom allocation"
+endchoice
