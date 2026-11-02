@@ -11,7 +11,7 @@ menu "Entry Table"
 			- Task names
 			- Named ISRs (xTraceISRRegister)
 			- Named kernel objects (xTraceObjectSetNameWithoutHandle)
-			- User event channels (xTraceRegisterString)
+			- Registered strings (xTraceRegisterString)
 			
 			If this value is too small, not all objects and symbol names will be
 			stored and the trace display will be affected. In that case, there 
@@ -19,16 +19,20 @@ menu "Entry Table"
 
 	config PERCEPIO_TRC_CFG_ENTRY_SYMBOL_MAX_LENGTH
 		int "Symbol Max Length"
-		range 1 28
+		range 4 255
 		default 28
 		help
 			The maximum length of symbol names, including:
 			- Task names
 			- Named ISRs (xTraceISRRegister)
 			- Named kernel objects (xTraceObjectSetNameWithoutHandleandle)
-			- User event channel names (xTraceRegisterString)
+			- Registered strings (xTraceStringRegister)
 			
 			If longer symbol names are used, they will be truncated by the recorder,
 			which will affect the trace display. In that case, there will be warnings
-			(as User Events) from TzCtrl task, which monitors this.
+			(as User Events) from the TzCtrl task, which monitors this.
+			
+			Note that too high values will cause truncation when the name is
+			transmitted via an event.
+
 endmenu

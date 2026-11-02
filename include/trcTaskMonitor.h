@@ -1,10 +1,10 @@
 /*
-* Percepio Trace Recorder for Tracealyzer v4.11.0
-* Copyright 2025 Percepio AB
-* www.percepio.com
-*
-* SPDX-License-Identifier: Apache-2.0
-*/
+ * Percepio TraceRecorder for Tracealyzer v4.12.0
+ * Copyright 2025 Percepio AB
+ * www.percepio.com
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ */
 
 /**
  * @file 
@@ -23,6 +23,14 @@
 #define TRC_KERNEL_PORT_SUPPORTS_TLS 0
 #endif
 
+#if (TRC_USE_TRACEALYZER_RECORDER == 1) && (TRC_CFG_ENABLE_TASK_MONITOR == 1) && (TRC_KERNEL_PORT_SUPPORTS_TLS == 1)
+
+#include <trcTypes.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 typedef struct TraceTaskMonitorCallbackData
 {
 	void* pvTaskAddress;
@@ -34,14 +42,6 @@ typedef struct TraceTaskMonitorCallbackData
 } TraceTaskMonitorCallbackData_t;
 
 typedef void (*TraceTaskMonitorCallback_t)(TraceTaskMonitorCallbackData_t *pxData);
-
-#if (TRC_USE_TRACEALYZER_RECORDER == 1) && (TRC_CFG_ENABLE_TASK_MONITOR == 1) && (TRC_KERNEL_PORT_SUPPORTS_TLS == 1)
-
-#include <trcTypes.h>
-
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 /**
  * @defgroup trace_task_monitor_apis Trace Task Monitor APIs
@@ -58,8 +58,8 @@ typedef struct TraceTaskMonitorTaskData
 	TraceUnsignedBaseType_t uxTotal;
 	TraceUnsignedBaseType_t uxLow;
 	TraceUnsignedBaseType_t uxHigh;
-    TraceUnsignedBaseType_t uxWatermarkLow;
-    TraceUnsignedBaseType_t uxWatermarkHigh;
+	TraceUnsignedBaseType_t uxWatermarkLow;
+	TraceUnsignedBaseType_t uxWatermarkHigh;
 } TraceTaskMonitorTaskData_t;
 
 /**
@@ -189,9 +189,9 @@ typedef struct TraceTaskMonitorData	/* Aligned */
 #define xTraceTaskMonitorSetCallback(_xCallback) (TRC_FAIL)
 #define xTraceTaskMonitorRegister(_pvTask, _uxLow, _uxHigh) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_4((void)(_pvTask), (void)(_uxLow), (void)(_uxHigh), TRC_FAIL)
 #define xTraceTaskMonitorUnregister(_pvTask) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_2((void)(_pvTask), TRC_FAIL)
-#define xTraceTaskMonitorGetData(_pvTask, _ppxData) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_3((void)(_pvTask), (void)(_ppxData), TRC_FAIL)
 #define xTraceTaskMonitorSwitchOut(_pvTask) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_2((void)(_pvTask), TRC_FAIL)
 #define xTraceTaskMonitorPoll() (TRC_FAIL)
+#define xTraceTaskMonitorPollReset() (TRC_FAIL)
 #define xTraceTaskMonitorPrint() (TRC_FAIL)
 
 #endif

@@ -1,5 +1,5 @@
 /*
- * Trace Recorder for Tracealyzer v4.11.0
+ * Percepio TraceRecorder for Tracealyzer v4.12.0
  * Copyright 2025 Percepio AB
  * www.percepio.com
  *
@@ -175,15 +175,15 @@ extern "C" {
 #ifdef CONFIG_PERCEPIO_TRC_CFG_ENTRY_SYMBOL_MAX_LENGTH
 #define TRC_CFG_ENTRY_SYMBOL_MAX_LENGTH CONFIG_PERCEPIO_TRC_CFG_ENTRY_SYMBOL_MAX_LENGTH
 #else
-#define TRC_CFG_ENTRY_SYMBOL_MAX_LENGTH 32
+#define TRC_CFG_ENTRY_SYMBOL_MAX_LENGTH 28
 #endif
 
 /**
  * @def TRC_CFG_ENABLE_TASK_MONITOR
  * @brief Enable task monitoring, which allows TraceRecorder to monitor task execution times.
  */
-#ifdef CONFIG_PERCEPIO_DFM_CFG_ENABLE_TASK_MONITOR
-#define TRC_CFG_ENABLE_TASK_MONITOR CONFIG_PERCEPIO_DFM_CFG_ENABLE_TASK_MONITOR
+#ifdef CONFIG_PERCEPIO_TRC_CFG_ENABLE_TASK_MONITOR
+#define TRC_CFG_ENABLE_TASK_MONITOR CONFIG_PERCEPIO_TRC_CFG_ENABLE_TASK_MONITOR
 #else
 #define TRC_CFG_ENABLE_TASK_MONITOR 0
 #endif
@@ -192,8 +192,8 @@ extern "C" {
  * @def TRC_CFG_TASK_MONITOR_MAX_TASKS
  * @brief The maximum number of tasks that can be monitored by the task monitor.
  */
-#ifdef CONFIG_PERCEPIO_DFM_CFG_TASK_MONITOR_MAX_TASKS
-#define TRC_CFG_TASK_MONITOR_MAX_TASKS CONFIG_PERCEPIO_DFM_CFG_TASK_MONITOR_MAX_TASKS
+#ifdef CONFIG_PERCEPIO_TRC_CFG_TASK_MONITOR_MAX_TASKS
+#define TRC_CFG_TASK_MONITOR_MAX_TASKS CONFIG_PERCEPIO_TRC_CFG_TASK_MONITOR_MAX_TASKS
 #else
 #define TRC_CFG_TASK_MONITOR_MAX_TASKS 1
 #endif
@@ -411,6 +411,8 @@ extern "C" {
 #else
 #define TRC_CFG_USE_TRACE_ASSERT 0
 #endif
+
+#define TRC_CFG_PRINTF printk
 
 #ifdef __cplusplus
 }

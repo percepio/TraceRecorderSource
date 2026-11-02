@@ -1,5 +1,5 @@
 /*
- * Trace Recorder for Tracealyzer v4.11.0
+ * Percepio TraceRecorder for Tracealyzer v4.12.0
  * Copyright 2025 Percepio AB
  * www.percepio.com
  *
@@ -64,11 +64,13 @@
 
 static TraceStreamPortBuffer_t* pxStreamPortITM TRC_CFG_RECORDER_DATA_ATTRIBUTE;
 
+#if TRC_CFG_STREAM_PORT_ITM_INPUT == 1
 /* This will be set by the debugger when there is data to be read */
 volatile int32_t tz_host_command_bytes_to_read = 0;
 
 /* This will be filled with data from the debugger */
 volatile char tz_host_command_data[32];
+#endif
 
 /* These variables are used for reading commands from the host, using read_from_host().
  * This is not required if using vTraceEnable(TRC_START).
@@ -109,6 +111,7 @@ traceResult prvTraceItmWrite(void* ptrData, uint32_t size, uint32_t uiChannel, i
 /* This reads "command" data from a RAM buffer, written by a host macro in the debugger */
 traceResult prvTraceItmRead(void* ptrData, uint32_t uiSize, int32_t* piBytesRead)
 {
+#if TRC_CFG_STREAM_PORT_ITM_INPUT == 1
 	int32_t i;
 	uint8_t* bytesBuffer = (uint8_t*)ptrData;
 
@@ -134,6 +137,15 @@ traceResult prvTraceItmRead(void* ptrData, uint32_t uiSize, int32_t* piBytesRead
 		/* Reset */
 		tz_host_command_bytes_to_read = 0;
 	}
+	else
+	{
+		*piBytesRead = 0;
+	}
+#else
+	(void)ptrData;
+	(void)uiSize;
+	*piBytesRead = 0;
+#endif
 
 	return TRC_SUCCESS;
 }

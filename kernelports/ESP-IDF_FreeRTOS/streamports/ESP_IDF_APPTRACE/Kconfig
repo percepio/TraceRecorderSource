@@ -3,7 +3,6 @@
 
 choice PERCEPIO_TRC_CFG_TRAX_BLOCKING_MODE
 	prompt "Stream Blocking Mode"
-	depends on PERCEPIO_TRACERECORDER_ENABLED
 	default PERCEPIO_TRC_CFG_TRAX_MODE_NO_BLOCK_SKIP
 	help
 		This stream port for streaming over XTensa Trax relies on apptrace that utilize

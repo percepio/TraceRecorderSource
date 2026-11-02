@@ -1,12 +1,12 @@
 /*
-* Percepio Trace Recorder for Tracealyzer v4.11.0
-* Copyright 2025 Percepio AB
-* www.percepio.com
-*
-* SPDX-License-Identifier: Apache-2.0
-*
-* The interface for the multi-core event buffer.
-*/
+ * Percepio TraceRecorder for Tracealyzer v4.12.0
+ * Copyright 2025 Percepio AB
+ * www.percepio.com
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ *
+ * The interface for the multi-core event buffer.
+ */
 
 #include <trcRecorder.h>
 

@@ -1,5 +1,5 @@
-/*
- * Trace Recorder for Tracealyzer v4.11.0
+﻿/*
+ * Percepio TraceRecorder for Tracealyzer v4.12.0
  * Copyright 2025 Percepio AB
  * www.percepio.com
  *
@@ -32,6 +32,19 @@ extern "C" {
 #else
 #define TRC_CFG_USE_SYSCALL_EXTENSION 0
 #endif
+
+/**
+ * @def TRC_CFG_CORE_COUNT
+ * @brief CPU core count. Strictly speaking: the highest 
+ * CPU core ID from which events can be emitted, plus one.
+ */
+#define TRC_CFG_CORE_COUNT CONFIG_MP_MAX_NUM_CPUS
+
+/**
+ * @def TRC_CFG_GET_CURRENT_CORE()
+ * @brief Gets the current CPU core ID.
+ */
+#define TRC_CFG_GET_CURRENT_CORE() (arch_curr_cpu()->id)
 
 #ifdef __cplusplus
 }

@@ -1,5 +1,5 @@
 /*
- * Trace Recorder for Tracealyzer v4.11.0
+ * Percepio TraceRecorder for Tracealyzer v4.12.0
  * Copyright 2025 Percepio AB
  * www.percepio.com
  *
@@ -209,6 +209,11 @@ traceResult xTraceDisable(void);
 
 #ifndef TRC_EXTERNAL_BUFFERS
 #define TRC_EXTERNAL_BUFFERS 0
+#endif
+
+/* Empty default define */
+#ifndef TRC_CFG_PRINTF
+#define TRC_CFG_PRINTF(...)
 #endif
 
 typedef struct TraceRecorderData	/* Aligned */

@@ -26,7 +26,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">Percepio Trace Recorder<span id="projectnumber">&#160;v4.11.0</span>
+   <div id="projectname">Percepio Trace Recorder<span id="projectnumber">&#160;v4.12.0</span>
    </div>
   </td>
  </tr>
@@ -92,7 +92,7 @@ $(function(){initNavTree('kernelports_2Zephyr_2config_2core_2trcConfig_8h_source
 </div><!--header-->
 <div class="contents">
 <div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="comment">/*</span></div>
-<div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span><span class="comment"> * Trace Recorder for Tracealyzer v4.11.0</span></div>
+<div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span><span class="comment"> * Percepio TraceRecorder for Tracealyzer v4.12.0</span></div>
 <div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span><span class="comment"> * Copyright 2025 Percepio AB</span></div>
 <div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span><span class="comment"> * www.percepio.com</span></div>
 <div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span><span class="comment"> *</span></div>
@@ -145,17 +145,17 @@ $(function(){initNavTree('kernelports_2Zephyr_2config_2core_2trcConfig_8h_source
 <div class="line"><a id="l00175" name="l00175"></a><span class="lineno">  175</span><span class="preprocessor">#ifdef CONFIG_PERCEPIO_TRC_CFG_ENTRY_SYMBOL_MAX_LENGTH</span></div>
 <div class="line"><a id="l00176" name="l00176"></a><span class="lineno">  176</span><span class="preprocessor">#define TRC_CFG_ENTRY_SYMBOL_MAX_LENGTH CONFIG_PERCEPIO_TRC_CFG_ENTRY_SYMBOL_MAX_LENGTH</span></div>
 <div class="line"><a id="l00177" name="l00177"></a><span class="lineno">  177</span><span class="preprocessor">#else</span></div>
-<div class="line"><a id="l00178" name="l00178"></a><span class="lineno">  178</span><span class="preprocessor">#define TRC_CFG_ENTRY_SYMBOL_MAX_LENGTH 32</span></div>
+<div class="line"><a id="l00178" name="l00178"></a><span class="lineno">  178</span><span class="preprocessor">#define TRC_CFG_ENTRY_SYMBOL_MAX_LENGTH 28</span></div>
 <div class="line"><a id="l00179" name="l00179"></a><span class="lineno">  179</span><span class="preprocessor">#endif</span></div>
 <div class="line"><a id="l00180" name="l00180"></a><span class="lineno">  180</span></div>
-<div class="line"><a id="l00185" name="l00185"></a><span class="lineno">  185</span><span class="preprocessor">#ifdef CONFIG_PERCEPIO_DFM_CFG_ENABLE_TASK_MONITOR</span></div>
-<div class="line"><a id="l00186" name="l00186"></a><span class="lineno">  186</span><span class="preprocessor">#define TRC_CFG_ENABLE_TASK_MONITOR CONFIG_PERCEPIO_DFM_CFG_ENABLE_TASK_MONITOR</span></div>
+<div class="line"><a id="l00185" name="l00185"></a><span class="lineno">  185</span><span class="preprocessor">#ifdef CONFIG_PERCEPIO_TRC_CFG_ENABLE_TASK_MONITOR</span></div>
+<div class="line"><a id="l00186" name="l00186"></a><span class="lineno">  186</span><span class="preprocessor">#define TRC_CFG_ENABLE_TASK_MONITOR CONFIG_PERCEPIO_TRC_CFG_ENABLE_TASK_MONITOR</span></div>
 <div class="line"><a id="l00187" name="l00187"></a><span class="lineno">  187</span><span class="preprocessor">#else</span></div>
 <div class="line"><a id="l00188" name="l00188"></a><span class="lineno">  188</span><span class="preprocessor">#define TRC_CFG_ENABLE_TASK_MONITOR 0</span></div>
 <div class="line"><a id="l00189" name="l00189"></a><span class="lineno">  189</span><span class="preprocessor">#endif</span></div>
 <div class="line"><a id="l00190" name="l00190"></a><span class="lineno">  190</span></div>
-<div class="line"><a id="l00195" name="l00195"></a><span class="lineno">  195</span><span class="preprocessor">#ifdef CONFIG_PERCEPIO_DFM_CFG_TASK_MONITOR_MAX_TASKS</span></div>
-<div class="line"><a id="l00196" name="l00196"></a><span class="lineno">  196</span><span class="preprocessor">#define TRC_CFG_TASK_MONITOR_MAX_TASKS CONFIG_PERCEPIO_DFM_CFG_TASK_MONITOR_MAX_TASKS</span></div>
+<div class="line"><a id="l00195" name="l00195"></a><span class="lineno">  195</span><span class="preprocessor">#ifdef CONFIG_PERCEPIO_TRC_CFG_TASK_MONITOR_MAX_TASKS</span></div>
+<div class="line"><a id="l00196" name="l00196"></a><span class="lineno">  196</span><span class="preprocessor">#define TRC_CFG_TASK_MONITOR_MAX_TASKS CONFIG_PERCEPIO_TRC_CFG_TASK_MONITOR_MAX_TASKS</span></div>
 <div class="line"><a id="l00197" name="l00197"></a><span class="lineno">  197</span><span class="preprocessor">#else</span></div>
 <div class="line"><a id="l00198" name="l00198"></a><span class="lineno">  198</span><span class="preprocessor">#define TRC_CFG_TASK_MONITOR_MAX_TASKS 1</span></div>
 <div class="line"><a id="l00199" name="l00199"></a><span class="lineno">  199</span><span class="preprocessor">#endif</span></div>
@@ -226,11 +226,13 @@ $(function(){initNavTree('kernelports_2Zephyr_2config_2core_2trcConfig_8h_source
 <div class="line"><a id="l00412" name="l00412"></a><span class="lineno">  412</span><span class="preprocessor">#define TRC_CFG_USE_TRACE_ASSERT 0</span></div>
 <div class="line"><a id="l00413" name="l00413"></a><span class="lineno">  413</span><span class="preprocessor">#endif</span></div>
 <div class="line"><a id="l00414" name="l00414"></a><span class="lineno">  414</span> </div>
-<div class="line"><a id="l00415" name="l00415"></a><span class="lineno">  415</span><span class="preprocessor">#ifdef __cplusplus</span></div>
-<div class="line"><a id="l00416" name="l00416"></a><span class="lineno">  416</span>}</div>
-<div class="line"><a id="l00417" name="l00417"></a><span class="lineno">  417</span><span class="preprocessor">#endif</span></div>
-<div class="line"><a id="l00418" name="l00418"></a><span class="lineno">  418</span> </div>
-<div class="line"><a id="l00419" name="l00419"></a><span class="lineno">  419</span><span class="preprocessor">#endif </span><span class="comment">/* _TRC_CONFIG_H */</span><span class="preprocessor"></span></div>
+<div class="line"><a id="l00415" name="l00415"></a><span class="lineno">  415</span><span class="preprocessor">#define TRC_CFG_PRINTF printk</span></div>
+<div class="line"><a id="l00416" name="l00416"></a><span class="lineno">  416</span> </div>
+<div class="line"><a id="l00417" name="l00417"></a><span class="lineno">  417</span><span class="preprocessor">#ifdef __cplusplus</span></div>
+<div class="line"><a id="l00418" name="l00418"></a><span class="lineno">  418</span>}</div>
+<div class="line"><a id="l00419" name="l00419"></a><span class="lineno">  419</span><span class="preprocessor">#endif</span></div>
+<div class="line"><a id="l00420" name="l00420"></a><span class="lineno">  420</span> </div>
+<div class="line"><a id="l00421" name="l00421"></a><span class="lineno">  421</span><span class="preprocessor">#endif </span><span class="comment">/* _TRC_CONFIG_H */</span><span class="preprocessor"></span></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 </div><!-- container -->

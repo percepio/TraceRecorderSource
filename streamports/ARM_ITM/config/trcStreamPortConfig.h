@@ -1,5 +1,5 @@
 /*
- * Trace Recorder for Tracealyzer v4.11.0
+ * Percepio TraceRecorder for Tracealyzer v4.12.0
  * Copyright 2025 Percepio AB
  * www.percepio.com
  *
@@ -27,6 +27,18 @@ extern "C" {
  * Default: 1 (0 is typically terminal output and 31 is used by Keil)
  */
 #define TRC_CFG_STREAM_PORT_ITM_PORT 1
+
+/**
+ * @def TRC_CFG_STREAM_PORT_ITM_INPUT
+ *
+ * @brief Valid values: 0 - 1
+ *
+ * When 1, a debugger script can be used to send trace start/stop
+ * commands to the trace recorder.
+ *
+ * Default: 1
+ */
+#define TRC_CFG_STREAM_PORT_ITM_INPUT 1
 
 /**
  * @def TRC_CFG_STREAM_PORT_USE_INTERNAL_BUFFER

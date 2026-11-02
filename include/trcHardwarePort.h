@@ -1,5 +1,5 @@
 /*
- * Trace Recorder for Tracealyzer v4.11.0
+ * Percepio TraceRecorder for Tracealyzer v4.12.0
  * Copyright 2025 Percepio AB
  * www.percepio.com
  *
@@ -550,12 +550,25 @@ uint32_t uiTraceTimerGetValue(void);
 	#define TRACE_ALLOC_CRITICAL_SECTION() TraceBaseType_t TRACE_ALLOC_CRITICAL_SECTION_NAME;
 	#define TRACE_ENTER_CRITICAL_SECTION() { TRACE_ALLOC_CRITICAL_SECTION_NAME = irq_lock(); }
 	#define TRACE_EXIT_CRITICAL_SECTION() { irq_unlock(TRACE_ALLOC_CRITICAL_SECTION_NAME); }
-	
+
 	#define TRC_HWTC_TYPE TRC_FREE_RUNNING_32BIT_INCR
+
+#if (CONFIG_PERCEPIO_TRC_CFG_USE_CORTEX_M_DWT == 1)
+	#include <cortex_m/dwt.h>	
+
+	extern uint32_t SystemCoreClock;
+
+	#define TRC_HWTC_COUNT z_arm_dwt_get_cycles()
+	#define TRC_HWTC_PERIOD 0
+	#define TRC_HWTC_DIVISOR 1
+	#define TRC_HWTC_FREQ_HZ (SystemCoreClock)
+#else
 	#define TRC_HWTC_COUNT k_cycle_get_32()
 	#define TRC_HWTC_PERIOD (CONFIG_SYS_CLOCK_HW_CYCLES_PER_SEC / CONFIG_SYS_CLOCK_TICKS_PER_SEC)
 	#define TRC_HWTC_DIVISOR 4
 	#define TRC_HWTC_FREQ_HZ CONFIG_SYS_CLOCK_HW_CYCLES_PER_SEC
+#endif
+
 	#define TRC_IRQ_PRIORITY_ORDER 0 // Lower IRQ priority values are more significant
 
 	#define TRC_PORT_SPECIFIC_INIT()

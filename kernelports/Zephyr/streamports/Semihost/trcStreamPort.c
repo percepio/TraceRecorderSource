@@ -1,5 +1,5 @@
 /*
- * Trace Recorder for Tracealyzer v4.11.0
+ * Percepio TraceRecorder for Tracealyzer v4.12.0
  * Copyright 2025 Percepio AB
  * www.percepio.com
  *
@@ -26,9 +26,9 @@ static traceResult prvTraceStreamPortFileOpen(char acTraceFileName[], int uiChan
 static traceResult prvTraceStreamPortGenerateFileName(char acTraceFileName[], int uiBufferLength, int uiChannel)
 {
 	int i;
+#if (TRC_CFG_CORE_COUNT > 1)
 	int foundDot = -1;
 
-#if (TRC_CFG_CORE_COUNT > 1)
 #if (TRC_CFG_CORE_COUNT >= 10)
 #error "Core count must be less than 10 for single digit core numbers in trace file names. Modify this to support more cores."
 #endif
@@ -183,7 +183,7 @@ traceResult xTraceStreamPortWriteData(void* pvData, uint32_t uiSize, uint32_t ui
 		return TRC_FAIL;
 	}
 	
-	if (pxStreamPortFile->pxFileDescriptor[uiChannel] < )
+	if (pxStreamPortFile->pxFileDescriptor[uiChannel] < 0)
 	{
 		return TRC_FAIL;
 	}

@@ -1,5 +1,5 @@
 /*
- * Trace Recorder for Tracealyzer v4.11.0
+ * Percepio TraceRecorder for Tracealyzer v4.12.0
  * Copyright 2025 Percepio AB
  * www.percepio.com
  *
@@ -29,6 +29,12 @@ extern "C" {
 #define TRC_CFG_STREAM_PORT_ITM_PORT CONFIG_PERCEPIO_TRC_CFG_STREAM_PORT_ITM_PORT
 #else
 #define TRC_CFG_STREAM_PORT_ITM_PORT 1
+#endif
+
+#ifdef CONFIG_PERCEPIO_TRC_CFG_STREAM_PORT_ITM_INPUT
+#define TRC_CFG_STREAM_PORT_ITM_INPUT CONFIG_PERCEPIO_TRC_CFG_STREAM_PORT_ITM_INPUT
+#else
+#define TRC_CFG_STREAM_PORT_ITM_INPUT 1
 #endif
 
 #ifdef CONFIG_PERCEPIO_TRC_CFG_STREAM_PORT_USE_INTERNAL_BUFFER

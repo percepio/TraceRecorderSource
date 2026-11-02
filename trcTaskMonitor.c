@@ -1,23 +1,29 @@
 /*
-* Percepio Trace Recorder for Tracealyzer v4.11.0
-* Copyright 2025 Percepio AB
-* www.percepio.com
-*
-* SPDX-License-Identifier: Apache-2.0
-*
-* The implementation for the task monitor.
-*/
+ * Percepio TraceRecorder for Tracealyzer v4.12.0
+ * Copyright 2025 Percepio AB
+ * www.percepio.com
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ *
+ * The implementation for the task monitor.
+ */
 
 #include <trcRecorder.h>
 
-#include <string.h> /* For memcpy */
-#include <stdio.h> /* For printf */
-
 #if (TRC_USE_TRACEALYZER_RECORDER == 1) && (TRC_CFG_ENABLE_TASK_MONITOR == 1) && (TRC_KERNEL_PORT_SUPPORTS_TLS == 1)
 
-#ifndef TRC_CFG_PRINTF
-#define TRC_CFG_PRINTF printf
-#endif
+#include <string.h>   /* For memcpy */
+#include <inttypes.h> /* For PRIu32, PRIu64 */
+
+/* When the callback is called to report an a CPU load anomaly, it might 
+   cause secondary CPU load anomalies that trigger the callback again at
+   the next xTraceTaskMonitorPoll() call. Even if TaskMonitor is not monitoring
+   its own thread, other threads might be starved during the callback and execute
+   less than expected. This may cause an endless loop of callbacks. 
+   
+   The ignoreDirtyPeriod flag avoids this problem by making xTraceTaskMonitorPoll()
+   ignore any anomalies at "dirty periods", i.e. just after callback was called.*/
+volatile int iIgnoreDirtyPeriod = 0;
 
 TraceTaskMonitorData_t* pxTraceTaskMonitorData TRC_CFG_RECORDER_DATA_ATTRIBUTE;
 
@@ -46,19 +52,16 @@ traceResult xTraceTaskMonitorInitialize(TraceTaskMonitorData_t *pxBuffer)
 		pxTraceTaskMonitorData->xMonitoredTasks[i].uxTotal = 0;
 		pxTraceTaskMonitorData->xMonitoredTasks[i].uxLow = 0;
 		pxTraceTaskMonitorData->xMonitoredTasks[i].uxHigh = 0;
-        pxTraceTaskMonitorData->xMonitoredTasks[i].uxWatermarkHigh = 0;
-        pxTraceTaskMonitorData->xMonitoredTasks[i].uxWatermarkLow = 100;
+		pxTraceTaskMonitorData->xMonitoredTasks[i].uxWatermarkLow = 100;
+		pxTraceTaskMonitorData->xMonitoredTasks[i].uxWatermarkHigh = 0;
 	}
 
-	for (i = 0; i < TRC_CFG_TASK_MONITOR_MAX_TASKS; i++)
-	{
-		pxTraceTaskMonitorData->xCallbackData.pvTaskAddress = (void*)0;
-		pxTraceTaskMonitorData->xCallbackData.acName[0] = (char)0;
-		pxTraceTaskMonitorData->xCallbackData.uxCPULoad = 0;
-		pxTraceTaskMonitorData->xCallbackData.uxLowLimit = 0;
-		pxTraceTaskMonitorData->xCallbackData.uxHighLimit = 0;
-		pxTraceTaskMonitorData->xCallbackData.uxNumberOfFailedTasks = 0;
-	}
+	pxTraceTaskMonitorData->xCallbackData.pvTaskAddress = (void*)0;
+	pxTraceTaskMonitorData->xCallbackData.acName[0] = '\0';
+	pxTraceTaskMonitorData->xCallbackData.uxCPULoad = 0;
+	pxTraceTaskMonitorData->xCallbackData.uxLowLimit = 0;
+	pxTraceTaskMonitorData->xCallbackData.uxHighLimit = 0;
+	pxTraceTaskMonitorData->xCallbackData.uxNumberOfFailedTasks = 0;
 
 	(void)xTraceSetComponentInitialized(TRC_RECORDER_COMPONENT_TASK_MONITOR);
 
@@ -82,7 +85,7 @@ traceResult xTraceTaskMonitorSetCallback(TraceTaskMonitorCallback_t xCallback)
 traceResult xTraceTaskMonitorRegister(void* pvTask, TraceUnsignedBaseType_t uxLow, TraceUnsignedBaseType_t uxHigh)
 {
 	TraceTaskMonitorTaskData_t* pxData;
-	TraceEntryHandle_t xEntryHandle;
+	TraceTaskHandle_t xTaskHandle;
 	TRACE_ALLOC_CRITICAL_SECTION();
 
 	TRC_ASSERT(xTraceIsComponentInitialized(TRC_RECORDER_COMPONENT_TASK_MONITOR));
@@ -105,7 +108,7 @@ traceResult xTraceTaskMonitorRegister(void* pvTask, TraceUnsignedBaseType_t uxLo
 		return TRC_FAIL;
 	}
 
-	if (xTraceTaskFind(pvTask, &xEntryHandle) == TRC_FAIL)
+	if (xTraceTaskFind(pvTask, &xTaskHandle) == TRC_FAIL)
 	{
 		TRACE_EXIT_CRITICAL_SECTION();
 		return TRC_FAIL;
@@ -119,9 +122,9 @@ traceResult xTraceTaskMonitorRegister(void* pvTask, TraceUnsignedBaseType_t uxLo
 
 	pxData->uxLow = uxLow;
 	pxData->uxHigh = uxHigh;
-	pxData->xTaskHandle = (TraceTaskHandle_t)xEntryHandle;
-    pxData->uxWatermarkHigh = 0;
-    pxData->uxWatermarkLow = 100;
+	pxData->xTaskHandle = xTaskHandle;
+	pxData->uxWatermarkLow = 100;
+	pxData->uxWatermarkHigh = 0;
 	
 	TRACE_EXIT_CRITICAL_SECTION();
 
@@ -172,8 +175,8 @@ traceResult xTraceTaskMonitorUnregister(void* pvTask)
 	pxData->uxLow = 0;
 	pxData->uxHigh = 0;
 	pxData->xTaskHandle = 0;
-    pxData->uxWatermarkHigh = 0;
-    pxData->uxWatermarkLow = 100;
+	pxData->uxWatermarkLow = 100;
+	pxData->uxWatermarkHigh = 0;
 
 	return TRC_SUCCESS;
 }
@@ -257,6 +260,7 @@ traceResult xTraceTaskMonitorPoll(void)
 	uint32_t uiLastTimestamp;
 	uint32_t uiElapsedTime;
 	const char* szName;
+
 	TRACE_ALLOC_CRITICAL_SECTION();
 
 	TRC_ASSERT(xTraceIsComponentInitialized(TRC_RECORDER_COMPONENT_TASK_MONITOR));
@@ -269,13 +273,27 @@ traceResult xTraceTaskMonitorPoll(void)
 		return TRC_FAIL;
 	}
 
+	/* Only check for CPU load anomalies on "clean" periods, where the callback
+	  has not been called (due to previous anomalies). */    
+	if (iIgnoreDirtyPeriod)
+	{
+		(void)xTraceTaskMonitorPollReset();
+
+		return TRC_SUCCESS;
+	}
+
 	(void)xTraceTimestampGet(&uiLastTimestamp);
 
 	uiElapsedTime = uiLastTimestamp - pxTraceTaskMonitorData->uiPollTimestamp;
+	if (uiElapsedTime == 0U)
+	{
+		/* Polling too fast */
+		return TRC_FAIL;
+	}
 
 	pxTraceTaskMonitorData->xCallbackData.uxNumberOfFailedTasks = 0;
 	pxTraceTaskMonitorData->xCallbackData.pvTaskAddress = (void*)0;
-
+	
 	TRACE_ENTER_CRITICAL_SECTION();
 	for (i = 0; i < TRC_CFG_TASK_MONITOR_MAX_TASKS; i++)
 	{
@@ -354,16 +372,21 @@ traceResult xTraceTaskMonitorPoll(void)
 	{
 		pxTraceTaskMonitorData->uiLastTimestamp[j] = uiLastTimestamp;
 	}
+
 	pxTraceTaskMonitorData->uiPollTimestamp = uiLastTimestamp;
 	TRACE_EXIT_CRITICAL_SECTION();
 
 	/* Check if callback should be performed */
 	if (pxTraceTaskMonitorData->xCallbackData.uxNumberOfFailedTasks > 0)
-	{
-		pxTraceTaskMonitorData->xCallback(&pxTraceTaskMonitorData->xCallbackData);
+	{		
+		pxTraceTaskMonitorData->xCallback(&pxTraceTaskMonitorData->xCallbackData);		
+		
+		/* Make the next xTraceTaskMonitorPoll() ignore this "dirty period",
+		since the callback might have affected the CPU load. 
+		*/
+		iIgnoreDirtyPeriod = 1; 
 	}
-
-
+	
 	return TRC_SUCCESS;
 }
 
@@ -379,6 +402,8 @@ traceResult xTraceTaskMonitorPollReset(void)
 	(void)xTraceTimestampGet(&uiLastTimestamp);
 
 	TRACE_ENTER_CRITICAL_SECTION();
+	/* No longer a dirty period */
+	iIgnoreDirtyPeriod = 0;
 	
 	for (i = 0; i < TRC_CFG_TASK_MONITOR_MAX_TASKS; i++)
 	{
@@ -398,8 +423,8 @@ traceResult xTraceTaskMonitorPollReset(void)
 traceResult xTraceTaskMonitorPrint(void)
 {
 	TraceUnsignedBaseType_t i;
-	TraceTaskMonitorTaskData_t pxTaskData;
-	char *szName;
+	TraceTaskMonitorTaskData_t xTaskData;
+	const char *szName;
 
 	TRACE_ALLOC_CRITICAL_SECTION();
 
@@ -415,11 +440,11 @@ traceResult xTraceTaskMonitorPrint(void)
 
 		// Make a copy of the task data within a critical section, to ensure all fields are consistent.
 		TRACE_ENTER_CRITICAL_SECTION();
-		memcpy(&pxTaskData, (TraceTaskMonitorTaskData_t *)&pxTraceTaskMonitorData->xMonitoredTasks[i], sizeof(TraceTaskMonitorTaskData_t));
+		memcpy(&xTaskData, &pxTraceTaskMonitorData->xMonitoredTasks[i], sizeof(TraceTaskMonitorTaskData_t));
 		TRACE_EXIT_CRITICAL_SECTION();
 
-		(void)xTraceTaskGetName(pxTaskData.xTaskHandle, &szName);
-		TRC_CFG_PRINTF("%-5lu%-20s%-8lu%-8lu\n", i, szName, pxTaskData.uxWatermarkLow, pxTaskData.uxWatermarkHigh);
+		(void)xTraceTaskGetName(xTaskData.xTaskHandle, &szName);
+        TRC_CFG_PRINTF("%-5"PRIu32"%-20s%-8"PRIu32"%-8"PRIu32"\n", (uint32_t)i, szName, (uint32_t)xTaskData.uxWatermarkLow, (uint32_t)xTaskData.uxWatermarkHigh);
 	}
 	TRC_CFG_PRINTF("\n");
 

@@ -6,7 +6,14 @@ config PERCEPIO_TRC_CFG_STREAM_PORT_ITM_PORT
 	default 1
 	range 0 31
 	help
-		What ITM port to use for the ITM software events. Make sure the IDE is
-		configured for the same channel.
+		What ITM port to use for the ITM software events. Make sure the 
+		IDE/debugger is configured for the same channel.
 		
 		Default: 1 (0 is typically terminal output)
+
+config PERCEPIO_TRC_CFG_STREAM_PORT_ITM_INPUT
+	bool "Enable command input"
+	default true
+	help
+		When enabled, a debugger script can be used to send trace start/stop
+		commands to the trace recorder.

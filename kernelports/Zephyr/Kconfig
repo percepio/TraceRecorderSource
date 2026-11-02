@@ -3,11 +3,52 @@
 
 if TRACING && PERCEPIO_TRACERECORDER
 
+config PERCEPIO_TRC_CFG_USE_CORTEX_M_DWT
+    bool "Use DWT timestamping (Arm Cortex-M only)"
+    default y if CORTEX_M_DWT
+    depends on CORTEX_M_DWT
+    help
+      On Arm Cortex-M device, enable this option to use the DWT clock cycle counter for event timestamping, 
+      instead of the generic Zephyr function k_cycle_get_32(). For some boards, this may rely on RTC clocks 
+      that typically keep running when the device is halted (making breakpoints affect the trace) and often has too low frequency
+      for accurate timestamping. Using the DWT clock cycle counter for timestamping is preferable.
+
+config PERCEPIO_TRC_CFG_INCLUDE_BUSY_WAIT
+    bool "Include k_busy_wait() events"
+    default n
+    help
+      By default, "k_busy_wait()" events are not traced, since often very frequent and costly to trace.
+      Enable this option to include them in the trace.
+
+config PERCEPIO_TRC_CFG_INCLUDE_YIELD
+    bool "Include k_thread_yield() events"
+    default y
+    help      
+      Set to n to exclude k_thread_yield() events (helps reducing event rate).
+
+config PERCEPIO_TRC_CFG_INCLUDE_SCHED_LOCK
+    bool "Include k_thread_sched_lock() and unlock() events"
+    default y
+    help
+      Set to n to exclude k_thread_sched_lock() and unlock() events (helps reducing event rate).
+
 menu "RTOS Hidden Settings"
     visible if n
 config PERCEPIO_TRC_CFG_RECORDER_RTOS_ZEPHYR
     bool "Zephyr"
     default y
+
+config PERCEPIO_TRC_CFG_RECORDER_RTOS_FREERTOS
+    bool "Set FREERTOS to false"
+    default n
+
+config PERCEPIO_TRC_CFG_RECORDER_RTOS_ESPIDF_FREERTOS
+    bool "Set ESP-IDF_FREERTOS to false"
+    default n
+
+config PERCEPIO_TRC_CFG_RECORDER_RTOS_THREADX
+    bool "Set THREADX to false"
+    default n
 
 endmenu # "RTOS Hidden settings"
 

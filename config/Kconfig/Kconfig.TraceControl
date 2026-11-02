@@ -30,7 +30,9 @@ menu "Trace Control Task"
 	config PERCEPIO_TRC_CFG_CTRL_TASK_STACK_SIZE
 		int "Control Task Stack Size"
 		range 1 1048576
-		default 256
+		default 768 if PERCEPIO_TRC_CFG_RECORDER_RTOS_ESPIDF_FREERTOS
+		default 768 if PERCEPIO_TRC_CFG_RECORDER_RTOS_ZEPHYR
+		default 512
 		help
 		  The stack size of the Tracealyzer Control (TzCtrl) task.
 		  See PERCEPIO_TRC_CFG_CTRL_TASK_PRIORITY for further information about TzCtrl.

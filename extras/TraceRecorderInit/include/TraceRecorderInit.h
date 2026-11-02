@@ -1,5 +1,5 @@
 /*
- * Percepio Trace Recorder Initialization v4.11.0
+ * Percepio Trace Recorder Initialization v4.12.0
  * Copyright 2025 Percepio AB
  * www.percepio.com
  *

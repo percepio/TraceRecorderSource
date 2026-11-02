@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 """
-    Trace Recorder for Tracealyzer v4.11.0
+    Trace Recorder for Tracealyzer v4.12.0
     Copyright 2025 Percepio AB
     www.percepio.com
 
@@ -33,7 +33,7 @@ if not os.path.isdir(args.zephyr_base):
     print("Zephyr base directory: {} doesn't exist, exiting...".format(args.zephyr_base))
     exit(1)
 
-syscall_list_h = "{}/zephyr/include/generated/syscall_list.h".format(args.build_dir)
+syscall_list_h = "{}/zephyr/include/generated/zephyr/syscall_list.h".format(args.build_dir)
 
 if not os.path.isfile(syscall_list_h):
     print("Syscall list file: {} does not exist".format(syscall_list_h))

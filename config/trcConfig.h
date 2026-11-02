@@ -1,5 +1,5 @@
 /*
- * Trace Recorder for Tracealyzer v4.11.0
+ * Percepio TraceRecorder for Tracealyzer v4.12.0
  * Copyright 2025 Percepio AB
  * www.percepio.com
  *
@@ -157,11 +157,16 @@ extern "C" {
  * - Task names
  * - Named ISRs (xTraceISRRegister)
  * - Named kernel objects (xTraceObjectSetNameWithoutHandle)
- * - User event channel names (xTraceStringRegister)
+ * - Registered strings (xTraceStringRegister)
  *
  * If longer symbol names are used, they will be truncated by the recorder,
  * which will affect the trace display. In that case, there will be warnings
- * (as User Events) from TzCtrl task, which monitors this.
+ * (as User Events) from the TzCtrl task, which monitors this.
+ *
+ * This value may be as low as 4. It may be increased as well, but too high 
+ * values will cause truncation when the name is transmitted via an event.
+ *
+ * Default value is 28.
  */
 #define TRC_CFG_ENTRY_SYMBOL_MAX_LENGTH 28
 

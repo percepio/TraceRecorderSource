@@ -1,12 +1,13 @@
 /*
-* Trace Recorder for Tracealyzer v4.11.0
-* Copyright 2025 Percepio AB
-* www.percepio.com
-*
-* SPDX-License-Identifier: Apache-2.0
-*
-* The implementation of extensions.
-*/
+ * Percepio TraceRecorder for Tracealyzer v4.12.0
+ * Copyright 2025 Percepio AB
+ * www.percepio.com
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ *
+ * The implementation of extensions.
+ */
+
 #include <trcRecorder.h>
 
 #if (TRC_USE_TRACEALYZER_RECORDER == 1)

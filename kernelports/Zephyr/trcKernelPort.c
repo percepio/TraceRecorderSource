@@ -1,5 +1,5 @@
 /*
- * Trace Recorder for Tracealyzer v4.11.0
+ * Percepio TraceRecorder for Tracealyzer v4.12.0
  * Copyright 2025 Percepio AB
  * www.percepio.com
  *
@@ -250,6 +250,12 @@ void vTraceSetTimerName(void* object, const char* name)
  */
 static int tracelyzer_pre_kernel_init(void)
 {
+
+#if (CONFIG_PERCEPIO_TRC_USE_DWT_TS == 1)
+    z_arm_dwt_init();
+    z_arm_dwt_init_cycle_counter();
+#endif
+
 	xTraceInitialize();
 
 #if (TRC_CFG_USE_SYSCALL_EXTENSION == 1)
@@ -260,7 +266,7 @@ static int tracelyzer_pre_kernel_init(void)
 	(void)xTraceEnable(TRC_START);
 #elif CONFIG_PERCEPIO_TRC_START_MODE_START_AWAIT_HOST
 	(void)xTraceEnable(TRC_START_AWAIT_HOST);
-#else
+#elif CONFIG_PERCEPIO_TRC_START_MODE_START_FROM_HOST
 	(void)xTraceEnable(TRC_START_FROM_HOST);
 #endif
 
@@ -391,15 +397,23 @@ void sys_trace_k_thread_usleep_exit(int32_t us, int ret) {
 }
 
 void sys_trace_k_thread_busy_wait_enter(uint32_t usec_to_wait) {
+	/* Excluded by default. May cause many events and not very interesting. */
+	#if (CONFIG_PERCEPIO_TRC_CFG_INCLUDE_BUSY_WAIT == 1)
 	(void)xTraceEventCreate1(PSF_EVENT_THREAD_BUSY_WAIT_ENTER, (TraceUnsignedBaseType_t)usec_to_wait);
+	#endif	
 }
 
-void sys_trace_k_thread_busy_wait_exit(uint32_t usec_to_wait) {
+void sys_trace_k_thread_busy_wait_exit(uint32_t usec_to_wait) {	
+	/* Excluded by default. May cause many events and not very interesting. */
+	#if (CONFIG_PERCEPIO_TRC_CFG_INCLUDE_BUSY_WAIT == 1)
 	(void)xTraceEventCreate0(PSF_EVENT_THREAD_BUSY_WAIT_EXIT);
+	#endif
 }
 
 void sys_trace_k_thread_yield() {
+	#if (CONFIG_PERCEPIO_TRC_CFG_INCLUDE_YIELD == 1)
 	(void)xTraceEventCreate0(PSF_EVENT_THREAD_YIELD);
+	#endif
 }
 
 void sys_trace_k_thread_wakeup(struct k_thread *thread) {
@@ -456,7 +470,10 @@ void sys_trace_k_thread_switched_in(void) {
 	int prio = 0;
 	k_tid_t cur = 0;
 
-	cur = k_current_get();  /* Get cached value if available */
+	if (!k_is_pre_kernel()) {
+		cur = k_current_get();  /* Get cached value if available */
+	}
+
 	if (!cur) {
 		cur = k_sched_current_thread_query();
 	}
@@ -476,11 +493,15 @@ void sys_trace_k_thread_info(struct k_thread *thread) {
 
 /* Thread sceduler trace function definitions */
 void sys_trace_k_thread_sched_lock() {
+	#if (CONFIG_PERCEPIO_TRC_CFG_INCLUDE_SCHED_LOCK == 1)
 	(void)xTraceEventCreate0(PSF_EVENT_THREAD_SCHED_LOCK);
+	#endif
 }
 
 void sys_trace_k_thread_sched_unlock() {
+	#if (CONFIG_PERCEPIO_TRC_CFG_INCLUDE_SCHED_LOCK == 1)
 	(void)xTraceEventCreate0(PSF_EVENT_THREAD_SCHED_UNLOCK);
+	#endif
 }
 
 void sys_trace_k_thread_sched_wakeup(struct k_thread *thread) {

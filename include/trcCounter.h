@@ -1,10 +1,10 @@
 /*
-* Percepio Trace Recorder for Tracealyzer v4.11.0
-* Copyright 2025 Percepio AB
-* www.percepio.com
-*
-* SPDX-License-Identifier: Apache-2.0
-*/
+ * Percepio TraceRecorder for Tracealyzer v4.12.0
+ * Copyright 2025 Percepio AB
+ * www.percepio.com
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ */
 
 /**
  * @file 
@@ -81,7 +81,7 @@ traceResult xTraceCounterCreate(const char* szName, TraceBaseType_t xInitialValu
  * @retval TRC_FAIL Failure
  * @retval TRC_SUCCESS Success
  */
-#define xTraceCounterAdd(xCounterHandle, xValue) xTraceCounterSet(xCounterHandle, (TraceBaseType_t)(xTraceObjectGetSpecificStateReturn((TraceEntryHandle_t)(xCounterHandle), TRC_COUNTER_VALUE_INDEX)) + (xValue))
+#define xTraceCounterAdd(xCounterHandle, xValue) xTraceCounterSet(xCounterHandle, (TraceBaseType_t)(xTraceObjectGetSpecificStateReturn((TraceObjectHandle_t)(xCounterHandle), TRC_COUNTER_VALUE_INDEX)) + (xValue))
 
 /**
  * @brief Sets trace counter value.
@@ -103,7 +103,7 @@ traceResult xTraceCounterSet(TraceCounterHandle_t xCounterHandle, TraceBaseType_
  * @retval TRC_FAIL Failure
  * @retval TRC_SUCCESS Success
  */
-#define xTraceCounterGet(xCounterHandle, pxValue) xTraceObjectGetSpecificState((TraceEntryHandle_t)(xCounterHandle), TRC_COUNTER_VALUE_INDEX, (TraceUnsignedBaseType_t*)(pxValue))
+#define xTraceCounterGet(xCounterHandle, pxValue) xTraceObjectGetSpecificState((TraceObjectHandle_t)(xCounterHandle), TRC_COUNTER_VALUE_INDEX, (TraceUnsignedBaseType_t*)(pxValue))
 
 /**
  * @brief Increases trace counter value.
@@ -134,7 +134,7 @@ traceResult xTraceCounterSet(TraceCounterHandle_t xCounterHandle, TraceBaseType_
  * @retval TRC_FAIL Failure
  * @retval TRC_SUCCESS Success
  */
-#define xTraceCounterGetUpperLimit(xCounterHandle, pxValue) xTraceObjectGetSpecificState((TraceEntryHandle_t)(xCounterHandle), TRC_COUNTER_UPPER_LIMIT_INDEX, (TraceUnsignedBaseType_t*)(pxValue))
+#define xTraceCounterGetUpperLimit(xCounterHandle, pxValue) xTraceObjectGetSpecificState((TraceObjectHandle_t)(xCounterHandle), TRC_COUNTER_UPPER_LIMIT_INDEX, (TraceUnsignedBaseType_t*)(pxValue))
 
 /**
  * @brief Gets trace counter lower limit.
@@ -145,7 +145,7 @@ traceResult xTraceCounterSet(TraceCounterHandle_t xCounterHandle, TraceBaseType_
  * @retval TRC_FAIL Failure
  * @retval TRC_SUCCESS Success
  */
-#define xTraceCounterGetLowerLimit(xCounterHandle, pxValue) xTraceObjectGetSpecificState((TraceEntryHandle_t)(xCounterHandle), TRC_COUNTER_LOWER_LIMIT_INDEX, (TraceUnsignedBaseType_t*)(pxValue))
+#define xTraceCounterGetLowerLimit(xCounterHandle, pxValue) xTraceObjectGetSpecificState((TraceObjectHandle_t)(xCounterHandle), TRC_COUNTER_LOWER_LIMIT_INDEX, (TraceUnsignedBaseType_t*)(pxValue))
 
 /**
  * @brief Gets trace counter name.

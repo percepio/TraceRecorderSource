@@ -26,7 +26,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">Percepio Trace Recorder<span id="projectnumber">&#160;v4.11.0</span>
+   <div id="projectname">Percepio Trace Recorder<span id="projectnumber">&#160;v4.12.0</span>
    </div>
   </td>
  </tr>
@@ -140,7 +140,7 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line"><a class="code hl_function" href="#gaab9ced4239f659fbe9390187e05cbd4a">xTraceCounterSet</a>(xCounterHandle, (TraceBaseType_t)(xTraceObjectGetSpecificStateReturn((TraceEntryHandle_t)(xCounterHandle), TRC_COUNTER_VALUE_INDEX)) + (xValue))</div>
+<b>Value:</b><div class="fragment"><div class="line"><a class="code hl_function" href="#gaab9ced4239f659fbe9390187e05cbd4a">xTraceCounterSet</a>(xCounterHandle, (TraceBaseType_t)(xTraceObjectGetSpecificStateReturn((TraceObjectHandle_t)(xCounterHandle), TRC_COUNTER_VALUE_INDEX)) + (xValue))</div>
 <div class="ttc" id="agroup__trace__counter__apis_html_gaab9ced4239f659fbe9390187e05cbd4a"><div class="ttname"><a href="#gaab9ced4239f659fbe9390187e05cbd4a">xTraceCounterSet</a></div><div class="ttdeci">traceResult xTraceCounterSet(TraceCounterHandle_t xCounterHandle, TraceBaseType_t xValue)</div><div class="ttdoc">Sets trace counter value.</div><div class="ttdef"><b>Definition</b> trcCounter.c:69</div></div>
 </div><!-- fragment -->
 <p>Adds value to trace counter. </p>
@@ -213,7 +213,7 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line"><a class="code hl_define" href="group__trace__object__apis.html#ga608aa88f588bc34b105a916543890244">xTraceObjectGetSpecificState</a>((TraceEntryHandle_t)(xCounterHandle), TRC_COUNTER_VALUE_INDEX, (TraceUnsignedBaseType_t*)(pxValue))</div>
+<b>Value:</b><div class="fragment"><div class="line"><a class="code hl_define" href="group__trace__object__apis.html#ga608aa88f588bc34b105a916543890244">xTraceObjectGetSpecificState</a>((TraceObjectHandle_t)(xCounterHandle), TRC_COUNTER_VALUE_INDEX, (TraceUnsignedBaseType_t*)(pxValue))</div>
 <div class="ttc" id="agroup__trace__object__apis_html_ga608aa88f588bc34b105a916543890244"><div class="ttname"><a href="group__trace__object__apis.html#ga608aa88f588bc34b105a916543890244">xTraceObjectGetSpecificState</a></div><div class="ttdeci">#define xTraceObjectGetSpecificState(xObjectHandle, uiIndex, puxState)</div><div class="ttdoc">Gets trace object specific state.</div><div class="ttdef"><b>Definition</b> trcObject.h:165</div></div>
 </div><!-- fragment -->
 <p>Gets trace counter value. </p>
@@ -252,7 +252,7 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line"><a class="code hl_define" href="group__trace__object__apis.html#ga608aa88f588bc34b105a916543890244">xTraceObjectGetSpecificState</a>((TraceEntryHandle_t)(xCounterHandle), TRC_COUNTER_LOWER_LIMIT_INDEX, (TraceUnsignedBaseType_t*)(pxValue))</div>
+<b>Value:</b><div class="fragment"><div class="line"><a class="code hl_define" href="group__trace__object__apis.html#ga608aa88f588bc34b105a916543890244">xTraceObjectGetSpecificState</a>((TraceObjectHandle_t)(xCounterHandle), TRC_COUNTER_LOWER_LIMIT_INDEX, (TraceUnsignedBaseType_t*)(pxValue))</div>
 </div><!-- fragment -->
 <p>Gets trace counter lower limit. </p>
 <dl class="params"><dt>Parameters</dt><dd>
@@ -329,7 +329,7 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line"><a class="code hl_define" href="group__trace__object__apis.html#ga608aa88f588bc34b105a916543890244">xTraceObjectGetSpecificState</a>((TraceEntryHandle_t)(xCounterHandle), TRC_COUNTER_UPPER_LIMIT_INDEX, (TraceUnsignedBaseType_t*)(pxValue))</div>
+<b>Value:</b><div class="fragment"><div class="line"><a class="code hl_define" href="group__trace__object__apis.html#ga608aa88f588bc34b105a916543890244">xTraceObjectGetSpecificState</a>((TraceObjectHandle_t)(xCounterHandle), TRC_COUNTER_UPPER_LIMIT_INDEX, (TraceUnsignedBaseType_t*)(pxValue))</div>
 </div><!-- fragment -->
 <p>Gets trace counter upper limit. </p>
 <dl class="params"><dt>Parameters</dt><dd>

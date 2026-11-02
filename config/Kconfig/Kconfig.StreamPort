@@ -1,27 +1,36 @@
 # Copyright (c) 2025 Percepio AB
 # SPDX-License-Identifier: Apache-2.0
 
+config PERCEPIO_TRC_STREAM_PORT_BIDIRECTIONAL
+	bool
+	help
+		Selected when a StreamPort can receive commands from the host.
+
 menu "StreamPort Settings"
 	choice PERCEPIO_TRC_CFG_STREAM_PORT
 		prompt "StreamPort"
-		default PERCEPIO_TRC_CFG_STREAM_PORT_RINGBUFFER
+		default PERCEPIO_TRC_CFG_STREAM_PORT_RINGBUFFER if !PERCEPIO_TRC_CFG_RECORDER_RTOS_ZEPHYR
+		default PERCEPIO_TRC_CFG_STREAM_PORT_RTT if PERCEPIO_TRC_CFG_RECORDER_RTOS_ZEPHYR
 
 		config PERCEPIO_TRC_CFG_STREAM_PORT_ESP_IDF_APPTRACE
 			bool "ESP-IDF APPTRACE"
 			depends on (PERCEPIO_TRC_CFG_RECORDER_RTOS_ESPIDF_FREERTOS)
+			select PERCEPIO_TRC_STREAM_PORT_BIDIRECTIONAL
 
 		config PERCEPIO_TRC_CFG_STREAM_PORT_RTT
 			bool "RTT"
 			depends on ((ARM || ARM64) && PERCEPIO_TRC_CFG_RECORDER_RTOS_ZEPHYR) || \
-			PERCEPIO_TRC_CFG_RECORDER_RTOS_THREADX || \
-			PERCEPIO_TRC_CFG_RECORDER_RTOS_FREERTOS
+				PERCEPIO_TRC_CFG_RECORDER_RTOS_THREADX || \
+				PERCEPIO_TRC_CFG_RECORDER_RTOS_FREERTOS
 			select USE_SEGGER_RTT if PERCEPIO_TRC_CFG_RECORDER_RTOS_ZEPHYR
+			select PERCEPIO_TRC_STREAM_PORT_BIDIRECTIONAL
 
 		config PERCEPIO_TRC_CFG_STREAM_PORT_ITM
 			bool "ITM"
 			depends on ((ARM || ARM64) && PERCEPIO_TRC_CFG_RECORDER_RTOS_ZEPHYR) || \
-			PERCEPIO_TRC_CFG_RECORDER_RTOS_THREADX || \
-			PERCEPIO_TRC_CFG_RECORDER_RTOS_FREERTOS
+				PERCEPIO_TRC_CFG_RECORDER_RTOS_THREADX || \
+				PERCEPIO_TRC_CFG_RECORDER_RTOS_FREERTOS
+			select PERCEPIO_TRC_STREAM_PORT_BIDIRECTIONAL if PERCEPIO_TRC_CFG_STREAM_PORT_ITM_INPUT
 
 		config PERCEPIO_TRC_CFG_STREAM_PORT_RINGBUFFER
 			bool "Ring Buffer"
@@ -33,57 +42,60 @@ menu "StreamPort Settings"
 			bool "TCP/IP"
 			depends on !PERCEPIO_TRC_CFG_RECORDER_RTOS_ZEPHYR
 			select PERCEPIO_TRC_CFG_STREAM_PORT_USE_INTERNAL_BUFFER
+			select PERCEPIO_TRC_STREAM_PORT_BIDIRECTIONAL
 
 		config PERCEPIO_TRC_CFG_STREAM_PORT_UDP
 			bool "UDP"
 			depends on !PERCEPIO_TRC_CFG_RECORDER_RTOS_ZEPHYR
 			select PERCEPIO_TRC_CFG_STREAM_PORT_USE_INTERNAL_BUFFER
+			select PERCEPIO_TRC_STREAM_PORT_BIDIRECTIONAL
 
 		config PERCEPIO_TRC_CFG_STREAM_PORT_STM32_USB_CDC
 			bool "STM32 USB CDC"
 			depends on !PERCEPIO_TRC_CFG_RECORDER_RTOS_ZEPHYR && \
-			!PERCEPIO_TRC_CFG_RECORDER_RTOS_ESPIDF_FREERTOS
+				!PERCEPIO_TRC_CFG_RECORDER_RTOS_ESPIDF_FREERTOS
+			select PERCEPIO_TRC_STREAM_PORT_BIDIRECTIONAL
 
 		config PERCEPIO_TRC_CFG_STREAM_PORT_ZEPHYR_SEMIHOST
 			bool "Semihost"
 			depends on PERCEPIO_TRC_CFG_RECORDER_RTOS_ZEPHYR && \
-			QEMU_TARGET && SEMIHOST
+				SEMIHOST
 	endchoice
 
 if PERCEPIO_TRC_CFG_STREAM_PORT_RTT
-rsource "../../streamports/Jlink_RTT/Kconfig"
+orsource "../../streamports/Jlink_RTT/Kconfig"
 endif
 
 if PERCEPIO_TRC_CFG_STREAM_PORT_ITM
-rsource "../../streamports/ARM_ITM/Kconfig"
+orsource "../../streamports/ARM_ITM/Kconfig"
 endif
 
 if PERCEPIO_TRC_CFG_STREAM_PORT_RINGBUFFER
-rsource "../../streamports/RingBuffer/Kconfig"
+orsource "../../streamports/RingBuffer/Kconfig"
 endif
 
 if PERCEPIO_TRC_CFG_STREAM_PORT_FILE
-rsource "../../streamports/File/Kconfig"
+orsource "../../streamports/File/Kconfig"
 endif
 
 if PERCEPIO_TRC_CFG_STREAM_PORT_ZEPHYR_SEMIHOST
-rsource "../../kernelports/Zephyr/streamports/Semihost/Kconfig"
+orsource "../../kernelports/Zephyr/streamports/Semihost/Kconfig"
 endif
 
 if PERCEPIO_TRC_CFG_STREAM_PORT_ESP_IDF_APPTRACE
-rsource "../../kernelports/ESP-IDF_FreeRTOS/streamports/ESP_IDF_APPTRACE/Kconfig"
+orsource "../../kernelports/ESP-IDF_FreeRTOS/streamports/ESP_IDF_APPTRACE/Kconfig"
 endif
 
 if PERCEPIO_TRC_CFG_STREAM_PORT_TCPIP
-rsource "../../streamports/TCPIP/Kconfig"
+orsource "../../streamports/TCPIP/Kconfig"
 endif
 
 if PERCEPIO_TRC_CFG_STREAM_PORT_UDP
-rsource "../../streamports/UDP/Kconfig"
+orsource "../../streamports/UDP/Kconfig"
 endif
 
 if PERCEPIO_TRC_CFG_STREAM_PORT_STM32_USB_CDC
-rsource "../../streamports/STM32_USB_CDC/Kconfig"
+orsource "../../streamports/STM32_USB_CDC/Kconfig"
 endif
 
 endmenu # "StreamPort Selection"

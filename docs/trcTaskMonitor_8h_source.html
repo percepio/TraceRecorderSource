@@ -26,7 +26,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">Percepio Trace Recorder<span id="projectnumber">&#160;v4.11.0</span>
+   <div id="projectname">Percepio Trace Recorder<span id="projectnumber">&#160;v4.12.0</span>
    </div>
   </td>
  </tr>
@@ -92,12 +92,12 @@ $(function(){initNavTree('trcTaskMonitor_8h_source.html','',''); });
 </div><!--header-->
 <div class="contents">
 <a href="trcTaskMonitor_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="comment">/*</span></div>
-<div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span><span class="comment">* Percepio Trace Recorder for Tracealyzer v4.11.0</span></div>
-<div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span><span class="comment">* Copyright 2025 Percepio AB</span></div>
-<div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span><span class="comment">* www.percepio.com</span></div>
-<div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span><span class="comment">*</span></div>
-<div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span><span class="comment">* SPDX-License-Identifier: Apache-2.0</span></div>
-<div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span><span class="comment">*/</span></div>
+<div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span><span class="comment"> * Percepio TraceRecorder for Tracealyzer v4.12.0</span></div>
+<div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span><span class="comment"> * Copyright 2025 Percepio AB</span></div>
+<div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span><span class="comment"> * www.percepio.com</span></div>
+<div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span><span class="comment"> *</span></div>
+<div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span><span class="comment"> * SPDX-License-Identifier: Apache-2.0</span></div>
+<div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span><span class="comment"> */</span></div>
 <div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span></div>
 <div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span> </div>
 <div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span><span class="preprocessor">#ifndef TRC_TASK_MONITOR_H</span></div>
@@ -111,25 +111,25 @@ $(function(){initNavTree('trcTaskMonitor_8h_source.html','',''); });
 <div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span><span class="preprocessor">#define TRC_KERNEL_PORT_SUPPORTS_TLS 0</span></div>
 <div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span><span class="preprocessor">#endif</span></div>
 <div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span> </div>
-<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span><span class="keyword">typedef</span> <span class="keyword">struct </span>TraceTaskMonitorCallbackData</div>
-<div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span>{</div>
-<div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span>    <span class="keywordtype">void</span>* pvTaskAddress;</div>
-<div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span>    <span class="keywordtype">char</span> acName[TRC_ENTRY_TABLE_SLOT_SYMBOL_SIZE];</div>
-<div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span>    TraceUnsignedBaseType_t uxCPULoad;</div>
-<div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span>    TraceUnsignedBaseType_t uxLowLimit;</div>
-<div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span>    TraceUnsignedBaseType_t uxHighLimit;</div>
-<div class="line"><a id="l00033" name="l00033"></a><span class="lineno">   33</span>    TraceUnsignedBaseType_t uxNumberOfFailedTasks;</div>
-<div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span>} TraceTaskMonitorCallbackData_t;</div>
-<div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span> </div>
-<div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span><span class="keyword">typedef</span> void (*TraceTaskMonitorCallback_t)(TraceTaskMonitorCallbackData_t *pxData);</div>
-<div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span> </div>
-<div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span><span class="preprocessor">#if (TRC_USE_TRACEALYZER_RECORDER == 1) &amp;&amp; (TRC_CFG_ENABLE_TASK_MONITOR == 1) &amp;&amp; (TRC_KERNEL_PORT_SUPPORTS_TLS == 1)</span></div>
-<div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span> </div>
-<div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span><span class="preprocessor">#include &lt;trcTypes.h&gt;</span></div>
-<div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span> </div>
-<div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span><span class="preprocessor">#ifdef __cplusplus</span></div>
-<div class="line"><a id="l00043" name="l00043"></a><span class="lineno">   43</span><span class="keyword">extern</span> <span class="stringliteral">&quot;C&quot;</span> {</div>
-<div class="line"><a id="l00044" name="l00044"></a><span class="lineno">   44</span><span class="preprocessor">#endif</span></div>
+<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span><span class="preprocessor">#if (TRC_USE_TRACEALYZER_RECORDER == 1) &amp;&amp; (TRC_CFG_ENABLE_TASK_MONITOR == 1) &amp;&amp; (TRC_KERNEL_PORT_SUPPORTS_TLS == 1)</span></div>
+<div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span> </div>
+<div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span><span class="preprocessor">#include &lt;trcTypes.h&gt;</span></div>
+<div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span> </div>
+<div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span><span class="preprocessor">#ifdef __cplusplus</span></div>
+<div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span><span class="keyword">extern</span> <span class="stringliteral">&quot;C&quot;</span> {</div>
+<div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span><span class="preprocessor">#endif</span></div>
+<div class="line"><a id="l00033" name="l00033"></a><span class="lineno">   33</span> </div>
+<div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span><span class="keyword">typedef</span> <span class="keyword">struct </span>TraceTaskMonitorCallbackData</div>
+<div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span>{</div>
+<div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span>    <span class="keywordtype">void</span>* pvTaskAddress;</div>
+<div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span>    <span class="keywordtype">char</span> acName[TRC_ENTRY_TABLE_SLOT_SYMBOL_SIZE];</div>
+<div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span>    TraceUnsignedBaseType_t uxCPULoad;</div>
+<div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span>    TraceUnsignedBaseType_t uxLowLimit;</div>
+<div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span>    TraceUnsignedBaseType_t uxHighLimit;</div>
+<div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span>    TraceUnsignedBaseType_t uxNumberOfFailedTasks;</div>
+<div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span>} TraceTaskMonitorCallbackData_t;</div>
+<div class="line"><a id="l00043" name="l00043"></a><span class="lineno">   43</span> </div>
+<div class="line"><a id="l00044" name="l00044"></a><span class="lineno">   44</span><span class="keyword">typedef</span> void (*TraceTaskMonitorCallback_t)(TraceTaskMonitorCallbackData_t *pxData);</div>
 <div class="line"><a id="l00045" name="l00045"></a><span class="lineno">   45</span></div>
 <div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span></div>
 <div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span><span class="keyword">typedef</span> <span class="keyword">struct </span>TraceTaskMonitorTaskData</div>
@@ -186,9 +186,9 @@ $(function(){initNavTree('trcTaskMonitor_8h_source.html','',''); });
 <div class="line"><a id="l00189" name="l00189"></a><span class="lineno">  189</span><span class="preprocessor">#define xTraceTaskMonitorSetCallback(_xCallback) (TRC_FAIL)</span></div>
 <div class="line"><a id="l00190" name="l00190"></a><span class="lineno">  190</span><span class="preprocessor">#define xTraceTaskMonitorRegister(_pvTask, _uxLow, _uxHigh) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_4((void)(_pvTask), (void)(_uxLow), (void)(_uxHigh), TRC_FAIL)</span></div>
 <div class="line"><a id="l00191" name="l00191"></a><span class="lineno">  191</span><span class="preprocessor">#define xTraceTaskMonitorUnregister(_pvTask) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_2((void)(_pvTask), TRC_FAIL)</span></div>
-<div class="line"><a id="l00192" name="l00192"></a><span class="lineno">  192</span><span class="preprocessor">#define xTraceTaskMonitorGetData(_pvTask, _ppxData) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_3((void)(_pvTask), (void)(_ppxData), TRC_FAIL)</span></div>
-<div class="line"><a id="l00193" name="l00193"></a><span class="lineno">  193</span><span class="preprocessor">#define xTraceTaskMonitorSwitchOut(_pvTask) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_2((void)(_pvTask), TRC_FAIL)</span></div>
-<div class="line"><a id="l00194" name="l00194"></a><span class="lineno">  194</span><span class="preprocessor">#define xTraceTaskMonitorPoll() (TRC_FAIL)</span></div>
+<div class="line"><a id="l00192" name="l00192"></a><span class="lineno">  192</span><span class="preprocessor">#define xTraceTaskMonitorSwitchOut(_pvTask) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_2((void)(_pvTask), TRC_FAIL)</span></div>
+<div class="line"><a id="l00193" name="l00193"></a><span class="lineno">  193</span><span class="preprocessor">#define xTraceTaskMonitorPoll() (TRC_FAIL)</span></div>
+<div class="line"><a id="l00194" name="l00194"></a><span class="lineno">  194</span><span class="preprocessor">#define xTraceTaskMonitorPollReset() (TRC_FAIL)</span></div>
 <div class="line"><a id="l00195" name="l00195"></a><span class="lineno">  195</span><span class="preprocessor">#define xTraceTaskMonitorPrint() (TRC_FAIL)</span></div>
 <div class="line"><a id="l00196" name="l00196"></a><span class="lineno">  196</span> </div>
 <div class="line"><a id="l00197" name="l00197"></a><span class="lineno">  197</span><span class="preprocessor">#endif</span></div>

@@ -1,14 +1,14 @@
 /*
-* Trace Recorder for Tracealyzer v4.11.0
-* Copyright 2025 Percepio AB
-* www.percepio.com
-*
-* SPDX-License-Identifier: Apache-2.0
-*
-* Supporting functions for trace streaming, used by the "stream ports"
-* for reading and writing data to the interface.
-* This "stream port" sets up the recorder to stream to a Ring Buffer.
-*/
+ * Percepio TraceRecorder for Tracealyzer v4.12.0
+ * Copyright 2025 Percepio AB
+ * www.percepio.com
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ *
+ * Supporting functions for trace streaming, used by the "stream ports"
+ * for reading and writing data to the interface.
+ * This "stream port" sets up the recorder to stream to a Ring Buffer.
+ */
 
 #include <trcRecorder.h>
 

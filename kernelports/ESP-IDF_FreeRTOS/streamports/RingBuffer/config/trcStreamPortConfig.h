@@ -1,12 +1,12 @@
 /*
-* Trace Recorder for Tracealyzer v4.11.0
-* Copyright 2025 Percepio AB
-* www.percepio.com
-*
-* SPDX-License-Identifier: Apache-2.0
-*
+ * Percepio TraceRecorder for Tracealyzer v4.12.0
+ * Copyright 2025 Percepio AB
+ * www.percepio.com
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ *
  * The configuration for trace streaming ("stream ports").
-*/
+ */
 
 #ifndef TRC_STREAM_PORT_CONFIG_H
 #define TRC_STREAM_PORT_CONFIG_H

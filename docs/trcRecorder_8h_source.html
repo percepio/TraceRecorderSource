@@ -26,7 +26,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">Percepio Trace Recorder<span id="projectnumber">&#160;v4.11.0</span>
+   <div id="projectname">Percepio Trace Recorder<span id="projectnumber">&#160;v4.12.0</span>
    </div>
   </td>
  </tr>
@@ -92,7 +92,7 @@ $(function(){initNavTree('trcRecorder_8h_source.html','',''); });
 </div><!--header-->
 <div class="contents">
 <a href="trcRecorder_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="comment">/*</span></div>
-<div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span><span class="comment"> * Trace Recorder for Tracealyzer v4.11.0</span></div>
+<div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span><span class="comment"> * Percepio TraceRecorder for Tracealyzer v4.12.0</span></div>
 <div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span><span class="comment"> * Copyright 2025 Percepio AB</span></div>
 <div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span><span class="comment"> * www.percepio.com</span></div>
 <div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span><span class="comment"> *</span></div>
@@ -202,120 +202,125 @@ $(function(){initNavTree('trcRecorder_8h_source.html','',''); });
 <div class="line"><a id="l00211" name="l00211"></a><span class="lineno">  211</span><span class="preprocessor">#define TRC_EXTERNAL_BUFFERS 0</span></div>
 <div class="line"><a id="l00212" name="l00212"></a><span class="lineno">  212</span><span class="preprocessor">#endif</span></div>
 <div class="line"><a id="l00213" name="l00213"></a><span class="lineno">  213</span> </div>
-<div class="line"><a id="l00214" name="l00214"></a><span class="lineno">  214</span><span class="keyword">typedef</span> <span class="keyword">struct </span>TraceRecorderData    <span class="comment">/* Aligned */</span></div>
-<div class="line"><a id="l00215" name="l00215"></a><span class="lineno">  215</span>{</div>
-<div class="line"><a id="l00216" name="l00216"></a><span class="lineno">  216</span>    uint32_t uiSessionCounter;</div>
-<div class="line"><a id="l00217" name="l00217"></a><span class="lineno">  217</span>    uint32_t uiRecorderEnabled;</div>
-<div class="line"><a id="l00218" name="l00218"></a><span class="lineno">  218</span>    TraceUnsignedBaseType_t uxTraceSystemStates[TRC_CFG_CORE_COUNT];</div>
-<div class="line"><a id="l00219" name="l00219"></a><span class="lineno">  219</span>    uint32_t reserved;                              <span class="comment">/* alignment */</span></div>
-<div class="line"><a id="l00220" name="l00220"></a><span class="lineno">  220</span> </div>
-<div class="line"><a id="l00221" name="l00221"></a><span class="lineno">  221</span>    TraceAssertData_t xAssertBuffer;                <span class="comment">/* aligned */</span></div>
-<div class="line"><a id="l00222" name="l00222"></a><span class="lineno">  222</span>    TraceEntryIndexTable_t xEntryIndexTableBuffer;  <span class="comment">/* aligned */</span></div>
-<div class="line"><a id="l00223" name="l00223"></a><span class="lineno">  223</span><span class="preprocessor">#if (TRC_EXTERNAL_BUFFERS == 0)</span></div>
-<div class="line"><a id="l00224" name="l00224"></a><span class="lineno">  224</span>    TraceHeaderBuffer_t xHeaderBuffer;              <span class="comment">/* aligned */</span></div>
-<div class="line"><a id="l00225" name="l00225"></a><span class="lineno">  225</span>    TraceEntryTable_t xEntryTable;                  <span class="comment">/* aligned */</span></div>
-<div class="line"><a id="l00226" name="l00226"></a><span class="lineno">  226</span>    <a class="code hl_typedef" href="group__trace__timestamp__apis.html#ga8b7c675ec2e8975af31f37bc1b7da5d0">TraceTimestampData_t</a> xTimestampBuffer;          <span class="comment">/* aligned */</span></div>
-<div class="line"><a id="l00227" name="l00227"></a><span class="lineno">  227</span><span class="preprocessor">#endif</span></div>
-<div class="line"><a id="l00228" name="l00228"></a><span class="lineno">  228</span><span class="preprocessor">#if (TRC_USE_INTERNAL_BUFFER == 1)</span></div>
-<div class="line"><a id="l00229" name="l00229"></a><span class="lineno">  229</span>    <a class="code hl_typedef" href="trcInternalEventBuffer_8h.html#a80d9abd322f575b45a611fc5b48a70f3">TraceInternalEventBufferData_t</a> xInternalEventBuffer;    <span class="comment">/* aligned */</span></div>
-<div class="line"><a id="l00230" name="l00230"></a><span class="lineno">  230</span><span class="preprocessor">#endif</span></div>
-<div class="line"><a id="l00231" name="l00231"></a><span class="lineno">  231</span>    TraceStreamPortBuffer_t xStreamPortBuffer;      <span class="comment">/* verify alignment in xTraceInitialize() */</span></div>
-<div class="line"><a id="l00232" name="l00232"></a><span class="lineno">  232</span>    TraceStaticBufferTable_t xStaticBufferBuffer;   <span class="comment">/* aligned */</span></div>
-<div class="line"><a id="l00233" name="l00233"></a><span class="lineno">  233</span>    TraceEventDataTable_t xEventDataBuffer;         <span class="comment">/* verify alignment in xTraceInitialize() */</span></div>
-<div class="line"><a id="l00234" name="l00234"></a><span class="lineno">  234</span>    TracePrintData_t xPrintBuffer;                  <span class="comment">/* aligned */</span></div>
-<div class="line"><a id="l00235" name="l00235"></a><span class="lineno">  235</span>    TraceErrorData_t xErrorBuffer;                  <span class="comment">/* aligned */</span></div>
-<div class="line"><a id="l00236" name="l00236"></a><span class="lineno">  236</span>    TraceISRData_t xISRBuffer;                      <span class="comment">/* aligned */</span></div>
-<div class="line"><a id="l00237" name="l00237"></a><span class="lineno">  237</span>    TraceKernelPortDataBuffer_t xKernelPortBuffer;  <span class="comment">/* verify alignment in xTraceInitialize() */</span></div>
-<div class="line"><a id="l00238" name="l00238"></a><span class="lineno">  238</span>    TraceTaskData_t xTaskInfoBuffer;                <span class="comment">/* aligned */</span></div>
-<div class="line"><a id="l00239" name="l00239"></a><span class="lineno">  239</span>    TraceStackMonitorData_t xStackMonitorBuffer;    <span class="comment">/* aligned */</span></div>
-<div class="line"><a id="l00240" name="l00240"></a><span class="lineno">  240</span>    TraceDiagnosticsData_t xDiagnosticsBuffer;      <span class="comment">/* aligned */</span></div>
-<div class="line"><a id="l00241" name="l00241"></a><span class="lineno">  241</span>    TraceExtensionData_t xExtensionBuffer;          <span class="comment">/* aligned */</span></div>
-<div class="line"><a id="l00242" name="l00242"></a><span class="lineno">  242</span>    TraceCounterData_t xCounterBuffer;              <span class="comment">/* aligned */</span></div>
-<div class="line"><a id="l00243" name="l00243"></a><span class="lineno">  243</span>    TraceTaskMonitorData_t xTaskMonitorBuffer;      <span class="comment">/* aligned */</span></div>
-<div class="line"><a id="l00244" name="l00244"></a><span class="lineno">  244</span>} TraceRecorderData_t;</div>
-<div class="line"><a id="l00245" name="l00245"></a><span class="lineno">  245</span> </div>
-<div class="line"><a id="l00246" name="l00246"></a><span class="lineno">  246</span><span class="keyword">extern</span> TraceRecorderData_t* pxTraceRecorderData;</div>
-<div class="line"><a id="l00247" name="l00247"></a><span class="lineno">  247</span><span class="keyword">extern</span> uint32_t RecorderInitialized;</div>
-<div class="line"><a id="l00248" name="l00248"></a><span class="lineno">  248</span></div>
-<div class="line"><a id="l00257" name="l00257"></a><span class="lineno">  257</span>traceResult <a class="code hl_function" href="trcRecorder_8h.html#a5313aac36d433a500e2036f3fea541aa">xTraceHeaderInitialize</a>(TraceHeaderBuffer_t* pxBuffer);</div>
-<div class="line"><a id="l00258" name="l00258"></a><span class="lineno">  258</span></div>
-<div class="line"><a id="l00265" name="l00265"></a><span class="lineno"><a class="line" href="trcRecorder_8h.html#a80475714dcc01d60207a32bcf9eef170">  265</a></span><span class="preprocessor">#define xTraceIsRecorderEnabled() (xTraceIsRecorderInitialized() &amp;&amp; pxTraceRecorderData-&gt;uiRecorderEnabled)</span></div>
-<div class="line"><a id="l00266" name="l00266"></a><span class="lineno">  266</span></div>
-<div class="line"><a id="l00273" name="l00273"></a><span class="lineno"><a class="line" href="trcRecorder_8h.html#a4125a6b2693f86df4c93e43869a11489">  273</a></span><span class="preprocessor">#define xTraceIsRecorderInitialized() xTraceIsComponentInitialized(TRC_RECORDER_COMPONENT_CORE)</span></div>
-<div class="line"><a id="l00274" name="l00274"></a><span class="lineno">  274</span></div>
-<div class="line"><a id="l00283" name="l00283"></a><span class="lineno"><a class="line" href="trcRecorder_8h.html#a70dff8a1b718676016da16aa0252cd3e">  283</a></span><span class="preprocessor">#define xTraceSetComponentInitialized(uiComponentBit) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_2(RecorderInitialized |= (uiComponentBit), TRC_SUCCESS)</span></div>
-<div class="line"><a id="l00284" name="l00284"></a><span class="lineno">  284</span></div>
-<div class="line"><a id="l00293" name="l00293"></a><span class="lineno"><a class="line" href="trcRecorder_8h.html#a8223714e679e845f43befeca699ef7f1">  293</a></span><span class="preprocessor">#define xTraceIsComponentInitialized(uiComponentBit) (RecorderInitialized &amp; (uiComponentBit))</span></div>
-<div class="line"><a id="l00294" name="l00294"></a><span class="lineno">  294</span></div>
-<div class="line"><a id="l00303" name="l00303"></a><span class="lineno"><a class="line" href="trcRecorder_8h.html#a5f268f164c766c85c14dc1de0bd92188">  303</a></span><span class="preprocessor">#define xTraceStateSet(uxState) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_2(pxTraceRecorderData-&gt;uxTraceSystemStates[TRC_CFG_GET_CURRENT_CORE()] = (uxState), TRC_SUCCESS)</span></div>
-<div class="line"><a id="l00304" name="l00304"></a><span class="lineno">  304</span></div>
-<div class="line"><a id="l00313" name="l00313"></a><span class="lineno"><a class="line" href="trcRecorder_8h.html#ad2178d5e0ed9e33479c2b1466d9df695">  313</a></span><span class="preprocessor">#define xTraceStateGet(puxState) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_2(*(puxState) = pxTraceRecorderData-&gt;uxTraceSystemStates[TRC_CFG_GET_CURRENT_CORE()], TRC_SUCCESS)</span></div>
-<div class="line"><a id="l00314" name="l00314"></a><span class="lineno">  314</span></div>
-<div class="line"><a id="l00321" name="l00321"></a><span class="lineno">  321</span>traceResult <a class="code hl_function" href="trcRecorder_8h.html#a0dc702c30539813811556694b07c806c">xTraceTzCtrl</a>(<span class="keywordtype">void</span>);</div>
-<div class="line"><a id="l00322" name="l00322"></a><span class="lineno">  322</span> </div>
-<div class="line"><a id="l00323" name="l00323"></a><span class="lineno">  323</span><span class="comment">/******************************************************************************/</span></div>
-<div class="line"><a id="l00324" name="l00324"></a><span class="lineno">  324</span><span class="comment">/*** INTERNAL STREAMING FUNCTIONS *********************************************/</span></div>
-<div class="line"><a id="l00325" name="l00325"></a><span class="lineno">  325</span><span class="comment">/******************************************************************************/</span></div>
-<div class="line"><a id="l00326" name="l00326"></a><span class="lineno">  326</span> </div>
-<div class="line"><a id="l00327" name="l00327"></a><span class="lineno">  327</span><span class="preprocessor">#if (TRC_CFG_RECORDER_BUFFER_ALLOCATION == TRC_RECORDER_BUFFER_ALLOCATION_CUSTOM)</span><span class="preprocessor"></span></div>
-<div class="line"><a id="l00336" name="l00336"></a><span class="lineno">  336</span>traceResult xTraceSetBuffer(TraceRecorderData_t *pxBuffer);</div>
-<div class="line"><a id="l00337" name="l00337"></a><span class="lineno">  337</span><span class="preprocessor">#else</span></div>
-<div class="line"><a id="l00338" name="l00338"></a><span class="lineno">  338</span><span class="preprocessor">#define xTraceSetBuffer(p) (TRC_SUCCESS)</span></div>
-<div class="line"><a id="l00339" name="l00339"></a><span class="lineno">  339</span><span class="preprocessor">#endif</span></div>
-<div class="line"><a id="l00340" name="l00340"></a><span class="lineno">  340</span></div>
-<div class="line"><a id="l00350" name="l00350"></a><span class="lineno">  350</span>traceResult <a class="code hl_function" href="trcRecorder_8h.html#aa2d68495afa8821369279f8b12250b48">xTraceGetEventBuffer</a>(<span class="keywordtype">void</span>** ppvBuffer, TraceUnsignedBaseType_t * puiSize);</div>
-<div class="line"><a id="l00351" name="l00351"></a><span class="lineno">  351</span> </div>
-<div class="line"><a id="l00352" name="l00352"></a><span class="lineno">  352</span><span class="preprocessor">#else </span><span class="comment">/* (TRC_USE_TRACEALYZER_RECORDER == 1) */</span><span class="preprocessor"></span></div>
-<div class="line"><a id="l00353" name="l00353"></a><span class="lineno">  353</span> </div>
-<div class="line"><a id="l00354" name="l00354"></a><span class="lineno">  354</span><span class="preprocessor">#define xTraceInitialize() (TRC_SUCCESS)</span></div>
-<div class="line"><a id="l00355" name="l00355"></a><span class="lineno">  355</span><span class="preprocessor">#define xTraceEnable(x) ((void)(x), TRC_SUCCESS)</span></div>
-<div class="line"><a id="l00356" name="l00356"></a><span class="lineno">  356</span><span class="preprocessor">#define xTraceDisable() (TRC_SUCCESS)</span></div>
-<div class="line"><a id="l00357" name="l00357"></a><span class="lineno">  357</span> </div>
-<div class="line"><a id="l00358" name="l00358"></a><span class="lineno">  358</span><span class="preprocessor">#define prvTraceSetReadyEventsEnabled(status) (void)(status)</span></div>
-<div class="line"><a id="l00359" name="l00359"></a><span class="lineno">  359</span> </div>
-<div class="line"><a id="l00360" name="l00360"></a><span class="lineno">  360</span><span class="preprocessor">#define vTraceExcludeTask(handle) (void)(handle)</span></div>
-<div class="line"><a id="l00361" name="l00361"></a><span class="lineno">  361</span> </div>
-<div class="line"><a id="l00362" name="l00362"></a><span class="lineno">  362</span><span class="preprocessor">#define vTraceConsoleChannelPrintF(fmt, ...) (void)(fmt)</span></div>
-<div class="line"><a id="l00363" name="l00363"></a><span class="lineno">  363</span> </div>
-<div class="line"><a id="l00364" name="l00364"></a><span class="lineno">  364</span><span class="preprocessor">#ifndef TRC_ALLOC_CUSTOM_BUFFER</span></div>
-<div class="line"><a id="l00365" name="l00365"></a><span class="lineno">  365</span><span class="preprocessor">#define TRC_ALLOC_CUSTOM_BUFFER(bufname)</span></div>
-<div class="line"><a id="l00366" name="l00366"></a><span class="lineno">  366</span><span class="preprocessor">#endif</span></div>
-<div class="line"><a id="l00367" name="l00367"></a><span class="lineno">  367</span> </div>
-<div class="line"><a id="l00368" name="l00368"></a><span class="lineno">  368</span><span class="preprocessor">#define xTraceIsRecorderEnabled() (0)</span></div>
-<div class="line"><a id="l00369" name="l00369"></a><span class="lineno">  369</span><span class="preprocessor">#define xTraceIsRecorderInitialized() (0)</span></div>
-<div class="line"><a id="l00370" name="l00370"></a><span class="lineno">  370</span> </div>
-<div class="line"><a id="l00371" name="l00371"></a><span class="lineno">  371</span><span class="preprocessor">#define xTraceSetBuffer(p) (TRC_SUCCESS)</span></div>
-<div class="line"><a id="l00372" name="l00372"></a><span class="lineno">  372</span><span class="preprocessor">#define xTraceGetEventBuffer(p) (TRC_FAIL)</span></div>
-<div class="line"><a id="l00373" name="l00373"></a><span class="lineno">  373</span> </div>
-<div class="line"><a id="l00374" name="l00374"></a><span class="lineno">  374</span><span class="preprocessor">#define vTraceSetStopHook(x) (void)(x)</span></div>
+<div class="line"><a id="l00214" name="l00214"></a><span class="lineno">  214</span><span class="comment">/* Empty default define */</span></div>
+<div class="line"><a id="l00215" name="l00215"></a><span class="lineno">  215</span><span class="preprocessor">#ifndef TRC_CFG_PRINTF</span></div>
+<div class="line"><a id="l00216" name="l00216"></a><span class="lineno">  216</span><span class="preprocessor">#define TRC_CFG_PRINTF(...)</span></div>
+<div class="line"><a id="l00217" name="l00217"></a><span class="lineno">  217</span><span class="preprocessor">#endif</span></div>
+<div class="line"><a id="l00218" name="l00218"></a><span class="lineno">  218</span> </div>
+<div class="line"><a id="l00219" name="l00219"></a><span class="lineno">  219</span><span class="keyword">typedef</span> <span class="keyword">struct </span>TraceRecorderData    <span class="comment">/* Aligned */</span></div>
+<div class="line"><a id="l00220" name="l00220"></a><span class="lineno">  220</span>{</div>
+<div class="line"><a id="l00221" name="l00221"></a><span class="lineno">  221</span>    uint32_t uiSessionCounter;</div>
+<div class="line"><a id="l00222" name="l00222"></a><span class="lineno">  222</span>    uint32_t uiRecorderEnabled;</div>
+<div class="line"><a id="l00223" name="l00223"></a><span class="lineno">  223</span>    TraceUnsignedBaseType_t uxTraceSystemStates[TRC_CFG_CORE_COUNT];</div>
+<div class="line"><a id="l00224" name="l00224"></a><span class="lineno">  224</span>    uint32_t reserved;                              <span class="comment">/* alignment */</span></div>
+<div class="line"><a id="l00225" name="l00225"></a><span class="lineno">  225</span> </div>
+<div class="line"><a id="l00226" name="l00226"></a><span class="lineno">  226</span>    TraceAssertData_t xAssertBuffer;                <span class="comment">/* aligned */</span></div>
+<div class="line"><a id="l00227" name="l00227"></a><span class="lineno">  227</span>    TraceEntryIndexTable_t xEntryIndexTableBuffer;  <span class="comment">/* aligned */</span></div>
+<div class="line"><a id="l00228" name="l00228"></a><span class="lineno">  228</span><span class="preprocessor">#if (TRC_EXTERNAL_BUFFERS == 0)</span></div>
+<div class="line"><a id="l00229" name="l00229"></a><span class="lineno">  229</span>    TraceHeaderBuffer_t xHeaderBuffer;              <span class="comment">/* aligned */</span></div>
+<div class="line"><a id="l00230" name="l00230"></a><span class="lineno">  230</span>    TraceEntryTable_t xEntryTable;                  <span class="comment">/* aligned */</span></div>
+<div class="line"><a id="l00231" name="l00231"></a><span class="lineno">  231</span>    <a class="code hl_typedef" href="group__trace__timestamp__apis.html#ga8b7c675ec2e8975af31f37bc1b7da5d0">TraceTimestampData_t</a> xTimestampBuffer;          <span class="comment">/* aligned */</span></div>
+<div class="line"><a id="l00232" name="l00232"></a><span class="lineno">  232</span><span class="preprocessor">#endif</span></div>
+<div class="line"><a id="l00233" name="l00233"></a><span class="lineno">  233</span><span class="preprocessor">#if (TRC_USE_INTERNAL_BUFFER == 1)</span></div>
+<div class="line"><a id="l00234" name="l00234"></a><span class="lineno">  234</span>    <a class="code hl_typedef" href="trcInternalEventBuffer_8h.html#a80d9abd322f575b45a611fc5b48a70f3">TraceInternalEventBufferData_t</a> xInternalEventBuffer;    <span class="comment">/* aligned */</span></div>
+<div class="line"><a id="l00235" name="l00235"></a><span class="lineno">  235</span><span class="preprocessor">#endif</span></div>
+<div class="line"><a id="l00236" name="l00236"></a><span class="lineno">  236</span>    TraceStreamPortBuffer_t xStreamPortBuffer;      <span class="comment">/* verify alignment in xTraceInitialize() */</span></div>
+<div class="line"><a id="l00237" name="l00237"></a><span class="lineno">  237</span>    TraceStaticBufferTable_t xStaticBufferBuffer;   <span class="comment">/* aligned */</span></div>
+<div class="line"><a id="l00238" name="l00238"></a><span class="lineno">  238</span>    TraceEventDataTable_t xEventDataBuffer;         <span class="comment">/* verify alignment in xTraceInitialize() */</span></div>
+<div class="line"><a id="l00239" name="l00239"></a><span class="lineno">  239</span>    TracePrintData_t xPrintBuffer;                  <span class="comment">/* aligned */</span></div>
+<div class="line"><a id="l00240" name="l00240"></a><span class="lineno">  240</span>    TraceErrorData_t xErrorBuffer;                  <span class="comment">/* aligned */</span></div>
+<div class="line"><a id="l00241" name="l00241"></a><span class="lineno">  241</span>    TraceISRData_t xISRBuffer;                      <span class="comment">/* aligned */</span></div>
+<div class="line"><a id="l00242" name="l00242"></a><span class="lineno">  242</span>    TraceKernelPortDataBuffer_t xKernelPortBuffer;  <span class="comment">/* verify alignment in xTraceInitialize() */</span></div>
+<div class="line"><a id="l00243" name="l00243"></a><span class="lineno">  243</span>    TraceTaskData_t xTaskInfoBuffer;                <span class="comment">/* aligned */</span></div>
+<div class="line"><a id="l00244" name="l00244"></a><span class="lineno">  244</span>    TraceStackMonitorData_t xStackMonitorBuffer;    <span class="comment">/* aligned */</span></div>
+<div class="line"><a id="l00245" name="l00245"></a><span class="lineno">  245</span>    TraceDiagnosticsData_t xDiagnosticsBuffer;      <span class="comment">/* aligned */</span></div>
+<div class="line"><a id="l00246" name="l00246"></a><span class="lineno">  246</span>    TraceExtensionData_t xExtensionBuffer;          <span class="comment">/* aligned */</span></div>
+<div class="line"><a id="l00247" name="l00247"></a><span class="lineno">  247</span>    TraceCounterData_t xCounterBuffer;              <span class="comment">/* aligned */</span></div>
+<div class="line"><a id="l00248" name="l00248"></a><span class="lineno">  248</span>    TraceTaskMonitorData_t xTaskMonitorBuffer;      <span class="comment">/* aligned */</span></div>
+<div class="line"><a id="l00249" name="l00249"></a><span class="lineno">  249</span>} TraceRecorderData_t;</div>
+<div class="line"><a id="l00250" name="l00250"></a><span class="lineno">  250</span> </div>
+<div class="line"><a id="l00251" name="l00251"></a><span class="lineno">  251</span><span class="keyword">extern</span> TraceRecorderData_t* pxTraceRecorderData;</div>
+<div class="line"><a id="l00252" name="l00252"></a><span class="lineno">  252</span><span class="keyword">extern</span> uint32_t RecorderInitialized;</div>
+<div class="line"><a id="l00253" name="l00253"></a><span class="lineno">  253</span></div>
+<div class="line"><a id="l00262" name="l00262"></a><span class="lineno">  262</span>traceResult <a class="code hl_function" href="trcRecorder_8h.html#a5313aac36d433a500e2036f3fea541aa">xTraceHeaderInitialize</a>(TraceHeaderBuffer_t* pxBuffer);</div>
+<div class="line"><a id="l00263" name="l00263"></a><span class="lineno">  263</span></div>
+<div class="line"><a id="l00270" name="l00270"></a><span class="lineno"><a class="line" href="trcRecorder_8h.html#a80475714dcc01d60207a32bcf9eef170">  270</a></span><span class="preprocessor">#define xTraceIsRecorderEnabled() (xTraceIsRecorderInitialized() &amp;&amp; pxTraceRecorderData-&gt;uiRecorderEnabled)</span></div>
+<div class="line"><a id="l00271" name="l00271"></a><span class="lineno">  271</span></div>
+<div class="line"><a id="l00278" name="l00278"></a><span class="lineno"><a class="line" href="trcRecorder_8h.html#a4125a6b2693f86df4c93e43869a11489">  278</a></span><span class="preprocessor">#define xTraceIsRecorderInitialized() xTraceIsComponentInitialized(TRC_RECORDER_COMPONENT_CORE)</span></div>
+<div class="line"><a id="l00279" name="l00279"></a><span class="lineno">  279</span></div>
+<div class="line"><a id="l00288" name="l00288"></a><span class="lineno"><a class="line" href="trcRecorder_8h.html#a70dff8a1b718676016da16aa0252cd3e">  288</a></span><span class="preprocessor">#define xTraceSetComponentInitialized(uiComponentBit) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_2(RecorderInitialized |= (uiComponentBit), TRC_SUCCESS)</span></div>
+<div class="line"><a id="l00289" name="l00289"></a><span class="lineno">  289</span></div>
+<div class="line"><a id="l00298" name="l00298"></a><span class="lineno"><a class="line" href="trcRecorder_8h.html#a8223714e679e845f43befeca699ef7f1">  298</a></span><span class="preprocessor">#define xTraceIsComponentInitialized(uiComponentBit) (RecorderInitialized &amp; (uiComponentBit))</span></div>
+<div class="line"><a id="l00299" name="l00299"></a><span class="lineno">  299</span></div>
+<div class="line"><a id="l00308" name="l00308"></a><span class="lineno"><a class="line" href="trcRecorder_8h.html#a5f268f164c766c85c14dc1de0bd92188">  308</a></span><span class="preprocessor">#define xTraceStateSet(uxState) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_2(pxTraceRecorderData-&gt;uxTraceSystemStates[TRC_CFG_GET_CURRENT_CORE()] = (uxState), TRC_SUCCESS)</span></div>
+<div class="line"><a id="l00309" name="l00309"></a><span class="lineno">  309</span></div>
+<div class="line"><a id="l00318" name="l00318"></a><span class="lineno"><a class="line" href="trcRecorder_8h.html#ad2178d5e0ed9e33479c2b1466d9df695">  318</a></span><span class="preprocessor">#define xTraceStateGet(puxState) TRC_COMMA_EXPR_TO_STATEMENT_EXPR_2(*(puxState) = pxTraceRecorderData-&gt;uxTraceSystemStates[TRC_CFG_GET_CURRENT_CORE()], TRC_SUCCESS)</span></div>
+<div class="line"><a id="l00319" name="l00319"></a><span class="lineno">  319</span></div>
+<div class="line"><a id="l00326" name="l00326"></a><span class="lineno">  326</span>traceResult <a class="code hl_function" href="trcRecorder_8h.html#a0dc702c30539813811556694b07c806c">xTraceTzCtrl</a>(<span class="keywordtype">void</span>);</div>
+<div class="line"><a id="l00327" name="l00327"></a><span class="lineno">  327</span> </div>
+<div class="line"><a id="l00328" name="l00328"></a><span class="lineno">  328</span><span class="comment">/******************************************************************************/</span></div>
+<div class="line"><a id="l00329" name="l00329"></a><span class="lineno">  329</span><span class="comment">/*** INTERNAL STREAMING FUNCTIONS *********************************************/</span></div>
+<div class="line"><a id="l00330" name="l00330"></a><span class="lineno">  330</span><span class="comment">/******************************************************************************/</span></div>
+<div class="line"><a id="l00331" name="l00331"></a><span class="lineno">  331</span> </div>
+<div class="line"><a id="l00332" name="l00332"></a><span class="lineno">  332</span><span class="preprocessor">#if (TRC_CFG_RECORDER_BUFFER_ALLOCATION == TRC_RECORDER_BUFFER_ALLOCATION_CUSTOM)</span><span class="preprocessor"></span></div>
+<div class="line"><a id="l00341" name="l00341"></a><span class="lineno">  341</span>traceResult xTraceSetBuffer(TraceRecorderData_t *pxBuffer);</div>
+<div class="line"><a id="l00342" name="l00342"></a><span class="lineno">  342</span><span class="preprocessor">#else</span></div>
+<div class="line"><a id="l00343" name="l00343"></a><span class="lineno">  343</span><span class="preprocessor">#define xTraceSetBuffer(p) (TRC_SUCCESS)</span></div>
+<div class="line"><a id="l00344" name="l00344"></a><span class="lineno">  344</span><span class="preprocessor">#endif</span></div>
+<div class="line"><a id="l00345" name="l00345"></a><span class="lineno">  345</span></div>
+<div class="line"><a id="l00355" name="l00355"></a><span class="lineno">  355</span>traceResult <a class="code hl_function" href="trcRecorder_8h.html#aa2d68495afa8821369279f8b12250b48">xTraceGetEventBuffer</a>(<span class="keywordtype">void</span>** ppvBuffer, TraceUnsignedBaseType_t * puiSize);</div>
+<div class="line"><a id="l00356" name="l00356"></a><span class="lineno">  356</span> </div>
+<div class="line"><a id="l00357" name="l00357"></a><span class="lineno">  357</span><span class="preprocessor">#else </span><span class="comment">/* (TRC_USE_TRACEALYZER_RECORDER == 1) */</span><span class="preprocessor"></span></div>
+<div class="line"><a id="l00358" name="l00358"></a><span class="lineno">  358</span> </div>
+<div class="line"><a id="l00359" name="l00359"></a><span class="lineno">  359</span><span class="preprocessor">#define xTraceInitialize() (TRC_SUCCESS)</span></div>
+<div class="line"><a id="l00360" name="l00360"></a><span class="lineno">  360</span><span class="preprocessor">#define xTraceEnable(x) ((void)(x), TRC_SUCCESS)</span></div>
+<div class="line"><a id="l00361" name="l00361"></a><span class="lineno">  361</span><span class="preprocessor">#define xTraceDisable() (TRC_SUCCESS)</span></div>
+<div class="line"><a id="l00362" name="l00362"></a><span class="lineno">  362</span> </div>
+<div class="line"><a id="l00363" name="l00363"></a><span class="lineno">  363</span><span class="preprocessor">#define prvTraceSetReadyEventsEnabled(status) (void)(status)</span></div>
+<div class="line"><a id="l00364" name="l00364"></a><span class="lineno">  364</span> </div>
+<div class="line"><a id="l00365" name="l00365"></a><span class="lineno">  365</span><span class="preprocessor">#define vTraceExcludeTask(handle) (void)(handle)</span></div>
+<div class="line"><a id="l00366" name="l00366"></a><span class="lineno">  366</span> </div>
+<div class="line"><a id="l00367" name="l00367"></a><span class="lineno">  367</span><span class="preprocessor">#define vTraceConsoleChannelPrintF(fmt, ...) (void)(fmt)</span></div>
+<div class="line"><a id="l00368" name="l00368"></a><span class="lineno">  368</span> </div>
+<div class="line"><a id="l00369" name="l00369"></a><span class="lineno">  369</span><span class="preprocessor">#ifndef TRC_ALLOC_CUSTOM_BUFFER</span></div>
+<div class="line"><a id="l00370" name="l00370"></a><span class="lineno">  370</span><span class="preprocessor">#define TRC_ALLOC_CUSTOM_BUFFER(bufname)</span></div>
+<div class="line"><a id="l00371" name="l00371"></a><span class="lineno">  371</span><span class="preprocessor">#endif</span></div>
+<div class="line"><a id="l00372" name="l00372"></a><span class="lineno">  372</span> </div>
+<div class="line"><a id="l00373" name="l00373"></a><span class="lineno">  373</span><span class="preprocessor">#define xTraceIsRecorderEnabled() (0)</span></div>
+<div class="line"><a id="l00374" name="l00374"></a><span class="lineno">  374</span><span class="preprocessor">#define xTraceIsRecorderInitialized() (0)</span></div>
 <div class="line"><a id="l00375" name="l00375"></a><span class="lineno">  375</span> </div>
-<div class="line"><a id="l00376" name="l00376"></a><span class="lineno">  376</span><span class="preprocessor">#define TraceRecorderData_t uint32_t</span></div>
-<div class="line"><a id="l00377" name="l00377"></a><span class="lineno">  377</span> </div>
-<div class="line"><a id="l00378" name="l00378"></a><span class="lineno">  378</span><span class="preprocessor">#endif </span><span class="comment">/* (TRC_USE_TRACEALYZER_RECORDER == 1) */</span><span class="preprocessor"></span></div>
-<div class="line"><a id="l00379" name="l00379"></a><span class="lineno">  379</span></div>
-<div class="line"><a id="l00383" name="l00383"></a><span class="lineno"><a class="line" href="trcRecorder_8h.html#a4433d7c94ad4000866306078790197fe">  383</a></span><span class="preprocessor">#define vTraceInitialize (void)xTraceInitialize</span></div>
+<div class="line"><a id="l00376" name="l00376"></a><span class="lineno">  376</span><span class="preprocessor">#define xTraceSetBuffer(p) (TRC_SUCCESS)</span></div>
+<div class="line"><a id="l00377" name="l00377"></a><span class="lineno">  377</span><span class="preprocessor">#define xTraceGetEventBuffer(p) (TRC_FAIL)</span></div>
+<div class="line"><a id="l00378" name="l00378"></a><span class="lineno">  378</span> </div>
+<div class="line"><a id="l00379" name="l00379"></a><span class="lineno">  379</span><span class="preprocessor">#define vTraceSetStopHook(x) (void)(x)</span></div>
+<div class="line"><a id="l00380" name="l00380"></a><span class="lineno">  380</span> </div>
+<div class="line"><a id="l00381" name="l00381"></a><span class="lineno">  381</span><span class="preprocessor">#define TraceRecorderData_t uint32_t</span></div>
+<div class="line"><a id="l00382" name="l00382"></a><span class="lineno">  382</span> </div>
+<div class="line"><a id="l00383" name="l00383"></a><span class="lineno">  383</span><span class="preprocessor">#endif </span><span class="comment">/* (TRC_USE_TRACEALYZER_RECORDER == 1) */</span><span class="preprocessor"></span></div>
 <div class="line"><a id="l00384" name="l00384"></a><span class="lineno">  384</span></div>
-<div class="line"><a id="l00388" name="l00388"></a><span class="lineno"><a class="line" href="trcRecorder_8h.html#ad81a6a12b34c4761097d25c6c9036887">  388</a></span><span class="preprocessor">#define vTraceEnable (void)xTraceEnable</span></div>
+<div class="line"><a id="l00388" name="l00388"></a><span class="lineno"><a class="line" href="trcRecorder_8h.html#a4433d7c94ad4000866306078790197fe">  388</a></span><span class="preprocessor">#define vTraceInitialize (void)xTraceInitialize</span></div>
 <div class="line"><a id="l00389" name="l00389"></a><span class="lineno">  389</span></div>
-<div class="line"><a id="l00393" name="l00393"></a><span class="lineno"><a class="line" href="trcRecorder_8h.html#a54344b66a74433f50feee5cfdb726f91">  393</a></span><span class="preprocessor">#define vTraceStop (void)xTraceDisable</span></div>
+<div class="line"><a id="l00393" name="l00393"></a><span class="lineno"><a class="line" href="trcRecorder_8h.html#ad81a6a12b34c4761097d25c6c9036887">  393</a></span><span class="preprocessor">#define vTraceEnable (void)xTraceEnable</span></div>
 <div class="line"><a id="l00394" name="l00394"></a><span class="lineno">  394</span></div>
-<div class="line"><a id="l00398" name="l00398"></a><span class="lineno"><a class="line" href="trcRecorder_8h.html#ac4441d3b4dd03eb69d335307d3650dae">  398</a></span><span class="preprocessor">#define vTraceInstanceFinishedNow (void)xTraceTaskInstanceFinishedNow</span></div>
+<div class="line"><a id="l00398" name="l00398"></a><span class="lineno"><a class="line" href="trcRecorder_8h.html#a54344b66a74433f50feee5cfdb726f91">  398</a></span><span class="preprocessor">#define vTraceStop (void)xTraceDisable</span></div>
 <div class="line"><a id="l00399" name="l00399"></a><span class="lineno">  399</span></div>
-<div class="line"><a id="l00403" name="l00403"></a><span class="lineno"><a class="line" href="trcRecorder_8h.html#a017e80004dee99fbe357c86c77940819">  403</a></span><span class="preprocessor">#define vTraceInstanceFinishedNext (void)xTraceTaskInstanceFinishedNext</span></div>
+<div class="line"><a id="l00403" name="l00403"></a><span class="lineno"><a class="line" href="trcRecorder_8h.html#ac4441d3b4dd03eb69d335307d3650dae">  403</a></span><span class="preprocessor">#define vTraceInstanceFinishedNow (void)xTraceTaskInstanceFinishedNow</span></div>
 <div class="line"><a id="l00404" name="l00404"></a><span class="lineno">  404</span></div>
-<div class="line"><a id="l00408" name="l00408"></a><span class="lineno"><a class="line" href="trcRecorder_8h.html#a56704be14a68b7e59a378fac22ff42c7">  408</a></span><span class="preprocessor">#define vTracePrintF (void)xTracePrintF</span></div>
+<div class="line"><a id="l00408" name="l00408"></a><span class="lineno"><a class="line" href="trcRecorder_8h.html#a017e80004dee99fbe357c86c77940819">  408</a></span><span class="preprocessor">#define vTraceInstanceFinishedNext (void)xTraceTaskInstanceFinishedNext</span></div>
 <div class="line"><a id="l00409" name="l00409"></a><span class="lineno">  409</span></div>
-<div class="line"><a id="l00413" name="l00413"></a><span class="lineno"><a class="line" href="trcRecorder_8h.html#a548dc97141d6e4d3049da174c5b23e16">  413</a></span><span class="preprocessor">#define vTraceVPrintF (void)xTraceVPrintF</span></div>
+<div class="line"><a id="l00413" name="l00413"></a><span class="lineno"><a class="line" href="trcRecorder_8h.html#a56704be14a68b7e59a378fac22ff42c7">  413</a></span><span class="preprocessor">#define vTracePrintF (void)xTracePrintF</span></div>
 <div class="line"><a id="l00414" name="l00414"></a><span class="lineno">  414</span></div>
-<div class="line"><a id="l00418" name="l00418"></a><span class="lineno"><a class="line" href="trcRecorder_8h.html#a00d742ca47f84add37a93a8a0f3fb6c5">  418</a></span><span class="preprocessor">#define vTracePrint (void)xTracePrint</span></div>
+<div class="line"><a id="l00418" name="l00418"></a><span class="lineno"><a class="line" href="trcRecorder_8h.html#a548dc97141d6e4d3049da174c5b23e16">  418</a></span><span class="preprocessor">#define vTraceVPrintF (void)xTraceVPrintF</span></div>
 <div class="line"><a id="l00419" name="l00419"></a><span class="lineno">  419</span></div>
-<div class="line"><a id="l00423" name="l00423"></a><span class="lineno"><a class="line" href="trcRecorder_8h.html#ab484288bbf50e8844cd63530c06808ab">  423</a></span><span class="preprocessor">#define vTraceSetRecorderDataBuffer(pxBuffer) xTraceSetBuffer((TraceRecorderData_t*)(pxBuffer))</span></div>
-<div class="line"><a id="l00424" name="l00424"></a><span class="lineno">  424</span> </div>
-<div class="line"><a id="l00425" name="l00425"></a><span class="lineno">  425</span><span class="preprocessor">#ifdef __cplusplus</span></div>
-<div class="line"><a id="l00426" name="l00426"></a><span class="lineno">  426</span>}</div>
-<div class="line"><a id="l00427" name="l00427"></a><span class="lineno">  427</span><span class="preprocessor">#endif</span></div>
-<div class="line"><a id="l00428" name="l00428"></a><span class="lineno">  428</span> </div>
-<div class="line"><a id="l00429" name="l00429"></a><span class="lineno">  429</span><span class="preprocessor">#endif</span></div>
+<div class="line"><a id="l00423" name="l00423"></a><span class="lineno"><a class="line" href="trcRecorder_8h.html#a00d742ca47f84add37a93a8a0f3fb6c5">  423</a></span><span class="preprocessor">#define vTracePrint (void)xTracePrint</span></div>
+<div class="line"><a id="l00424" name="l00424"></a><span class="lineno">  424</span></div>
+<div class="line"><a id="l00428" name="l00428"></a><span class="lineno"><a class="line" href="trcRecorder_8h.html#ab484288bbf50e8844cd63530c06808ab">  428</a></span><span class="preprocessor">#define vTraceSetRecorderDataBuffer(pxBuffer) xTraceSetBuffer((TraceRecorderData_t*)(pxBuffer))</span></div>
+<div class="line"><a id="l00429" name="l00429"></a><span class="lineno">  429</span> </div>
+<div class="line"><a id="l00430" name="l00430"></a><span class="lineno">  430</span><span class="preprocessor">#ifdef __cplusplus</span></div>
+<div class="line"><a id="l00431" name="l00431"></a><span class="lineno">  431</span>}</div>
+<div class="line"><a id="l00432" name="l00432"></a><span class="lineno">  432</span><span class="preprocessor">#endif</span></div>
+<div class="line"><a id="l00433" name="l00433"></a><span class="lineno">  433</span> </div>
+<div class="line"><a id="l00434" name="l00434"></a><span class="lineno">  434</span><span class="preprocessor">#endif</span></div>
 <div class="ttc" id="agroup__trace__timestamp__apis_html_ga8b7c675ec2e8975af31f37bc1b7da5d0"><div class="ttname"><a href="group__trace__timestamp__apis.html#ga8b7c675ec2e8975af31f37bc1b7da5d0">TraceTimestampData_t</a></div><div class="ttdeci">struct TraceTimestampData TraceTimestampData_t</div><div class="ttdoc">Trace Timestamp Structure.</div></div>
 <div class="ttc" id="atrcAssert_8h_html"><div class="ttname"><a href="trcAssert_8h.html">trcAssert.h</a></div><div class="ttdoc">Public trace assert APIs.</div></div>
 <div class="ttc" id="atrcCounter_8h_html"><div class="ttname"><a href="trcCounter_8h.html">trcCounter.h</a></div><div class="ttdoc">Public trace counter APIs.</div></div>
@@ -335,11 +340,11 @@ $(function(){initNavTree('trcRecorder_8h_source.html','',''); });
 <div class="ttc" id="atrcObject_8h_html"><div class="ttname"><a href="trcObject_8h.html">trcObject.h</a></div><div class="ttdoc">Public trace object APIs.</div></div>
 <div class="ttc" id="atrcPrint_8h_html"><div class="ttname"><a href="trcPrint_8h.html">trcPrint.h</a></div><div class="ttdoc">Public trace print APIs.</div></div>
 <div class="ttc" id="atrcProcess_8h_html"><div class="ttname"><a href="trcProcess_8h.html">trcProcess.h</a></div><div class="ttdoc">Public trace process APIs.</div></div>
-<div class="ttc" id="atrcRecorder_8h_html_a0dc702c30539813811556694b07c806c"><div class="ttname"><a href="trcRecorder_8h.html#a0dc702c30539813811556694b07c806c">xTraceTzCtrl</a></div><div class="ttdeci">traceResult xTraceTzCtrl(void)</div><div class="ttdoc">Call this function periodically.</div><div class="ttdef"><b>Definition</b> trcStreamingRecorder.c:457</div></div>
-<div class="ttc" id="atrcRecorder_8h_html_a5313aac36d433a500e2036f3fea541aa"><div class="ttname"><a href="trcRecorder_8h.html#a5313aac36d433a500e2036f3fea541aa">xTraceHeaderInitialize</a></div><div class="ttdeci">traceResult xTraceHeaderInitialize(TraceHeaderBuffer_t *pxBuffer)</div><div class="ttdoc">Initializes the header data.</div><div class="ttdef"><b>Definition</b> trcStreamingRecorder.c:286</div></div>
-<div class="ttc" id="atrcRecorder_8h_html_a55cefe256f7bfcfa9085667696a1752d"><div class="ttname"><a href="trcRecorder_8h.html#a55cefe256f7bfcfa9085667696a1752d">xTraceInitialize</a></div><div class="ttdeci">traceResult xTraceInitialize(void)</div><div class="ttdoc">Initializes the recorder data. xTraceInitialize() or xTraceEnable(...) must be called before any atte...</div><div class="ttdef"><b>Definition</b> trcStreamingRecorder.c:141</div></div>
-<div class="ttc" id="atrcRecorder_8h_html_a62af22d9ff86d507040b538cf0c86c53"><div class="ttname"><a href="trcRecorder_8h.html#a62af22d9ff86d507040b538cf0c86c53">xTraceDisable</a></div><div class="ttdeci">traceResult xTraceDisable(void)</div><div class="ttdoc">Disables tracing.</div><div class="ttdef"><b>Definition</b> trcStreamingRecorder.c:420</div></div>
-<div class="ttc" id="atrcRecorder_8h_html_aa2d68495afa8821369279f8b12250b48"><div class="ttname"><a href="trcRecorder_8h.html#aa2d68495afa8821369279f8b12250b48">xTraceGetEventBuffer</a></div><div class="ttdeci">traceResult xTraceGetEventBuffer(void **ppvBuffer, TraceUnsignedBaseType_t *puiSize)</div><div class="ttdoc">Retrieve the event buffer and event buffer size.</div><div class="ttdef"><b>Definition</b> trcStreamingRecorder.c:443</div></div>
+<div class="ttc" id="atrcRecorder_8h_html_a0dc702c30539813811556694b07c806c"><div class="ttname"><a href="trcRecorder_8h.html#a0dc702c30539813811556694b07c806c">xTraceTzCtrl</a></div><div class="ttdeci">traceResult xTraceTzCtrl(void)</div><div class="ttdoc">Call this function periodically.</div><div class="ttdef"><b>Definition</b> trcStreamingRecorder.c:452</div></div>
+<div class="ttc" id="atrcRecorder_8h_html_a5313aac36d433a500e2036f3fea541aa"><div class="ttname"><a href="trcRecorder_8h.html#a5313aac36d433a500e2036f3fea541aa">xTraceHeaderInitialize</a></div><div class="ttdeci">traceResult xTraceHeaderInitialize(TraceHeaderBuffer_t *pxBuffer)</div><div class="ttdoc">Initializes the header data.</div><div class="ttdef"><b>Definition</b> trcStreamingRecorder.c:281</div></div>
+<div class="ttc" id="atrcRecorder_8h_html_a55cefe256f7bfcfa9085667696a1752d"><div class="ttname"><a href="trcRecorder_8h.html#a55cefe256f7bfcfa9085667696a1752d">xTraceInitialize</a></div><div class="ttdeci">traceResult xTraceInitialize(void)</div><div class="ttdoc">Initializes the recorder data. xTraceInitialize() or xTraceEnable(...) must be called before any atte...</div><div class="ttdef"><b>Definition</b> trcStreamingRecorder.c:136</div></div>
+<div class="ttc" id="atrcRecorder_8h_html_a62af22d9ff86d507040b538cf0c86c53"><div class="ttname"><a href="trcRecorder_8h.html#a62af22d9ff86d507040b538cf0c86c53">xTraceDisable</a></div><div class="ttdeci">traceResult xTraceDisable(void)</div><div class="ttdoc">Disables tracing.</div><div class="ttdef"><b>Definition</b> trcStreamingRecorder.c:415</div></div>
+<div class="ttc" id="atrcRecorder_8h_html_aa2d68495afa8821369279f8b12250b48"><div class="ttname"><a href="trcRecorder_8h.html#aa2d68495afa8821369279f8b12250b48">xTraceGetEventBuffer</a></div><div class="ttdeci">traceResult xTraceGetEventBuffer(void **ppvBuffer, TraceUnsignedBaseType_t *puiSize)</div><div class="ttdoc">Retrieve the event buffer and event buffer size.</div><div class="ttdef"><b>Definition</b> trcStreamingRecorder.c:438</div></div>
 <div class="ttc" id="atrcRunnable_8h_html"><div class="ttname"><a href="trcRunnable_8h.html">trcRunnable.h</a></div><div class="ttdoc">Public trace runnable APIs.</div></div>
 <div class="ttc" id="atrcStackMonitor_8h_html"><div class="ttname"><a href="trcStackMonitor_8h.html">trcStackMonitor.h</a></div><div class="ttdoc">Public trace stack monitor APIs.</div></div>
 <div class="ttc" id="atrcStateMachine_8h_html"><div class="ttname"><a href="trcStateMachine_8h.html">trcStateMachine.h</a></div><div class="ttdoc">Public trace state machine APIs.</div></div>
